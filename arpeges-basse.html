@@ -310,7 +310,6 @@
       <div class="arp-name" id="arp-name"></div>
       <div class="arp-badge" id="arp-badge"></div>
       <div class="arp-formula" id="arp-formula"></div>
-      <div class="notes-row" id="notes-row"></div>
     </section>
 
     <section class="card">
@@ -668,26 +667,18 @@ function render(){
   const arpPcs=arpDef.iv.map(i=>(rootPc+i)%12);
   const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
 
-  // Nom et formule
+  // Nom et badge
   document.getElementById('arp-name').innerHTML=`<b>${pretty(root)}</b> ${arpDef.label}`;
-  document.getElementById('arp-badge').textContent=pretty(root)+(arpDef.sym||arpDef.label);
+  // Badge : tonique + symbole d'accord (vide pour majeur = juste la tonique)
+  document.getElementById('arp-badge').textContent=pretty(root)+(arpDef.sym||'');
 
-  // Formule degrés
+  // Formule degrés (seul affichage des notes — les puces .notes-row ont été retirées)
   const formDiv=document.getElementById('arp-formula'); formDiv.innerHTML='';
   arpDef.iv.forEach((iv,i)=>{
     if(i>0){const sep=document.createElement('span');sep.className='sep';sep.textContent='–';formDiv.appendChild(sep);}
     const df=document.createElement('div'); df.className='df';
     df.innerHTML=`<span class="dlabel" style="color:${DEG_COLORS[i]}">${pretty(DEG_SHORT_RAW[iv]||'?')}</span><span class="dname" style="color:${i===0?'var(--d1)':'var(--cream)'}">${pretty(SPELL[arpPcs[i]])}</span>`;
     formDiv.appendChild(df);
-  });
-
-  // Puces de notes
-  const nr=document.getElementById('notes-row'); nr.innerHTML='';
-  arpPcs.forEach((pc,i)=>{
-    const semi=(pc-rootPc+12)%12;
-    const pill=document.createElement('div'); pill.className='note-pill';
-    pill.innerHTML=`<span class="pdot" style="background:${DEG_COLORS[i]}"></span><span class="pdeg">${pretty(DEG_SHORT_RAW[semi])}</span><span class="pnm" style="color:${i===0?'var(--d1)':'var(--cream)'}">${pretty(SPELL[pc])}</span>`;
-    nr.appendChild(pill);
   });
 
   // Tableau
