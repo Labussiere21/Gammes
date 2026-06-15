@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalaBass — Cycle des quintes</title>
+<meta name="description" content="Cycle des quintes interactif pour basse : clique sur une tonique et découvre sa gamme, ses modes, ses accords diatoniques et ses cadences.">
+<meta name="keywords" content="cycle des quintes basse, cercle des quintes, gammes basse, accords diatoniques">
+<meta property="og:title" content="ScalaBass — Cycle des quintes">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://labussiere21.github.io/Gammes/quintes.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
+  --line:#3a2c1e; --wood-a:#5a3f26; --wood-b:#3a2415;
+  --brass:#d9a849; --brass-dim:#9c7a3a;
+  --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
+  --d1:#e8503a; --d2:#f08a3c; --d3:#f2c14e; --d4:#57c08a;
+  --d5:#45a3d9; --d6:#8c7bd6; --d7:#e06aa8;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:
+    radial-gradient(1100px 550px at 80% -10%,rgba(217,168,73,.09),transparent 58%),
+    radial-gradient(800px 480px at -8% 105%,rgba(217,168,73,.06),transparent 52%),
+    var(--bg);
+  color:var(--cream); font-family:"Hanken Grotesk",system-ui,sans-serif;
+  line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px) 80px}
+
+/* Nav */
+header{margin-bottom:28px}
+.eyebrow{font-family:"Space Mono",monospace; letter-spacing:.28em; text-transform:uppercase; font-size:12px; color:var(--brass); display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:14px;}
+.site-name{font-weight:700; letter-spacing:.2em}
+.site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; flex-wrap:wrap;}
+.nav-link{font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:5px 12px; border-radius:5px; transition:.12s;}
+.nav-link:hover{color:var(--cream)}
+.nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
+h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(38px,7vw,78px); line-height:.95; margin:.12em 0 .1em;}
+h1 em{font-style:italic; color:var(--brass)}
+.lede{color:var(--muted); max-width:60ch; font-size:clamp(14px,1.4vw,16px)}
+
+/* Layout principal */
+.main-grid{display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:start; margin-top:28px;}
+@media(max-width:860px){.main-grid{grid-template-columns:1fr}}
+
+/* ====== CERCLE ====== */
+.circle-wrap{
+  position:relative; width:420px; height:420px; flex:none;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:50%;
+  box-shadow:0 32px 80px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04);
+}
+@media(max-width:860px){.circle-wrap{width:min(360px,90vw);height:min(360px,90vw);margin:0 auto}}
+
+/* Anneau de fond */
+.circle-bg{
+  position:absolute; inset:16px; border-radius:50%;
+  border:2px solid var(--line);
+}
+/* Centre du cercle */
+.circle-center{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px; pointer-events:none;
+}
+.cc-label{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted-2)}
+.cc-note{font-family:"Instrument Serif",serif; font-size:32px; color:var(--brass); line-height:1; transition:.2s}
+.cc-sig{font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); margin-top:2px}
+
+/* Boutons du cercle */
+.circle-btn{
+  position:absolute; transform:translate(-50%,-50%);
+  width:52px; height:52px; border-radius:50%;
+  font-family:"Instrument Serif",serif; font-size:18px;
+  background:var(--panel); border:2px solid var(--line);
+  color:var(--cream); cursor:pointer; transition:.14s;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  box-shadow:0 4px 12px rgba(0,0,0,.5);
+}
+.circle-btn:hover{border-color:var(--brass-dim); color:var(--brass); transform:translate(-50%,-50%) scale(1.08)}
+.circle-btn.active{
+  background:var(--brass); color:#160f08; border-color:var(--brass);
+  box-shadow:0 0 0 3px rgba(217,168,73,.35),0 4px 16px rgba(0,0,0,.6);
+  transform:translate(-50%,-50%) scale(1.12);
+}
+.circle-btn .cb-enhar{font-family:"Space Mono",monospace; font-size:9px; opacity:.6; font-style:normal}
+.circle-btn.active .cb-enhar{opacity:.5; color:#160f08}
+
+/* Ligne des dièses/bémols */
+.sig-arc{position:absolute; inset:0; border-radius:50%; pointer-events:none}
+
+/* ====== PANNEAU DROIT ====== */
+.info-panel{min-width:0}
+
+/* Carte tonalité */
+.tonic-card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:var(--radius);
+  padding:20px 24px; margin-bottom:16px;
+  box-shadow:0 24px 60px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03);
+}
+.tonic-head{display:flex; align-items:baseline; gap:14px; margin-bottom:4px}
+.tonic-name{font-family:"Instrument Serif",serif; font-size:clamp(32px,5vw,52px); line-height:1}
+.tonic-sig{font-family:"Space Mono",monospace; font-size:13px; color:var(--muted)}
+.tonic-notes{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
+.tn{
+  font-family:"Space Mono",monospace; font-weight:700; font-size:13px;
+  padding:5px 10px; border-radius:7px; background:#0f0a07; border:1px solid var(--line);
+}
+.tn.root{border-color:var(--d1); color:var(--d1)}
+
+/* Tabs */
+.tabs{display:flex; gap:0; border-bottom:1px solid var(--line); margin-bottom:18px; flex-wrap:wrap}
+.tab{
+  font-family:"Space Mono",monospace; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 16px; cursor:pointer; border:none; background:transparent;
+  color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:.12s;
+}
+.tab:hover{color:var(--cream)}
+.tab.on{color:var(--brass); border-bottom-color:var(--brass)}
+
+/* Grilles */
+.modes-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px}
+.mode-card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:10px; padding:12px 14px;
+  cursor:pointer; transition:.12s; text-decoration:none; display:block;
+}
+.mode-card:hover{border-color:var(--brass-dim); transform:translateY(-1px)}
+.mc-deg{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:3px}
+.mc-name{font-family:"Instrument Serif",serif; font-size:18px; line-height:1.1}
+.mc-notes{font-family:"Space Mono",monospace; font-size:11px; color:var(--muted-2); margin-top:5px}
+
+/* Accords diatoniques */
+.chords-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px}
+.chord-card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:10px; padding:12px 12px 10px;
+  text-align:center;
+}
+.chord-card .cd-deg{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); margin-bottom:4px}
+.chord-card .cd-name{font-family:"Instrument Serif",serif; font-size:20px; line-height:1}
+.chord-card .cd-quality{font-family:"Space Mono",monospace; font-size:10px; color:var(--muted); margin-top:3px}
+
+/* Relatives */
+.relatives-grid{display:flex; gap:10px; flex-wrap:wrap}
+.rel-card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:10px; padding:14px 18px;
+  text-decoration:none; display:block; transition:.12s; min-width:140px;
+}
+.rel-card:hover{border-color:var(--brass-dim); transform:translateY(-1px)}
+.rel-card .rc-label{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:4px}
+.rel-card .rc-name{font-family:"Instrument Serif",serif; font-size:20px}
+
+/* Cadences */
+.cad-list{display:flex; flex-direction:column; gap:8px}
+.cad-item{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:10px; padding:12px 16px;
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.cad-label{font-family:"Instrument Serif",serif; font-size:18px}
+.cad-genre{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); padding:3px 8px; border:1px solid var(--line); border-radius:5px}
+.cad-chords{font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); margin-top:4px; width:100%}
+
+/* Hint initial */
+.hint{
+  text-align:center; padding:48px 20px; color:var(--muted-2);
+  font-size:14px; grid-column:1/-1;
+}
+.hint-icon{font-size:40px; margin-bottom:12px}
+
+/* Seg */
+.seg{display:inline-flex; background:#0e0a07; border:1px solid var(--line); border-radius:9px; padding:3px; gap:2px}
+.seg button{font-family:"Space Mono",monospace; font-size:12px; background:transparent; border:0; color:var(--muted); cursor:pointer; padding:6px 11px; border-radius:7px; transition:.12s;}
+.seg button:hover{color:var(--cream)}
+.seg button.on{background:var(--brass); color:#160f08; font-weight:700}
+
+:focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.anim{animation:fadeIn .18s ease both}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">
+    <span class="site-name">ScalaBass</span>
+    <nav class="site-nav">
+      <a href="index.html"          class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html"  class="nav-link">Arpèges</a>
+      <a href="intervalles.html"    class="nav-link">Intervalles</a>
+      <a href="manche.html"         class="nav-link">Manche</a>
+      <a href="cadences.html"       class="nav-link">Cadences</a>
+      <a href="analyse.html"        class="nav-link">Analyse</a>
+      <a href="quintes.html"        class="nav-link active">Cycle des quintes</a>
+    </nav>
+  </div>
+  <h1>Cycle des <em>quintes</em></h1>
+  <p class="lede">Clique sur une tonalité pour explorer sa gamme, ses modes, ses accords diatoniques et ses cadences les plus courantes.</p>
+</header>
+
+<div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
+  <div class="ctl-label" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2)">Altération</div>
+  <div class="seg" id="accpref">
+    <button data-acc="b" class="on">♭ bémols</button>
+    <button data-acc="#">♯ dièses</button>
+  </div>
+</div>
+
+<div class="main-grid">
+
+  <!-- CERCLE -->
+  <div>
+    <div class="circle-wrap" id="circle-wrap">
+      <div class="circle-bg"></div>
+      <div class="circle-center">
+        <div class="cc-label">Tonalité</div>
+        <div class="cc-note" id="cc-note">—</div>
+        <div class="cc-sig" id="cc-sig"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANNEAU DROIT -->
+  <div class="info-panel" id="info-panel">
+    <div class="hint" id="hint">
+      <div class="hint-icon">🎯</div>
+      <p>Clique sur une tonalité dans le cercle</p>
+    </div>
+    <div id="content" style="display:none">
+      <!-- Carte tonalité -->
+      <div class="tonic-card">
+        <div class="tonic-head">
+          <span class="tonic-name" id="tonic-name"></span>
+          <span class="tonic-sig" id="tonic-sig"></span>
+        </div>
+        <div class="tonic-notes" id="tonic-notes"></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab on" data-tab="modes">Modes</button>
+        <button class="tab" data-tab="chords">Accords</button>
+        <button class="tab" data-tab="relatives">Relatives</button>
+        <button class="tab" data-tab="cadences">Cadences</button>
+      </div>
+      <div id="tab-modes"></div>
+      <div id="tab-chords" style="display:none"></div>
+      <div id="tab-relatives" style="display:none"></div>
+      <div id="tab-cadences" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /wrap -->
+
+<script>
+/* ====================================================== DONNÉES */
+const CIRCLE_OF_FIFTHS = [
+  {pc:0,  sharp:'C',  flat:'C',  sharps:0, flats:0},
+  {pc:7,  sharp:'G',  flat:'G',  sharps:1, flats:0},
+  {pc:2,  sharp:'D',  flat:'D',  sharps:2, flats:0},
+  {pc:9,  sharp:'A',  flat:'A',  sharps:3, flats:0},
+  {pc:4,  sharp:'E',  flat:'E',  sharps:4, flats:0},
+  {pc:11, sharp:'B',  flat:'Cb', sharps:5, flats:7},
+  {pc:6,  sharp:'F♯', flat:'G♭', sharps:6, flats:6},
+  {pc:1,  sharp:'C♯', flat:'D♭', sharps:7, flats:5},
+  {pc:8,  sharp:'G♯', flat:'A♭', sharps:0, flats:4},
+  {pc:3,  sharp:'D♯', flat:'E♭', sharps:0, flats:3},
+  {pc:10, sharp:'A♯', flat:'B♭', sharps:0, flats:2},
+  {pc:5,  sharp:'E♯', flat:'F',  sharps:0, flats:1},
+];
+
+const SCALE_MAJ  = [0,2,4,5,7,9,11];
+const SCALE_MIN  = [0,2,3,5,7,8,10];
+const LETTERS    = ['C','D','E','F','G','A','B'];
+const LP         = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+
+const MODES = [
+  {deg:1, name:'Ionien',      sub:'Majeure',           iv:[0,2,4,5,7,9,11],  qual:'maj7',  symb:'I'},
+  {deg:2, name:'Dorien',      sub:'Min. jazz',         iv:[0,2,3,5,7,9,10],  qual:'m7',    symb:'ii'},
+  {deg:3, name:'Phrygien',    sub:'Min. flamenco',     iv:[0,1,3,5,7,8,10],  qual:'m7',    symb:'iii'},
+  {deg:4, name:'Lydien',      sub:'Maj. flottant',     iv:[0,2,4,6,7,9,11],  qual:'maj7',  symb:'IV'},
+  {deg:5, name:'Mixolydien',  sub:'Dom. blues/rock',   iv:[0,2,4,5,7,9,10],  qual:'7',     symb:'V'},
+  {deg:6, name:'Éolien',      sub:'Min. naturelle',    iv:[0,2,3,5,7,8,10],  qual:'m7',    symb:'vi'},
+  {deg:7, name:'Locrien',     sub:'Dim. jazz',         iv:[0,1,3,5,6,8,10],  qual:'ø',     symb:'vii°'},
+];
+
+const DIATONIC_QUALITIES = [
+  {symb:'I',    qual:'Maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
+  {symb:'ii',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
+  {symb:'iii',  qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
+  {symb:'IV',   qual:'Maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
+  {symb:'V',    qual:'dom7', short:'7',   long:'Dominant 7',   iv:[0,4,7,10]},
+  {symb:'vi',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
+  {symb:'vii°', qual:'dim',  short:'°',   long:'Diminué',      iv:[0,3,6]},
+];
+
+const CADENCES_MAJ = [
+  {label:'ii – V – I',      genre:'Jazz',     degs:[2,5,1]},
+  {label:'I – V – vi – IV', genre:'Pop',      degs:[1,5,6,4]},
+  {label:'I – IV – V',      genre:'Rock',     degs:[1,4,5]},
+  {label:'I – vi – IV – V', genre:'Doo-wop',  degs:[1,6,4,5]},
+  {label:'IV – V – I',      genre:'Gospel',   degs:[4,5,1]},
+  {label:'iii – vi – ii – V',genre:'Jazz',    degs:[3,6,2,5]},
+  {label:'I – IV – I – V',  genre:'Country',  degs:[1,4,1,5]},
+  {label:'vi – IV – V – I', genre:'J-Pop',    degs:[6,4,5,1]},
+];
+const CADENCES_MIN = [
+  {label:'i – iv – V',       genre:'Latin',   degs:[1,4,5]},
+  {label:'i – ♭VII – ♭VI',   genre:'Métal',   chromDegs:[{d:1,a:0},{d:7,a:-1},{d:6,a:-1}]},
+  {label:'i – ♭VII – ♭VI – V',genre:'Métal',  chromDegs:[{d:1,a:0},{d:7,a:-1},{d:6,a:-1},{d:5,a:0}]},
+  {label:'i – ♭VII – IV',    genre:'Rock',    chromDegs:[{d:1,a:0},{d:7,a:-1},{d:4,a:0}]},
+  {label:'i – ♭II',          genre:'Flamenco',chromDegs:[{d:1,a:0},{d:2,a:-1}]},
+  {label:'ii° – V – i',      genre:'Jazz',    degs:[2,5,1]},
+  {label:'i – iv – ♭VII',    genre:'Rock',    chromDegs:[{d:1,a:0},{d:4,a:0},{d:7,a:-1}]},
+];
+
+/* ====================================================== ÉTAT */
+const state = { pc: null, accPref: 'b', activeTab: 'modes' };
+
+const SHARP_SPELL = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const FLAT_SPELL  = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const FLAT_RAW    = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+function spell(pc){ return (state.accPref==='#'?SHARP_SPELL:FLAT_SPELL)[pc]; }
+
+/* Construit la gamme majeure avec les bonnes lettres */
+function buildMajScale(rootPc){
+  const LETTER_OF_PC  = ['C',null,'D',null,'E','F',null,'G',null,'A',null,'B'];
+  let rootLetter = LETTER_OF_PC[rootPc];
+  // Toniques non-naturelles → lettre depuis le nom du cercle
+  if(!rootLetter){
+    const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===rootPc);
+    const name = state.accPref==='#' ? entry.sharp : entry.flat;
+    rootLetter = name[0];
+  }
+  const rootLetterIdx = LETTERS.indexOf(rootLetter);
+  return SCALE_MAJ.map((iv,i)=>{
+    const letter = LETTERS[(rootLetterIdx+i)%7];
+    const targetPc = (rootPc+iv)%12;
+    const naturalPc = LP[letter];
+    let diff = ((targetPc-naturalPc)+12)%12;
+    if(diff>6) diff-=12;
+    const acc = diff>0?'♯'.repeat(diff):diff<0?'♭'.repeat(-diff):'';
+    return letter+acc;
+  });
+}
+
+/* ====================================================== CERCLE SVG */
+function buildCircle(){
+  const wrap = document.getElementById('circle-wrap');
+  const R = wrap.offsetWidth/2 || 210;
+  const cr = R - 26; // rayon des boutons
+  CIRCLE_OF_FIFTHS.forEach((entry,i)=>{
+    const angle = (i/12)*2*Math.PI - Math.PI/2;
+    const x = R + cr*Math.cos(angle);
+    const y = R + cr*Math.sin(angle);
+    const btn = document.createElement('button');
+    btn.className = 'circle-btn';
+    btn.style.left = x+'px';
+    btn.style.top  = y+'px';
+    btn.dataset.pc = entry.pc;
+    const name = state.accPref==='#' ? entry.sharp : entry.flat;
+    const enhar = state.accPref==='#' ? (entry.flat!==entry.sharp?entry.flat:'') : (entry.sharp!==entry.flat?entry.sharp:'');
+    btn.innerHTML = name + (enhar?`<span class="cb-enhar">${enhar}</span>`:'');
+    btn.setAttribute('aria-label', name);
+    btn.onclick = ()=>{ state.pc=entry.pc; render(); };
+    if(state.pc===entry.pc) btn.classList.add('active');
+    wrap.appendChild(btn);
+  });
+}
+
+function updateCircle(){
+  document.querySelectorAll('.circle-btn').forEach(btn=>{
+    const pc = +btn.dataset.pc;
+    const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===pc);
+    const name = state.accPref==='#' ? entry.sharp : entry.flat;
+    const enhar = state.accPref==='#' ? (entry.flat!==entry.sharp?entry.flat:'') : (entry.sharp!==entry.flat?entry.sharp:'');
+    btn.innerHTML = name + (enhar?`<span class="cb-enhar">${enhar}</span>`:'');
+    btn.classList.toggle('active', state.pc===pc);
+  });
+  // Centre
+  if(state.pc!==null){
+    const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
+    const name = state.accPref==='#' ? entry.sharp : entry.flat;
+    document.getElementById('cc-note').textContent = name;
+    const sigText = sigLabel(entry);
+    document.getElementById('cc-sig').textContent = sigText;
+  } else {
+    document.getElementById('cc-note').textContent = '—';
+    document.getElementById('cc-sig').textContent = '';
+  }
+}
+
+function sigLabel(entry){
+  if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
+  if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
+  return 'aucune altération';
+}
+
+/* ====================================================== RENDU PANNEAU */
+function render(){
+  updateCircle();
+  const hint = document.getElementById('hint');
+  const content = document.getElementById('content');
+  if(state.pc===null){ hint.style.display=''; content.style.display='none'; return; }
+  hint.style.display='none'; content.style.display='';
+
+  const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
+  const name  = state.accPref==='#' ? entry.sharp : entry.flat;
+  const notes = buildMajScale(state.pc);
+
+  // Carte tonalité
+  document.getElementById('tonic-name').textContent = name+' majeur';
+  document.getElementById('tonic-sig').textContent  = sigLabel(entry);
+  const tn = document.getElementById('tonic-notes');
+  tn.innerHTML = notes.map((n,i)=>`<span class="tn${i===0?' root':''}">${n}</span>`).join('');
+
+  // Tabs sync
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===state.activeTab));
+  ['modes','chords','relatives','cadences'].forEach(id=>{
+    document.getElementById('tab-'+id).style.display = id===state.activeTab?'':'none';
+  });
+
+  if(state.activeTab==='modes')     renderModes(notes);
+  if(state.activeTab==='chords')    renderChords(notes);
+  if(state.activeTab==='relatives') renderRelatives(entry, name);
+  if(state.activeTab==='cadences')  renderCadences(notes, name);
+}
+
+/* ----- Modes ----- */
+const DEG_COLORS=['--d1','--d2','--d3','--d4','--d5','--d6','--d7'];
+function renderModes(notes){
+  const c = document.getElementById('tab-modes');
+  c.className='modes-grid anim'; c.innerHTML='';
+  MODES.forEach((mode,i)=>{
+    const rootNote = notes[i];          // note racine du mode
+    const rootPc   = (state.pc + SCALE_MAJ[i])%12;
+    // Notes du mode = rotation des notes de la gamme majeure
+    const modeNotes = [...notes.slice(i), ...notes.slice(0,i)];
+    const col = `var(${DEG_COLORS[i]})`;
+    const rootRaw = FLAT_RAW[rootPc];
+    const card = document.createElement('a');
+    card.className='mode-card';
+    card.href=`index.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
+    card.innerHTML=`
+      <div class="mc-deg" style="color:${col}">${mode.symb} — degré ${mode.deg}</div>
+      <div class="mc-name">${rootNote} ${mode.name}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted-2);margin-top:2px">${mode.sub}</div>
+      <div class="mc-notes">${modeNotes.join(' ')}</div>`;
+    c.appendChild(card);
+  });
+}
+const MODE_IDS=['major','dorian','phrygian','lydian','mixolydian','minor','locrian'];
+function modeScaleId(i){ return MODE_IDS[i]||'major'; }
+
+/* ----- Accords diatoniques ----- */
+function renderChords(notes){
+  const c = document.getElementById('tab-chords');
+  c.className='chords-grid anim'; c.innerHTML='';
+  DIATONIC_QUALITIES.forEach((q,i)=>{
+    const rootNote = notes[i];
+    const col = `var(${DEG_COLORS[i]})`;
+    const card = document.createElement('div');
+    card.className='chord-card';
+    card.innerHTML=`
+      <div class="cd-deg" style="color:${col}">${q.symb}</div>
+      <div class="cd-name">${rootNote}${q.short}</div>
+      <div class="cd-quality">${q.long}</div>`;
+    c.appendChild(card);
+  });
+}
+
+/* ----- Relatives ----- */
+function renderRelatives(entry, name){
+  const c = document.getElementById('tab-relatives');
+  c.className='anim'; c.innerHTML='';
+
+  // Relative mineure : 6ème degré = -3 demi-tons
+  const relMinPc = (state.pc+9)%12;
+  const relMinEntry = CIRCLE_OF_FIFTHS.find(e=>e.pc===relMinPc);
+  const relMinName = state.accPref==='#' ? relMinEntry.sharp : relMinEntry.flat;
+  const relMinRaw  = FLAT_RAW[relMinPc];
+
+  // Tonalité parallèle mineure (même tonique)
+  const parallelRaw = FLAT_RAW[state.pc];
+
+  // Sous-dominante (IV) et dominante (V)
+  const ivPc = (state.pc+5)%12;
+  const vPc  = (state.pc+7)%12;
+  const ivEntry = CIRCLE_OF_FIFTHS.find(e=>e.pc===ivPc);
+  const vEntry  = CIRCLE_OF_FIFTHS.find(e=>e.pc===vPc);
+  const ivName  = state.accPref==='#' ? ivEntry.sharp : ivEntry.flat;
+  const vName   = state.accPref==='#' ? vEntry.sharp  : vEntry.flat;
+  const ivRaw   = FLAT_RAW[ivPc];
+  const vRaw    = FLAT_RAW[vPc];
+
+  const items=[
+    {label:'Relative mineure',      name:relMinName+' mineur', href:`index.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
+    {label:'Parallèle mineure',     name:spell(state.pc)+' mineur', href:`index.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
+    {label:'Sous-dominante (IV)',   name:ivName+' majeur', href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
+    {label:'Dominante (V)',         name:vName+' majeur',  href:`quintes.html#${vRaw}`, col:'var(--d5)'},
+  ];
+
+  const grid = document.createElement('div'); grid.className='relatives-grid';
+  items.forEach(item=>{
+    const a = document.createElement('a');
+    a.className='rel-card'; a.href=item.href;
+    a.innerHTML=`<div class="rc-label" style="color:${item.col}">${item.label}</div><div class="rc-name">${item.name}</div>`;
+    a.onclick=(e)=>{
+      if(item.href.startsWith('quintes')){
+        e.preventDefault();
+        const raw=item.href.replace('quintes.html#','');
+        const targetPc=CIRCLE_OF_FIFTHS.find(en=>FLAT_RAW[en.pc]===raw)?.pc;
+        if(targetPc!==undefined){state.pc=targetPc;render();}
+      }
+    };
+    grid.appendChild(a);
+  });
+  c.appendChild(grid);
+}
+
+/* ----- Cadences ----- */
+function renderCadences(notes, name){
+  const c = document.getElementById('tab-cadences');
+  c.className='cad-list anim'; c.innerHTML='';
+
+  // Cadences majeures
+  const h = document.createElement('div');
+  h.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:10px';
+  h.textContent='En '+name+' majeur';
+  c.appendChild(h);
+
+  CADENCES_MAJ.forEach(cad=>{
+    const chordNames = cad.degs.map(d=>notes[d-1]+(DIATONIC_QUALITIES[d-1].short||'')).join(' – ');
+    const item=document.createElement('div'); item.className='cad-item';
+    item.innerHTML=`
+      <div>
+        <div class="cad-label">${cad.label}</div>
+        <div class="cad-chords">${chordNames}</div>
+      </div>
+      <span class="cad-genre">${cad.genre}</span>`;
+    c.appendChild(item);
+  });
+
+  // Cadences relatives mineures
+  const relMinPc=(state.pc+9)%12;
+  const relMinEntry=CIRCLE_OF_FIFTHS.find(e=>e.pc===relMinPc);
+  const relMinName=state.accPref==='#'?relMinEntry.sharp:relMinEntry.flat;
+  const minNotes=buildMajScale(state.pc).slice(5).concat(buildMajScale(state.pc).slice(0,5)); // rotation éolien
+
+  const h2=document.createElement('div');
+  h2.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin:18px 0 10px';
+  h2.textContent='En '+relMinName+' mineur (relative)';
+  c.appendChild(h2);
+
+  CADENCES_MIN.forEach(cad=>{
+    let chordNames;
+    if(cad.degs){
+      // degrés par rapport à la gamme mineure
+      const minNotes7=[...notes.slice(5),...notes.slice(0,5)];
+      chordNames=cad.degs.map(d=>minNotes7[d-1]).join(' – ');
+    } else {
+      chordNames=cad.chromDegs.map(({d,a})=>{
+        const pc=(relMinPc+SCALE_MAJ[((d-1)+7)%7]+a+12)%12;
+        return spell(pc);
+      }).join(' – ');
+    }
+    const item=document.createElement('div'); item.className='cad-item';
+    item.innerHTML=`
+      <div>
+        <div class="cad-label">${cad.label}</div>
+        <div class="cad-chords">${chordNames}</div>
+      </div>
+      <span class="cad-genre">${cad.genre}</span>`;
+    c.appendChild(item);
+  });
+}
+
+/* ====================================================== INIT */
+buildCircle();
+
+document.getElementById('accpref').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.accPref=b.dataset.acc;
+  // Mettre à jour les boutons accpref
+  document.querySelectorAll('#accpref button').forEach(btn=>btn.classList.toggle('on',btn.dataset.acc===state.accPref));
+  // Reconstruire le cercle
+  document.querySelectorAll('.circle-btn').forEach(btn=>btn.remove());
+  buildCircle();
+  render();
+});
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  state.activeTab=t.dataset.tab; render();
+}));
+
+// Lire hash URL
+const hash=location.hash.replace('#','');
+if(hash){
+  const entry=CIRCLE_OF_FIFTHS.find(e=>FLAT_RAW[e.pc]===hash);
+  if(entry) state.pc=entry.pc;
+}
+
+render();
+</script>
+</body>
+</html>
