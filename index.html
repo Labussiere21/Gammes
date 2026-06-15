@@ -1247,12 +1247,16 @@ function render(){
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
       const beat=60/76;
-      // scalePcs : utiliser pcOf sur les notes brutes (avant pretty())
-      // notes[] contient déjà les vraies notes avec # et b ASCII
       const scalePcs=notes.map(n=>pcOf(n));
       const pills=[...document.querySelectorAll('#scale-notes .note-pill')];
-      noteNames.forEach((n,i)=>{
-        const midi=noteToMidi(n,2);
+      // Calculer les MIDI en séquence strictement montante
+      // Si le pc suivant est <= pc précédent → incrémenter l'octave
+      let oct=2;
+      const midiSeq=scalePcs.map((pc,i)=>{
+        if(i>0 && pc<=scalePcs[i-1]) oct++;
+        return (oct+1)*12+pc;
+      });
+      midiSeq.forEach((midi,i)=>{
         inst.play(midi,_audioCtx.currentTime+i*beat,{duration:beat*0.9,gain:3});
         // Highlight visuel : allumer le dot correspondant + la pill
         setTimeout(()=>{
