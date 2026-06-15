@@ -185,6 +185,14 @@
   .sig-chip.none{color:var(--muted)}
   .sig-notes{font-family:"Space Mono", monospace; color:var(--muted); font-size:13px}
 
+  /* Description de la gamme */
+  .scale-desc{
+    font-size:13px; color:var(--muted); line-height:1.65;
+    margin:0 0 16px; padding:10px 14px;
+    background:#0f0a07; border-left:3px solid var(--brass-dim);
+    border-radius:0 6px 6px 0;
+  }
+
   /* Structure de la gamme (T / ½T) */
   .scale-struct{
     display:flex; align-items:center; flex-wrap:wrap;
@@ -483,6 +491,7 @@
       <div class="scale-name" id="scale-name"></div>
       <div class="sig" id="sig"></div>
       <div class="scale-struct" id="scale-struct"></div>
+      <div class="scale-desc" id="scale-desc"></div>
       <div class="scale-notes" id="scale-notes"></div>
     </section>
 
@@ -570,6 +579,84 @@
    ============================================================ */
 const LETTERS = ['C','D','E','F','G','A','B'];
 const LETTER_PC = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+
+/* ============================================================
+   DESCRIPTIONS DES GAMMES
+   ============================================================ */
+const SCALE_DESC = {
+  major:      'La gamme de référence de la musique occidentale. Sept notes, sonorité lumineuse et stable. La plupart des mélodies pop, rock et classiques s\'y appuient.',
+  minor:      'Aussi appelée gamme éolienne, c\'est la gamme mineure de base. Sonorité sombre et expressive, très utilisée en rock, métal et musique classique.',
+  harmonic:   'Variante de la mineure naturelle avec une 7ème majeure. Ce demi-ton supplémentaire crée une tension caractéristique, très présente dans la musique classique, le flamenco et le métal néoclassique.',
+  melodic:    'Mineure avec 6ème et 7ème rehaussées. Très utilisée en jazz pour improviser sur les accords mineurs.',
+  dorian:     'Mode II de la gamme majeure. Mineure avec une 6ème majeure — sonorité entre le mineur naturel et le majeur. Très courante en jazz, funk et rock (ex. So What de Miles Davis).',
+  phrygian:   'Mode III de la gamme majeure. Débute par un demi-ton, sonorité sombre et orientale. Très utilisé en flamenco et en métal.',
+  lydian:     'Mode IV de la gamme majeure. Identique au majeur mais avec une 4ème augmentée, caractère flottant et mystérieux. Courant dans les musiques de film.',
+  mixolydian: 'Mode V de la gamme majeure. Identique au majeur mais avec une 7ème mineure — la gamme du rock, du blues et du funk. Base des grooves sur accords de dominante.',
+  locrian:    'Mode VII de la gamme majeure. Seul mode avec une quinte diminuée, peu utilisé seul mais fondamental en théorie jazz et métal.',
+  penta_min:  'Cinq notes tirées de la gamme mineure (sans la 2nde ni la 6ème). La gamme la plus universelle pour improviser en rock, blues et métal. Facile à mémoriser, sonne bien partout.',
+  penta_maj:  'Cinq notes tirées de la gamme majeure (sans la 4ème ni la 7ème). Version lumineuse de la pentatonique, très utilisée en country, pop et rock.',
+  penta_sus:  'Pentatonique construite sur un accord sus4. Sonorité ouverte et ambiguë, utilisée en jazz et fusion.',
+  penta_dom:  'Pentatonique dominante — idéale pour improviser sur les accords de dominante 7 en jazz et blues.',
+  penta_min6: 'Pentatonique mineure avec une 6ème majeure. Couleur dorien condensée en 5 notes, très utilisée en jazz.',
+  penta_maj7: 'Pentatonique majeure avec la 7ème majeure. Couleur plus jazzy que la pentatonique majeure standard.',
+  penta_majb2:'Pentatonique majeure avec une 2nde bémol. Couleur orientale.',
+  blues_min:  'La pentatonique mineure avec le triton ajouté (♭5). La gamme blues par excellence — expressivité maximale pour le rock, le blues et le jazz.',
+  blues_maj:  'Version majeure de la gamme blues. Pentatonique majeure avec une 3ème mineure ajoutée — très utilisée dans le blues country et le rock and roll.',
+  blues_hex:  'Gamme blues hexatonique couvrant à la fois les couleurs majeures et mineures. Très polyvalente.',
+  blues_dom:  'Blues axée sur l\'accord dominant. Idéale pour les 12 mesures et les grooves funk.',
+  dim:        'Gamme de 8 notes alternant ton et demi-ton. Symétrique, se répète tous les 3 demi-tons. Sonorité tendue et instable — très utilisée en jazz sur les accords diminués.',
+  dim_ht:     'Gamme diminuée ½T-T (inverse de la précédente). Utilisée sur les accords de dominante 7♭9. Aussi appelée "diminuée dominante".',
+  half_dim:   'Gamme à 7 notes correspondant à l\'arpège demi-diminué. Utilité principale : improviser sur les accords ø (m7♭5) en jazz.',
+  whole_tone: 'Six notes toutes séparées d\'un ton entier. Sans tonique claire, sonorité floue et onirique. Très utilisée par Debussy et dans le jazz impressionniste.',
+  aug_hex:    'Gamme hexatonique augmentée alternant tierce mineure et demi-ton. Structure symétrique se répétant tous les 4 demi-tons.',
+  phryg_dom:  'Mode V de la mineure harmonique. Majeur avec ♭2 — couleur arabe, espagnole et flamenca. Très recherchée en métal néoclassique, flamenco et musiques orientales.',
+  lydian_dom: 'Mode IV de la mineure mélodique. Lydien avec une 7ème mineure — couleur jazz très moderne. La gamme de prédilection sur les accords de dominante en jazz fusion.',
+  altered:    'Mode VII de la mineure mélodique. Contient toutes les altérations possibles (♭9, ♯9, ♭5, ♯5). La gamme la plus tendue du jazz, utilisée sur les accords V7alt.',
+  locrian_s2: 'Mode VI de la mineure mélodique. Locrien avec une 2nde naturelle — sonorité moins dure que le locrien pur, utilisée sur les accords ø en jazz.',
+  lydian_aug: 'Mode III de la mineure mélodique. Lydien avec une 5ème augmentée — sonorité onirique et moderne.',
+  mixo_b6:    'Mode V de la mineure mélodique. Mixolydien avec une 6ème bémol — couleur entre majeur et mineur.',
+  dorian_b2:  'Mode II de la mineure mélodique. Dorien avec une 2nde bémol — couleur orientale.',
+  locrian6:   'Mode II de la mineure harmonique. Locrien avec une 6ème naturelle — moins dissonant que le locrien standard.',
+  ionian_s5:  'Mode III de la mineure harmonique. Ionien avec une 5ème augmentée.',
+  dorian_s4:  'Mode IV de la mineure harmonique. Dorien avec une 4ème augmentée — proche de la mineure roumaine.',
+  lydian_s2:  'Mode VI de la mineure harmonique. Lydien avec une 2ème augmentée — couleur orientale lumineuse.',
+  superlocrian_bb7: 'Mode VII de la mineure harmonique. Très altéré, utilisé en contexte jazz avancé.',
+  bebop_maj:  'Gamme majeure avec une 7ème mineure ajoutée comme note de passage. Très utilisée dans le bebop pour créer des lignes fluides sur les accords majeurs.',
+  bebop_dom:  'Gamme mixolydienne avec une 7ème majeure ajoutée. La gamme bebop la plus courante, idéale sur les accords de dominante 7.',
+  bebop_min:  'Gamme mineure avec une note de passage chromatique. Utilisée sur les accords mineurs en contexte bebop.',
+  bebop_dor:  'Gamme dorienne avec une note de passage chromatique. Sonne naturellement sur les accords m7 en jazz.',
+  double_harm:'Aussi connue sous le nom de Byzantine ou Gypsy Major. Deux tétracordes harmoniques identiques contenant deux secondes augmentées. Sonorité très caractéristique, entre Orient et Occident.',
+  hung_min:   'Aussi appelée Gypsy Minor. Mineure harmonique avec une 4ème augmentée — sonorité tsigane très reconnaissable. Utilisée en musique hongroise, jazz manouche et métal.',
+  hung_maj:   'Majeure hongroise avec une 2ème et une 4ème augmentées. Sonorité exotique et lumineuse.',
+  gypsy_maj:  'Gamme tsigane majeure. Proche du phrygien dominant, avec une couleur orientale chaude.',
+  romanian_min:'Mineure avec une 4ème augmentée. Très présente dans la musique folklorique des Balkans et d\'Europe de l\'Est.',
+  ukr_dorian: 'Identique à la mineure roumaine. Très utilisée dans la musique traditionnelle ukrainienne et le jazz modal.',
+  persian:    'Gamme traditionnelle perse avec deux secondes augmentées et une 5ème diminuée — sonorité très orientale et mystérieuse.',
+  arabic:     'Gamme arabe traditionnelle. Proche du mode locrien, couleur orientale.',
+  enigmatic:  'Créée par Verdi. Gamme aux intervalles inhabituels et à l\'ascension chromatique unique.',
+  napolitaine_maj: 'Majeure avec une 2ème bémol — couleur mélancolique et romantique.',
+  napolitaine_min: 'Mineure avec une 2ème et une 6ème bémol.',
+  prometheus: 'Gamme inventée par Alexandre Scriabine. Six notes au caractère mystique et futuriste.',
+  overtone:   'Aussi appelée gamme acoustique. Correspond à la série harmonique naturelle — identique au Lydien dominant.',
+  major_locrian: 'Gamme majeure avec une 5ème et une 6ème bémol. Rare, utilisée dans des contextes jazz avancés.',
+  hijaz:      'Maqam arabe fondamental avec une seconde augmentée caractéristique — couleur orientale intense et reconnaissable.',
+  hijaz_kar:  'Hijaz avec deux secondes augmentées. Sonorité encore plus orientale que le Hijaz simple.',
+  bayati:     'Maqam très répandu dans la musique arabe et turque. Couleur expressive et mélancolique.',
+  nahawand:   'Maqam proche de la mineure harmonique occidentale. Très utilisé dans la musique arabe et turque.',
+  rast:       'L\'un des maqams fondamentaux de la musique arabe. Proche du mixolydien, base de nombreuses compositions.',
+  nikriz:     'Maqam avec une 4ème augmentée et une 7ème mineure. Couleur orientale intense.',
+  saba:       'Maqam très expressif et mélancolique, très utilisé dans la musique arabe classique.',
+  kurd:       'Maqam proche du mode phrygien occidental. Sonorité sombre et grave.',
+  hirajoshi:  'Gamme pentatonique japonaise traditionnelle. Ses demi-tons rapprochés créent une sonorité mélancolique et contemplative, évocatrice du koto.',
+  insen:      'Gamme pentatonique japonaise. Proche du mode phrygien, très minimaliste et sombre.',
+  kumoi:      'Gamme pentatonique japonaise. Sonorité douce et légèrement triste, très utilisée dans la musique traditionnelle.',
+  iwato:      'Gamme pentatonique japonaise basée sur le mode locrien. Très dissonante et rare.',
+  yo:         'Gamme pentatonique japonaise majeure. Plus lumineuse que les autres gammes japonaises traditionnelles.',
+  bhairav:    'Raga du matin fondamental de la musique classique indienne. Double harmonique avec une couleur sérieuse et méditative.',
+  todi:       'Raga très expressif avec deux secondes augmentées. Sonorité intense et complexe.',
+  kafi:       'Raga proche du mode dorien occidental. Très utilisé dans la musique populaire indienne.',
+  kalyan:     'Raga proche du mode lydien occidental. L\'un des ragas du soir les plus populaires.',
+};
 
 function pcOf(name){
   let pc = LETTER_PC[name[0]];
@@ -870,6 +957,16 @@ function render(){
   else chip = `<span class="sig-chip none">aucune altération</span>`;
   const alt = notes.filter(n=>n.length>1).map(pretty).join(' · ') || '—';
   sig.innerHTML = chip + `<span class="sig-notes">altérations : ${alt}</span>`;
+
+  // Description de la gamme
+  const descEl = document.getElementById('scale-desc');
+  const desc = SCALE_DESC[state.scaleId];
+  if(desc && descEl){
+    descEl.textContent = desc;
+    descEl.style.display = '';
+  } else if(descEl){
+    descEl.style.display = 'none';
+  }
 
   // Structure de la gamme (T / ½T / T½ …)
   function stepLabel(diff){
