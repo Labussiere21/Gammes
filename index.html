@@ -378,6 +378,11 @@
   }
   @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
   .dot.root{box-shadow:0 0 0 3px rgba(255,255,255,.85), 0 3px 8px rgba(0,0,0,.6)}
+  .dot.playing{
+    box-shadow:0 0 0 4px #fff, 0 0 0 7px var(--brass), 0 3px 12px rgba(0,0,0,.7) !important;
+    transform:scale(1.18);
+    z-index:10;
+  }
 
   /* réglette des cases (inlays + numéros) */
   .fb-inlays{display:flex; margin-top:7px}
@@ -1235,13 +1240,32 @@ function render(){
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
       const beat=60/76;
+      // Calculer les pc dans l'ordre de la gamme
+      const scalePcs=notes.map(n=>(pcOf(n)-rootPc+12)%12).map(rel=>(rootPc+rel)%12);
       noteNames.forEach((n,i)=>{
         const midi=noteToMidi(n,2);
         inst.play(midi,_audioCtx.currentTime+i*beat,{duration:beat*0.9,gain:3});
+        // Highlight visuel : allumer le dot correspondant
+        setTimeout(()=>{
+          // Retirer playing de tous les dots
+          document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
+          // Allumer tous les dots de ce pc
+          const pc=scalePcs[i];
+          document.querySelectorAll(`#fretboard .dot[data-pc="${pc}"]`).forEach(d=>d.classList.add('playing'));
+        }, i*beat*1000);
       });
       // Tonique finale à l'octave supérieure
       const topMidi=noteToMidi(noteNames[0],2)+12;
       inst.play(topMidi,_audioCtx.currentTime+noteNames.length*beat,{duration:beat*1.2,gain:3});
+      setTimeout(()=>{
+        document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
+        const pc=scalePcs[0];
+        document.querySelectorAll(`#fretboard .dot[data-pc="${pc}"]`).forEach(d=>d.classList.add('playing'));
+      }, noteNames.length*beat*1000);
+      // Éteindre tout à la fin
+      setTimeout(()=>{
+        document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
+      }, (noteNames.length+1)*beat*1000+200);
     },'Jouer la gamme','▶');
     psw.appendChild(btn);
   }
@@ -1419,6 +1443,7 @@ function renderFretboard(notes, rootPc, def){
         const d=document.createElement('div');
         d.className='dot'+(info.root?' root':'')+((box && !inBox)?' ghost':'');
         d.style.background=info.color;
+        d.dataset.pc=pc; // pour le highlight audio
         d.textContent = state.display==='note' ? pretty(info.note) : pretty(info.degLabel);
         d.title = `${s.n} case ${f} — ${pretty(info.note)} (degré ${pretty(info.degLabel)})`;
         cell.appendChild(d);
