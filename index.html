@@ -649,7 +649,7 @@ function render(){
   buildPositionButtons(notes.length);
 
   // Manche
-  renderFretboard(notes, rootPc);
+  renderFretboard(notes, rootPc, def);
 
   // Légende
   const lg=document.getElementById('legend'); lg.innerHTML='';
@@ -665,7 +665,7 @@ function render(){
 const STRINGS_4 = [ {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:'G',pc:7} ];       // grave -> aigu
 const STRINGS_5 = [ {n:'B',pc:11}, {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:'G',pc:7} ];
 
-function renderFretboard(notes, rootPc){
+function renderFretboard(notes, rootPc, def){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
 
   // map classe de hauteur -> {note, deg}
@@ -676,15 +676,19 @@ function renderFretboard(notes, rootPc){
   const lowPc = strings[0].pc; // corde la plus grave (E ou B)
 
   // --- Calcul de la boîte (position) ---
+  // Chaque position démarre sur sa note, à son occurrence LA PLUS BASSE sur la corde grave,
+  // ce qui répartit les boîtes sur tout le manche au lieu de les empiler vers l'aigu.
   let box=null;
   if(state.position!=='all'){
-    const scalePcs = new Set(notes.map(pcOf));
-    const anchors=[]; for(let f=0; f<=48; f++){ if(scalePcs.has((lowPc+f)%12)) anchors.push(f); }
-    const rootIdx = anchors.findIndex(f=>(lowPc+f)%12===rootPc);
-    const p = state.position; // 1..N
-    const start = anchors[rootIdx + (p-1)];
-    const end   = anchors[rootIdx + p];
-    if(start!=null && end!=null) box={start, end};
+    const N = notes.length;
+    const p = state.position;                  // 1..N
+    const span = def.diat ? 2 : 1;             // largeur : 2 pas (7 notes) / 1 pas (penta-blues)
+    const curPc = pcOf(notes[p-1]);
+    const endPc = pcOf(notes[(p-1+span)%N]);
+    const start = (curPc - lowPc + 12) % 12;   // occurrence la plus basse de la note
+    let len = (endPc - curPc + 12) % 12;       // demi-tons jusqu'à la fin de la boîte
+    if(len===0) len = 12;
+    box = {start, end:start+len, startNote:notes[p-1]};
   }
 
   // Nombre de cases affichées : on étend si la boîte dépasse
@@ -727,9 +731,9 @@ function renderFretboard(notes, rootPc){
   // Légende sous le manche (position)
   const cap=document.getElementById('fb-caption');
   if(box){
-    cap.innerHTML = `<b>Position ${state.position}</b> — cases ${box.start} à ${box.end} `
-      + `(commence sur la fondamentale ${pretty(notes[0])} sur la corde ${strings[0].n}).`
-      + `<span class="hint">Chaque boîte est mobile : le même schéma se répète une octave plus haut. « Tout » réaffiche la gamme entière.</span>`;
+    cap.innerHTML = `<b>Position ${state.position}</b> — cases ${box.start} à ${box.end}, `
+      + `démarre sur ${pretty(box.startNote)}${state.position===1?' (la fondamentale)':''} sur la corde ${strings[0].n}.`
+      + `<span class="hint">Les positions s'enchaînent sur tout le manche et chaque boîte se répète une octave plus haut. « Tout » réaffiche la gamme entière.</span>`;
   } else {
     cap.textContent='';
   }
