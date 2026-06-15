@@ -286,7 +286,11 @@
     font-family:"Space Mono",monospace; font-weight:700;
   }
   .play-btn:hover{background:rgba(217,168,73,.25); transform:scale(1.08)}
-  .play-btn.playing{background:rgba(217,168,73,.35); color:#160f08; background:var(--brass)}
+  .play-btn.playing{background:var(--brass); color:#160f08}
+  /* Variante large pour jouer toute la cadence */
+  .play-btn[title="Jouer la cadence"]{
+    width:auto; border-radius:8px; padding:0 14px; gap:6px; font-size:11px; letter-spacing:.06em;
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 </head>
@@ -371,6 +375,7 @@
     <div class="result-head">
       <div class="result-title" id="result-title"></div>
       <div class="chord-nav">
+        <div id="play-cad-wrap"></div>
         <div class="chord-nav-btns">
           <button id="btn-prev" onclick="navigate(-1)">← Préc.</button>
           <button id="btn-next" onclick="navigate(+1)">Suiv. →</button>
@@ -775,6 +780,39 @@ function renderResult(){
   // Titre
   const col=GENRE_COLORS[cad.genre]||'var(--brass)';
   document.getElementById('result-title').innerHTML=`<span class="rtag" style="color:${col}">${cad.genre} — </span><b>${spell(state.rootPc)}</b> ${cad.label}`;
+  // Bouton ▶ Jouer toute la cadence
+  const pcw=document.getElementById('play-cad-wrap');
+  if(pcw && typeof makePlayBtn!=='undefined'){
+    pcw.innerHTML='';
+    const btn=makePlayBtn(async()=>{
+      const inst=await initAudio(); if(!inst)return;
+      if(_audioCtx.state==='suspended') await _audioCtx.resume();
+      const BEAT=1.2; // secondes par accord
+      const pills=[...document.querySelectorAll('.chord-pill')];
+      chords.forEach((ch,i)=>{
+        const t=_audioCtx.currentTime+i*BEAT;
+        // Jouer les notes de l'accord en arpège léger
+        ch.pcs.forEach((pc,j)=>{
+          const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
+          inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
+        });
+        // Highlight visuel de la carte active
+        setTimeout(()=>{
+          pills.forEach((p,pi)=>{
+            p.classList.toggle('active',pi===i);
+            p.style.borderColor=pi===i?ch.col:'';
+          });
+          state.chordIdx=i;
+          document.getElementById('btn-prev').disabled=i===0;
+          document.getElementById('btn-next').disabled=i===chords.length-1;
+          document.getElementById('chord-counter').textContent=`${i+1} / ${chords.length}`;
+        }, i*BEAT*1000);
+      });
+      // Durée totale de la cadence
+      return new Promise(r=>setTimeout(r, chords.length*BEAT*1000+500));
+    },'Jouer la cadence','▶ Cadence');
+    pcw.appendChild(btn);
+  }
   // Gammes recommandées
   const scalesEl=document.getElementById('recommended-scales');
   if(scalesEl&&cad.scales){
@@ -799,17 +837,9 @@ function renderResult(){
   // Info accord + bouton play
   const DEG_NAMES={0:'1',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',1:'♭9'};
   const ivsStr=(CHORD_INTERVALS[cur.quality]||[]).map(i=>DEG_NAMES[i]||i).join(' – ');
-  const ci=document.getElementById('chord-info');
-  ci.innerHTML=`
+  document.getElementById('chord-info').innerHTML=`
     <div><div class="ci-name" style="color:${cur.col}">${cur.name}</div><div class="ci-formula">${ivsStr}</div></div>
-    <div class="ci-notes">${cur.pcs.map((pc,i)=>`<span class="ci-note" style="color:${CHORD_COLORS[i]||cur.col}">${spell(pc)}</span>`).join('')}</div>
-    <div id="play-chord-wrap" style="margin-left:auto"></div>`;
-  // Bouton ▶ accord
-  const pcw=document.getElementById('play-chord-wrap');
-  if(pcw && typeof makePlayBtn!=='undefined'){
-    const noteNames=cur.pcs.map(pc=>spell(pc).replace('♯','#').replace('♭','b').replace('♮',''));
-    pcw.appendChild(makePlayBtn(()=>playChordNotes(noteNames,2),'Jouer l\'accord','▶'));
-  }
+    <div class="ci-notes">${cur.pcs.map((pc,i)=>`<span class="ci-note" style="color:${CHORD_COLORS[i]||cur.col}">${spell(pc)}</span>`).join('')}</div>`;
   renderFretboard(chords);
 }
 
