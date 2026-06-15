@@ -349,7 +349,7 @@
     <section class="card" style="margin-top:0">
       <h2>Toutes les positions</h2>
       <table>
-        <thead><tr><th>Corde</th><th>Case</th><th>Octave (approx.)</th></tr></thead>
+        <thead><tr><th>Corde</th><th>Case</th><th>Note</th><th>Octave</th></tr></thead>
         <tbody id="pos-tbody"></tbody>
       </table>
     </section>
@@ -365,24 +365,37 @@
 
 <script>
 /* ============================================================ ÉTAT */
+// Palette de 12 couleurs distinctes pour les notes sélectionnées
+const NOTE_COLORS=[
+  '#e8503a','#f08a3c','#f2c14e','#57c08a','#45a3d9','#8c7bd6',
+  '#e06aa8','#60c8a0','#d97040','#7ec8e3','#b887e0','#e87050'
+];
+
 const state = {
-  notePc: 9,   // La par défaut
+  // selectedNotes = Map pc → couleur (ordre d'insertion = ordre des couleurs)
+  selectedNotes: new Map([[9, NOTE_COLORS[0]]]), // La par défaut
   accPref: 'b',
   strings: 4,
+  tuning: 'standard',
   frets: 12,
-  orient: 'high',
+  hand: 'right',
 };
+
+function nextColor(){
+  const used=new Set(state.selectedNotes.values());
+  return NOTE_COLORS.find(c=>!used.has(c))||NOTE_COLORS[state.selectedNotes.size%NOTE_COLORS.length];
+}
+function toggleNote(pc){
+  if(state.selectedNotes.has(pc)) state.selectedNotes.delete(pc);
+  else state.selectedNotes.set(pc, nextColor());
+}
 
 const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
-// Enharmoniques pour l'affichage "alias"
 const ENHA_SHARP={1:'Db',3:'Eb',6:'Gb',8:'Ab',10:'Bb'};
 const ENHA_FLAT= {1:'C#',3:'D#',6:'F#',8:'G#',10:'A#'};
 function spell(pc){ return (state.accPref==='#'?SHARP:FLAT)[pc]; }
-function enha(pc){
-  const m = state.accPref==='#' ? ENHA_SHARP : ENHA_FLAT;
-  return m[pc]||'';
-}
+function enha(pc){ return (state.accPref==='#'?ENHA_SHARP:ENHA_FLAT)[pc]||''; }
 function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
 
 
@@ -429,93 +442,108 @@ function buildPiano(){
   });
   p.addEventListener('click',e=>{
     const k=e.target.closest('[data-pc]'); if(!k) return;
-    state.notePc=+k.dataset.pc; render();
+    toggleNote(+k.dataset.pc); render();
   });
 }
 
 /* ============================================================ GRILLE RAPIDE */
 function buildNoteGrid(){
   const g=document.getElementById('note-grid'); g.innerHTML='';
-  // Ordre chromatique sur 12 cases
   for(let pc=0;pc<12;pc++){
     const cell=document.createElement('div'); cell.className='ng-cell'; cell.dataset.pc=pc;
-    const name=spell(pc);
-    const alt=enha(pc);
+    const name=spell(pc), alt=enha(pc);
     cell.innerHTML=`<div class="ng-name">${pretty(name)}</div>${alt?`<div class="ng-num">${pretty(alt)}</div>`:'<div class="ng-num" style="opacity:0">—</div>'}`;
-    cell.onclick=()=>{state.notePc=pc; render();};
+    cell.onclick=()=>{toggleNote(pc); render();};
     g.appendChild(cell);
   }
 }
 
 /* ============================================================ RENDU */
 function render(){
-  const note=spell(state.notePc);
-  const alt=enha(state.notePc);
   const strings=currentStrings();
+  const frets=state.frets;
 
-  // Synchro piano
-  document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.notePc));
-  document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.notePc));
+  // Synchro piano — touches sélectionnées en doré si elles font partie de la sélection
+  document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel', state.selectedNotes.has(+b.dataset.pc)));
+  document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel', state.selectedNotes.has(+b.dataset.pc)));
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on',b.textContent===((TUNINGS[state.strings]||[]).find(t=>t.id===state.tuning)||{}).label));
-  document.querySelectorAll('.ng-cell').forEach(c=>c.classList.toggle('active',+c.dataset.pc===state.notePc));
 
-  // Affichage de la note
-  document.getElementById('nd-name').textContent=pretty(note);
-  document.getElementById('nd-enha').textContent=alt?`= ${pretty(alt)}`:'';
-
-  // Calculer toutes les positions sur le manche
-  const frets=state.frets;
-  const positions=[];
-  strings.forEach(s=>{
-    for(let f=0;f<=frets;f++){
-      if((s.pc+f)%12===state.notePc){
-        // Estimation de l'octave relative (approx. à partir de E2 standard)
-        // E2=28, A2=33, D3=38, G3=43 en notation MIDI (EADG=4cordes)
-        const BASE_MIDI={B:23,E:28,A:33,D:38,G:43};
-        const midi=(BASE_MIDI[s.n]||28)+f;
-        const octave=Math.floor(midi/12)-1;
-        positions.push({str:s.n,fret:f,midi,octave});
-      }
-    }
-  });
-
-  // Info positions
-  const inf=document.getElementById('positions-info');
-  inf.innerHTML=`<span class="pos-chip">${positions.length} position${positions.length>1?'s':''}</span><span class="pos-detail">de <b>${pretty(note)}</b> sur ${strings.length} cordes jusqu'à la case ${frets}</span>`;
-
-  // Manche
-  renderFretboard(strings,frets);
-
-  // Tableau
-  const tb=document.getElementById('pos-tbody'); tb.innerHTML='';
-  positions.sort((a,b)=>a.fret-b.fret||strings.findIndex(s=>s.n===a.str)-strings.findIndex(s=>s.n===b.str));
-  positions.forEach(p=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="tc-str">${p.str}</td><td class="tc-case">${p.fret===0?'Corde à vide':p.fret}</td><td class="tc-oct">${p.octave>=0?p.octave+'ème oct.':''}</td>`;
-    tb.appendChild(tr);
-  });
-
-  // Grille rapide (réaffiche les noms selon accPref)
-  document.querySelectorAll('.ng-cell').forEach((c,pc)=>{
+  // Grille rapide — colorée selon la note sélectionnée
+  document.querySelectorAll('.ng-cell').forEach((c)=>{
+    const pc=+c.dataset.pc;
     const n=spell(pc), a=enha(pc);
     c.querySelector('.ng-name').textContent=pretty(n);
     c.querySelector('.ng-num').textContent=pretty(a)||'';
     c.querySelector('.ng-num').style.opacity=a?'1':'0';
+    const color=state.selectedNotes.get(pc);
+    c.classList.toggle('active', !!color);
+    c.style.borderColor=color||'';
+    c.style.background=color?(color+'22'):'';
+    c.querySelector('.ng-name').style.color=color||'';
+  });
+
+  // Bloc note(s) sélectionnée(s)
+  const ndName=document.getElementById('nd-name');
+  const ndEnha=document.getElementById('nd-enha');
+  if(state.selectedNotes.size===0){
+    ndName.textContent='—'; ndEnha.textContent='Clique une note';
+  } else if(state.selectedNotes.size===1){
+    const pc=[...state.selectedNotes.keys()][0];
+    ndName.textContent=pretty(spell(pc));
+    ndEnha.textContent=enha(pc)?`= ${pretty(enha(pc))}`:'';
+    ndName.style.color=state.selectedNotes.get(pc);
+  } else {
+    ndName.innerHTML=[...state.selectedNotes.entries()].map(([pc,c])=>
+      `<span style="color:${c}">${pretty(spell(pc))}</span>`).join(' ');
+    ndEnha.textContent=state.selectedNotes.size+' notes';
+    ndName.style.color='';
+  }
+
+  // Info positions
+  const inf=document.getElementById('positions-info');
+  const totalPos=[];
+  state.selectedNotes.forEach((color,pc)=>{
+    strings.forEach(s=>{
+      for(let f=0;f<=frets;f++) if((s.pc+f)%12===pc) totalPos.push({str:s.n,fret:f,pc,color});
+    });
+  });
+  if(state.selectedNotes.size===0){
+    inf.innerHTML=`<span class="pos-detail">Sélectionne au moins une note sur le clavier ou la grille.</span>`;
+  } else {
+    const names=[...state.selectedNotes.entries()].map(([pc,c])=>`<b style="color:${c}">${pretty(spell(pc))}</b>`).join(', ');
+    inf.innerHTML=`<span class="pos-chip">${totalPos.length} position${totalPos.length>1?'s':''}</span><span class="pos-detail">${names} sur ${strings.length} cordes jusqu'à la case ${frets}</span>
+      <button onclick="state.selectedNotes.clear();render();" style="background:#100b07;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;padding:5px 12px;border-radius:7px;cursor:pointer;margin-left:6px">✕ Effacer tout</button>`;
+  }
+
+  // Manche
+  renderFretboard(strings, frets);
+
+  // Tableau des positions
+  const tb=document.getElementById('pos-tbody'); tb.innerHTML='';
+  totalPos.sort((a,b)=>a.fret-b.fret);
+  totalPos.forEach(p=>{
+    const BASE_MIDI={B:23,E:28,A:33,D:38,G:43,C:48};
+    const midi=(BASE_MIDI[p.str[0]]||28)+p.fret;
+    const octave=Math.floor(midi/12)-1;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="tc-str">${p.str}</td>
+      <td class="tc-case">${p.fret===0?'à vide':p.fret}</td>
+      <td><span style="font-weight:700;color:${p.color}">${pretty(spell(p.pc))}</span></td>
+      <td class="tc-oct">${octave>=0?octave+'ème oct.':''}</td>`;
+    tb.appendChild(tr);
   });
 }
 
 function renderFretboard(strings,frets){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.style.setProperty('--frets',frets);
-
   let display=strings.slice();
   if(state.hand==='right') display.reverse();
   const thickness={}; strings.forEach((s,i)=>{thickness[s.n]=(2+(strings.length-1-i)*0.7);});
-
   const strDiv=document.createElement('div'); strDiv.className='fb-strings';
   display.forEach(s=>{
     const row=document.createElement('div'); row.className='fb-row';
@@ -526,9 +554,13 @@ function renderFretboard(strings,frets){
       const cell=document.createElement('div');
       cell.className='cell'+(f===0?' open nut-after':'');
       const pc=(s.pc+f)%12;
-      if(pc===state.notePc){
+      const color=state.selectedNotes.get(pc);
+      if(color){
         const d=document.createElement('div'); d.className='dot';
-        d.textContent=pretty(spell(state.notePc));
+        d.style.background=color;
+        d.style.color='#160f08';
+        d.style.boxShadow=`0 0 0 3px rgba(255,255,255,.7),0 4px 12px rgba(0,0,0,.6)`;
+        d.textContent=pretty(spell(pc));
         d.title=`${s.n} — case ${f===0?'à vide':f}`;
         cell.appendChild(d);
       }
@@ -537,24 +569,16 @@ function renderFretboard(strings,frets){
     strDiv.appendChild(row);
   });
   fb.appendChild(strDiv);
-
   // Inlays
   const inl=document.createElement('div'); inl.className='fb-inlays';
   inl.appendChild(Object.assign(document.createElement('div'),{className:'spacer'}));
   const SINGLE=[3,5,7,9,15,17,19,21],DOUBLE=[12,24];
   for(let f=0;f<=frets;f++){
     const ic=document.createElement('div'); ic.className='ic'+(f===0?' open':'');
-    if(DOUBLE.includes(f)){
-      const dbl=document.createElement('div'); dbl.style.cssText='display:flex;gap:5px';
-      dbl.innerHTML='<div class="inlay"></div><div class="inlay"></div>';
-      ic.appendChild(dbl);
-    } else if(SINGLE.includes(f)){
-      ic.appendChild(Object.assign(document.createElement('div'),{className:'inlay'}));
-    } else {
-      const a=document.createElement('div'); a.style.height='8px'; ic.appendChild(a);
-    }
-    const num=document.createElement('div'); num.className='fnum'; num.textContent=f===0?'0':f;
-    ic.appendChild(num); inl.appendChild(ic);
+    if(DOUBLE.includes(f)){const dbl=document.createElement('div');dbl.style.cssText='display:flex;gap:5px';dbl.innerHTML='<div class="inlay"></div><div class="inlay"></div>';ic.appendChild(dbl);}
+    else if(SINGLE.includes(f)){ic.appendChild(Object.assign(document.createElement('div'),{className:'inlay'}));}
+    else{const a=document.createElement('div');a.style.height='8px';ic.appendChild(a);}
+    const num=document.createElement('div');num.className='fnum';num.textContent=f===0?'0':f;ic.appendChild(num);inl.appendChild(ic);
   }
   fb.appendChild(inl);
 }
