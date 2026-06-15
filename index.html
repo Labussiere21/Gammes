@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScalaBass — Gammes</title>
-<meta name="description" content="Visualise toutes les gammes de basse sur le manche : majeure, mineure, modes, pentatoniques, blues et plus. Positions traditionnelles, degrés colorés, accords diatoniques.">
+<meta name="description" content="Visualise 73 gammes de basse sur le manche : modes diatoniques, pentatoniques, jazz, exotiques (Hijaz, Hirajoshi, Phrygien dominant, Double harmonique...). Positions, degrés, accords. Positions traditionnelles, degrés colorés, accords diatoniques.">
 <meta name="keywords" content="gammes basse, bass scales, pentatonique basse, modes basse, positions manche basse">
 <meta property="og:title" content="ScalaBass — Gammes de basse">
 <meta property="og:description" content="Toutes les gammes sur le manche de basse : positions, degrés, accords.">
@@ -580,22 +580,85 @@ function pcOf(name){
 function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
 
 const SCALE_DEFS = [
-  {id:'major',      label:'Majeure',            sub:'Ionien',       group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
-  {id:'minor',      label:'Mineure naturelle',  sub:'Éolien',       group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
-  {id:'harmonic',   label:'Mineure harmonique', sub:'',             group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
-  {id:'melodic',    label:'Mineure mélodique',  sub:'',             group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
-  {id:'dorian',     label:'Dorien',             sub:'mode II',      group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
-  {id:'phrygian',   label:'Phrygien',           sub:'mode III',     group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
-  {id:'lydian',     label:'Lydien',             sub:'mode IV',      group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
-  {id:'mixolydian', label:'Mixolydien',         sub:'mode V',       group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
-  {id:'locrian',    label:'Locrien',            sub:'mode VII',     group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
-  {id:'penta_min',  label:'Pentatonique min.',  sub:'5 notes',      group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6],   iv:[0,3,5,7,10]},
-  {id:'penta_maj',  label:'Pentatonique maj.',  sub:'5 notes',      group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],   iv:[0,2,4,7,9]},
-  {id:'blues_min',  label:'Blues mineure',      sub:'6 notes',      group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,4,6], iv:[0,3,5,6,7,10]},
-  {id:'blues_maj',  label:'Blues majeure',      sub:'6 notes',      group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,2,4,5], iv:[0,2,3,4,7,9]},
-  {id:'dim',        label:'Diminuée',           sub:'T-ST, 8 notes',group:1, diat:false, posType:'sym',   npos:4,    fam:'min', ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11]},
-  {id:'half_dim',   label:'Demi-diminuée',      sub:'7 notes',      group:1, diat:false, posType:'sym',   npos:4,    fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
-  {id:'whole_tone', label:'Par ton',            sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
+  // ======= GROUPE 0 : MODES DIATONIQUES =======
+  {id:'major',           label:'Majeure',               sub:'Ionien',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
+  {id:'minor',           label:'Mineure naturelle',     sub:'Éolien',          group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
+  {id:'harmonic',        label:'Mineure harmonique',    sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
+  {id:'melodic',         label:'Mineure mélodique',     sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
+  {id:'dorian',          label:'Dorien',                sub:'mode II',         group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
+  {id:'phrygian',        label:'Phrygien',              sub:'mode III',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'lydian',          label:'Lydien',                sub:'mode IV',         group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
+  {id:'mixolydian',      label:'Mixolydien',            sub:'mode V',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
+  {id:'locrian',         label:'Locrien',               sub:'mode VII',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
+  // ======= GROUPE 1 : PENTATONIQUES & BLUES & SYMÉTRIQUES =======
+  {id:'penta_min',       label:'Pentatonique min.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6],        iv:[0,3,5,7,10]},
+  {id:'penta_maj',       label:'Pentatonique maj.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,9]},
+  {id:'penta_sus',       label:'Pentatonique sus',      sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,3,4,6],        iv:[0,2,5,7,10]},
+  {id:'penta_dom',       label:'Pentatonique dominante',sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,10]},
+  {id:'penta_min6',      label:'Pentatonique min. 6',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,5,6],        iv:[0,3,5,9,10]},
+  {id:'penta_maj7',      label:'Pentatonique maj. 7',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,11]},
+  {id:'penta_majb2',     label:'Pentatonique maj. ♭2',  sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,0,2,4,5],        iv:[0,1,4,7,9]},
+  {id:'blues_min',       label:'Blues mineure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,4,6],      iv:[0,3,5,6,7,10]},
+  {id:'blues_maj',       label:'Blues majeure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,2,4,5],      iv:[0,2,3,4,7,9]},
+  {id:'blues_hex',       label:'Blues hexatonique',     sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,6],      iv:[0,2,3,5,7,10]},
+  {id:'blues_dom',       label:'Blues dominante',       sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5],      iv:[0,2,4,6,7,10]},
+  {id:'dim',             label:'Diminuée T-½T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11]},
+  {id:'dim_ht',          label:'Diminuée ½T-T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,0,1,2,3,4,5,6], iv:[0,1,3,4,6,7,9,10]},
+  {id:'half_dim',        label:'Demi-diminuée',         sub:'7 notes',         group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10]},
+  {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
+  {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11]},
+  // ======= GROUPE 2 : MODES DÉRIVÉS & JAZZ =======
+  {id:'phryg_dom',       label:'Phrygien dominant',     sub:'Mode V harm.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
+  {id:'lydian_dom',      label:'Lydien dominant',       sub:'Mode IV mél.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
+  {id:'altered',         label:'Altérée',               sub:'Mode VII mél.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,2,4,5,6], iv:[0,1,3,4,6,8,10]},
+  {id:'locrian_s2',      label:'Locrien ♯2',            sub:'Mode VI mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,6,8,10]},
+  {id:'lydian_aug',      label:'Lydien augmenté',       sub:'Mode III mél.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,8,9,11]},
+  {id:'mixo_b6',         label:'Mixolydien ♭6',         sub:'Mode V mél.',     group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,8,10]},
+  {id:'dorian_b2',       label:'Dorien ♭2',             sub:'Mode II mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,10]},
+  {id:'locrian6',        label:'Locrien ♮6',            sub:'Mode II harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,9,10]},
+  {id:'ionian_s5',       label:'Ionien ♯5',             sub:'Mode III harm.',  group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,8,9,11]},
+  {id:'dorian_s4',       label:'Dorien ♯4',             sub:'Mode IV harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
+  {id:'lydian_s2',       label:'Lydien ♯2',             sub:'Mode VI harm.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,11]},
+  {id:'superlocrian_bb7',label:'Super Locrien 𝄫7',      sub:'Mode VII harm.',  group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,9]},
+  {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11]},
+  {id:'bebop_dom',       label:'Bebop dominante',       sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11]},
+  {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10]},
+  {id:'bebop_dor',       label:'Bebop dorienne',        sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10]},
+  // ======= GROUPE 3 : EXOTIQUES =======
+  {id:'double_harm',     label:'Double harmonique',     sub:'Byzantine / Tsigane', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
+  {id:'hung_min',        label:'Mineure hongroise',     sub:'Gypsy minor',         group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,11]},
+  {id:'hung_maj',        label:'Majeure hongroise',     sub:'Hungarian major',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,10]},
+  {id:'gypsy_maj',       label:'Tzigane majeure',       sub:'Gypsy major',         group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
+  {id:'romanian_min',    label:'Mineure roumaine',      sub:'Dorien ♯4',           group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
+  {id:'ukr_dorian',      label:'Dorien ukrainien',      sub:'Ukrainian dorian',    group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
+  {id:'persian',         label:'Persane',               sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,6,8,11]},
+  {id:'arabic',          label:'Arabe',                 sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10]},
+  {id:'enigmatic',       label:'Énigmatique',           sub:'Verdi',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,6,8,10,11]},
+  {id:'napolitaine_maj', label:'Napolitaine majeure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,11]},
+  {id:'napolitaine_min', label:'Napolitaine mineure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,11]},
+  {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,5],     iv:[0,2,4,6,9,10]},
+  {id:'overtone',        label:'Acoustique (Overtone)', sub:'= Lydien dominant',   group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
+  {id:'major_locrian',   label:'Majeur locrien',        sub:'Rare',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10]},
+  // ======= GROUPE 3 : ARABES / MAQAMS =======
+  {id:'hijaz',           label:'Hijaz',                 sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
+  {id:'hijaz_kar',       label:'Hijaz Kar',             sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
+  {id:'bayati',          label:'Bayati',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'nahawand',        label:'Nahawand',              sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
+  {id:'rast',            label:'Rast',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
+  {id:'nikriz',          label:'Nikriz',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,10]},
+  {id:'saba',            label:'Saba',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,10]},
+  {id:'kurd',            label:'Kurd',                  sub:'Maqam (≈ Phrygien)',  group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  // ======= GROUPE 3 : JAPONAISES =======
+  {id:'hirajoshi',       label:'Hirajoshi',             sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,8]},
+  {id:'insen',           label:'Insen',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,7,10]},
+  {id:'kumoi',           label:'Kumoi',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,9]},
+  {id:'iwato',           label:'Iwato',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,6,10]},
+  {id:'yo',              label:'Yo',                    sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'maj', ls:[0,1,3,4,5],       iv:[0,2,5,7,9]},
+  // ======= GROUPE 3 : INDIENNES =======
+  {id:'bhairav',         label:'Bhairav',               sub:'Raga',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
+  {id:'todi',            label:'Todi',                  sub:'Raga',                group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,6,7,8,11]},
+  {id:'kafi',            label:'Kafi',                  sub:'Raga (≈ Dorien)',     group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
+  {id:'kalyan',          label:'Kalyan',                sub:'Raga (≈ Lydien)',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
 ];
 
 // Pentatoniques de référence pour les 5 positions (boîtes traditionnelles)
@@ -710,17 +773,29 @@ function buildPiano(){
   });
 }
 
+const GROUP_LABELS={
+  0:'Modes diatoniques',
+  1:'Pentatoniques & Blues & Symétriques',
+  2:'Modes dérivés & Jazz',
+  3:'Gammes exotiques',
+};
 function buildScaleTypes(){
   const c=document.getElementById('scale-types'); c.innerHTML='';
-  // Si la gamme active est masquée par le filtre, sélectionner la première visible
   const visible=SCALE_DEFS.filter(s=>state.family==='all'||s.fam===state.family);
   if(visible.length && !visible.find(s=>s.id===state.scaleId)){
     state.scaleId=visible[0].id; state.position='all';
   }
   let lastGroup=-1;
   SCALE_DEFS.forEach(s=>{
-    if(state.family!=='all' && s.fam!==state.family) return; // filtre famille
-    if(s.group!==lastGroup){ const sep=document.createElement('div'); sep.className='st-sep'; c.appendChild(sep); lastGroup=s.group; }
+    if(state.family!=='all' && s.fam!==state.family) return;
+    if(s.group!==lastGroup){
+      if(lastGroup>=0){const sep=document.createElement('div');sep.className='st-sep';c.appendChild(sep);}
+      const lbl=document.createElement('div');
+      lbl.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin:8px 0 4px;flex-basis:100%';
+      lbl.textContent=GROUP_LABELS[s.group]||'';
+      c.appendChild(lbl);
+      lastGroup=s.group;
+    }
     const b=document.createElement('button');
     b.className='stbtn'+(s.id===state.scaleId?' on':'');
     b.dataset.id=s.id;
@@ -1129,8 +1204,29 @@ const SCALE_LABELS_FR = {
   melodic:'Mineure mélodique', dorian:'Dorienne', phrygian:'Phrygienne',
   lydian:'Lydienne', mixolydian:'Mixolydienne', locrian:'Locrienne',
   penta_min:'Pentatonique mineure', penta_maj:'Pentatonique majeure',
+  penta_sus:'Pentatonique sus', penta_dom:'Pentatonique dominante',
+  penta_min6:'Pentatonique mineure 6', penta_maj7:'Pentatonique majeure 7',
+  penta_majb2:'Pentatonique majeure b2',
   blues_min:'Blues mineure', blues_maj:'Blues majeure',
-  dim:'Diminuée', half_dim:'Demi-diminuée', whole_tone:'Par tons',
+  blues_hex:'Blues hexatonique', blues_dom:'Blues dominante',
+  dim:'Diminuée T-½T', dim_ht:'Diminuée ½T-T',
+  half_dim:'Demi-diminuée', whole_tone:'Par tons', aug_hex:'Hexatonique augmentée',
+  phryg_dom:'Phrygien dominant', lydian_dom:'Lydien dominant', altered:'Altérée',
+  locrian_s2:'Locrien #2', lydian_aug:'Lydien augmenté', mixo_b6:'Mixolydien b6',
+  dorian_b2:'Dorien b2', locrian6:'Locrien naturel 6', ionian_s5:'Ionien #5',
+  dorian_s4:'Dorien #4', lydian_s2:'Lydien #2', superlocrian_bb7:'Super Locrien bb7',
+  bebop_maj:'Bebop majeure', bebop_dom:'Bebop dominante',
+  bebop_min:'Bebop mineure', bebop_dor:'Bebop dorienne',
+  double_harm:'Double harmonique', hung_min:'Mineure hongroise',
+  hung_maj:'Majeure hongroise', gypsy_maj:'Tzigane majeure',
+  romanian_min:'Mineure roumaine', ukr_dorian:'Dorien ukrainien',
+  persian:'Persane', arabic:'Arabe', enigmatic:'Énigmatique',
+  napolitaine_maj:'Napolitaine majeure', napolitaine_min:'Napolitaine mineure',
+  prometheus:'Prometheus', overtone:'Acoustique', major_locrian:'Majeur locrien',
+  hijaz:'Hijaz', hijaz_kar:'Hijaz Kar', bayati:'Bayati', nahawand:'Nahawand',
+  rast:'Rast', nikriz:'Nikriz', saba:'Saba', kurd:'Kurd',
+  hirajoshi:'Hirajoshi', insen:'Insen', kumoi:'Kumoi', iwato:'Iwato', yo:'Yo',
+  bhairav:'Bhairav', todi:'Todi', kafi:'Kafi', kalyan:'Kalyan',
 };
 
 // Lecture des paramètres URL au chargement
