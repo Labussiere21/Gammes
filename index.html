@@ -272,6 +272,16 @@
 
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
   @media (prefers-reduced-motion: reduce){ .dot{animation:none} }
+
+  /* Positions / boîtes */
+  .cell.in-box{background:rgba(217,168,73,.12); box-shadow:inset -1px 0 0 rgba(255,255,255,.04), inset 0 0 0 100px rgba(217,168,73,.06)}
+  .dot.ghost{opacity:.16; box-shadow:none; filter:saturate(.4)}
+  .dot.ghost.root{box-shadow:none}
+  .fb-caption{margin-top:14px; font-size:13px; color:var(--muted)}
+  .fb-caption b{color:var(--brass); font-weight:700}
+  .fb-caption .hint{display:block; margin-top:3px; font-size:12px; color:var(--muted-2)}
+  /* séparateur entre familles de gammes */
+  .st-sep{flex-basis:100%; height:0; margin:2px 0}
 </style>
 </head>
 <body>
@@ -322,7 +332,7 @@
     <section class="card">
       <h2>Degrés &amp; accords diatoniques</h2>
       <table>
-        <thead><tr><th>Deg</th><th>Note</th><th>Intervalle</th><th>Accord</th><th>Notes</th></tr></thead>
+        <thead id="degrees-head"></thead>
         <tbody id="degrees-body"></tbody>
       </table>
     </section>
@@ -362,12 +372,19 @@
             <button data-or="low">Grave en haut</button>
           </div>
         </div>
+        <div style="flex-basis:100%; height:0"></div>
+        <div>
+          <div class="ctl-label">Position (boîte)</div>
+          <div class="seg" id="fb-position" role="group"></div>
+        </div>
       </div>
     </div>
 
     <div class="fb-scroll">
       <div class="fretboard" id="fretboard"></div>
     </div>
+
+    <div class="fb-caption" id="fb-caption"></div>
 
     <div class="legend" id="legend"></div>
   </section>
@@ -399,15 +416,19 @@ function pcOf(name){
 function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
 
 const SCALE_DEFS = [
-  {id:'major',      label:'Majeure',            sub:'Ionien',     iv:[0,2,4,5,7,9,11]},
-  {id:'minor',      label:'Mineure naturelle',  sub:'Éolien',     iv:[0,2,3,5,7,8,10]},
-  {id:'harmonic',   label:'Mineure harmonique', sub:'',           iv:[0,2,3,5,7,8,11]},
-  {id:'melodic',    label:'Mineure mélodique',  sub:'',           iv:[0,2,3,5,7,9,11]},
-  {id:'dorian',     label:'Dorien',             sub:'mode II',    iv:[0,2,3,5,7,9,10]},
-  {id:'phrygian',   label:'Phrygien',           sub:'mode III',   iv:[0,1,3,5,7,8,10]},
-  {id:'lydian',     label:'Lydien',             sub:'mode IV',    iv:[0,2,4,6,7,9,11]},
-  {id:'mixolydian', label:'Mixolydien',         sub:'mode V',     iv:[0,2,4,5,7,9,10]},
-  {id:'locrian',    label:'Locrien',            sub:'mode VII',   iv:[0,1,3,5,6,8,10]},
+  {id:'major',      label:'Majeure',            sub:'Ionien',  group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
+  {id:'minor',      label:'Mineure naturelle',  sub:'Éolien',  group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
+  {id:'harmonic',   label:'Mineure harmonique', sub:'',        group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
+  {id:'melodic',    label:'Mineure mélodique',  sub:'',        group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
+  {id:'dorian',     label:'Dorien',             sub:'mode II', group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
+  {id:'phrygian',   label:'Phrygien',           sub:'mode III',group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'lydian',     label:'Lydien',             sub:'mode IV', group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
+  {id:'mixolydian', label:'Mixolydien',         sub:'mode V',  group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
+  {id:'locrian',    label:'Locrien',            sub:'mode VII',group:0, diat:true, ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
+  {id:'penta_min',  label:'Pentatonique mineure', sub:'5 notes', group:1, diat:false, ls:[0,2,3,4,6],   iv:[0,3,5,7,10]},
+  {id:'penta_maj',  label:'Pentatonique majeure', sub:'5 notes', group:1, diat:false, ls:[0,1,2,4,5],   iv:[0,2,4,7,9]},
+  {id:'blues_min',  label:'Blues mineure',        sub:'6 notes', group:1, diat:false, ls:[0,2,3,4,4,6], iv:[0,3,5,6,7,10]},
+  {id:'blues_maj',  label:'Blues majeure',        sub:'6 notes', group:1, diat:false, ls:[0,1,2,2,4,5], iv:[0,2,3,4,7,9]},
 ];
 
 // Noms d'intervalles (en demi-tons depuis la fondamentale)
@@ -418,13 +439,13 @@ const INTERVAL_NAMES = {
 };
 const DEG_COLORS = ['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
 
-function buildScale(root, intervals){
+function buildScale(root, ls, iv){
   const rootLetterIdx = LETTERS.indexOf(root[0]);
   const rootPC = pcOf(root);
   const notes = [];
-  for(let i=0;i<intervals.length;i++){
-    const letter = LETTERS[(rootLetterIdx+i)%7];
-    const targetPC = (rootPC + intervals[i])%12;
+  for(let i=0;i<iv.length;i++){
+    const letter = LETTERS[(rootLetterIdx+ls[i])%7];
+    const targetPC = (rootPC + iv[i])%12;
     const naturalPC = LETTER_PC[letter];
     let diff = ((targetPC - naturalPC + 12)%12);
     if(diff>6) diff -= 12;
@@ -463,6 +484,7 @@ const state = {
   strings: 4,
   frets: 12,
   orient: 'high',   // 'high' = aigu en haut
+  position: 'all',  // 'all' ou index 1..N
 };
 
 // Orthographe préférée d'une classe de hauteur selon la préférence
@@ -508,12 +530,14 @@ function buildPiano(){
 
 function buildScaleTypes(){
   const c=document.getElementById('scale-types'); c.innerHTML='';
+  let lastGroup=0;
   SCALE_DEFS.forEach(s=>{
+    if(s.group!==lastGroup){ const sep=document.createElement('div'); sep.className='st-sep'; c.appendChild(sep); lastGroup=s.group; }
     const b=document.createElement('button');
     b.className='stbtn'+(s.id===state.scaleId?' on':'');
     b.dataset.id=s.id;
     b.innerHTML = s.label + (s.sub?` <span style="opacity:.55;font-weight:400">${s.sub}</span>`:'');
-    b.onclick=()=>{ state.scaleId=s.id; render(); };
+    b.onclick=()=>{ state.scaleId=s.id; state.position='all'; render(); };
     c.appendChild(b);
   });
 }
@@ -527,12 +551,28 @@ function bindSeg(id, key, cast=(v)=>v){
   });
 }
 
+// Boutons de position : "Tout" + 1..N (N = nb de notes de la gamme)
+function buildPositionButtons(n){
+  const c=document.getElementById('fb-position');
+  if(state.position!=='all' && state.position>n) state.position='all';
+  c.innerHTML='';
+  const mk=(val,label)=>{
+    const b=document.createElement('button');
+    b.textContent=label;
+    b.className=(String(state.position)===String(val))?'on':'';
+    b.onclick=()=>{ state.position=val; render(); };
+    return b;
+  };
+  c.appendChild(mk('all','Tout'));
+  for(let i=1;i<=n;i++) c.appendChild(mk(i, String(i)));
+}
+
 /* ============================================================
    RENDU
    ============================================================ */
 function currentScale(){
   const def = SCALE_DEFS.find(s=>s.id===state.scaleId);
-  const notes = buildScale(rootName(), def.iv);
+  const notes = buildScale(rootName(), def.ls, def.iv);
   return {def, notes};
 }
 
@@ -575,20 +615,38 @@ function render(){
     sn.appendChild(pill);
   });
 
-  // Tableau degrés + accords
+  // Tableau degrés (+ accords si gamme diatonique)
+  const head=document.getElementById('degrees-head');
   const tb=document.getElementById('degrees-body'); tb.innerHTML='';
-  notes.forEach((n,i)=>{
-    const semis = (pcOf(n)-rootPc+12)%12;
-    const tri = triadOf(notes,i);
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
-      <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
-      <td class="interval">${INTERVAL_NAMES[semis]}</td>
-      <td><span class="rn">${tri.roman}</span> &nbsp;<span class="chord-sym">${pretty(tri.symbol)}</span></td>
-      <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
-    tb.appendChild(tr);
-  });
+  if(def.diat){
+    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Intervalle</th><th>Accord</th><th>Notes</th></tr>';
+    notes.forEach((n,i)=>{
+      const semis=(pcOf(n)-rootPc+12)%12;
+      const tri=triadOf(notes,i);
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
+        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
+        <td class="interval">${INTERVAL_NAMES[semis]}</td>
+        <td><span class="rn">${tri.roman}</span> &nbsp;<span class="chord-sym">${pretty(tri.symbol)}</span></td>
+        <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
+      tb.appendChild(tr);
+    });
+  } else {
+    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Intervalle</th></tr>';
+    notes.forEach((n,i)=>{
+      const semis=(pcOf(n)-rootPc+12)%12;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
+        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
+        <td class="interval">${INTERVAL_NAMES[semis]}</td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  // Boutons de position (nombre = nombre de notes de la gamme)
+  buildPositionButtons(notes.length);
 
   // Manche
   renderFretboard(notes, rootPc);
@@ -609,19 +667,35 @@ const STRINGS_5 = [ {n:'B',pc:11}, {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:
 
 function renderFretboard(notes, rootPc){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
-  const frets = state.frets;
-  fb.style.setProperty('--frets', frets);
 
   // map classe de hauteur -> {note, deg}
   const pcMap = {};
   notes.forEach((n,i)=>{ pcMap[pcOf(n)] = {note:n, deg:i+1, color:DEG_COLORS[i], root:i===0}; });
 
   let strings = (state.strings===5?STRINGS_5:STRINGS_4).slice();
-  // ordre d'affichage : 'high' = aigu en haut -> on inverse (grave->aigu) puis reverse
-  let display = strings.slice();
-  if(state.orient==='high') display.reverse(); // aigu (G) en haut
+  const lowPc = strings[0].pc; // corde la plus grave (E ou B)
 
-  // épaisseur des cordes : plus grave = plus épais
+  // --- Calcul de la boîte (position) ---
+  let box=null;
+  if(state.position!=='all'){
+    const scalePcs = new Set(notes.map(pcOf));
+    const anchors=[]; for(let f=0; f<=48; f++){ if(scalePcs.has((lowPc+f)%12)) anchors.push(f); }
+    const rootIdx = anchors.findIndex(f=>(lowPc+f)%12===rootPc);
+    const p = state.position; // 1..N
+    const start = anchors[rootIdx + (p-1)];
+    const end   = anchors[rootIdx + p];
+    if(start!=null && end!=null) box={start, end};
+  }
+
+  // Nombre de cases affichées : on étend si la boîte dépasse
+  let frets = state.frets;
+  if(box) frets = Math.min(24, Math.max(frets, box.end));
+  fb.style.setProperty('--frets', frets);
+
+  // ordre d'affichage : 'high' = aigu en haut
+  let display = strings.slice();
+  if(state.orient==='high') display.reverse();
+
   const thickness = {}; strings.forEach((s,idx)=>{ thickness[s.n]= (2 + (strings.length-1-idx)*0.7); });
 
   const strDiv=document.createElement('div'); strDiv.className='fb-strings';
@@ -631,13 +705,14 @@ function renderFretboard(notes, rootPc){
     const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=s.n;
     row.appendChild(lab);
     for(let f=0; f<=frets; f++){
+      const inBox = box && f>=box.start && f<=box.end;
       const cell=document.createElement('div');
-      cell.className='cell'+(f===0?' open':'')+(f===0?' nut-after':'');
+      cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
       const pc=(s.pc+f)%12;
       if(pcMap[pc]){
         const info=pcMap[pc];
         const d=document.createElement('div');
-        d.className='dot'+(info.root?' root':'');
+        d.className='dot'+(info.root?' root':'')+((box && !inBox)?' ghost':'');
         d.style.background=info.color;
         d.textContent = state.display==='note' ? pretty(info.note) : info.deg;
         d.title = `${s.n} case ${f} — ${pretty(info.note)} (degré ${info.deg})`;
@@ -649,6 +724,16 @@ function renderFretboard(notes, rootPc){
   });
   fb.appendChild(strDiv);
 
+  // Légende sous le manche (position)
+  const cap=document.getElementById('fb-caption');
+  if(box){
+    cap.innerHTML = `<b>Position ${state.position}</b> — cases ${box.start} à ${box.end} `
+      + `(commence sur la fondamentale ${pretty(notes[0])} sur la corde ${strings[0].n}).`
+      + `<span class="hint">Chaque boîte est mobile : le même schéma se répète une octave plus haut. « Tout » réaffiche la gamme entière.</span>`;
+  } else {
+    cap.textContent='';
+  }
+
   // réglette : inlays + numéros de case
   const inl=document.createElement('div'); inl.className='fb-inlays';
   const sp=document.createElement('div'); sp.className='spacer'; inl.appendChild(sp);
@@ -656,9 +741,9 @@ function renderFretboard(notes, rootPc){
   for(let f=0; f<=frets; f++){
     const ic=document.createElement('div'); ic.className='ic'+(f===0?' open':'');
     if(DOUBLE.includes(f)){
-      const box=document.createElement('div'); box.style.display='flex'; box.style.gap='5px';
-      box.innerHTML='<div class="inlay"></div><div class="inlay"></div>';
-      ic.appendChild(box);
+      const dbl=document.createElement('div'); dbl.style.display='flex'; dbl.style.gap='5px';
+      dbl.innerHTML='<div class="inlay"></div><div class="inlay"></div>';
+      ic.appendChild(dbl);
     } else if(SINGLE.includes(f)){
       const a=document.createElement('div'); a.className='inlay'; ic.appendChild(a);
     } else {
