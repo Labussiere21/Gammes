@@ -235,8 +235,8 @@ h1 em{font-style:italic; color:var(--brass)}
 <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
   <div class="ctl-label" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2)">Altération</div>
   <div class="seg" id="accpref">
-    <button data-acc="b" class="on">♭ bémols</button>
-    <button data-acc="#">♯ dièses</button>
+    <button data-acc="b">♭ bémols</button>
+    <button data-acc="#" class="on">♯ dièses</button>
   </div>
 </div>
 
@@ -405,7 +405,7 @@ const CADENCES_MIN = [
 ];
 
 /* ====================================================== ÉTAT */
-const state = { pc: null, accPref: 'b', activeTab: 'modes' };
+const state = { pc: null, accPref: '#', activeTab: 'modes' };
 
 const SHARP_SPELL = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const FLAT_SPELL  = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
@@ -573,15 +573,15 @@ function renderRelatives(entry, name){
   // Tonalité parallèle mineure (même tonique)
   const parallelRaw = FLAT_RAW[state.pc];
 
-  // Sous-dominante (IV) et dominante (V)
+  // Sous-dominante (IV) et dominante (V) : lire depuis la gamme majeure de la tonique
+  // pour éviter les enharmonies absurdes (E# au lieu de F, etc.)
+  const majNotes = buildMajScale(state.pc); // [C, D, E, F, G, A, B] pour Do maj
+  const ivName = majNotes[3]; // 4e degré = index 3
+  const vName  = majNotes[4]; // 5e degré = index 4
   const ivPc = (state.pc+5)%12;
   const vPc  = (state.pc+7)%12;
-  const ivEntry = CIRCLE_OF_FIFTHS.find(e=>e.pc===ivPc);
-  const vEntry  = CIRCLE_OF_FIFTHS.find(e=>e.pc===vPc);
-  const ivName  = state.accPref==='#' ? ivEntry.sharp : ivEntry.flat;
-  const vName   = state.accPref==='#' ? vEntry.sharp  : vEntry.flat;
-  const ivRaw   = FLAT_RAW[ivPc];
-  const vRaw    = FLAT_RAW[vPc];
+  const ivRaw = FLAT_RAW[ivPc];
+  const vRaw  = FLAT_RAW[vPc];
 
   const items=[
     {label:'Relative mineure',      name:relMinName+' mineur', href:`index.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},

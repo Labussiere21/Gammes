@@ -445,7 +445,7 @@
   <header>
     <div class="eyebrow">
       <span class="site-name">ScalaBass</span>
-            <nav class="site-nav">
+      <nav class="site-nav">
         <a href="index.html"         class="nav-link active">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="intervalles.html"   class="nav-link">Intervalles</a>
@@ -466,7 +466,6 @@
           <button data-lang="es">ES</button>
         </div>
       </div>
-      <span class="tuning">corde à vide&nbsp; <span id="tuning-disp">E · A · D · G</span></span>
     </div>
     <h1><em>Gammes</em></h1>
     <p class="lede">Choisis une tonique, une gamme, et lis-la note par note&nbsp;: degrés, armure, accords de chaque degré, et la position exacte sur le manche de ta basse.</p>
@@ -1343,9 +1342,6 @@ function renderFretboard(notes, rootPc, def){
   }
   fb.appendChild(inl);
 
-  // accord de hauteur (tuning) affiché en en-tête
-  document.getElementById('tuning-disp').textContent =
-    currentStrings().map(s=>s.n).join(' · ');
 }
 
 /* ============================================================

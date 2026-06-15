@@ -295,7 +295,7 @@
   <header>
     <div class="eyebrow">
       <span class="site-name">ScalaBass</span>
-            <nav class="site-nav">
+      <nav class="site-nav">
         <a href="index.html"         class="nav-link">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link active">Arpèges</a>
         <a href="intervalles.html"   class="nav-link">Intervalles</a>
@@ -316,7 +316,6 @@
           <button data-lang="es">ES</button>
         </div>
       </div>
-      <span class="dim">corde à vide&nbsp; <span id="tuning-disp">E · A · D · G</span></span>
     </div>
     <h1><em>Arpèges</em></h1>
     <p class="lede">Choisis une tonique et un arpège : structure, notes, intervalles, et toutes les positions sur le manche de ta basse.</p>
@@ -779,7 +778,7 @@ function renderFretboard(arpPcs, rootPc, posType, strings){
     lg.appendChild(el);
   });
 
-  document.getElementById('tuning-disp').textContent=currentStrings().map(s=>s.n).join(' · ');
+  // tuning-disp supprimé
 }
 
 /* ============================================================ RENDU */
