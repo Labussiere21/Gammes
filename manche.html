@@ -307,11 +307,19 @@
       <h2>Sur le manche</h2>
       <div class="fb-tools">
         <div>
+          
+        <div>
           <div class="ctl-label">Cordes</div>
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
             <button data-str="5">5</button>
+            <button data-str="6">6</button>
           </div>
+        </div>
+        <div>
+          <div class="ctl-label">Accordage</div>
+          <div class="seg" id="fb-tuning-ctl" role="group"></div>
+        </div>
         </div>
         <div>
           <div class="ctl-label">Cases</div>
@@ -322,11 +330,14 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Sens</div>
-          <div class="seg" id="fb-orient" role="group">
-            <button data-or="high" class="on">Aigu en haut</button>
-            <button data-or="low">Grave en haut</button>
+          
+        <div>
+          <div class="ctl-label">Main</div>
+          <div class="seg" id="fb-hand" role="group">
+            <button data-hand="right" class="on">🤜 Droitier</button>
+            <button data-hand="left">Gaucher 🤛</button>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -374,8 +385,30 @@ function enha(pc){
 }
 function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
 
-const STRINGS_4=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
-const STRINGS_5=[{n:'B',pc:11},{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
+
+/* --- Accordages --- */
+const TUNINGS = {
+  4:[
+    {id:'standard',  label:'Standard',   notes:['E','A','D','G']},
+    {id:'drop_d',    label:'Drop D',     notes:['D','A','D','G']},
+    {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb']},
+    {id:'full_down', label:'1 ton bas',  notes:['D','G','C','F']},
+  ],
+  5:[
+    {id:'standard5', label:'Standard',   notes:['B','E','A','D','G']},
+    {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','G']},
+    {id:'high_c',    label:'High C',     notes:['E','A','D','G','C']},
+    {id:'half_down5',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb']},
+  ],
+  6:[
+    {id:'standard6', label:'Standard',   notes:['B','E','A','D','G','C']},
+    {id:'half_down6',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb','B']},
+  ],
+};
+function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
+function currentStrings(){const tuns=TUNINGS[state.strings];const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];return tun.notes.map(n=>({n,pc:pcOf_n(n)}));}
+function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
+
 
 /* ============================================================ PIANO */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -418,7 +451,7 @@ function buildNoteGrid(){
 function render(){
   const note=spell(state.notePc);
   const alt=enha(state.notePc);
-  const strings=state.strings===5?STRINGS_5:STRINGS_4;
+  const strings=currentStrings();
 
   // Synchro piano
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.notePc));
@@ -426,7 +459,8 @@ function render(){
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
-  document.querySelectorAll('#fb-orient button').forEach(b=>b.classList.toggle('on',b.dataset.or===state.orient));
+  document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
+  document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on',b.textContent===((TUNINGS[state.strings]||[]).find(t=>t.id===state.tuning)||{}).label));
   document.querySelectorAll('.ng-cell').forEach(c=>c.classList.toggle('active',+c.dataset.pc===state.notePc));
 
   // Affichage de la note
@@ -479,7 +513,7 @@ function renderFretboard(strings,frets){
   fb.style.setProperty('--frets',frets);
 
   let display=strings.slice();
-  if(state.orient==='high') display.reverse();
+  if(state.hand==='right') display.reverse();
   const thickness={}; strings.forEach((s,i)=>{thickness[s.n]=(2+(strings.length-1-i)*0.7);});
 
   const strDiv=document.createElement('div'); strDiv.className='fb-strings';
@@ -527,19 +561,22 @@ function renderFretboard(strings,frets){
 
 /* ============================================================ INIT */
 buildPiano();
+buildTuningButtons();
+document.getElementById('fb-strings-ctl')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=TUNINGS[state.strings][0].id;buildTuningButtons();render();});
+document.getElementById('fb-hand')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
 buildNoteGrid();
 
 document.getElementById('accpref').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.accPref=b.dataset.acc; buildPiano(); buildNoteGrid(); render();
 });
-['fb-strings-ctl','fb-frets-ctl','fb-orient'].forEach(id=>{
+['fb-strings-ctl','fb-frets-ctl','fb-hand'].forEach(id=>{
   document.getElementById(id).addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
     const k=Object.keys(b.dataset)[0],v=b.dataset[k];
     if(k==='str')state.strings=+v;
     else if(k==='frets')state.frets=+v;
-    else if(k==='or')state.orient=v;
+    else if(k==='hand')state.hand=v;
     render();
   });
 });
