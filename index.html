@@ -478,7 +478,12 @@
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
             <button data-str="5">5</button>
+            <button data-str="6">6</button>
           </div>
+        </div>
+        <div>
+          <div class="ctl-label">Accordage</div>
+          <div class="seg" id="fb-tuning-ctl" role="group"></div>
         </div>
         <div>
           <div class="ctl-label">Cases</div>
@@ -489,10 +494,10 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Sens</div>
-          <div class="seg" id="fb-orient" role="group">
-            <button data-or="high" class="on">Aigu en haut</button>
-            <button data-or="low">Grave en haut</button>
+          <div class="ctl-label">Main</div>
+          <div class="seg" id="fb-hand" role="group">
+            <button data-hand="right" class="on">🤜 Droitier</button>
+            <button data-hand="left">Gaucher 🤛</button>
           </div>
         </div>
         <div style="flex-basis:100%; height:0"></div>
@@ -613,14 +618,15 @@ function triadOf(notes, i){
    ÉTAT
    ============================================================ */
 const state = {
-  rootPc: 0,        // classe de hauteur de la tonique (C)
-  accPref: 'b',     // 'b' ou '#'
+  rootPc: 0,
+  accPref: 'b',
   scaleId: 'major',
-  display: 'note',  // 'note' | 'deg'
+  display: 'note',
   strings: 4,
+  tuning: 'standard',
   frets: 12,
-  orient: 'high',   // 'high' = aigu en haut
-  position: 'all',  // 'all' ou index 1..N
+  hand: 'right',   // 'right' = droitier (aigu en haut), 'left' = gaucher (grave en haut)
+  position: 'all',
 };
 
 // Orthographe préférée d'une classe de hauteur selon la préférence
@@ -721,7 +727,8 @@ function render(){
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on', b.dataset.disp===state.display));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on', +b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on', +b.dataset.frets===state.frets));
-  document.querySelectorAll('#fb-orient button').forEach(b=>b.classList.toggle('on', b.dataset.or===state.orient));
+  document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on', b.dataset.hand===state.hand));
+  document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on', b.textContent===((TUNINGS[state.strings]||[]).find(t=>t.id===state.tuning)||{}).label));
   document.querySelectorAll('#scale-types button').forEach(b=>b.classList.toggle('on', b.dataset.id===state.scaleId));
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel', +b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel', +b.dataset.pc===state.rootPc));
@@ -872,8 +879,38 @@ function render(){
 })();
 
 /* --- Manche de basse --- */
-const STRINGS_4 = [ {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:'G',pc:7} ];       // grave -> aigu
-const STRINGS_5 = [ {n:'B',pc:11}, {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:'G',pc:7} ];
+/* --- Accordages --- */
+const TUNINGS = {
+  4:[
+    {id:'standard',  label:'Standard',   notes:['E','A','D','G']},
+    {id:'drop_d',    label:'Drop D',     notes:['D','A','D','G']},
+    {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb']},
+    {id:'full_down', label:'1 ton bas',  notes:['D','G','C','F']},
+  ],
+  5:[
+    {id:'standard5', label:'Standard',   notes:['B','E','A','D','G']},
+    {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','G']},
+    {id:'high_c',    label:'High C',     notes:['E','A','D','G','C']},
+    {id:'half_down5',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb']},
+  ],
+  6:[
+    {id:'standard6', label:'Standard',   notes:['B','E','A','D','G','C']},
+    {id:'half_down6',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb','B']},
+  ],
+};
+function currentStrings(){
+  const tuns=TUNINGS[state.strings];
+  const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];
+  return tun.notes.map(n=>({n, pc:pcOf(n)}));
+}
+function pcOf_simple(n){
+  const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+  let pc=LP[n[0]];
+  for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}
+  return((pc%12)+12)%12;
+}
+// Réutilise pcOf existant — alias pour clarté dans le contexte accordage
+TUNINGS[4].forEach(t=>t.notes=t.notes.map(n=>n));
 
 function renderFretboard(notes, rootPc, def){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
@@ -882,7 +919,7 @@ function renderFretboard(notes, rootPc, def){
   const pcMap = {};
   notes.forEach((n,i)=>{ const pc=pcOf(n); pcMap[pc] = {note:n, deg:i+1, degLabel:DEG_SHORT[(pc-rootPc+12)%12], color:DEG_COLORS[i], root:i===0}; });
 
-  let strings = (state.strings===5?STRINGS_5:STRINGS_4).slice();
+  let strings = currentStrings();
   const lowPc  = strings[0].pc;                    // corde la plus grave (E ou B)
 
   // --- Calcul des boîtes (positions) ---
@@ -943,9 +980,9 @@ function renderFretboard(notes, rootPc, def){
   if(box) frets = Math.min(24, Math.max(frets, box.end));
   fb.style.setProperty('--frets', frets);
 
-  // ordre d'affichage : 'high' = aigu en haut
+  // Droitier : aigu (Sol) en haut, Gaucher : grave (E/B) en haut
   let display = strings.slice();
-  if(state.orient==='high') display.reverse();
+  if(state.hand==='right') display.reverse();
 
   const thickness = {}; strings.forEach((s,idx)=>{ thickness[s.n]= (2 + (strings.length-1-idx)*0.7); });
 
@@ -1009,18 +1046,42 @@ function renderFretboard(notes, rootPc, def){
 
   // accord de hauteur (tuning) affiché en en-tête
   document.getElementById('tuning-disp').textContent =
-    (state.strings===5?STRINGS_5:STRINGS_4).map(s=>s.n).join(' · ');
+    currentStrings().map(s=>s.n).join(' · ');
 }
 
 /* ============================================================
    INIT
    ============================================================ */
+function buildTuningButtons(){
+  const c=document.getElementById('fb-tuning-ctl'); c.innerHTML='';
+  const tuns=TUNINGS[state.strings];
+  // Vérifier que le tuning actuel est valide pour le nombre de cordes
+  if(!tuns.find(t=>t.id===state.tuning)) state.tuning=tuns[0].id;
+  tuns.forEach(t=>{
+    const b=document.createElement('button'); b.textContent=t.label;
+    b.className=t.id===state.tuning?'on':'';
+    b.onclick=()=>{state.tuning=t.id; render();};
+    c.appendChild(b);
+  });
+}
+
 buildPiano();
 buildScaleTypes();
+buildTuningButtons();
 bindSeg('fb-display','display');
-bindSeg('fb-strings-ctl','strings', v=>+v);
+document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.strings=+b.dataset.str;
+  // Réinitialiser le tuning au standard pour le nouveau nombre de cordes
+  state.tuning=TUNINGS[state.strings][0].id;
+  buildTuningButtons();
+  render();
+});
 bindSeg('fb-frets-ctl','frets', v=>+v);
-bindSeg('fb-orient','orient');
+document.getElementById('fb-hand').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.hand=b.dataset.hand; render();
+});
 document.getElementById('accpref').addEventListener('click', e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.accPref=b.dataset.acc; buildPiano(); render();
