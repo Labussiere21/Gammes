@@ -44,10 +44,10 @@
   }
   .eyebrow span.dim{color:var(--muted)}
   .site-name{font-weight:700; letter-spacing:.2em; color:var(--brass)}
-  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px}
+  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; overflow:hidden;}
   .nav-link{
-    font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.10em; text-transform:uppercase;
-    color:var(--muted); text-decoration:none; padding:6px 14px; border-radius:5px; transition:.12s;
+    font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:.12s; white-space:nowrap;
   }
   .nav-link:hover{color:var(--cream)}
   .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
@@ -302,7 +302,7 @@
         <a href="manche.html"        class="nav-link">Manche</a>
         <a href="cadences.html"      class="nav-link">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
-        <a href="quintes.html"       class="nav-link">Cycle des quintes</a>
+        <a href="quintes.html"       class="nav-link">Quintes</a>
       </nav>
       <div class="header-tools">
         <div class="htool-seg" id="notation-seg">
@@ -576,8 +576,13 @@ function buildPiano(){
   });
   BLACK.forEach(b=>{
     const k=document.createElement('button'); k.className='bkey'; k.dataset.pc=b.pc;
-    const main=spellNote(b.pc,state.accPref), alt=spellNote(b.pc,state.accPref==='#'?'b':'#');
-    k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;
+    const main = spellNote(b.pc,(typeof state!=='undefined'?state.accPref:'b'));
+    // Enharmonie fixe EN (opposée à l'altération courante) — jamais doublon
+    const _eh = {1:['C♯','D♭'],3:['D♯','E♭'],6:['F♯','G♭'],8:['G♯','A♭'],10:['A♯','B♭']};
+    const _pair = _eh[b.pc];
+    const _isSharp = (typeof state!=='undefined'?state.accPref:'b')==='#';
+    const alt = _pair ? (_isSharp ? _pair[1] : _pair[0]) : '';
+    k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;
     k.style.left=(8+(b.after+1)*W-15)+'px';
     p.appendChild(k);
   });
