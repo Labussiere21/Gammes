@@ -253,6 +253,17 @@
 
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
   @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+
+  /* ---- Mode gaucher : miroir horizontal du manche ---- */
+  .fretboard.lefty .fb-row{ flex-direction: row-reverse }
+  .fretboard.lefty .fb-inlays{ flex-direction: row-reverse }
+  /* Sillet à droite pour le gaucher */
+  .fretboard.lefty .cell.nut-after::after{
+    right:auto; left:-1px;
+    background:linear-gradient(270deg,#efe6d3,#c8bb9c);
+  }
+  /* Label de corde : reste lisible à droite */
+  .fretboard.lefty .str-label{ order: 1 }
 </style>
 </head>
 <body>
@@ -540,6 +551,7 @@ function render(){
 
 function renderFretboard(strings,frets){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
+  fb.classList.toggle('lefty', state.hand==='left');
   fb.style.setProperty('--frets',frets);
   let display=strings.slice();
   if(state.hand==='right') display.reverse();
