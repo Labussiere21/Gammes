@@ -70,10 +70,10 @@
   .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; overflow:hidden;}
   .nav-link{
     font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:.12s; white-space:nowrap;
+    color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:color .12s,background .12s; white-space:nowrap; font-weight:700;
   }
   .nav-link:hover{color:var(--cream)}
-  .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
+  .nav-link.active{background:var(--brass); color:#160f08}
   h1{
     font-family:"Instrument Serif", serif;
     font-weight:400;
@@ -427,12 +427,19 @@
   .fretboard.lefty .str-label{ order: 1 }
 
   /* ===== Notation toggle + langue ===== */
-  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px}
-  .htool-seg button{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:5px;transition:.1s;white-space:nowrap}
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;margin-bottom:14px}
+  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px;flex-shrink:0}
+  .htool-seg button{
+    font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;border:0;color:var(--muted);cursor:pointer;
+    padding:4px 0;border-radius:5px;transition:color .1s,background .1s;
+    white-space:nowrap;font-weight:700;
+    /* Largeur fixe : empêche tout mouvement au clic */
+    min-width:0;width:var(--btn-w,auto);text-align:center;
+  }
   .htool-seg button:hover{color:var(--cream)}
-  .htool-seg button.on{background:var(--brass);color:#160f08;font-weight:700}
-  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+  .htool-seg button.on{background:var(--brass);color:#160f08}
+  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px;flex-shrink:0}
 
 </style>
 </head>
@@ -462,8 +469,8 @@
         <div class="htool-divider"></div>
         <div class="htool-seg" id="lang-seg">
           <button data-lang="fr" class="on">FR</button>
-          <button data-lang="en">EN</button>
-          <button data-lang="es">ES</button>
+          <button data-lang="en" disabled title="Bientôt disponible" style="opacity:.45;cursor:default">EN</button>
+          <button data-lang="es" disabled title="Próximamente" style="opacity:.45;cursor:default">ES</button>
         </div>
       </div>
     </div>
@@ -621,6 +628,19 @@ function spellNote(pc, accPref){
 }
 
 function initNotationLang(){
+  // Fixer la largeur de chaque bouton dans les htool-seg au maximum de ses états
+  // → empêche tout mouvement quand on bascule active/inactive
+  document.querySelectorAll('.htool-seg').forEach(seg=>{
+    const btns=[...seg.querySelectorAll('button')];
+    // Mesurer la largeur naturelle de chaque bouton (sans contrainte)
+    // On utilise un délai 0 pour laisser le DOM se stabiliser
+    requestAnimationFrame(()=>{
+      let maxW=0;
+      btns.forEach(b=>{ maxW=Math.max(maxW, b.offsetWidth); });
+      if(maxW>0) btns.forEach(b=>{ b.style.width=maxW+'px'; });
+    });
+  });
+
   // Segment notation
   const ns=document.getElementById('notation-seg');
   if(ns){
@@ -697,16 +717,14 @@ const SCALE_DESC = {
   dorian_s4:  'Mode IV de la mineure harmonique. Dorien avec une 4ème augmentée — proche de la mineure roumaine.',
   lydian_s2:  'Mode VI de la mineure harmonique. Lydien avec une 2ème augmentée — couleur orientale lumineuse.',
   superlocrian_bb7: 'Mode VII de la mineure harmonique. Très altéré, utilisé en contexte jazz avancé.',
-  bebop_maj:  'Gamme majeure avec une 7ème mineure ajoutée comme note de passage. Très utilisée dans le bebop pour créer des lignes fluides sur les accords majeurs.',
+  bebop_maj:  'Gamme majeure avec une 5ème augmentée ajoutée comme note de passage (entre la 5te et la 6te). Crée des lignes bebop fluides sur les accords majeurs 6 et Δ7.',
   bebop_dom:  'Gamme mixolydienne avec une 7ème majeure ajoutée. La gamme bebop la plus courante, idéale sur les accords de dominante 7.',
   bebop_min:  'Gamme mineure avec une note de passage chromatique. Utilisée sur les accords mineurs en contexte bebop.',
-  bebop_dor:  'Gamme dorienne avec une note de passage chromatique. Sonne naturellement sur les accords m7 en jazz.',
   double_harm:'Aussi connue sous le nom de Byzantine ou Gypsy Major. Deux tétracordes harmoniques identiques contenant deux secondes augmentées. Sonorité très caractéristique, entre Orient et Occident.',
   hung_min:   'Aussi appelée Gypsy Minor. Mineure harmonique avec une 4ème augmentée — sonorité tsigane très reconnaissable. Utilisée en musique hongroise, jazz manouche et métal.',
   hung_maj:   'Majeure hongroise avec une 2ème et une 4ème augmentées. Sonorité exotique et lumineuse.',
   gypsy_maj:  'Gamme tsigane majeure. Proche du phrygien dominant, avec une couleur orientale chaude.',
   romanian_min:'Mineure avec une 4ème augmentée. Très présente dans la musique folklorique des Balkans et d\'Europe de l\'Est.',
-  ukr_dorian: 'Identique à la mineure roumaine. Très utilisée dans la musique traditionnelle ukrainienne et le jazz modal.',
   persian:    'Gamme traditionnelle perse avec deux secondes augmentées et une 5ème diminuée — sonorité très orientale et mystérieuse.',
   arabic:     'Gamme arabe traditionnelle. Proche du mode locrien, couleur orientale.',
   enigmatic:  'Créée par Verdi. Gamme aux intervalles inhabituels et à l\'ascension chromatique unique.',
@@ -714,7 +732,6 @@ const SCALE_DESC = {
   napolitaine_min: 'Mineure avec une 2ème et une 6ème bémol.',
   prometheus: 'Gamme inventée par Alexandre Scriabine. Six notes au caractère mystique et futuriste.',
   overtone:   'Aussi appelée gamme acoustique. Correspond à la série harmonique naturelle — identique au Lydien dominant.',
-  major_locrian: 'Gamme majeure avec une 5ème et une 6ème bémol. Rare, utilisée dans des contextes jazz avancés.',
   hijaz:      'Maqam arabe fondamental avec une seconde augmentée caractéristique — couleur orientale intense et reconnaissable.',
   hijaz_kar:  'Hijaz avec deux secondes augmentées. Sonorité encore plus orientale que le Hijaz simple.',
   bayati:     'Maqam très répandu dans la musique arabe et turque. Couleur expressive et mélancolique.',
@@ -768,7 +785,7 @@ const SCALE_DEFS = [
   {id:'blues_dom',       label:'Blues dominante',       sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5],      iv:[0,2,4,6,7,10]},
   {id:'dim',             label:'Diminuée T-½T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11]},
   {id:'dim_ht',          label:'Diminuée ½T-T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,0,1,2,3,4,5,6], iv:[0,1,3,4,6,7,9,10]},
-  {id:'half_dim',        label:'Demi-diminuée',         sub:'7 notes',         group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10]},
+  {id:'half_dim',        label:'Demi-diminuée',         sub:'= Locrien',       group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10]},
   {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
   {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11]},
   // ======= GROUPE 2 : MODES DÉRIVÉS & JAZZ =======
@@ -784,17 +801,15 @@ const SCALE_DEFS = [
   {id:'dorian_s4',       label:'Dorien ♯4',             sub:'Mode IV harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
   {id:'lydian_s2',       label:'Lydien ♯2',             sub:'Mode VI harm.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,11]},
   {id:'superlocrian_bb7',label:'Super Locrien 𝄫7',      sub:'Mode VII harm.',  group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,9]},
-  {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11]},
+  {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes (♯5)',     group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,4,5,6], iv:[0,2,4,5,7,8,9,11]},
   {id:'bebop_dom',       label:'Bebop dominante',       sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11]},
   {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10]},
-  {id:'bebop_dor',       label:'Bebop dorienne',        sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10]},
   // ======= GROUPE 3 : EXOTIQUES =======
   {id:'double_harm',     label:'Double harmonique',     sub:'Byzantine / Tsigane', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
   {id:'hung_min',        label:'Mineure hongroise',     sub:'Gypsy minor',         group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,11]},
   {id:'hung_maj',        label:'Majeure hongroise',     sub:'Hungarian major',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,10]},
   {id:'gypsy_maj',       label:'Tzigane majeure',       sub:'Gypsy major',         group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
   {id:'romanian_min',    label:'Mineure roumaine',      sub:'Dorien ♯4',           group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
-  {id:'ukr_dorian',      label:'Dorien ukrainien',      sub:'Ukrainian dorian',    group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
   {id:'persian',         label:'Persane',               sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,6,8,11]},
   {id:'arabic',          label:'Arabe',                 sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10]},
   {id:'enigmatic',       label:'Énigmatique',           sub:'Verdi',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,6,8,10,11]},
@@ -802,16 +817,15 @@ const SCALE_DEFS = [
   {id:'napolitaine_min', label:'Napolitaine mineure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,11]},
   {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,5],     iv:[0,2,4,6,9,10]},
   {id:'overtone',        label:'Acoustique (Overtone)', sub:'= Lydien dominant',   group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
-  {id:'major_locrian',   label:'Majeur locrien',        sub:'Rare',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10]},
   // ======= GROUPE 3 : ARABES / MAQAMS =======
-  {id:'hijaz',           label:'Hijaz',                 sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
+  {id:'hijaz',           label:'Hijaz',                 sub:'Maqam (≈ Phryg. dom.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
   {id:'hijaz_kar',       label:'Hijaz Kar',             sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
   {id:'bayati',          label:'Bayati',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
-  {id:'nahawand',        label:'Nahawand',              sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
-  {id:'rast',            label:'Rast',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
+  {id:'nahawand',        label:'Nahawand',              sub:'Maqam (≈ min. harm.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
+  {id:'rast',            label:'Rast',                  sub:'Maqam (≈ Mixolydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
   {id:'nikriz',          label:'Nikriz',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,10]},
   {id:'saba',            label:'Saba',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,10]},
-  {id:'kurd',            label:'Kurd',                  sub:'Maqam (≈ Phrygien)',  group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'kurd',            label:'Kurd',                  sub:'Maqam (≈ Phrygien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
   // ======= GROUPE 3 : JAPONAISES =======
   {id:'hirajoshi',       label:'Hirajoshi',             sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,8]},
   {id:'insen',           label:'Insen',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,7,10]},
@@ -821,8 +835,8 @@ const SCALE_DEFS = [
   // ======= GROUPE 3 : INDIENNES =======
   {id:'bhairav',         label:'Bhairav',               sub:'Raga',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
   {id:'todi',            label:'Todi',                  sub:'Raga',                group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,6,7,8,11]},
-  {id:'kafi',            label:'Kafi',                  sub:'Raga (≈ Dorien)',     group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
-  {id:'kalyan',          label:'Kalyan',                sub:'Raga (≈ Lydien)',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
+  {id:'kafi',            label:'Kafi',                  sub:'Raga indien (≈ Dorien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
+  {id:'kalyan',          label:'Kalyan',                sub:'Raga indien (≈ Lydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
 ];
 
 // Pentatoniques de référence pour les 5 positions (boîtes traditionnelles)
@@ -1368,8 +1382,12 @@ function buildTuningButtons(){
    ROUTING PAR URL  (?root=la&scale=penta_min)
    ============================================================ */
 const NOTE_TO_PC = {
+  // Notation française (solfège)
   'do':0,'do#':1,'dob':11,'reb':1,'re':2,'re#':3,'mib':3,'mi':4,'fab':4,'fa':5,'fa#':6,
-  'solb':6,'sol':7,'sol#':8,'lab':8,'la':9,'la#':10,'sib':10,'si':11
+  'solb':6,'sol':7,'sol#':8,'lab':8,'la':9,'la#':10,'sib':10,'si':11,
+  // Notation anglaise (lettres) — pour les liens depuis quintes.html et URLs externes
+  'c':0,'c#':1,'db':1,'d':2,'d#':3,'eb':3,'e':4,'e#':5,'fb':4,
+  'f':5,'f#':6,'gb':6,'g':7,'g#':8,'ab':8,'a':9,'a#':10,'bb':10,'b':11,'b#':0,'cb':11,
 };
 const PC_TO_NOTE_FLAT  = ['do','reb','re','mib','mi','fa','solb','sol','lab','la','sib','si'];
 const PC_TO_NOTE_SHARP = ['do','do#','re','re#','mi','fa','fa#','sol','sol#','la','la#','si'];
@@ -1391,13 +1409,13 @@ const SCALE_LABELS_FR = {
   dorian_b2:'Dorien b2', locrian6:'Locrien naturel 6', ionian_s5:'Ionien #5',
   dorian_s4:'Dorien #4', lydian_s2:'Lydien #2', superlocrian_bb7:'Super Locrien bb7',
   bebop_maj:'Bebop majeure', bebop_dom:'Bebop dominante',
-  bebop_min:'Bebop mineure', bebop_dor:'Bebop dorienne',
+  bebop_min:'Bebop mineure',
   double_harm:'Double harmonique', hung_min:'Mineure hongroise',
   hung_maj:'Majeure hongroise', gypsy_maj:'Tzigane majeure',
-  romanian_min:'Mineure roumaine', ukr_dorian:'Dorien ukrainien',
+  romanian_min:'Mineure roumaine',
   persian:'Persane', arabic:'Arabe', enigmatic:'Énigmatique',
   napolitaine_maj:'Napolitaine majeure', napolitaine_min:'Napolitaine mineure',
-  prometheus:'Prometheus', overtone:'Acoustique', major_locrian:'Majeur locrien',
+  prometheus:'Prometheus', overtone:'Acoustique',
   hijaz:'Hijaz', hijaz_kar:'Hijaz Kar', bayati:'Bayati', nahawand:'Nahawand',
   rast:'Rast', nikriz:'Nikriz', saba:'Saba', kurd:'Kurd',
   hirajoshi:'Hirajoshi', insen:'Insen', kumoi:'Kumoi', iwato:'Iwato', yo:'Yo',
@@ -1409,10 +1427,15 @@ function readUrlParams(){
   const p = new URLSearchParams(window.location.search);
   const rootStr = p.get('root');
   const scaleStr = p.get('scale');
-  if(rootStr && NOTE_TO_PC[rootStr.toLowerCase()] !== undefined){
-    state.rootPc = NOTE_TO_PC[rootStr.toLowerCase()];
-    // Si la note est un dièse dans l'URL → préférence dièses
-    state.accPref = rootStr.includes('#') ? '#' : 'b';
+  if(rootStr){
+    const key = rootStr.toLowerCase();
+    if(NOTE_TO_PC[key] !== undefined){
+      state.rootPc = NOTE_TO_PC[key];
+      // Déduire accPref depuis la note : b/♭ → bémols, #/♯ → dièses
+      if(rootStr.includes('#') || rootStr.includes('♯')) state.accPref = '#';
+      else if(rootStr.includes('b') || rootStr.includes('♭')) state.accPref = 'b';
+      // Note naturelle (C, D, E...) → garder accPref actuel
+    }
   }
   if(scaleStr && SCALE_DEFS.find(s=>s.id===scaleStr)){
     state.scaleId = scaleStr;
@@ -1422,7 +1445,10 @@ function readUrlParams(){
 // Mise à jour de l'URL sans rechargement de page
 function updateUrl(){
   const accPref = state.accPref;
-  const noteName = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
+  // URL toujours en notation anglaise pour cohérence SEO
+  const PC_EN_FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  const PC_EN_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const noteName = (accPref==='#' ? PC_EN_SHARP : PC_EN_FLAT)[state.rootPc];
   const params = new URLSearchParams({ root: noteName, scale: state.scaleId });
   const newUrl = window.location.pathname + '?' + params.toString();
   window.history.replaceState(null, '', newUrl);
@@ -1432,7 +1458,9 @@ function updateUrl(){
 // Mise à jour du <title>, meta description ET balise canonical
 function updateMeta(){
   const accPref = state.accPref;
-  const noteRaw = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
+  const PC_EN_FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  const PC_EN_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const noteRaw = (accPref==='#' ? PC_EN_SHARP : PC_EN_FLAT)[state.rootPc];
   const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1)
     .replace('#','♯').replace('b','♭');
   const label = SCALE_LABELS_FR[state.scaleId] || state.scaleId;
@@ -1440,12 +1468,10 @@ function updateMeta(){
   const desc  = `Visualise la gamme de ${noteCap} ${label} sur le manche de basse. `
     + `Notes, degrés, intervalles et accords diatoniques.`;
   document.title = title;
-  // Meta description
   let dm = document.querySelector('meta[name="description"]');
   if(dm) dm.setAttribute('content', desc);
-  // Canonical : URL complète avec paramètres
-  const noteName = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
-  const canonicalUrl = `https://labussiere21.github.io/Gammes/index.html?root=${noteName}&scale=${state.scaleId}`;
+  // Canonical en notation anglaise — identique aux liens du cycle des quintes
+  const canonicalUrl = `https://labussiere21.github.io/Gammes/index.html?root=${noteRaw}&scale=${state.scaleId}`;
   let cl = document.querySelector('link[rel="canonical"]');
   if(!cl){ cl=document.createElement('link'); cl.rel='canonical'; document.head.appendChild(cl); }
   cl.setAttribute('href', canonicalUrl);

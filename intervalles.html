@@ -47,10 +47,10 @@
   .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; overflow:hidden;}
   .nav-link{
     font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:.12s; white-space:nowrap;
+    color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:color .12s,background .12s; white-space:nowrap; font-weight:700;
   }
   .nav-link:hover{color:var(--cream)}
-  .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
+  .nav-link.active{background:var(--brass); color:#160f08}
   h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(42px,7.5vw,82px);
     line-height:.95; margin:.12em 0 .1em; letter-spacing:.01em;}
   h1 em{font-style:italic; color:var(--brass)}
@@ -301,12 +301,19 @@
   .fretboard.lefty .str-label{ order: 1 }
 
   /* ===== Notation toggle + langue ===== */
-  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px}
-  .htool-seg button{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:5px;transition:.1s;white-space:nowrap}
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;margin-bottom:14px}
+  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px;flex-shrink:0}
+  .htool-seg button{
+    font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;border:0;color:var(--muted);cursor:pointer;
+    padding:4px 0;border-radius:5px;transition:color .1s,background .1s;
+    white-space:nowrap;font-weight:700;
+    /* Largeur fixe : empêche tout mouvement au clic */
+    min-width:0;width:var(--btn-w,auto);text-align:center;
+  }
   .htool-seg button:hover{color:var(--cream)}
-  .htool-seg button.on{background:var(--brass);color:#160f08;font-weight:700}
-  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+  .htool-seg button.on{background:var(--brass);color:#160f08}
+  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px;flex-shrink:0}
 
 </style>
 </head>
@@ -333,8 +340,8 @@
       <div class="htool-divider"></div>
       <div class="htool-seg" id="lang-seg">
         <button data-lang="fr" class="on">FR</button>
-        <button data-lang="en">EN</button>
-        <button data-lang="es">ES</button>
+        <button data-lang="en" disabled title="Bientôt disponible" style="opacity:.45;cursor:default">EN</button>
+        <button data-lang="es" disabled title="Próximamente" style="opacity:.45;cursor:default">ES</button>
       </div>
     </div>
     </div>
@@ -477,6 +484,16 @@ function spellNote(pc, accPref){
 }
 
 function initNotationLang(){
+  // Fixer la largeur de chaque bouton dans les htool-seg au maximum de ses états
+  document.querySelectorAll('.htool-seg').forEach(seg=>{
+    const btns=[...seg.querySelectorAll('button')];
+    requestAnimationFrame(()=>{
+      let maxW=0;
+      btns.forEach(b=>{ maxW=Math.max(maxW, b.offsetWidth); });
+      if(maxW>0) btns.forEach(b=>{ b.style.width=maxW+'px'; });
+    });
+  });
+
   // Segment notation
   const ns=document.getElementById('notation-seg');
   if(ns){
@@ -495,45 +512,41 @@ function initNotationLang(){
   const ls=document.getElementById('lang-seg');
   if(ls){
     const stored=localStorage.getItem('sblang')||'fr';
-    ls.querySelectorAll('button').forEach(b=>{
+    ls.querySelectorAll('button:not([disabled])').forEach(b=>{
       b.classList.toggle('on',b.dataset.lang===stored);
       b.onclick=()=>{
         localStorage.setItem('sblang',b.dataset.lang);
-        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-        // Pour l'instant : placeholder — traduction future
-        // showLangToast(b.dataset.lang);
+        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b&&!x.disabled));
       };
     });
   }
 }
 /* ============================================================ DONNÉES */
 const INTERVALS_DATA = [
-  // Familles
   {family:'Secondes', items:[
-    {id:'b2',  sym:'♭2',  label:'2nde mineure',    semi:1,  tons:'1/2',   cases:1},
-    {id:'2',   sym:'2',   label:'2nde Majeure',     semi:2,  tons:'1',     cases:2},
+    {id:'b2',  sym:'♭2',  label:'2nde mineure',              semi:1,  tons:'½',   cases:1},
+    {id:'2',   sym:'2',   label:'2nde Majeure',              semi:2,  tons:'1',   cases:2},
   ]},
   {family:'Tierces', items:[
-    {id:'b3',  sym:'♭3',  label:'3ce mineure',      semi:3,  tons:'1½',    cases:3},
-    {id:'3',   sym:'3',   label:'3ce Majeure',       semi:4,  tons:'2',     cases:4},
+    {id:'b3',  sym:'♭3',  label:'3ce mineure',               semi:3,  tons:'1½',  cases:3},
+    {id:'3',   sym:'3',   label:'3ce Majeure',               semi:4,  tons:'2',   cases:4},
   ]},
   {family:'Quartes', items:[
-    {id:'4',   sym:'4',   label:'4te Juste',         semi:5,  tons:'2½',    cases:5},
-    {id:'s4',  sym:'♯4',  label:'4te augmentée',     semi:6,  tons:'3',     cases:6},
+    {id:'4',   sym:'4',   label:'4te Juste',                 semi:5,  tons:'2½',  cases:5},
+  ]},
+  {family:'Triton', items:[
+    {id:'tt',  sym:'TT',  label:'Triton (♯4 / ♭5)',         semi:6,  tons:'3',   cases:6, enhar:true},
   ]},
   {family:'Quintes', items:[
-    {id:'b5',  sym:'♭5',  label:'5te diminuée',      semi:6,  tons:'3',     cases:6},
-    {id:'5',   sym:'5',   label:'5te Juste',          semi:7,  tons:'3½',    cases:7},
-    {id:'s5',  sym:'♯5',  label:'5te augmentée',      semi:8,  tons:'4',     cases:8},
+    {id:'5',   sym:'5',   label:'5te Juste',                 semi:7,  tons:'3½',  cases:7},
+    {id:'s5b6',sym:'♯5',  label:'5te aug. / 6te min.',      semi:8,  tons:'4',   cases:8, enhar:true},
   ]},
   {family:'Sixtes', items:[
-    {id:'b6',  sym:'♭6',  label:'6te mineure',       semi:8,  tons:'4',     cases:8},
-    {id:'6',   sym:'6',   label:'6te Majeure',        semi:9,  tons:'4½',    cases:9},
+    {id:'6',   sym:'6',   label:'6te Majeure',               semi:9,  tons:'4½',  cases:9},
   ]},
   {family:'Septièmes', items:[
-    {id:'bb7', sym:'𝄫7',  label:'7ème diminuée',     semi:9,  tons:'4½',    cases:9},
-    {id:'b7',  sym:'♭7',  label:'7ème mineure',      semi:10, tons:'5',     cases:10},
-    {id:'7',   sym:'7',   label:'7ème Majeure',       semi:11, tons:'5½',    cases:11},
+    {id:'b7',  sym:'♭7',  label:'7ème mineure',             semi:10, tons:'5',   cases:10},
+    {id:'7',   sym:'7',   label:'7ème Majeure',             semi:11, tons:'5½',  cases:11},
   ]},
 ];
 const ALL_IVS = INTERVALS_DATA.flatMap(f=>f.items);

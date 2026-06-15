@@ -40,9 +40,9 @@ header{margin-bottom:28px}
 .eyebrow{font-family:"Space Mono",monospace; letter-spacing:.24em; text-transform:uppercase; font-size:14px; color:var(--brass); display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:14px;}
 .site-name{font-weight:700; letter-spacing:.2em}
 .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; flex-wrap:nowrap; overflow:hidden;}
-.nav-link{font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:.12s; white-space:nowrap;}
+.nav-link{font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:color .12s,background .12s; white-space:nowrap; font-weight:700;}
 .nav-link:hover{color:var(--cream)}
-.nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
+.nav-link.active{background:var(--brass); color:#160f08}
 h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(38px,7vw,78px); line-height:.95; margin:.12em 0 .1em;}
 h1 em{font-style:italic; color:var(--brass)}
 .lede{color:var(--muted); max-width:60ch; font-size:clamp(14px,1.4vw,16px)}
@@ -191,12 +191,19 @@ h1 em{font-style:italic; color:var(--brass)}
 .anim{animation:fadeIn .18s ease both}
 
   /* ===== Notation toggle + langue ===== */
-  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px}
-  .htool-seg button{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:5px;transition:.1s;white-space:nowrap}
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;margin-bottom:14px}
+  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px;flex-shrink:0}
+  .htool-seg button{
+    font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;border:0;color:var(--muted);cursor:pointer;
+    padding:4px 0;border-radius:5px;transition:color .1s,background .1s;
+    white-space:nowrap;font-weight:700;
+    /* Largeur fixe : empêche tout mouvement au clic */
+    min-width:0;width:var(--btn-w,auto);text-align:center;
+  }
   .htool-seg button:hover{color:var(--cream)}
-  .htool-seg button.on{background:var(--brass);color:#160f08;font-weight:700}
-  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+  .htool-seg button.on{background:var(--brass);color:#160f08}
+  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px;flex-shrink:0}
 
 </style>
 </head>
@@ -223,8 +230,8 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="htool-divider"></div>
       <div class="htool-seg" id="lang-seg">
         <button data-lang="fr" class="on">FR</button>
-        <button data-lang="en">EN</button>
-        <button data-lang="es">ES</button>
+        <button data-lang="en" disabled title="Bientôt disponible" style="opacity:.45;cursor:default">EN</button>
+        <button data-lang="es" disabled title="Próximamente" style="opacity:.45;cursor:default">ES</button>
       </div>
     </div>
   </div>
@@ -314,6 +321,16 @@ function spellNote(pc, accPref){
 }
 
 function initNotationLang(){
+  // Fixer la largeur de chaque bouton dans les htool-seg au maximum de ses états
+  document.querySelectorAll('.htool-seg').forEach(seg=>{
+    const btns=[...seg.querySelectorAll('button')];
+    requestAnimationFrame(()=>{
+      let maxW=0;
+      btns.forEach(b=>{ maxW=Math.max(maxW, b.offsetWidth); });
+      if(maxW>0) btns.forEach(b=>{ b.style.width=maxW+'px'; });
+    });
+  });
+
   // Segment notation
   const ns=document.getElementById('notation-seg');
   if(ns){
@@ -332,31 +349,33 @@ function initNotationLang(){
   const ls=document.getElementById('lang-seg');
   if(ls){
     const stored=localStorage.getItem('sblang')||'fr';
-    ls.querySelectorAll('button').forEach(b=>{
+    ls.querySelectorAll('button:not([disabled])').forEach(b=>{
       b.classList.toggle('on',b.dataset.lang===stored);
       b.onclick=()=>{
         localStorage.setItem('sblang',b.dataset.lang);
-        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-        // Pour l'instant : placeholder — traduction future
-        // showLangToast(b.dataset.lang);
+        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b&&!x.disabled));
       };
     });
   }
 }
 /* ====================================================== DONNÉES */
 const CIRCLE_OF_FIFTHS = [
-  {pc:0,  sharp:'C',  flat:'C',  sharps:0, flats:0},
-  {pc:7,  sharp:'G',  flat:'G',  sharps:1, flats:0},
-  {pc:2,  sharp:'D',  flat:'D',  sharps:2, flats:0},
-  {pc:9,  sharp:'A',  flat:'A',  sharps:3, flats:0},
-  {pc:4,  sharp:'E',  flat:'E',  sharps:4, flats:0},
-  {pc:11, sharp:'B',  flat:'Cb', sharps:5, flats:7},
-  {pc:6,  sharp:'F♯', flat:'G♭', sharps:6, flats:6},
-  {pc:1,  sharp:'C♯', flat:'D♭', sharps:7, flats:5},
-  {pc:8,  sharp:'G♯', flat:'A♭', sharps:0, flats:4},
-  {pc:3,  sharp:'D♯', flat:'E♭', sharps:0, flats:3},
-  {pc:10, sharp:'A♯', flat:'B♭', sharps:0, flats:2},
-  {pc:5,  sharp:'E♯', flat:'F',  sharps:0, flats:1},
+  // Position dans le cercle = ordre des quintes
+  // showSharp : visible en mode dièses | showFlat : visible en mode bémols
+  {pc:0,  sharp:'C',  flat:'C',   sharps:0, flats:0,  showSharp:true,  showFlat:true},
+  {pc:7,  sharp:'G',  flat:'G',   sharps:1, flats:0,  showSharp:true,  showFlat:true},
+  {pc:2,  sharp:'D',  flat:'D',   sharps:2, flats:0,  showSharp:true,  showFlat:true},
+  {pc:9,  sharp:'A',  flat:'A',   sharps:3, flats:0,  showSharp:true,  showFlat:true},
+  {pc:4,  sharp:'E',  flat:'E',   sharps:4, flats:0,  showSharp:true,  showFlat:true},
+  {pc:11, sharp:'B',  flat:'B',   sharps:5, flats:0,  showSharp:true,  showFlat:true},
+  {pc:6,  sharp:'F♯', flat:'G♭',  sharps:6, flats:6,  showSharp:true,  showFlat:true},
+  {pc:1,  sharp:'C♯', flat:'D♭',  sharps:7, flats:5,  showSharp:true,  showFlat:true},
+  // Les 3 suivantes n'existent qu'en version bémol en pratique
+  {pc:8,  sharp:'G♯', flat:'A♭',  sharps:0, flats:4,  showSharp:false, showFlat:true},
+  {pc:3,  sharp:'D♯', flat:'E♭',  sharps:0, flats:3,  showSharp:false, showFlat:true},
+  {pc:10, sharp:'A♯', flat:'B♭',  sharps:0, flats:2,  showSharp:false, showFlat:true},
+  // F masqué en mode dièses (évite E♯), visible en bémols (1 bémol)
+  {pc:5,  sharp:'F',  flat:'F',   sharps:0, flats:1,  showSharp:false, showFlat:true},
 ];
 
 const SCALE_MAJ  = [0,2,4,5,7,9,11];
@@ -435,12 +454,20 @@ function buildMajScale(rootPc){
 }
 
 /* ====================================================== CERCLE SVG */
+function visibleEntries(){
+  return CIRCLE_OF_FIFTHS.filter(e=> state.accPref==='#' ? e.showSharp : e.showFlat);
+}
+
 function buildCircle(){
   const wrap = document.getElementById('circle-wrap');
+  // Supprimer les anciens boutons
+  wrap.querySelectorAll('.circle-btn').forEach(b=>b.remove());
   const R = wrap.offsetWidth/2 || 210;
-  const cr = R - 26; // rayon des boutons
-  CIRCLE_OF_FIFTHS.forEach((entry,i)=>{
-    const angle = (i/12)*2*Math.PI - Math.PI/2;
+  const cr = R - 26;
+  const visible = visibleEntries();
+  const total = visible.length; // 8 en mode ♯, 12 en mode ♭
+  visible.forEach((entry,i)=>{
+    const angle = (i/total)*2*Math.PI - Math.PI/2;
     const x = R + cr*Math.cos(angle);
     const y = R + cr*Math.sin(angle);
     const btn = document.createElement('button');
@@ -449,7 +476,9 @@ function buildCircle(){
     btn.style.top  = y+'px';
     btn.dataset.pc = entry.pc;
     const name = state.accPref==='#' ? entry.sharp : entry.flat;
-    const enhar = state.accPref==='#' ? (entry.flat!==entry.sharp?entry.flat:'') : (entry.sharp!==entry.flat?entry.sharp:'');
+    // Enharmonie : afficher seulement si l'autre nom existe ET est différent
+    const other = state.accPref==='#' ? entry.flat : entry.sharp;
+    const enhar = (other && other!==name) ? other : '';
     btn.innerHTML = name + (enhar?`<span class="cb-enhar">${enhar}</span>`:'');
     btn.setAttribute('aria-label', name);
     btn.onclick = ()=>{ state.pc=entry.pc; render(); };
@@ -459,21 +488,21 @@ function buildCircle(){
 }
 
 function updateCircle(){
-  document.querySelectorAll('.circle-btn').forEach(btn=>{
-    const pc = +btn.dataset.pc;
-    const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===pc);
-    const name = state.accPref==='#' ? entry.sharp : entry.flat;
-    const enhar = state.accPref==='#' ? (entry.flat!==entry.sharp?entry.flat:'') : (entry.sharp!==entry.flat?entry.sharp:'');
-    btn.innerHTML = name + (enhar?`<span class="cb-enhar">${enhar}</span>`:'');
-    btn.classList.toggle('active', state.pc===pc);
-  });
+  // Si la tonalité active n'est plus visible (ex: G# masqué en mode ♯), la désélectionner
+  if(state.pc!==null){
+    const entry=CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
+    if(entry && !(state.accPref==='#'?entry.showSharp:entry.showFlat)){
+      state.pc=null;
+    }
+  }
+  // Reconstruire le cercle (positions changent selon le nombre de boutons)
+  buildCircle();
   // Centre
   if(state.pc!==null){
     const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
     const name = state.accPref==='#' ? entry.sharp : entry.flat;
     document.getElementById('cc-note').textContent = name;
-    const sigText = sigLabel(entry);
-    document.getElementById('cc-sig').textContent = sigText;
+    document.getElementById('cc-sig').textContent = sigLabel(entry);
   } else {
     document.getElementById('cc-note').textContent = '—';
     document.getElementById('cc-sig').textContent = '';
@@ -568,30 +597,29 @@ function renderRelatives(entry, name){
   const c = document.getElementById('tab-relatives');
   c.className='anim'; c.innerHTML='';
 
-  // Relative mineure : 6ème degré = -3 demi-tons
+  // Gamme majeure de la tonique — source unique pour relative, IV, V, parallèle
+  const majNotes = buildMajScale(state.pc);
+  const relMinName = majNotes[5]; // 6e note = relative mineure
   const relMinPc = (state.pc+9)%12;
-  const relMinEntry = CIRCLE_OF_FIFTHS.find(e=>e.pc===relMinPc);
-  const relMinName = state.accPref==='#' ? relMinEntry.sharp : relMinEntry.flat;
   const relMinRaw  = FLAT_RAW[relMinPc];
 
-  // Tonalité parallèle mineure (même tonique)
+  // Tonalité parallèle mineure (même tonique, orthographe cohérente)
+  const parallelName = majNotes[0];
   const parallelRaw = FLAT_RAW[state.pc];
 
-  // Sous-dominante (IV) et dominante (V) : lire depuis la gamme majeure de la tonique
-  // pour éviter les enharmonies absurdes (E# au lieu de F, etc.)
-  const majNotes = buildMajScale(state.pc); // [C, D, E, F, G, A, B] pour Do maj
-  const ivName = majNotes[3]; // 4e degré = index 3
-  const vName  = majNotes[4]; // 5e degré = index 4
+  // Sous-dominante (IV) et dominante (V) : lire depuis la gamme
+  const ivName = majNotes[3];
+  const vName  = majNotes[4];
   const ivPc = (state.pc+5)%12;
   const vPc  = (state.pc+7)%12;
   const ivRaw = FLAT_RAW[ivPc];
   const vRaw  = FLAT_RAW[vPc];
 
   const items=[
-    {label:'Relative mineure',      name:relMinName+' mineur', href:`index.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
-    {label:'Parallèle mineure',     name:spell(state.pc)+' mineur', href:`index.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
-    {label:'Sous-dominante (IV)',   name:ivName+' majeur', href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
-    {label:'Dominante (V)',         name:vName+' majeur',  href:`quintes.html#${vRaw}`, col:'var(--d5)'},
+    {label:'Relative mineure',      name:relMinName+' mineur',   href:`index.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
+    {label:'Parallèle mineure',     name:parallelName+' mineur', href:`index.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
+    {label:'Sous-dominante (IV)',   name:ivName+' majeur',       href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
+    {label:'Dominante (V)',         name:vName+' majeur',        href:`quintes.html#${vRaw}`, col:'var(--d5)'},
   ];
 
   const grid = document.createElement('div'); grid.className='relatives-grid';
@@ -673,14 +701,10 @@ function renderCadences(notes, name){
 buildCircle();
 
 document.getElementById('accpref').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
+  const b=e.target.closest('button'); if(!b||!b.dataset.acc) return;
   state.accPref=b.dataset.acc;
-  // Mettre à jour les boutons accpref
   document.querySelectorAll('#accpref button').forEach(btn=>btn.classList.toggle('on',btn.dataset.acc===state.accPref));
-  // Reconstruire le cercle
-  document.querySelectorAll('.circle-btn').forEach(btn=>btn.remove());
-  buildCircle();
-  render();
+  render(); // updateCircle() appelé par render() → buildCircle() reconstruit
 });
 
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
