@@ -784,7 +784,8 @@ function renderResult(){
   const pcw=document.getElementById('play-cad-wrap');
   if(pcw && typeof makePlayBtn!=='undefined'){
     pcw.innerHTML='';
-    // Toggle mode de lecture
+
+    // Toggle fondamentale / accord
     const toggle=document.createElement('div');
     toggle.className='seg'; toggle.style.cssText='display:inline-flex;margin-right:6px';
     toggle.innerHTML=`
@@ -795,28 +796,68 @@ function renderResult(){
       toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
     });
     pcw.appendChild(toggle);
-    const btn=makePlayBtn(async()=>{
+
+    // Sélecteur de structure rythmique : répétitions par accord
+    const rythSel=document.createElement('div');
+    rythSel.className='seg'; rythSel.style.cssText='display:inline-flex;margin-right:6px';
+    rythSel.innerHTML=`
+      <button data-reps="1" style="font-size:10px;padding:4px 9px">×1</button>
+      <button data-reps="2" style="font-size:10px;padding:4px 9px">×2</button>
+      <button data-reps="4" class="on" style="font-size:10px;padding:4px 9px">×4</button>
+      <button data-reps="8" style="font-size:10px;padding:4px 9px">×8</button>`;
+    rythSel.addEventListener('click',e=>{
+      const b=e.target.closest('button'); if(!b) return;
+      rythSel.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    });
+    pcw.appendChild(rythSel);
+
+    // État de lecture — pour le stop
+    let _cadTimers=[];
+    let _cadPlaying=false;
+
+    const btn=document.createElement('button');
+    btn.className='play-btn'; btn.style.cssText='width:auto;border-radius:8px;padding:0 14px;font-size:11px;letter-spacing:.06em';
+    btn.innerHTML='▶ Cadence'; btn.title='Jouer la cadence';
+
+    btn.onclick=async()=>{
+      // STOP si en cours
+      if(_cadPlaying){
+        _cadPlaying=false;
+        _cadTimers.forEach(t=>clearTimeout(t));
+        _cadTimers=[];
+        if(_sfInst) _sfInst.stop();
+        btn.innerHTML='▶ Cadence'; btn.classList.remove('playing');
+        return;
+      }
+
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
-      const BEAT=0.4;  // durée d'une pulsation (en secondes)
-      const REPS=4;    // répétitions par accord
+
+      _cadPlaying=true;
+      btn.innerHTML='■ Stop'; btn.classList.add('playing');
+
+      const BEAT=0.4;
+      const REPS=+(rythSel.querySelector('button.on')?.dataset.reps||4);
       const rootOnly=toggle.querySelector('button.on')?.dataset.playmode==='root';
       const pills=[...document.querySelectorAll('.chord-pill')];
+
+      // Planifier toutes les notes audio d'un coup (Web Audio est précis)
       chords.forEach((ch,i)=>{
         for(let r=0;r<REPS;r++){
           const t=_audioCtx.currentTime+(i*REPS+r)*BEAT;
           if(rootOnly){
             const midi=noteToMidi(spell(ch.pc).replace('♯','#').replace('♭','b'),2);
-            inst.play(midi, t, {duration:BEAT*0.85, gain:3.5});
+            inst.play(midi,t,{duration:BEAT*0.85,gain:3.5});
           } else {
             ch.pcs.forEach((pc,j)=>{
               const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
-              inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
+              inst.play(midi,t+j*0.06,{duration:BEAT*0.85,gain:3});
             });
           }
         }
-        // Highlight visuel au début de chaque accord
-        setTimeout(()=>{
+        // Highlight visuel — stocké pour pouvoir annuler
+        const t=_cadTimers.push(setTimeout(()=>{
+          if(!_cadPlaying) return;
           pills.forEach((p,pi)=>{
             p.classList.toggle('active',pi===i);
             p.style.borderColor=pi===i?ch.col:'';
@@ -825,10 +866,17 @@ function renderResult(){
           document.getElementById('btn-prev').disabled=i===0;
           document.getElementById('btn-next').disabled=i===chords.length-1;
           document.getElementById('chord-counter').textContent=`${i+1} / ${chords.length}`;
-        }, i*REPS*BEAT*1000);
+        }, i*REPS*BEAT*1000));
       });
-      return new Promise(r=>setTimeout(r, chords.length*REPS*BEAT*1000+300));
-    },'Jouer la cadence','▶ Cadence');
+
+      // Reset automatique à la fin
+      const totalMs=chords.length*REPS*BEAT*1000+300;
+      _cadTimers.push(setTimeout(()=>{
+        _cadPlaying=false;
+        _cadTimers=[];
+        btn.innerHTML='▶ Cadence'; btn.classList.remove('playing');
+      }, totalMs));
+    };
     pcw.appendChild(btn);
   }
   // Gammes recommandées
