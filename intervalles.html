@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScalaBass — Intervalles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
+    --line:#3a2c1e; --wood-a:#4a3320; --wood-b:#2c1d12;
+    --brass:#d9a849; --brass-dim:#9c7a3a;
+    --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
+    /* Couleur fondamentale et intervalle actif */
+    --c-root:#e8503a;
+    --c-iv:#45a3d9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 550px at 80% -10%, rgba(217,168,73,.09), transparent 58%),
+      radial-gradient(800px 480px at -8% 105%, rgba(217,168,73,.06), transparent 52%),
+      var(--bg);
+    color:var(--cream); font-family:"Hanken Grotesk",system-ui,sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px) 80px}
+
+  /* En-tête */
+  header{margin-bottom:30px}
+  .eyebrow{
+    font-family:"Space Mono",monospace; letter-spacing:.28em; text-transform:uppercase;
+    font-size:12px; color:var(--brass); display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+  }
+  .site-name{font-weight:700; letter-spacing:.2em; color:var(--brass)}
+  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px}
+  .nav-link{
+    font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; padding:5px 12px; border-radius:5px; transition:.12s;
+  }
+  .nav-link:hover{color:var(--cream)}
+  .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
+  h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(42px,7.5vw,82px);
+    line-height:.95; margin:.12em 0 .1em; letter-spacing:.01em;}
+  h1 em{font-style:italic; color:var(--brass)}
+  .lede{color:var(--muted); max-width:64ch; font-size:clamp(14px,1.4vw,16px)}
+
+  /* Controls */
+  .controls{
+    margin-top:26px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px clamp(14px,2.4vw,24px);
+    box-shadow:0 24px 60px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  .ctl-label{
+    font-family:"Space Mono",monospace; font-size:11px;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--muted-2); margin-bottom:9px;
+  }
+  .ctl-row{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start}
+
+  /* Piano */
+  .piano-wrap{display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap}
+  .piano{
+    position:relative; display:flex; align-items:flex-end;
+    height:140px; user-select:none;
+    background:#0c0906; padding:8px 8px 0; border-radius:10px;
+    border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.04);
+  }
+  .wkey{
+    position:relative; width:44px; height:112px;
+    background:linear-gradient(180deg,#f8f2e8,#e8dfc8 70%,#d4c9ad);
+    border:1px solid #2a1e12; border-radius:0 0 7px 7px;
+    margin:0 1.5px; cursor:pointer; color:#3a2c1e;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    padding-bottom:10px; gap:3px; font-weight:700; font-size:13px;
+    transition:background .1s,transform .05s;
+    box-shadow:inset 0 -3px 6px rgba(0,0,0,.15),2px 0 0 rgba(0,0,0,.1);
+  }
+  .wkey:hover{background:linear-gradient(180deg,#fff9ee,#ede1c4)}
+  .wkey:active{transform:translateY(2px)}
+  .wkey.sel{
+    background:linear-gradient(180deg,var(--brass),#c9952d 70%,#a07820);
+    color:#160f08; box-shadow:inset 0 -2px 5px rgba(0,0,0,.3),0 0 12px rgba(217,168,73,.4);
+  }
+  .wkey .wlabel{font-size:12px; font-weight:700; line-height:1}
+  .bkey{
+    position:absolute; top:8px; width:30px; height:82px; z-index:3;
+    background:linear-gradient(180deg,#1e1508,#0a0704 60%,#1a1208);
+    border:1px solid #000; border-top:none; border-radius:0 0 6px 6px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    padding-bottom:8px; gap:2px; line-height:1;
+    box-shadow:2px 4px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07);
+    transition:background .1s,transform .05s;
+  }
+  .bkey:hover{background:linear-gradient(180deg,#2e2010,#100b06)}
+  .bkey:active{transform:translateY(2px)}
+  .bkey.sel{
+    background:linear-gradient(180deg,var(--brass),#9c7520 60%,#7a5d18);
+    box-shadow:2px 4px 8px rgba(0,0,0,.6),0 0 10px rgba(217,168,73,.35);
+  }
+  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:11px; color:var(--cream)}
+  .bkey.sel .bname{color:#160f08}
+  .bkey .balt{font-size:9px; color:var(--muted-2)}
+  .bkey.sel .balt{color:rgba(22,15,8,.6)}
+
+  /* Segments */
+  .seg{display:inline-flex; background:#0e0a07; border:1px solid var(--line); border-radius:9px; padding:3px; gap:2px}
+  .seg button{
+    font-family:"Space Mono",monospace; font-size:13px;
+    background:transparent; border:0; color:var(--muted); cursor:pointer;
+    padding:7px 13px; border-radius:7px; transition:.12s;
+  }
+  .seg button:hover{color:var(--cream)}
+  .seg button.on{background:var(--brass); color:#160f08; font-weight:700}
+
+  /* Sélecteur d'intervalles par familles */
+  .iv-families{display:flex; gap:16px; flex-wrap:wrap; margin-top:20px}
+  .iv-family{flex:1 1 auto; min-width:130px}
+  .iv-family-label{
+    font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted-2); margin-bottom:7px; padding-bottom:5px; border-bottom:1px solid var(--line);
+  }
+  .iv-btns{display:flex; flex-direction:column; gap:4px}
+  .ivbtn{
+    display:flex; align-items:center; gap:9px;
+    text-align:left; font-size:13px; cursor:pointer;
+    background:#100b07; border:1px solid var(--line); color:var(--muted);
+    padding:8px 11px; border-radius:8px; transition:.12s;
+  }
+  .ivbtn:hover{border-color:var(--brass-dim); color:var(--cream)}
+  .ivbtn.on{
+    background:var(--c-iv); border-color:var(--c-iv);
+    color:#0c1a2a; font-weight:700;
+  }
+  .ivbtn .iv-sym{
+    font-family:"Space Mono",monospace; font-weight:700; font-size:12px;
+    min-width:28px; text-align:center;
+    background:rgba(0,0,0,.15); padding:2px 5px; border-radius:4px; flex:none;
+  }
+  .ivbtn.on .iv-sym{background:rgba(0,0,0,.2); color:#0c1a2a}
+  .ivbtn .iv-tons{font-size:11px; opacity:.65; margin-left:auto; font-family:"Space Mono",monospace; flex:none}
+
+  /* ---- Layout ---- */
+  .main-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.5fr); gap:20px; margin-top:20px}
+  @media(max-width:860px){.main-grid{grid-template-columns:1fr}}
+
+  .card{
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px clamp(14px,2vw,22px);
+    box-shadow:0 24px 60px -44px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  .card h2{
+    font-family:"Space Mono",monospace; font-weight:700; font-size:12px;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--muted-2); margin:0 0 16px;
+  }
+
+  /* Résumé de l'intervalle sélectionné */
+  .iv-summary{display:flex; flex-direction:column; gap:14px}
+  .iv-pair{
+    display:flex; gap:14px; align-items:stretch;
+  }
+  .iv-note-box{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; padding:18px 10px; border-radius:12px; border:2px solid; min-height:100px;
+  }
+  .iv-note-box.root-box{
+    border-color:var(--c-root); background:rgba(232,80,58,.08);
+  }
+  .iv-note-box.iv-box{
+    border-color:var(--c-iv); background:rgba(69,163,217,.08);
+  }
+  .iv-note-box.none-box{
+    border-color:var(--line); background:#0f0a07; opacity:.5;
+  }
+  .iv-note-box .role{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase}
+  .iv-note-box.root-box .role{color:var(--c-root)}
+  .iv-note-box.iv-box .role{color:var(--c-iv)}
+  .iv-note-box.none-box .role{color:var(--muted-2)}
+  .iv-note-box .note-big{font-family:"Instrument Serif",serif; font-size:clamp(36px,4vw,52px); line-height:1; font-weight:400}
+  .iv-note-box.root-box .note-big{color:var(--c-root)}
+  .iv-note-box.iv-box .note-big{color:var(--c-iv)}
+  .iv-note-box .sym-badge{
+    font-family:"Space Mono",monospace; font-size:12px; font-weight:700;
+    background:rgba(0,0,0,.25); padding:3px 8px; border-radius:5px;
+  }
+  .iv-arrow{
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; color:var(--muted-2); flex:none; padding:0 2px; user-select:none;
+  }
+
+  /* Tableau récapitulatif */
+  .recap-table{width:100%; border-collapse:collapse; font-size:13px}
+  .recap-table thead th{
+    font-family:"Space Mono",monospace; font-weight:400; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted-2); text-align:left; padding:0 8px 9px;
+    border-bottom:1px solid var(--line);
+  }
+  .recap-table tbody td{padding:8px 8px; border-bottom:1px solid rgba(58,44,30,.45); vertical-align:middle}
+  .recap-table tbody tr:last-child td{border-bottom:0}
+  .recap-table tbody tr.active-row td{background:rgba(69,163,217,.08)}
+  .recap-table tbody tr.active-row .rc-sym{color:var(--c-iv)}
+  .rc-sym{font-family:"Space Mono",monospace; font-weight:700; min-width:36px; display:inline-block}
+  .rc-name{color:var(--muted)}
+  .rc-tons{font-family:"Space Mono",monospace; font-size:12px; color:var(--muted-2); text-align:right}
+  .rc-cases{font-family:"Space Mono",monospace; font-size:12px; color:var(--brass-dim)}
+  .rc-dot{width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:6px; vertical-align:middle; flex:none}
+
+  /* Manche */
+  .fb-card{margin-top:20px}
+  .fb-head{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:16px}
+  .fb-head h2{margin:0}
+  .fb-tools{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+  .fb-scroll{overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch}
+  .fretboard{--fret-w:62px; --open-w:46px; --label-w:30px; min-width:max-content; margin:0 auto}
+  .fb-strings{
+    background:linear-gradient(180deg,var(--wood-a),var(--wood-b));
+    border:1px solid #120c07; border-radius:5px; overflow:hidden;
+    box-shadow:inset 0 2px 14px rgba(0,0,0,.55),0 16px 40px -30px #000;
+  }
+  .fb-row{display:flex; align-items:center; height:46px; position:relative}
+  .fb-row+.fb-row{border-top:1px solid rgba(0,0,0,.18)}
+  .fb-row::after{
+    content:""; position:absolute; left:var(--label-w); right:0; top:50%;
+    height:var(--str-h,2px); transform:translateY(-50%);
+    background:linear-gradient(180deg,rgba(255,255,255,.5),var(--brass-dim) 45%,rgba(0,0,0,.4));
+    z-index:1; pointer-events:none;
+  }
+  .str-label{width:var(--label-w); flex:none; text-align:center; z-index:4; font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:var(--muted)}
+  .cell{
+    width:var(--fret-w); flex:none; height:100%; display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:2; border-right:1px solid rgba(20,12,6,.55); box-shadow:inset -1px 0 0 rgba(255,255,255,.04);
+  }
+  .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
+  .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
+
+  /* Pastilles manche */
+  .dot{
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:"Space Mono",monospace; font-weight:700;
+    box-shadow:0 3px 8px rgba(0,0,0,.5); position:relative; z-index:3;
+    animation:pop .15s ease both;
+  }
+  .dot.dot-root{
+    width:36px; height:36px; font-size:13px; color:#fff8f0;
+    background:var(--c-root);
+    box-shadow:0 0 0 3px rgba(255,255,255,.8),0 3px 10px rgba(0,0,0,.6);
+  }
+  .dot.dot-iv{
+    width:34px; height:34px; font-size:12px; color:#0c1a2a;
+    background:var(--c-iv);
+  }
+  /* Pas d'intervalle sélectionné : fondamentale seule, plus grande */
+  .dot.dot-root-only{
+    width:38px; height:38px; font-size:14px; color:#fff8f0;
+    background:var(--c-root);
+    box-shadow:0 0 0 3px rgba(255,255,255,.85),0 3px 10px rgba(0,0,0,.65);
+  }
+  @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* Inlays */
+  .fb-inlays{display:flex; margin-top:7px}
+  .fb-inlays .spacer{width:var(--label-w); flex:none}
+  .fb-inlays .ic{width:var(--fret-w); flex:none; display:flex; flex-direction:column; align-items:center; gap:5px}
+  .fb-inlays .ic.open{width:var(--open-w)}
+  .fb-inlays .inlay{width:8px; height:8px; border-radius:50%; background:var(--bone); opacity:.85}
+  .fb-inlays .fnum{font-family:"Space Mono",monospace; font-size:11px; color:var(--muted-2)}
+
+  /* Légende manche */
+  .legend{display:flex; flex-wrap:wrap; gap:6px 20px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line)}
+  .legend-item{display:flex; align-items:center; gap:8px; font-size:13px}
+  .leg-dot{width:14px; height:14px; border-radius:50%}
+  .leg-root{background:var(--c-root); box-shadow:0 0 0 2px rgba(255,255,255,.7)}
+  .leg-iv{background:var(--c-iv)}
+
+  :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
+  @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">
+      <span class="site-name">ScalaBass</span>
+      <nav class="site-nav">
+        <a href="index.html"          class="nav-link">Gammes</a>
+        <a href="arpeges-basse.html"  class="nav-link">Arpèges</a>
+        <a href="intervalles.html"    class="nav-link active">Intervalles</a>
+      </nav>
+    </div>
+    <h1>Inter<em>valles</em></h1>
+    <p class="lede">Choisis une fondamentale, puis un intervalle : les deux notes s'affichent partout sur le manche pour visualiser la distance entre elles.</p>
+  </header>
+
+  <!-- Contrôles -->
+  <section class="controls">
+    <div class="ctl-row">
+      <div>
+        <div class="ctl-label">Fondamentale</div>
+        <div class="piano-wrap">
+          <div class="piano" id="piano"></div>
+          <div>
+            <div class="ctl-label">Altération</div>
+            <div class="seg" id="accpref" role="group">
+              <button data-acc="b" class="on">♭ bémols</button>
+              <button data-acc="#">♯ dièses</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sélecteur intervalles -->
+    <div style="margin-top:20px">
+      <div class="ctl-label">Intervalle</div>
+      <div class="iv-families" id="iv-families"></div>
+    </div>
+  </section>
+
+  <!-- Résultats -->
+  <div class="main-grid">
+    <!-- Résumé -->
+    <section class="card">
+      <h2>Intervalle</h2>
+      <div class="iv-summary">
+        <div class="iv-pair" id="iv-pair">
+          <!-- rempli par JS -->
+        </div>
+        <div id="iv-info" style="font-size:14px; color:var(--muted); line-height:1.7"></div>
+      </div>
+    </section>
+
+    <!-- Récap tableau -->
+    <section class="card">
+      <h2>Récapitulatif des intervalles</h2>
+      <table class="recap-table">
+        <thead>
+          <tr>
+            <th>Symbole</th>
+            <th>Nom</th>
+            <th style="text-align:right">Tons</th>
+            <th>Cases</th>
+          </tr>
+        </thead>
+        <tbody id="recap-body"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Manche -->
+  <section class="card fb-card">
+    <div class="fb-head">
+      <h2>Sur le manche</h2>
+      <div class="fb-tools">
+        <div>
+          <div class="ctl-label">Afficher</div>
+          <div class="seg" id="fb-display" role="group">
+            <button data-disp="note" class="on">Notes</button>
+            <button data-disp="deg">Degrés</button>
+          </div>
+        </div>
+        <div>
+          <div class="ctl-label">Cordes</div>
+          <div class="seg" id="fb-strings-ctl" role="group">
+            <button data-str="4" class="on">4</button>
+            <button data-str="5">5</button>
+          </div>
+        </div>
+        <div>
+          <div class="ctl-label">Cases</div>
+          <div class="seg" id="fb-frets-ctl" role="group">
+            <button data-frets="12" class="on">12</button>
+            <button data-frets="15">15</button>
+            <button data-frets="24">24</button>
+          </div>
+        </div>
+        <div>
+          <div class="ctl-label">Sens</div>
+          <div class="seg" id="fb-orient" role="group">
+            <button data-or="high" class="on">Aigu en haut</button>
+            <button data-or="low">Grave en haut</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fb-scroll"><div class="fretboard" id="fretboard"></div></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+</div><!-- /wrap -->
+
+<script>
+/* ============================================================ DONNÉES */
+const INTERVALS_DATA = [
+  // Familles
+  {family:'Secondes', items:[
+    {id:'b2',  sym:'♭2',  label:'2nde mineure',    semi:1,  tons:'1/2',   cases:1},
+    {id:'2',   sym:'2',   label:'2nde Majeure',     semi:2,  tons:'1',     cases:2},
+  ]},
+  {family:'Tierces', items:[
+    {id:'b3',  sym:'♭3',  label:'3ce mineure',      semi:3,  tons:'1½',    cases:3},
+    {id:'3',   sym:'3',   label:'3ce Majeure',       semi:4,  tons:'2',     cases:4},
+  ]},
+  {family:'Quartes', items:[
+    {id:'4',   sym:'4',   label:'4te Juste',         semi:5,  tons:'2½',    cases:5},
+    {id:'s4',  sym:'♯4',  label:'4te augmentée',     semi:6,  tons:'3',     cases:6},
+  ]},
+  {family:'Quintes', items:[
+    {id:'b5',  sym:'♭5',  label:'5te diminuée',      semi:6,  tons:'3',     cases:6},
+    {id:'5',   sym:'5',   label:'5te Juste',          semi:7,  tons:'3½',    cases:7},
+    {id:'s5',  sym:'♯5',  label:'5te augmentée',      semi:8,  tons:'4',     cases:8},
+  ]},
+  {family:'Sixtes', items:[
+    {id:'b6',  sym:'♭6',  label:'6te mineure',       semi:8,  tons:'4',     cases:8},
+    {id:'6',   sym:'6',   label:'6te Majeure',        semi:9,  tons:'4½',    cases:9},
+  ]},
+  {family:'Septièmes', items:[
+    {id:'bb7', sym:'𝄫7',  label:'7ème diminuée',     semi:9,  tons:'4½',    cases:9},
+    {id:'b7',  sym:'♭7',  label:'7ème mineure',      semi:10, tons:'5',     cases:10},
+    {id:'7',   sym:'7',   label:'7ème Majeure',       semi:11, tons:'5½',    cases:11},
+  ]},
+];
+const ALL_IVS = INTERVALS_DATA.flatMap(f=>f.items);
+
+/* ============================================================ ÉTAT */
+const state = {
+  rootPc: 9,      // La
+  accPref: 'b',
+  ivId: null,     // null = aucun intervalle sélectionné
+  display: 'note',
+  strings: 4,
+  frets: 12,
+  orient: 'high',
+};
+const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+function spell(pc){ return (state.accPref==='#'?SHARP:FLAT)[pc]; }
+function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
+function pcOf(n){
+  const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+  let pc=LP[n[0]];
+  for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}
+  return((pc%12)+12)%12;
+}
+
+/* ============================================================ PIANO */
+const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
+const BLACK=[{pc:1,after:0,s:'C♯',f:'D♭'},{pc:3,after:1,s:'D♯',f:'E♭'},{pc:6,after:3,s:'F♯',f:'G♭'},{pc:8,after:4,s:'G♯',f:'A♭'},{pc:10,after:5,s:'A♯',f:'B♭'}];
+function buildPiano(){
+  const p=document.getElementById('piano'); p.innerHTML='';
+  const W=47;
+  WHITE.forEach(w=>{
+    const k=document.createElement('button'); k.className='wkey'; k.dataset.pc=w.pc;
+    k.innerHTML=`<span class="wlabel">${w.n}</span>`; p.appendChild(k);
+  });
+  BLACK.forEach(b=>{
+    const k=document.createElement('button'); k.className='bkey'; k.dataset.pc=b.pc;
+    const main=state.accPref==='#'?b.s:b.f, alt=state.accPref==='#'?b.f:b.s;
+    k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;
+    k.style.left=(8+(b.after+1)*W-15)+'px';
+    p.appendChild(k);
+  });
+  p.addEventListener('click',e=>{
+    const k=e.target.closest('[data-pc]'); if(!k) return;
+    state.rootPc=+k.dataset.pc; render();
+  });
+}
+
+/* ============================================================ SÉLECTEUR INTERVALLES */
+function buildIvFamilies(){
+  const c=document.getElementById('iv-families'); c.innerHTML='';
+  INTERVALS_DATA.forEach(fam=>{
+    const col=document.createElement('div'); col.className='iv-family';
+    const lbl=document.createElement('div'); lbl.className='iv-family-label'; lbl.textContent=fam.family;
+    col.appendChild(lbl);
+    const btns=document.createElement('div'); btns.className='iv-btns';
+    fam.items.forEach(iv=>{
+      const b=document.createElement('button'); b.className='ivbtn'; b.dataset.id=iv.id;
+      b.innerHTML=`<span class="iv-sym">${iv.sym}</span>${iv.label}<span class="iv-tons">${iv.tons}T</span>`;
+      b.onclick=()=>{
+        state.ivId = state.ivId===iv.id ? null : iv.id; // toggle
+        render();
+      };
+      btns.appendChild(b);
+    });
+    col.appendChild(btns); c.appendChild(col);
+  });
+}
+
+/* ============================================================ RENDU */
+const STRINGS_4=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
+const STRINGS_5=[{n:'B',pc:11},{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
+
+function render(){
+  const SPELL_ARR=state.accPref==='#'?SHARP:FLAT;
+  const rootNote=SPELL_ARR[state.rootPc];
+  const ivDef=state.ivId?ALL_IVS.find(iv=>iv.id===state.ivId):null;
+  const ivPc=ivDef?(state.rootPc+ivDef.semi)%12:null;
+  const ivNote=ivPc!==null?SPELL_ARR[ivPc]:null;
+
+  // Synchro piano
+  document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
+  document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
+  document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
+  document.querySelectorAll('.ivbtn').forEach(b=>b.classList.toggle('on',b.dataset.id===state.ivId));
+  document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
+  document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
+  document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
+  document.querySelectorAll('#fb-orient button').forEach(b=>b.classList.toggle('on',b.dataset.or===state.orient));
+
+  // ---- Résumé ----
+  const pair=document.getElementById('iv-pair');
+  if(ivDef){
+    pair.innerHTML=`
+      <div class="iv-note-box root-box">
+        <span class="role">Fondamentale</span>
+        <span class="note-big">${pretty(rootNote)}</span>
+        <span class="sym-badge">1</span>
+      </div>
+      <div class="iv-arrow">→</div>
+      <div class="iv-note-box iv-box">
+        <span class="role">${ivDef.label}</span>
+        <span class="note-big">${pretty(ivNote)}</span>
+        <span class="sym-badge">${ivDef.sym}</span>
+      </div>`;
+    document.getElementById('iv-info').innerHTML=
+      `<strong style="color:var(--cream)">${ivDef.label}</strong> = <strong style="color:var(--brass)">${ivDef.semi} demi-ton${ivDef.semi>1?'s':''}</strong> = <strong style="color:var(--brass)">${ivDef.cases} case${ivDef.cases>1?'s':''}</strong> sur le manche`
+      +`<br><span style="color:var(--muted-2)">${ivDef.tons} ton${ivDef.tons!=='1'&&ivDef.tons!=='½'?'s':''}</span>`;
+  } else {
+    pair.innerHTML=`
+      <div class="iv-note-box root-box">
+        <span class="role">Fondamentale</span>
+        <span class="note-big">${pretty(rootNote)}</span>
+        <span class="sym-badge">1</span>
+      </div>
+      <div class="iv-arrow">→</div>
+      <div class="iv-note-box none-box">
+        <span class="role">Intervalle</span>
+        <span class="note-big" style="font-size:28px;opacity:.4">—</span>
+        <span class="sym-badge" style="opacity:.4">?</span>
+      </div>`;
+    document.getElementById('iv-info').innerHTML=
+      `<span style="color:var(--muted-2)">Sélectionne un intervalle ci-dessus pour le visualiser sur le manche.</span>`;
+  }
+
+  // ---- Tableau récap ----
+  const tb=document.getElementById('recap-body'); tb.innerHTML='';
+  INTERVALS_DATA.forEach(fam=>{
+    // Séparateur de famille
+    const headTr=document.createElement('tr');
+    headTr.innerHTML=`<td colspan="4" style="padding:10px 8px 4px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);border-bottom:1px solid var(--line)">${fam.family}</td>`;
+    tb.appendChild(headTr);
+    fam.items.forEach(iv=>{
+      const tpc=(state.rootPc+iv.semi)%12;
+      const active=iv.id===state.ivId;
+      const tr=document.createElement('tr');
+      tr.className=active?'active-row':'';
+      tr.style.cursor='pointer';
+      tr.onclick=()=>{state.ivId=state.ivId===iv.id?null:iv.id; render();};
+      tr.innerHTML=`
+        <td><span class="rc-sym">${iv.sym}</span></td>
+        <td class="rc-name">${iv.label}</td>
+        <td class="rc-tons">${iv.tons}T</td>
+        <td class="rc-cases">${iv.cases} case${iv.cases>1?'s':''} — <strong style="color:var(--cream)">${pretty(SPELL_ARR[tpc])}</strong></td>`;
+      tb.appendChild(tr);
+    });
+  });
+
+  // ---- Manche ----
+  const strings=state.strings===5?STRINGS_5:STRINGS_4;
+  renderFretboard(strings, state.rootPc, ivPc, ivDef, rootNote, ivNote);
+
+  // ---- Légende ----
+  const lg=document.getElementById('legend'); lg.innerHTML='';
+  const l1=document.createElement('div'); l1.className='legend-item';
+  l1.innerHTML=`<span class="leg-dot leg-root"></span><strong style="color:var(--c-root)">${pretty(rootNote)}</strong><span style="color:var(--muted);margin-left:4px">— Fondamentale (1)</span>`;
+  lg.appendChild(l1);
+  if(ivDef&&ivNote){
+    const l2=document.createElement('div'); l2.className='legend-item';
+    l2.innerHTML=`<span class="leg-dot leg-iv"></span><strong style="color:var(--c-iv)">${pretty(ivNote)}</strong><span style="color:var(--muted);margin-left:4px">— ${ivDef.label} (${ivDef.sym})</span>`;
+    lg.appendChild(l2);
+  }
+}
+
+function renderFretboard(strings, rootPc, ivPc, ivDef, rootNote, ivNote){
+  const fb=document.getElementById('fretboard'); fb.innerHTML='';
+  const frets=state.frets;
+  fb.style.setProperty('--frets',frets);
+
+  const lowPc=strings[0].pc;
+  let display=strings.slice();
+  if(state.orient==='high') display.reverse();
+  const thickness={}; strings.forEach((s,i)=>{thickness[s.n]=(2+(strings.length-1-i)*0.7);});
+
+  const SPELL_ARR=state.accPref==='#'?SHARP:FLAT;
+
+  const strDiv=document.createElement('div'); strDiv.className='fb-strings';
+  display.forEach(s=>{
+    const row=document.createElement('div'); row.className='fb-row';
+    row.style.setProperty('--str-h',thickness[s.n].toFixed(1)+'px');
+    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=s.n;
+    row.appendChild(lab);
+
+    for(let f=0;f<=frets;f++){
+      const cell=document.createElement('div');
+      cell.className='cell'+(f===0?' open nut-after':'');
+      const pc=(s.pc+f)%12;
+      const isRoot=pc===rootPc;
+      const isIv=ivPc!==null&&pc===ivPc&&pc!==rootPc; // iv ≠ root (sauf si même note = unisson)
+
+      if(isRoot||isIv){
+        const d=document.createElement('div');
+        if(isRoot&&!ivDef){
+          d.className='dot dot-root-only';
+          d.textContent=state.display==='note'?pretty(SPELL_ARR[pc]):'1';
+          d.title=`${s.n} case ${f} — ${pretty(SPELL_ARR[pc])} (fondamentale)`;
+        } else if(isRoot){
+          d.className='dot dot-root';
+          d.textContent=state.display==='note'?pretty(SPELL_ARR[pc]):'1';
+          d.title=`${s.n} case ${f} — ${pretty(SPELL_ARR[pc])} (fondamentale)`;
+        } else {
+          d.className='dot dot-iv';
+          d.textContent=state.display==='note'?pretty(SPELL_ARR[pc]):ivDef.sym;
+          d.title=`${s.n} case ${f} — ${pretty(SPELL_ARR[pc])} (${ivDef?ivDef.label:''})`;
+        }
+        cell.appendChild(d);
+      }
+      row.appendChild(cell);
+    }
+    strDiv.appendChild(row);
+  });
+  fb.appendChild(strDiv);
+
+  // Inlays
+  const inl=document.createElement('div'); inl.className='fb-inlays';
+  inl.appendChild(Object.assign(document.createElement('div'),{className:'spacer'}));
+  const SINGLE=[3,5,7,9,15,17,19,21],DOUBLE=[12,24];
+  for(let f=0;f<=frets;f++){
+    const ic=document.createElement('div'); ic.className='ic'+(f===0?' open':'');
+    if(DOUBLE.includes(f)){
+      const dbl=document.createElement('div'); dbl.style.cssText='display:flex;gap:5px';
+      dbl.innerHTML='<div class="inlay"></div><div class="inlay"></div>';
+      ic.appendChild(dbl);
+    } else if(SINGLE.includes(f)){
+      ic.appendChild(Object.assign(document.createElement('div'),{className:'inlay'}));
+    } else {
+      const a=document.createElement('div'); a.style.height='8px'; ic.appendChild(a);
+    }
+    const num=document.createElement('div'); num.className='fnum'; num.textContent=f===0?'0':f;
+    ic.appendChild(num); inl.appendChild(ic);
+  }
+  fb.appendChild(inl);
+}
+
+/* ============================================================ INIT */
+buildPiano();
+buildIvFamilies();
+
+document.getElementById('accpref').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.accPref=b.dataset.acc; buildPiano(); render();
+});
+['fb-display','fb-strings-ctl','fb-frets-ctl','fb-orient'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    const k=Object.keys(b.dataset)[0],v=b.dataset[k];
+    if(k==='disp')state.display=v;
+    else if(k==='str')state.strings=+v;
+    else if(k==='frets')state.frets=+v;
+    else if(k==='or')state.orient=v;
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>
