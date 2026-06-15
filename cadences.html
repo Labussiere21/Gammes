@@ -798,23 +798,24 @@ function renderResult(){
     const btn=makePlayBtn(async()=>{
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
-      const BEAT=1.2;
+      const BEAT=0.4;  // durée d'une pulsation (en secondes)
+      const REPS=4;    // répétitions par accord
       const rootOnly=toggle.querySelector('button.on')?.dataset.playmode==='root';
       const pills=[...document.querySelectorAll('.chord-pill')];
       chords.forEach((ch,i)=>{
-        const t=_audioCtx.currentTime+i*BEAT;
-        if(rootOnly){
-          // Fondamentale seule, octave 2 (grave) — son de basse pur
-          const midi=noteToMidi(spell(ch.pc).replace('♯','#').replace('♭','b'),2);
-          inst.play(midi, t, {duration:BEAT*0.9, gain:3.5});
-        } else {
-          // Accord en arpège léger
-          ch.pcs.forEach((pc,j)=>{
-            const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
-            inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
-          });
+        for(let r=0;r<REPS;r++){
+          const t=_audioCtx.currentTime+(i*REPS+r)*BEAT;
+          if(rootOnly){
+            const midi=noteToMidi(spell(ch.pc).replace('♯','#').replace('♭','b'),2);
+            inst.play(midi, t, {duration:BEAT*0.85, gain:3.5});
+          } else {
+            ch.pcs.forEach((pc,j)=>{
+              const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
+              inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
+            });
+          }
         }
-        // Highlight visuel
+        // Highlight visuel au début de chaque accord
         setTimeout(()=>{
           pills.forEach((p,pi)=>{
             p.classList.toggle('active',pi===i);
@@ -824,9 +825,9 @@ function renderResult(){
           document.getElementById('btn-prev').disabled=i===0;
           document.getElementById('btn-next').disabled=i===chords.length-1;
           document.getElementById('chord-counter').textContent=`${i+1} / ${chords.length}`;
-        }, i*BEAT*1000);
+        }, i*REPS*BEAT*1000);
       });
-      return new Promise(r=>setTimeout(r, chords.length*BEAT*1000+500));
+      return new Promise(r=>setTimeout(r, chords.length*REPS*BEAT*1000+300));
     },'Jouer la cadence','▶ Cadence');
     pcw.appendChild(btn);
   }
