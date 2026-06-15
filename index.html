@@ -196,10 +196,88 @@
   .deg-num{font-family:"Space Mono", monospace; font-weight:700; width:30px}
   .tt-note{font-weight:700; font-size:15px}
   .rn{font-family:"Space Mono", monospace; font-weight:700; font-size:15px}
-  .chord-sym{font-weight:700}
+  .chord-sym{font-weight:700; cursor:help; border-bottom:1px dashed var(--brass-dim); transition:.12s}
+  .chord-sym:hover{color:var(--brass)}
   .chord-notes{font-family:"Space Mono", monospace; font-size:12px; color:var(--muted)}
   .interval{color:var(--muted); font-size:13px}
   .swatch{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+
+  /* ---- Tooltip accord ---- */
+  .chord-tooltip{
+    position:fixed; z-index:9999; pointer-events:none;
+    background:linear-gradient(160deg,#2c2016,#1a120a);
+    border:1px solid var(--brass-dim); border-radius:12px;
+    padding:14px 18px; min-width:200px;
+    box-shadow:0 16px 48px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.5);
+    opacity:0; transform:translateY(6px) scale(.97);
+    transition:opacity .14s, transform .14s;
+  }
+  .chord-tooltip.show{opacity:1; transform:none}
+  .ct-title{font-family:"Instrument Serif",serif; font-size:22px; margin-bottom:8px}
+  .ct-title b{color:var(--brass)}
+  .ct-row{display:flex; gap:8px; align-items:center; margin:4px 0; font-size:13px}
+  .ct-deg{font-family:"Space Mono",monospace; font-weight:700; min-width:30px}
+  .ct-note{font-weight:700; min-width:28px}
+  .ct-interval{color:var(--muted); font-size:12px}
+  .ct-formula{margin-top:10px; padding-top:10px; border-top:1px solid var(--line);
+    font-family:"Space Mono",monospace; font-size:13px; color:var(--brass); letter-spacing:.06em}
+  .ct-quality{font-size:11px; color:var(--muted); margin-top:3px; text-transform:uppercase; letter-spacing:.12em}
+
+  /* ---- Piano redessiné ---- */
+  .piano-wrap{display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap}
+  .piano{
+    position:relative; display:flex; align-items:flex-end;
+    height:140px; user-select:none;
+    background:#0c0906; padding:8px 8px 0 8px; border-radius:10px;
+    border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.04);
+  }
+  /* touches blanches */
+  .wkey{
+    position:relative; width:44px; height:112px;
+    background:linear-gradient(180deg,#f8f2e8 0%,#e8dfc8 70%,#d4c9ad 100%);
+    border:1px solid #2a1e12; border-radius:0 0 7px 7px;
+    margin:0 1.5px; cursor:pointer; color:#3a2c1e;
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:flex-end; padding-bottom:10px; gap:3px;
+    font-weight:700; font-size:13px;
+    transition:background .1s, transform .05s;
+    box-shadow:inset 0 -3px 6px rgba(0,0,0,.15), 2px 0 0 rgba(0,0,0,.1);
+  }
+  .wkey:hover{background:linear-gradient(180deg,#fff9ee,#ede1c4)}
+  .wkey:active{transform:translateY(2px); box-shadow:inset 0 -1px 4px rgba(0,0,0,.2)}
+  .wkey.sel{
+    background:linear-gradient(180deg,var(--brass) 0%,#c9952d 70%,#a07820 100%);
+    color:#160f08; box-shadow:inset 0 -2px 5px rgba(0,0,0,.3), 0 0 12px rgba(217,168,73,.4);
+  }
+  .wkey .wlabel{font-size:12px; font-weight:700; line-height:1}
+  /* touches noires */
+  .bkey{
+    position:absolute; top:8px; width:30px; height:82px; z-index:3;
+    background:linear-gradient(180deg,#1e1508 0%,#0a0704 60%,#1a1208 100%);
+    border:1px solid #000; border-top:none; border-radius:0 0 6px 6px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:flex-end; padding-bottom:8px; gap:2px; line-height:1;
+    box-shadow:2px 4px 8px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.07);
+    transition:background .1s, transform .05s;
+  }
+  .bkey:hover{background:linear-gradient(180deg,#2e2010,#100b06)}
+  .bkey:active{transform:translateY(2px)}
+  .bkey.sel{
+    background:linear-gradient(180deg,var(--brass) 0%,#9c7520 60%,#7a5d18 100%);
+    box-shadow:2px 4px 8px rgba(0,0,0,.6), 0 0 10px rgba(217,168,73,.35);
+  }
+  /* nom principal de la touche noire (gros) */
+  .bkey .bname{
+    font-family:"Space Mono",monospace; font-weight:700; font-size:11px;
+    color:var(--cream); white-space:nowrap;
+  }
+  .bkey.sel .bname{color:#160f08}
+  /* nom alternatif (petit, discret) */
+  .bkey .balt{
+    font-size:9px; color:var(--muted-2); white-space:nowrap; line-height:1;
+  }
+  .bkey.sel .balt{color:rgba(22,15,8,.6)}
 
   /* ---------- Manche de basse ---------- */
   .fb-card{margin-top:22px}
@@ -287,6 +365,9 @@
 <body>
 <div class="wrap">
 
+  <!-- Tooltip accord -->
+  <div class="chord-tooltip" id="chord-tooltip"></div>
+
   <header>
     <div class="eyebrow">
       <span>Atelier des gammes</span>
@@ -301,7 +382,7 @@
     <div class="ctl-row">
       <div class="ctl-block">
         <div class="ctl-label">Tonique</div>
-        <div class="piano-frame">
+        <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div>
             <div class="ctl-label">Altération</div>
@@ -477,7 +558,10 @@ function triadOf(notes, i){
   let R = ['I','II','III','IV','V','VI','VII'][i];
   if(suffix==='m'||dim) R = R.toLowerCase();
   if(dim) R += '°'; if(aug) R += '+';
-  return {symbol: root+suffix, quality, roman:R, notes:[root,third,fifth]};
+  // Formule en degrés relatifs à la fondamentale de l'accord
+  const f3 = DEG_SHORT[i3], f5 = DEG_SHORT[i5];
+  const formula = `1 – ${f3} – ${f5}`;
+  return {symbol:root+suffix, quality, roman:R, notes:[root,third,fifth], intervals:[i3,i5], formula};
 }
 
 /* ============================================================
@@ -514,24 +598,27 @@ const BLACK = [ // index = après quelle touche blanche
 function buildPiano(){
   const p = document.getElementById('piano');
   p.innerHTML='';
-  const W = 48; // largeur touche blanche + marges approx
-  WHITE.forEach((w)=>{
+  const W = 47; // largeur touche blanche + marges
+  WHITE.forEach(w=>{
     const k=document.createElement('button');
-    k.className='wkey'; k.dataset.pc=w.pc; k.textContent=w.n;
+    k.className='wkey'; k.dataset.pc=w.pc;
+    k.innerHTML=`<span class="wlabel">${w.n}</span>`;
     k.setAttribute('aria-label','Tonique '+w.n);
     p.appendChild(k);
   });
   BLACK.forEach(b=>{
     const k=document.createElement('button');
     k.className='bkey'; k.dataset.pc=b.pc;
-    k.innerHTML = (state.accPref==='#') ? b.s+'<small>/'+b.f+'</small>' : b.f+'<small>/'+b.s+'</small>';
-    // position : à cheval entre deux blanches
-    k.style.left = (7 + (b.after+1)*W - 15) + 'px';
+    const main = state.accPref==='#' ? b.s : b.f;
+    const alt  = state.accPref==='#' ? b.f : b.s;
+    k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;
+    k.style.left = (8 + (b.after+1)*W - 15) + 'px';
+    k.setAttribute('aria-label','Tonique '+main);
     p.appendChild(k);
   });
   p.addEventListener('click', e=>{
     const k=e.target.closest('[data-pc]'); if(!k) return;
-    state.rootPc = +k.dataset.pc; render();
+    state.rootPc=+k.dataset.pc; render();
   });
 }
 
@@ -631,12 +718,23 @@ function render(){
       const semis=(pcOf(n)-rootPc+12)%12;
       const tri=triadOf(notes,i);
       const tr=document.createElement('tr');
+      // Chord-sym porte les data pour le tooltip
+      const csym=document.createElement('span');
+      csym.className='chord-sym';
+      csym.textContent=pretty(tri.symbol);
+      Object.assign(csym.dataset,{
+        sym:tri.symbol, quality:tri.quality, formula:tri.formula,
+        n0:tri.notes[0], n1:tri.notes[1], n2:tri.notes[2],
+        i0:'0', i1:String(tri.intervals[0]), i2:String(tri.intervals[1]),
+        c0:DEG_COLORS[i], c1:DEG_COLORS[(i+2)%7], c2:DEG_COLORS[(i+4)%7]
+      });
       tr.innerHTML=`
         <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
         <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
         <td class="interval">${INTERVAL_NAMES[semis]}</td>
-        <td><span class="rn">${tri.roman}</span> &nbsp;<span class="chord-sym">${pretty(tri.symbol)}</span></td>
+        <td><span class="rn">${tri.roman}</span> &nbsp;</td>
         <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
+      tr.querySelector('td:nth-child(4)').appendChild(csym);
       tb.appendChild(tr);
     });
   } else {
@@ -663,10 +761,48 @@ function render(){
   notes.forEach((n,i)=>{
     const el=document.createElement('div');
     el.className='legend-item'+(i===0?' root-leg':'');
-    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${i+1} — ${pretty(n)}${i===0?' (fondamentale)':''}`;
+    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])} — ${pretty(n)}${i===0?' (fondamentale)':''}`;
     lg.appendChild(el);
   });
 }
+
+/* ============================================================
+   TOOLTIP ACCORD
+   ============================================================ */
+(function(){
+  const tip=document.getElementById('chord-tooltip');
+  let active=null;
+  function show(el,e){
+    const d=el.dataset;
+    const rows=[0,1,2].map(k=>`
+      <div class="ct-row">
+        <span class="ct-deg" style="color:${d['c'+k]}">${pretty(DEG_SHORT[+d['i'+k]])}</span>
+        <span class="ct-note" style="color:${d['c'+k]}">${pretty(d['n'+k])}</span>
+        <span class="ct-interval">${INTERVAL_NAMES[+d['i'+k]]}</span>
+      </div>`).join('');
+    tip.innerHTML=`
+      <div class="ct-title"><b>${pretty(d.sym)}</b></div>
+      ${rows}
+      <div class="ct-formula">${pretty(d.formula)}</div>
+      <div class="ct-quality">${d.quality}</div>`;
+    position(e);
+    tip.classList.add('show');
+    active=el;
+  }
+  function position(e){
+    const vw=window.innerWidth, vh=window.innerHeight;
+    let x=e.clientX+14, y=e.clientY-10;
+    if(x+220>vw) x=e.clientX-224;
+    if(y+180>vh) y=vh-188;
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  }
+  function hide(){ tip.classList.remove('show'); active=null; }
+  document.addEventListener('mouseover',e=>{
+    const t=e.target.closest('.chord-sym'); if(t){ show(t,e); } else if(active) hide();
+  });
+  document.addEventListener('mousemove',e=>{ if(active) position(e); });
+  document.addEventListener('mouseout',e=>{ if(!e.relatedTarget?.closest('.chord-sym')) hide(); });
+})();
 
 /* --- Manche de basse --- */
 const STRINGS_4 = [ {n:'E',pc:4}, {n:'A',pc:9}, {n:'D',pc:2}, {n:'G',pc:7} ];       // grave -> aigu
