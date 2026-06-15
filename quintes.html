@@ -510,13 +510,18 @@ function updateCircle(){
 }
 
 function sigLabel(entry){
-  // Choisir l'armure selon le mode d'altération courant
-  // Db: sharps=7, flats=5 → en mode ♭ on affiche 5 bémols
-  if(state.accPref==='b' && entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
-  if(state.accPref==='#' && entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
-  if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
-  if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
-  return 'aucune altération';
+  // En mode ♯ : afficher les dièses. En mode ♭ : afficher les bémols.
+  // Les entrées sans armure dans le mode actuel (ex: G# en mode ♯)
+  // ne sont jamais affichées (showSharp:false), donc ce cas ne devrait pas arriver.
+  if(state.accPref==='#'){
+    if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
+    if(entry.flats>0 && entry.sharps===0) return `${entry.flats} bémol${entry.flats>1?'s':''}`; // tonalité naturelle double (ex: B = 5 dièses)
+    return 'aucune altération';
+  } else {
+    if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
+    if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
+    return 'aucune altération';
+  }
 }
 
 /* ====================================================== RENDU PANNEAU */
