@@ -1172,13 +1172,16 @@ function render(){
   // Tableau degrés (+ accords si gamme diatonique)
   const head=document.getElementById('degrees-head');
   const tb=document.getElementById('degrees-body'); tb.innerHTML='';
+  // Titre de la section selon le type de gamme
+  const sectionH2=document.querySelector('#degrees-head')?.closest('section')?.querySelector('h2');
+  if(sectionH2) sectionH2.textContent = def.diat ? 'Degrés & accords diatoniques' : 'Degrés & intervalles';
+
   if(def.diat){
     head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Intervalle</th><th>Accord</th><th>Notes</th></tr>';
     notes.forEach((n,i)=>{
       const semis=(pcOf(n)-rootPc+12)%12;
       const tri=triadOf(notes,i);
       const tr=document.createElement('tr');
-      // Chord-sym porte les data pour le tooltip
       const csym=document.createElement('span');
       csym.className='chord-sym';
       csym.textContent=pretty(tri.symbol);
@@ -1198,14 +1201,17 @@ function render(){
       tb.appendChild(tr);
     });
   } else {
-    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Intervalle</th></tr>';
+    // Noms d'intervalles détaillés pour gammes non-diatoniques
+    const IV_FULL={0:'Unisson',1:'2nde min.',2:'2nde maj.',3:'3ce min.',4:'3ce maj.',5:'4te juste',6:'Triton',7:'5te juste',8:'5te aug.',9:'6te maj.',10:'7ème min.',11:'7ème maj.'};
+    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Demi-tons</th><th>Intervalle</th></tr>';
     notes.forEach((n,i)=>{
       const semis=(pcOf(n)-rootPc+12)%12;
       const tr=document.createElement('tr');
       tr.innerHTML=`
-        <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
-        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
-        <td class="interval">${INTERVAL_NAMES[semis]}</td>`;
+        <td class="deg-num" style="color:${DEG_COLORS[i%DEG_COLORS.length]}">${i+1}</td>
+        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i%DEG_COLORS.length]}"></span>${pretty(n)}</td>
+        <td class="interval" style="color:var(--muted)">${semis}</td>
+        <td class="interval">${IV_FULL[semis]||INTERVAL_NAMES[semis]||''}</td>`;
       tb.appendChild(tr);
     });
   }
@@ -1224,8 +1230,19 @@ function render(){
   if(psw){
     psw.innerHTML='';
     const noteNames=notes.map(n=>n.replace('♯','#').replace('♭','b'));
-    // Ajouter la tonique une octave plus haut pour finir
-    const btn=makePlayBtn(()=>playSequence([...noteNames,noteNames[0]],76,2),'Jouer la gamme','▶');
+    // Jouer la gamme + tonique une octave au-dessus (MIDI +12)
+    const btn=makePlayBtn(async()=>{
+      const inst=await initAudio(); if(!inst)return;
+      if(_audioCtx.state==='suspended') await _audioCtx.resume();
+      const beat=60/76;
+      noteNames.forEach((n,i)=>{
+        const midi=noteToMidi(n,2);
+        inst.play(midi,_audioCtx.currentTime+i*beat,{duration:beat*0.9,gain:3});
+      });
+      // Tonique finale à l'octave supérieure
+      const topMidi=noteToMidi(noteNames[0],2)+12;
+      inst.play(topMidi,_audioCtx.currentTime+noteNames.length*beat,{duration:beat*1.2,gain:3});
+    },'Jouer la gamme','▶');
     psw.appendChild(btn);
   }
 
