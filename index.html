@@ -21,8 +21,8 @@
     --panel:     #241a12;
     --panel-2:   #2c2016;
     --line:      #3a2c1e;
-    --wood-a:    #4a3320;
-    --wood-b:    #2c1d12;
+    --wood-a:    #5a3f26;
+    --wood-b:    #3a2415;
     --brass:     #d9a849;
     --brass-dim: #9c7a3a;
     --bone:      #efe6d3;
@@ -332,7 +332,7 @@
     position:relative;
   }
   .fb-row{display:flex; align-items:center; height:46px; position:relative}
-  .fb-row + .fb-row{border-top:1px solid rgba(0,0,0,.18)}
+  .fb-row + .fb-row{border-top:1px solid rgba(0,0,0,.45)}
   /* corde (ligne métallique) */
   .fb-row::after{
     content:""; position:absolute; left:var(--label-w); right:0; top:50%;
@@ -345,7 +345,7 @@
     font-family:"Space Mono", monospace; font-weight:700; font-size:13px; color:var(--muted);
   }
   .cell{width:var(--fret-w); flex:none; height:100%; display:flex; align-items:center; justify-content:center; position:relative; z-index:2;
-    border-right:1px solid rgba(20,12,6,.55); box-shadow:inset -1px 0 0 rgba(255,255,255,.04)}
+    border-right:2px solid rgba(60,30,10,.85); box-shadow:inset -1px 0 0 rgba(255,255,255,.12)}
   .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
   /* sillet (nut) */
   .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
