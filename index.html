@@ -1158,7 +1158,7 @@ function updateUrl(){
   updateMeta();
 }
 
-// Mise à jour du <title> et de la meta description
+// Mise à jour du <title>, meta description ET balise canonical
 function updateMeta(){
   const accPref = state.accPref;
   const noteRaw = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
@@ -1169,8 +1169,15 @@ function updateMeta(){
   const desc  = `Visualise la gamme de ${noteCap} ${label} sur le manche de basse. `
     + `Notes, degrés, intervalles, accords diatoniques et 5 positions traditionnelles.`;
   document.title = title;
+  // Meta description
   let dm = document.querySelector('meta[name="description"]');
   if(dm) dm.setAttribute('content', desc);
+  // Canonical : URL complète avec paramètres
+  const noteName = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
+  const canonicalUrl = `https://labussiere21.github.io/Gammes/index.html?root=${noteName}&scale=${state.scaleId}`;
+  let cl = document.querySelector('link[rel="canonical"]');
+  if(!cl){ cl=document.createElement('link'); cl.rel='canonical'; document.head.appendChild(cl); }
+  cl.setAttribute('href', canonicalUrl);
 }
 
 // Texte descriptif généré automatiquement sous l'outil
