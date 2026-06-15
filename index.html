@@ -383,6 +383,17 @@
   }
   .roadmap .lead{font-family:"Space Mono", monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--brass-dim)}
 
+  /* Texte SEO généré */
+  .scale-text-section{
+    margin-top:40px; padding:28px 32px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius);
+    color:var(--muted); font-size:15px; line-height:1.8;
+  }
+  .scale-text-section p{margin:0 0 10px}
+  .scale-text-section p:last-child{margin-bottom:0}
+  .scale-text-section strong{color:var(--cream); font-weight:600}
+
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
   @media (prefers-reduced-motion: reduce){ .dot{animation:none} }
 
@@ -545,6 +556,9 @@
     <span class="tag">Cycle des quintes</span>
     <span class="tag">Gammes penta &amp; blues</span>
   </div>
+
+  <!-- Texte SEO généré dynamiquement -->
+  <section class="scale-text-section" id="scale-text"></section>
 
 </div>
 
@@ -859,6 +873,10 @@ function render(){
   // Manche
   renderFretboard(notes, rootPc, def);
 
+  // URL + meta SEO + texte descriptif
+  updateUrl();
+  updateScaleText(notes, def, rootPc);
+
   // Légende
   const lg=document.getElementById('legend'); lg.innerHTML='';
   notes.forEach((n,i)=>{
@@ -1095,9 +1113,109 @@ function buildTuningButtons(){
   });
 }
 
+/* ============================================================
+   ROUTING PAR URL  (?root=la&scale=penta_min)
+   ============================================================ */
+const NOTE_TO_PC = {
+  'do':0,'do#':1,'dob':11,'reb':1,'re':2,'re#':3,'mib':3,'mi':4,'fab':4,'fa':5,'fa#':6,
+  'solb':6,'sol':7,'sol#':8,'lab':8,'la':9,'la#':10,'sib':10,'si':11
+};
+const PC_TO_NOTE_FLAT  = ['do','reb','re','mib','mi','fa','solb','sol','lab','la','sib','si'];
+const PC_TO_NOTE_SHARP = ['do','do#','re','re#','mi','fa','fa#','sol','sol#','la','la#','si'];
+
+const SCALE_LABELS_FR = {
+  major:'Majeure', minor:'Mineure naturelle', harmonic:'Mineure harmonique',
+  melodic:'Mineure mélodique', dorian:'Dorienne', phrygian:'Phrygienne',
+  lydian:'Lydienne', mixolydian:'Mixolydienne', locrian:'Locrienne',
+  penta_min:'Pentatonique mineure', penta_maj:'Pentatonique majeure',
+  blues_min:'Blues mineure', blues_maj:'Blues majeure',
+  dim:'Diminuée', half_dim:'Demi-diminuée', whole_tone:'Par tons',
+};
+
+// Lecture des paramètres URL au chargement
+function readUrlParams(){
+  const p = new URLSearchParams(window.location.search);
+  const rootStr = p.get('root');
+  const scaleStr = p.get('scale');
+  if(rootStr && NOTE_TO_PC[rootStr.toLowerCase()] !== undefined){
+    state.rootPc = NOTE_TO_PC[rootStr.toLowerCase()];
+    // Si la note est un dièse dans l'URL → préférence dièses
+    state.accPref = rootStr.includes('#') ? '#' : 'b';
+  }
+  if(scaleStr && SCALE_DEFS.find(s=>s.id===scaleStr)){
+    state.scaleId = scaleStr;
+  }
+}
+
+// Mise à jour de l'URL sans rechargement de page
+function updateUrl(){
+  const accPref = state.accPref;
+  const noteName = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
+  const params = new URLSearchParams({ root: noteName, scale: state.scaleId });
+  const newUrl = window.location.pathname + '?' + params.toString();
+  window.history.replaceState(null, '', newUrl);
+  updateMeta();
+}
+
+// Mise à jour du <title> et de la meta description
+function updateMeta(){
+  const accPref = state.accPref;
+  const noteRaw = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[state.rootPc];
+  const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1)
+    .replace('#','♯').replace('b','♭');
+  const label = SCALE_LABELS_FR[state.scaleId] || state.scaleId;
+  const title = `Gamme de ${noteCap} ${label} à la basse — ScalaBass`;
+  const desc  = `Visualise la gamme de ${noteCap} ${label} sur le manche de basse. `
+    + `Notes, degrés, intervalles, accords diatoniques et 5 positions traditionnelles.`;
+  document.title = title;
+  let dm = document.querySelector('meta[name="description"]');
+  if(dm) dm.setAttribute('content', desc);
+}
+
+// Texte descriptif généré automatiquement sous l'outil
+function updateScaleText(notes, def, rootPc){
+  const el = document.getElementById('scale-text');
+  if(!el) return;
+  const accPref = state.accPref;
+  const noteRaw = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[rootPc];
+  const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1).replace('#','♯').replace('b','♭');
+  const label = SCALE_LABELS_FR[def.id] || def.label;
+  const noteList = notes.map(pretty).join(', ');
+  // Relative majeure/mineure
+  let relative = '';
+  if(def.pos==='min'){
+    const relPc = (rootPc+3)%12;
+    const relNote = PC_TO_NOTE_FLAT[relPc];
+    const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
+    relative = ` Sa relative majeure est <strong>${relCap} majeure</strong>.`;
+  } else if(def.pos==='maj'){
+    const relPc = (rootPc+9)%12;
+    const relNote = PC_TO_NOTE_FLAT[relPc];
+    const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
+    relative = ` Sa relative mineure est <strong>${relCap} mineure</strong>.`;
+  }
+  // Armure
+  let sharps=0,flats=0;
+  notes.forEach(n=>{for(const c of n.slice(1)){if(c==='#')sharps++;else if(c==='b')flats++;}});
+  const armure = sharps>0 ? `${sharps} dièse${sharps>1?'s':''}`
+    : flats>0 ? `${flats} bémol${flats>1?'s':''}`
+    : 'aucune altération';
+  el.innerHTML = `
+    <p>La gamme de <strong>${noteCap} ${label}</strong> est composée de ${notes.length} notes :
+    <strong>${noteList}</strong>. Son armure comporte ${armure}.${relative}</p>
+    <p>Elle fait partie des gammes ${def.fam==='maj'?'majeures (sonorité lumineuse)':'mineures (sonorité plus sombre)'}.
+    Sur le manche de basse, elle se joue en 5 positions traditionnelles qui couvrent tout le manche.</p>`;
+}
+
 buildPiano();
 buildScaleTypes();
 buildTuningButtons();
+
+// Lire l'URL avant le premier render
+readUrlParams();
+buildPiano(); // reconstruire le piano avec le bon accPref
+buildScaleTypes(); // reconstruire avec le bon scaleId
+
 document.getElementById('scale-family').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.family=b.dataset.fam; buildScaleTypes(); render();
@@ -1106,7 +1224,6 @@ bindSeg('fb-display','display');
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.strings=+b.dataset.str;
-  // Réinitialiser le tuning au standard pour le nouveau nombre de cordes
   state.tuning=TUNINGS[state.strings][0].id;
   buildTuningButtons();
   render();
