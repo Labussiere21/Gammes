@@ -40,8 +40,8 @@
   header{margin-bottom:30px}
   .eyebrow{font-family:"Space Mono",monospace; letter-spacing:.24em; text-transform:uppercase; font-size:14px; color:var(--brass); display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:14px;}
   .site-name{font-weight:700; letter-spacing:.2em}
-  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px}
-  .nav-link{font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.10em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 14px; border-radius:5px; transition:.12s;}
+  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; overflow:hidden;}
+  .nav-link{font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:.12s; white-space:nowrap;}
   .nav-link:hover{color:var(--cream)}
   .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
   h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(42px,7.5vw,82px); line-height:.95; margin:.12em 0 .1em;}
@@ -260,7 +260,7 @@
         <a href="manche.html"        class="nav-link">Manche</a>
         <a href="cadences.html"      class="nav-link active">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
-        <a href="quintes.html"       class="nav-link">Cycle des quintes</a>
+        <a href="quintes.html"       class="nav-link">Quintes</a>
       </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -638,7 +638,7 @@ const BLACK=[{pc:1,after:0,s:'C♯',f:'D♭'},{pc:3,after:1,s:'D♯',f:'E♭'},{
 function buildPiano(){
   const p=document.getElementById('piano');p.innerHTML='';const W=47;
   WHITE.forEach(w=>{const k=document.createElement('button');k.className='wkey';k.dataset.pc=w.pc;k.innerHTML=`<span class="wlabel">${spellNote(w.pc,(typeof state!=='undefined'?state.accPref:'b'))}</span>`;p.appendChild(k);});
-  BLACK.forEach(b=>{const k=document.createElement('button');k.className='bkey';k.dataset.pc=b.pc;const main=spellNote(b.pc,state.accPref),alt=spellNote(b.pc,state.accPref==='#'?'b':'#');k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;k.style.left=(8+(b.after+1)*W-15)+'px';p.appendChild(k);});
+  BLACK.forEach(b=>{const k=document.createElement('button');k.className='bkey';k.dataset.pc=b.pc;const main=spellNote(b.pc,state.accPref);const _eh={1:['C♯','D♭'],3:['D♯','E♭'],6:['F♯','G♭'],8:['G♯','A♭'],10:['A♯','B♭']};const _p=_eh[b.pc];const alt=_p?(state.accPref==='#'?_p[1]:_p[0]):'';k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;k.style.left=(8+(b.after+1)*W-15)+'px';p.appendChild(k);});
   p.addEventListener('click',e=>{const k=e.target.closest('[data-pc]');if(!k)return;state.rootPc=+k.dataset.pc;render();});
 }
 
