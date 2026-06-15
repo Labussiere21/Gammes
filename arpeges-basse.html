@@ -543,7 +543,7 @@ const GROUPS = [
   {label:'Quinte diminuée', arps:[
     {id:'dim',    label:'Diminué',        sub:'°',    iv:[0,3,6],        sym:'dim',   posType:'sym'},
     {id:'halfdim',label:'Demi-diminué',   sub:'ø',    iv:[0,3,6,10],     sym:'m7♭5',  posType:'min'},
-    {id:'dim7',   label:'7 Diminué',      sub:'°7',   iv:[0,3,6,9],      sym:'dim7',  posType:'sym'},
+    {id:'dim7',   label:'7 Diminué',      sub:'°7 · 7e dim. = enharmonie 6te',   iv:[0,3,6,9],      sym:'dim7',  posType:'sym'},
     {id:'dom7b5', label:'7 ♭5',           sub:'7♭5',  iv:[0,4,6,10],     sym:'7♭5',   posType:'maj'},
   ]},
 ];
@@ -556,17 +556,14 @@ const PMIN_REL=[0,3,5,7,10];
 // Calcul des notes de l'arpège sur la tonique
 function buildArp(rootName, iv){
   const rpc=pcOf(rootName);
-  // Orthographe intelligente : utilise les lettres disponibles
-  const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  const FLAT= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
-  return iv.map(i=>{
+  const SHARP=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+  const FLAT= ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+  return iv.map((i,idx)=>{
     const tpc=(rpc+i)%12;
-    // Choisir la meilleure orthographe
+    // Pour le 7ème dim (intervalle 9 demi-tons dans dim7) :
+    // En théorie stricte c'est Si𝄫 (double bémol) = enharmonie de La
+    // On affiche la sixte majeure (La) qui est l'enharmonie pratique universelle
     if(state.accPref==='#') return SHARP[tpc];
-    // Pour bb7 (dim7) : utiliser l'enharmonique naturel
-    if(i===9){ // 6 demi-tons de quinte = sixte/double bémol septième
-      return FLAT[tpc]; // on retourne la 6te majeure
-    }
     return FLAT[tpc];
   });
 }
