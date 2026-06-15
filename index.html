@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atelier des gammes — Basse</title>
+<title>ScalaBass — Gammes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -60,6 +60,14 @@
     display:flex; gap:14px; align-items:center;
   }
   .eyebrow .tuning span{color:var(--muted)}
+  .site-name{font-weight:700; letter-spacing:.2em; color:var(--brass)}
+  .site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px}
+  .nav-link{
+    font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; padding:5px 12px; border-radius:5px; transition:.12s;
+  }
+  .nav-link:hover{color:var(--cream)}
+  .nav-link.active{background:var(--brass); color:#160f08; font-weight:700}
   h1{
     font-family:"Instrument Serif", serif;
     font-weight:400;
@@ -370,7 +378,11 @@
 
   <header>
     <div class="eyebrow">
-      <span>Atelier des gammes</span>
+      <span class="site-name">ScalaBass</span>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link active">Gammes</a>
+        <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      </nav>
       <span class="tuning">corde à vide&nbsp; <span id="tuning-disp">E · A · D · G</span></span>
     </div>
     <h1>Gammes &amp; <em>manche</em></h1>
