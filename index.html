@@ -105,12 +105,12 @@
   .piano-frame{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap}
   .piano{
     position:relative; display:flex;
-    height:128px; user-select:none;
+    height:160px; user-select:none;
     background:#0d0a07; padding:7px 7px 0; border-radius:8px;
     border:1px solid var(--line);
   }
   .wkey{
-    position:relative; width:46px; height:100%;
+    position:relative; width:58px; height:100%;
     background:linear-gradient(180deg,#f3ecdd,#d9cdb4);
     border:1px solid #1a140d; border-radius:0 0 6px 6px;
     margin:0 1px; cursor:pointer; color:#3a2c1e;
@@ -270,14 +270,14 @@
   .piano-wrap{display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap}
   .piano{
     position:relative; display:flex; align-items:flex-end;
-    height:140px; user-select:none;
+    height:170px; user-select:none;
     background:#0c0906; padding:8px 8px 0 8px; border-radius:10px;
     border:1px solid var(--line);
     box-shadow:0 8px 24px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.04);
   }
   /* touches blanches */
   .wkey{
-    position:relative; width:44px; height:112px;
+    position:relative; width:56px; height:136px;
     background:linear-gradient(180deg,#f8f2e8 0%,#e8dfc8 70%,#d4c9ad 100%);
     border:1px solid #2a1e12; border-radius:0 0 7px 7px;
     margin:0 1.5px; cursor:pointer; color:#3a2c1e;
@@ -296,7 +296,7 @@
   .wkey .wlabel{font-size:12px; font-weight:700; line-height:1}
   /* touches noires */
   .bkey{
-    position:absolute; top:8px; width:30px; height:82px; z-index:3;
+    position:absolute; top:8px; width:38px; height:100px; z-index:3;
     background:linear-gradient(180deg,#1e1508 0%,#0a0704 60%,#1a1208 100%);
     border:1px solid #000; border-top:none; border-radius:0 0 6px 6px; cursor:pointer;
     display:flex; flex-direction:column; align-items:center;
@@ -425,6 +425,15 @@
   }
   /* Label de corde : reste lisible à droite */
   .fretboard.lefty .str-label{ order: 1 }
+
+  /* ===== Notation toggle + langue ===== */
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px}
+  .htool-seg button{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:5px;transition:.1s;white-space:nowrap}
+  .htool-seg button:hover{color:var(--cream)}
+  .htool-seg button.on{background:var(--brass);color:#160f08;font-weight:700}
+  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+
 </style>
 </head>
 <body>
@@ -445,6 +454,18 @@
         <a href="analyse.html" class="nav-link">Analyse</a>
       <a href="quintes.html" class="nav-link">Cycle des quintes</a>
       </nav>
+      <div class="header-tools">
+        <div class="htool-seg" id="notation-seg">
+          <button data-notation="en" class="on">A B C</button>
+          <button data-notation="fr">Do Ré Mi</button>
+        </div>
+        <div class="htool-divider"></div>
+        <div class="htool-seg" id="lang-seg">
+          <button data-lang="fr" class="on">FR</button>
+          <button data-lang="en">EN</button>
+          <button data-lang="es">ES</button>
+        </div>
+      </div>
       <span class="tuning">corde à vide&nbsp; <span id="tuning-disp">E · A · D · G</span></span>
     </div>
     <h1>Gammes &amp; <em>manche</em></h1>
@@ -575,6 +596,61 @@
 </div>
 
 <script>
+
+/* ===== NOTATION GLOBALE ===== */
+const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
+const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
+const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+
+// Récupérer depuis localStorage ou défaut
+const _storedNotation = localStorage.getItem('sbnot')||'en';
+const _storedLang     = localStorage.getItem('sblang')||'fr';
+if(!window.state) window._notationReady=true; // sera lu par le state local
+
+function getNotationTable(accPref){
+  const pref = (typeof state!=='undefined'&&state.accPref)||accPref||'b';
+  const not  = localStorage.getItem('sbnot')||'en';
+  if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
+  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
+  return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
+}
+function spellNote(pc, accPref){
+  return getNotationTable(accPref)[pc];
+}
+
+function initNotationLang(){
+  // Segment notation
+  const ns=document.getElementById('notation-seg');
+  if(ns){
+    const stored=localStorage.getItem('sbnot')||'en';
+    ns.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on',b.dataset.notation===stored);
+      b.onclick=()=>{
+        localStorage.setItem('sbnot',b.dataset.notation);
+        ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+        if(typeof render==='function') render();
+        else if(typeof buildPiano==='function'){buildPiano();if(typeof renderFretboard==='function')renderFretboard();}
+      };
+    });
+  }
+  // Segment langue
+  const ls=document.getElementById('lang-seg');
+  if(ls){
+    const stored=localStorage.getItem('sblang')||'fr';
+    ls.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on',b.dataset.lang===stored);
+      b.onclick=()=>{
+        localStorage.setItem('sblang',b.dataset.lang);
+        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+        // Pour l'instant : placeholder — traduction future
+        // showLangToast(b.dataset.lang);
+      };
+    });
+  }
+}
 /* ============================================================
    THÉORIE
    ============================================================ */
@@ -842,15 +918,15 @@ function buildPiano(){
   WHITE.forEach(w=>{
     const k=document.createElement('button');
     k.className='wkey'; k.dataset.pc=w.pc;
-    k.innerHTML=`<span class="wlabel">${w.n}</span>`;
+    k.innerHTML=`<span class="wlabel">${spellNote(w.pc,(typeof state!=='undefined'?state.accPref:'b'))}</span>`;
     k.setAttribute('aria-label','Tonique '+w.n);
     p.appendChild(k);
   });
   BLACK.forEach(b=>{
     const k=document.createElement('button');
     k.className='bkey'; k.dataset.pc=b.pc;
-    const main = state.accPref==='#' ? b.s : b.f;
-    const alt  = state.accPref==='#' ? b.f : b.s;
+    const main = spellNote(b.pc,(typeof state!=='undefined'?state.accPref:'b'));
+    const alt  = spellNote(b.pc,(typeof state!=='undefined'?(state.accPref==='#'?'b':'#'):'#'));
     k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;
     k.style.left = (8 + (b.after+1)*W - 15) + 'px';
     k.setAttribute('aria-label','Tonique '+main);

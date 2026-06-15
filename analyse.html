@@ -98,13 +98,13 @@
 
   /* Piano */
   .piano-wrap{display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap; margin-top:14px}
-  .piano{position:relative; display:flex; align-items:flex-end; height:130px; user-select:none; background:#0c0906; padding:7px 7px 0; border-radius:10px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.04);}
-  .wkey{position:relative; width:44px; height:104px; background:linear-gradient(180deg,#f8f2e8,#e8dfc8 70%,#d4c9ad); border:1px solid #2a1e12; border-radius:0 0 7px 7px; margin:0 1.5px; cursor:pointer; color:#3a2c1e; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:9px; gap:3px; font-weight:700; font-size:13px; transition:background .1s,transform .05s; box-shadow:inset 0 -3px 6px rgba(0,0,0,.15),2px 0 0 rgba(0,0,0,.1);}
+  .piano{position:relative; display:flex; align-items:flex-end; height:160px; user-select:none; background:#0c0906; padding:7px 7px 0; border-radius:10px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.04);}
+  .wkey{position:relative; width:56px; height:128px; background:linear-gradient(180deg,#f8f2e8,#e8dfc8 70%,#d4c9ad); border:1px solid #2a1e12; border-radius:0 0 7px 7px; margin:0 1.5px; cursor:pointer; color:#3a2c1e; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:9px; gap:3px; font-weight:700; font-size:13px; transition:background .1s,transform .05s; box-shadow:inset 0 -3px 6px rgba(0,0,0,.15),2px 0 0 rgba(0,0,0,.1);}
   .wkey:hover{background:linear-gradient(180deg,#fff9ee,#ede1c4)}
   .wkey:active{transform:translateY(2px)}
   .wkey.sel{color:#160f08; box-shadow:inset 0 -2px 5px rgba(0,0,0,.3);}
   .wkey .wlabel{font-size:11px; font-weight:700; line-height:1}
-  .bkey{position:absolute; top:7px; width:30px; height:76px; z-index:3; background:linear-gradient(180deg,#1e1508,#0a0704 60%,#1a1208); border:1px solid #000; border-top:none; border-radius:0 0 6px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:7px; gap:2px; line-height:1; box-shadow:2px 4px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07); transition:background .1s,transform .05s;}
+  .bkey{position:absolute; top:7px; width:38px; height:96px; z-index:3; background:linear-gradient(180deg,#1e1508,#0a0704 60%,#1a1208); border:1px solid #000; border-top:none; border-radius:0 0 6px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:7px; gap:2px; line-height:1; box-shadow:2px 4px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07); transition:background .1s,transform .05s;}
   .bkey:hover{background:linear-gradient(180deg,#2e2010,#100b06)}
   .bkey:active{transform:translateY(2px)}
   .bkey.sel{box-shadow:2px 4px 8px rgba(0,0,0,.6);}
@@ -188,6 +188,15 @@
 
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
   @media(prefers-reduced-motion:reduce){.dot-sel,.note-pill{animation:none}}
+
+  /* ===== Notation toggle + langue ===== */
+  .header-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .htool-seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:7px;padding:2px;gap:1px}
+  .htool-seg button{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:5px;transition:.1s;white-space:nowrap}
+  .htool-seg button:hover{color:var(--cream)}
+  .htool-seg button.on{background:var(--brass);color:#160f08;font-weight:700}
+  .htool-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+
 </style>
 </head>
 <body>
@@ -205,6 +214,18 @@
       <a href="analyse.html"       class="nav-link active">Analyse</a>
       <a href="quintes.html"       class="nav-link">Cycle des quintes</a>
     </nav>
+    <div class="header-tools">
+      <div class="htool-seg" id="notation-seg">
+        <button data-notation="en" class="on">A B C</button>
+        <button data-notation="fr">Do Ré Mi</button>
+      </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="lang-seg">
+        <button data-lang="fr" class="on">FR</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="es">ES</button>
+      </div>
+    </div>
   </div>
   <h1>Ana<em>lyse</em></h1>
   <p class="lede">Clique des notes sur le piano ou le manche — le site identifie instantanément les accords, gammes et cadences correspondants.</p>
@@ -284,6 +305,61 @@
 </div><!-- /wrap -->
 
 <script>
+
+/* ===== NOTATION GLOBALE ===== */
+const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
+const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
+const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+
+// Récupérer depuis localStorage ou défaut
+const _storedNotation = localStorage.getItem('sbnot')||'en';
+const _storedLang     = localStorage.getItem('sblang')||'fr';
+if(!window.state) window._notationReady=true; // sera lu par le state local
+
+function getNotationTable(accPref){
+  const pref = (typeof state!=='undefined'&&state.accPref)||accPref||'b';
+  const not  = localStorage.getItem('sbnot')||'en';
+  if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
+  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
+  return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
+}
+function spellNote(pc, accPref){
+  return getNotationTable(accPref)[pc];
+}
+
+function initNotationLang(){
+  // Segment notation
+  const ns=document.getElementById('notation-seg');
+  if(ns){
+    const stored=localStorage.getItem('sbnot')||'en';
+    ns.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on',b.dataset.notation===stored);
+      b.onclick=()=>{
+        localStorage.setItem('sbnot',b.dataset.notation);
+        ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+        if(typeof render==='function') render();
+        else if(typeof buildPiano==='function'){buildPiano();if(typeof renderFretboard==='function')renderFretboard();}
+      };
+    });
+  }
+  // Segment langue
+  const ls=document.getElementById('lang-seg');
+  if(ls){
+    const stored=localStorage.getItem('sblang')||'fr';
+    ls.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on',b.dataset.lang===stored);
+      b.onclick=()=>{
+        localStorage.setItem('sblang',b.dataset.lang);
+        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+        // Pour l'instant : placeholder — traduction future
+        // showLangToast(b.dataset.lang);
+      };
+    });
+  }
+}
 /* ============================================================ DONNÉES */
 const CHORD_TYPES = [
   {id:'maj',     label:'Majeur',        short:'',      iv:[0,4,7]},
@@ -397,11 +473,11 @@ function buildPiano(){
   const W=47;
   WHITE.forEach(w=>{
     const k=document.createElement('button'); k.className='wkey'; k.dataset.pc=w.pc;
-    k.innerHTML=`<span class="wlabel">${w.n}</span>`; p.appendChild(k);
+    k.innerHTML=`<span class="wlabel">${spellNote(w.pc,(typeof state!=='undefined'?state.accPref:'b'))}</span>`; p.appendChild(k);
   });
   BLACK.forEach(b=>{
     const k=document.createElement('button'); k.className='bkey'; k.dataset.pc=b.pc;
-    const main=state.accPref==='#'?b.s:b.f, alt=state.accPref==='#'?b.f:b.s;
+    const main=spellNote(b.pc,state.accPref), alt=spellNote(b.pc,state.accPref==='#'?'b':'#');
     k.innerHTML=`<span class="bname">${main}</span><span class="balt">${alt}</span>`;
     k.style.left=(8+(b.after+1)*W-15)+'px';
     p.appendChild(k);
