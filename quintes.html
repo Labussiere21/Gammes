@@ -379,7 +379,7 @@ const DIATONIC_QUALITIES = [
   {symb:'ii',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
   {symb:'iii',  qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
   {symb:'IV',   qual:'Maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
-  {symb:'V',    qual:'dom7', short:'7',   long:'Dominant 7',   iv:[0,4,7,10]},
+  {symb:'V',    qual:'maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
   {symb:'vi',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
   {symb:'vii°', qual:'dim',  short:'°',   long:'Diminué',      iv:[0,3,6]},
 ];
@@ -481,6 +481,10 @@ function updateCircle(){
 }
 
 function sigLabel(entry){
+  // Choisir l'armure selon le mode d'altération courant
+  // Db: sharps=7, flats=5 → en mode ♭ on affiche 5 bémols
+  if(state.accPref==='b' && entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
+  if(state.accPref==='#' && entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
   if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
   if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
   return 'aucune altération';
