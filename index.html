@@ -231,6 +231,7 @@
     display:flex; flex-direction:column; align-items:center; gap:3px;
     min-width:50px; padding:9px 6px 7px; border-radius:10px;
     background:#0f0a07; border:1px solid var(--line); position:relative;
+    transition:background .1s, border-color .1s, transform .1s, box-shadow .1s;
   }
   .note-pill .deg{font-family:"Space Mono", monospace; font-size:10px; color:var(--muted)}
   .note-pill .nm{font-size:19px; font-weight:700}
@@ -384,11 +385,13 @@
     z-index:10;
   }
   .note-pill.playing{
-    background:rgba(217,168,73,.18);
-    border-color:var(--brass) !important;
-    transform:scale(1.06);
+    background:rgba(217,168,73,.15) !important;
+    border:2px solid var(--brass) !important;
+    transform:scale(1.08);
+    box-shadow:0 0 0 3px rgba(217,168,73,.25);
   }
-  .note-pill.playing .nm{color:var(--brass)}
+  .note-pill.playing .nm{color:var(--brass) !important}
+  .note-pill.playing .deg{color:var(--brass-dim) !important}
 
   /* réglette des cases (inlays + numéros) */
   .fb-inlays{display:flex; margin-top:7px}
@@ -429,7 +432,7 @@
 
   /* Positions / boîtes */
   .cell.in-box{background:rgba(217,168,73,.12); box-shadow:inset -1px 0 0 rgba(255,255,255,.04), inset 0 0 0 100px rgba(217,168,73,.06)}
-  .dot.ghost{opacity:.16; box-shadow:none; filter:saturate(.4)}
+  .dot.ghost{opacity:.08; box-shadow:none; filter:saturate(0) brightness(.6); transform:scale(.8)}
   .dot.ghost.root{box-shadow:none}
   .fb-caption{margin-top:14px; font-size:13px; color:var(--muted)}
   .fb-caption b{color:var(--brass); font-weight:700}
