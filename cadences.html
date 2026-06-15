@@ -784,19 +784,37 @@ function renderResult(){
   const pcw=document.getElementById('play-cad-wrap');
   if(pcw && typeof makePlayBtn!=='undefined'){
     pcw.innerHTML='';
+    // Toggle mode de lecture
+    const toggle=document.createElement('div');
+    toggle.className='seg'; toggle.style.cssText='display:inline-flex;margin-right:6px';
+    toggle.innerHTML=`
+      <button class="on" data-playmode="root" style="font-size:10px;padding:4px 9px">Fond.</button>
+      <button data-playmode="chord" style="font-size:10px;padding:4px 9px">Accord</button>`;
+    toggle.addEventListener('click',e=>{
+      const b=e.target.closest('button'); if(!b) return;
+      toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    });
+    pcw.appendChild(toggle);
     const btn=makePlayBtn(async()=>{
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
-      const BEAT=1.2; // secondes par accord
+      const BEAT=1.2;
+      const rootOnly=toggle.querySelector('button.on')?.dataset.playmode==='root';
       const pills=[...document.querySelectorAll('.chord-pill')];
       chords.forEach((ch,i)=>{
         const t=_audioCtx.currentTime+i*BEAT;
-        // Jouer les notes de l'accord en arpège léger
-        ch.pcs.forEach((pc,j)=>{
-          const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
-          inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
-        });
-        // Highlight visuel de la carte active
+        if(rootOnly){
+          // Fondamentale seule, octave 2 (grave) — son de basse pur
+          const midi=noteToMidi(spell(ch.pc).replace('♯','#').replace('♭','b'),2);
+          inst.play(midi, t, {duration:BEAT*0.9, gain:3.5});
+        } else {
+          // Accord en arpège léger
+          ch.pcs.forEach((pc,j)=>{
+            const midi=noteToMidi(spell(pc).replace('♯','#').replace('♭','b'),2);
+            inst.play(midi, t+j*0.06, {duration:BEAT*0.85, gain:3});
+          });
+        }
+        // Highlight visuel
         setTimeout(()=>{
           pills.forEach((p,pi)=>{
             p.classList.toggle('active',pi===i);
@@ -808,7 +826,6 @@ function renderResult(){
           document.getElementById('chord-counter').textContent=`${i+1} / ${chords.length}`;
         }, i*BEAT*1000);
       });
-      // Durée totale de la cadence
       return new Promise(r=>setTimeout(r, chords.length*BEAT*1000+500));
     },'Jouer la cadence','▶ Cadence');
     pcw.appendChild(btn);
