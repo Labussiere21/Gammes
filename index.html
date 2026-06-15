@@ -1361,7 +1361,7 @@ function updateMeta(){
   const label = SCALE_LABELS_FR[state.scaleId] || state.scaleId;
   const title = `Gamme de ${noteCap} ${label} à la basse — ScalaBass`;
   const desc  = `Visualise la gamme de ${noteCap} ${label} sur le manche de basse. `
-    + `Notes, degrés, intervalles, accords diatoniques et 5 positions traditionnelles.`;
+    + `Notes, degrés, intervalles et accords diatoniques.`;
   document.title = title;
   // Meta description
   let dm = document.querySelector('meta[name="description"]');
@@ -1405,8 +1405,7 @@ function updateScaleText(notes, def, rootPc){
   el.innerHTML = `
     <p>La gamme de <strong>${noteCap} ${label}</strong> est composée de ${notes.length} notes :
     <strong>${noteList}</strong>. Son armure comporte ${armure}.${relative}</p>
-    <p>Elle fait partie des gammes ${def.fam==='maj'?'majeures (sonorité lumineuse)':'mineures (sonorité plus sombre)'}.
-    Sur le manche de basse, elle se joue en 5 positions traditionnelles qui couvrent tout le manche.</p>`;
+    <p>Elle fait partie des gammes ${def.fam==='maj'?'majeures (sonorité lumineuse)':'mineures (sonorité plus sombre)'}.</p>`;
 }
 
 buildPiano();
