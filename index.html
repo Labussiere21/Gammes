@@ -383,6 +383,12 @@
     transform:scale(1.18);
     z-index:10;
   }
+  .note-pill.playing{
+    background:rgba(217,168,73,.18);
+    border-color:var(--brass) !important;
+    transform:scale(1.06);
+  }
+  .note-pill.playing .nm{color:var(--brass)}
 
   /* réglette des cases (inlays + numéros) */
   .fb-inlays{display:flex; margin-top:7px}
@@ -1169,6 +1175,7 @@ function render(){
   notes.forEach((n,i)=>{
     const pill=document.createElement('div');
     pill.className='note-pill'+(i===0?' root':'');
+    pill.dataset.index=i; // pour le highlight audio
     pill.innerHTML=`<span class="dot" style="background:${DEG_COLORS[i]}"></span>
       <span class="deg">${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])}</span><span class="nm">${pretty(n)}</span>`;
     sn.appendChild(pill);
@@ -1240,18 +1247,20 @@ function render(){
       const inst=await initAudio(); if(!inst)return;
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
       const beat=60/76;
-      // Calculer les pc dans l'ordre de la gamme
-      const scalePcs=notes.map(n=>(pcOf(n)-rootPc+12)%12).map(rel=>(rootPc+rel)%12);
+      // scalePcs : utiliser pcOf sur les notes brutes (avant pretty())
+      // notes[] contient déjà les vraies notes avec # et b ASCII
+      const scalePcs=notes.map(n=>pcOf(n));
+      const pills=[...document.querySelectorAll('#scale-notes .note-pill')];
       noteNames.forEach((n,i)=>{
         const midi=noteToMidi(n,2);
         inst.play(midi,_audioCtx.currentTime+i*beat,{duration:beat*0.9,gain:3});
-        // Highlight visuel : allumer le dot correspondant
+        // Highlight visuel : allumer le dot correspondant + la pill
         setTimeout(()=>{
-          // Retirer playing de tous les dots
           document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
-          // Allumer tous les dots de ce pc
+          pills.forEach(p=>p.classList.remove('playing'));
           const pc=scalePcs[i];
           document.querySelectorAll(`#fretboard .dot[data-pc="${pc}"]`).forEach(d=>d.classList.add('playing'));
+          if(pills[i]) pills[i].classList.add('playing');
         }, i*beat*1000);
       });
       // Tonique finale à l'octave supérieure
@@ -1259,12 +1268,15 @@ function render(){
       inst.play(topMidi,_audioCtx.currentTime+noteNames.length*beat,{duration:beat*1.2,gain:3});
       setTimeout(()=>{
         document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
+        pills.forEach(p=>p.classList.remove('playing'));
         const pc=scalePcs[0];
         document.querySelectorAll(`#fretboard .dot[data-pc="${pc}"]`).forEach(d=>d.classList.add('playing'));
+        if(pills[0]) pills[0].classList.add('playing');
       }, noteNames.length*beat*1000);
       // Éteindre tout à la fin
       setTimeout(()=>{
         document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
+        pills.forEach(p=>p.classList.remove('playing'));
       }, (noteNames.length+1)*beat*1000+200);
     },'Jouer la gamme','▶');
     psw.appendChild(btn);
