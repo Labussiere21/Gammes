@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScalaBass — Gammes</title>
+<meta name="description" content="Visualise toutes les gammes de basse sur le manche : majeure, mineure, modes, pentatoniques, blues et plus. Positions traditionnelles, degrés colorés, accords diatoniques.">
+<meta name="keywords" content="gammes basse, bass scales, pentatonique basse, modes basse, positions manche basse">
+<meta property="og:title" content="ScalaBass — Gammes de basse">
+<meta property="og:description" content="Toutes les gammes sur le manche de basse : positions, degrés, accords.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://labussiere21.github.io/Gammes/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -178,6 +184,27 @@
   .sig-chip.flat{color:#88c6e6}
   .sig-chip.none{color:var(--muted)}
   .sig-notes{font-family:"Space Mono", monospace; color:var(--muted); font-size:13px}
+
+  /* Structure de la gamme (T / ½T) */
+  .scale-struct{
+    display:flex; align-items:center; flex-wrap:wrap;
+    gap:0; margin:0 0 18px; font-family:"Space Mono",monospace;
+  }
+  .struct-note{
+    display:flex; flex-direction:column; align-items:center;
+    gap:4px;
+  }
+  .struct-dot{
+    width:11px; height:11px; border-radius:50%; flex:none;
+  }
+  .struct-step{
+    font-size:11px; color:var(--muted-2); white-space:nowrap;
+    padding:3px 6px; background:#0f0a07; border-radius:4px;
+    border:1px solid var(--line); margin:0 3px;
+  }
+  .struct-step.half{color:var(--d1)}
+  .struct-step.tone{color:var(--brass)}
+  .struct-step.big{color:var(--d6)}
 
   /* Notes de la gamme (puces colorées) */
   .scale-notes{display:flex; gap:8px; flex-wrap:wrap}
@@ -383,6 +410,7 @@
         <a href="index.html" class="nav-link active">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="intervalles.html" class="nav-link">Intervalles</a>
+        <a href="manche.html" class="nav-link">Manche</a>
       </nav>
       <span class="tuning">corde à vide&nbsp; <span id="tuning-disp">E · A · D · G</span></span>
     </div>
@@ -420,6 +448,7 @@
       <h2>La gamme</h2>
       <div class="scale-name" id="scale-name"></div>
       <div class="sig" id="sig"></div>
+      <div class="scale-struct" id="scale-struct"></div>
       <div class="scale-notes" id="scale-notes"></div>
     </section>
 
@@ -714,6 +743,28 @@ function render(){
   else chip = `<span class="sig-chip none">aucune altération</span>`;
   const alt = notes.filter(n=>n.length>1).map(pretty).join(' · ') || '—';
   sig.innerHTML = chip + `<span class="sig-notes">altérations : ${alt}</span>`;
+
+  // Structure de la gamme (T / ½T / T½ …)
+  function stepLabel(diff){
+    if(diff===1) return {t:'½T', cls:'half'};
+    if(diff===2) return {t:'T',  cls:'tone'};
+    if(diff===3) return {t:'T½', cls:'big'};
+    if(diff===4) return {t:'2T', cls:'big'};
+    return {t:diff+'st', cls:''};
+  }
+  const ss=document.getElementById('scale-struct'); ss.innerHTML='';
+  def.iv.forEach((iv,i)=>{
+    // Point de la note
+    const nd=document.createElement('div'); nd.className='struct-note';
+    const dot=document.createElement('div'); dot.className='struct-dot'; dot.style.background=DEG_COLORS[i];
+    nd.appendChild(dot); ss.appendChild(nd);
+    // Flèche + label du pas
+    const nextIv = i<def.iv.length-1 ? def.iv[i+1] : 12;
+    const diff = nextIv - iv;
+    const {t,cls}=stepLabel(diff);
+    const sp=document.createElement('span'); sp.className=`struct-step ${cls}`; sp.textContent=t;
+    ss.appendChild(sp);
+  });
 
   // Puces de notes
   const sn=document.getElementById('scale-notes'); sn.innerHTML='';
