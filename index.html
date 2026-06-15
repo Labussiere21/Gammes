@@ -497,19 +497,22 @@ function pcOf(name){
 function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
 
 const SCALE_DEFS = [
-  {id:'major',      label:'Majeure',            sub:'Ionien',  group:0, diat:true, pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
-  {id:'minor',      label:'Mineure naturelle',  sub:'Éolien',  group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
-  {id:'harmonic',   label:'Mineure harmonique', sub:'',        group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
-  {id:'melodic',    label:'Mineure mélodique',  sub:'',        group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
-  {id:'dorian',     label:'Dorien',             sub:'mode II', group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
-  {id:'phrygian',   label:'Phrygien',           sub:'mode III',group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
-  {id:'lydian',     label:'Lydien',             sub:'mode IV', group:0, diat:true, pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
-  {id:'mixolydian', label:'Mixolydien',         sub:'mode V',  group:0, diat:true, pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
-  {id:'locrian',    label:'Locrien',            sub:'mode VII',group:0, diat:true, pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
-  {id:'penta_min',  label:'Pentatonique mineure', sub:'5 notes', group:1, diat:false, pos:'min', ls:[0,2,3,4,6],   iv:[0,3,5,7,10]},
-  {id:'penta_maj',  label:'Pentatonique majeure', sub:'5 notes', group:1, diat:false, pos:'maj', ls:[0,1,2,4,5],   iv:[0,2,4,7,9]},
-  {id:'blues_min',  label:'Blues mineure',        sub:'6 notes', group:1, diat:false, pos:'min', ls:[0,2,3,4,4,6], iv:[0,3,5,6,7,10]},
-  {id:'blues_maj',  label:'Blues majeure',        sub:'6 notes', group:1, diat:false, pos:'maj', ls:[0,1,2,2,4,5], iv:[0,2,3,4,7,9]},
+  {id:'major',      label:'Majeure',            sub:'Ionien',       group:0, diat:true,  posType:'penta', pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
+  {id:'minor',      label:'Mineure naturelle',  sub:'Éolien',       group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
+  {id:'harmonic',   label:'Mineure harmonique', sub:'',             group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
+  {id:'melodic',    label:'Mineure mélodique',  sub:'',             group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
+  {id:'dorian',     label:'Dorien',             sub:'mode II',      group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
+  {id:'phrygian',   label:'Phrygien',           sub:'mode III',     group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'lydian',     label:'Lydien',             sub:'mode IV',      group:0, diat:true,  posType:'penta', pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
+  {id:'mixolydian', label:'Mixolydien',         sub:'mode V',       group:0, diat:true,  posType:'penta', pos:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
+  {id:'locrian',    label:'Locrien',            sub:'mode VII',     group:0, diat:true,  posType:'penta', pos:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
+  {id:'penta_min',  label:'Pentatonique min.',  sub:'5 notes',      group:1, diat:false, posType:'penta', pos:'min', ls:[0,2,3,4,6],   iv:[0,3,5,7,10]},
+  {id:'penta_maj',  label:'Pentatonique maj.',  sub:'5 notes',      group:1, diat:false, posType:'penta', pos:'maj', ls:[0,1,2,4,5],   iv:[0,2,4,7,9]},
+  {id:'blues_min',  label:'Blues mineure',      sub:'6 notes',      group:1, diat:false, posType:'penta', pos:'min', ls:[0,2,3,4,4,6], iv:[0,3,5,6,7,10]},
+  {id:'blues_maj',  label:'Blues majeure',      sub:'6 notes',      group:1, diat:false, posType:'penta', pos:'maj', ls:[0,1,2,2,4,5], iv:[0,2,3,4,7,9]},
+  {id:'dim',        label:'Diminuée',           sub:'T-ST, 8 notes',group:1, diat:false, posType:'sym',   npos:4,    ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11]},
+  {id:'half_dim',   label:'Demi-diminuée',      sub:'7 notes',      group:1, diat:false, posType:'sym',   npos:4,    ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
+  {id:'whole_tone', label:'Par ton',            sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
 ];
 
 // Pentatoniques de référence pour les 5 positions (boîtes traditionnelles)
@@ -750,8 +753,8 @@ function render(){
     });
   }
 
-  // Boutons de position : toujours 5 boîtes traditionnelles
-  buildPositionButtons(5);
+  // Boutons de position : 4 ou 5 selon la gamme
+  buildPositionButtons(def.posType==='sym' ? (def.npos||5) : 5);
 
   // Manche
   renderFretboard(notes, rootPc, def);
@@ -818,28 +821,57 @@ function renderFretboard(notes, rootPc, def){
   let strings = (state.strings===5?STRINGS_5:STRINGS_4).slice();
   const lowPc  = strings[0].pc;                    // corde la plus grave (E ou B)
 
-  // --- 5 positions traditionnelles ---
-  // Toute gamme se joue dans les 5 boîtes de sa pentatonique de référence
-  // (majeure → penta majeure ; mineure/modes mineurs/blues → penta mineure).
-  // Chaque boîte = ~2 notes/corde sur la penta ; on y affiche TOUTES les notes
-  // de la gamme. P1 = boîte de la fondamentale.
+  // --- Calcul des boîtes (positions) ---
+  // Type 'penta' : 5 boîtes via pentatonique parente (modes, penta, blues)
+  // Type 'sym'   : N boîtes symétriques (dim=4, demi-dim=4, par-ton=5)
   let box=null;
   if(state.position!=='all'){
-    const parent = PENTA_PARENTS[def.pos] || PENTA_PARENTS.min;
-    const penta = buildScale(notes[0], parent.ls, parent.iv);
-    const sc = penta.map(pcOf), M = sc.length, openAbs = strings.map((s,i)=>i*5);
-    const boxes=[];
-    for(let q=1; q<=M; q++){
-      let idx=q-1, ca=(sc[q-1]-lowPc+12)%12, lo=Infinity, hi=-Infinity;
-      for(let si=0; si<strings.length; si++) for(let k=0;k<2;k++){
-        const fr=ca-openAbs[si]; lo=Math.min(lo,fr); hi=Math.max(hi,fr);
-        idx=(idx+1)%M; const nx=sc[idx]; let na=ca+1; while(((lowPc+na)%12)!==nx) na++; ca=na;
+    const scalePcs = notes.map(pcOf);
+    const highPc   = strings[strings.length-1].pc;
+    let orderedBoxes;
+
+    if(def.posType==='sym'){
+      // Boîtes symétriques : on ancre sur la corde aiguë
+      const raw=[];
+      for(let start=0; start<12; start++){
+        if(!scalePcs.includes((highPc+start)%12)) continue;
+        let end=start;
+        while(end<=start+10){
+          if(strings.every(s=>{let c=0;for(let f=start;f<=end;f++)if(scalePcs.includes((s.pc+f)%12))c++;return c>=2;})) break;
+          end++;
+        }
+        if(end<=start+10) raw.push([start,end]);
       }
-      if(lo<0){ lo+=12; hi+=12; }      // remonte d'une octave si la boîte passe sous le sillet
-      boxes.push([lo,hi]);
+      raw.sort((a,b)=>a[0]-b[0]);
+      const uniq=[],seen=new Set();
+      for(const b of raw){const k=b[0]+'-'+b[1]; if(!seen.has(k)){seen.add(k);uniq.push(b);}}
+      const nBoxes=def.npos||5, boxes=uniq.slice(0,nBoxes);
+      // Ordonner depuis la fondamentale (P1 = boîte couvrant la fond. sur corde grave)
+      const rootFret=(rootPc-lowPc+12)%12;
+      let ri=0, best=-1;
+      boxes.forEach((b,i)=>{if(b[0]<=rootFret && b[0]>best){best=b[0];ri=i;}});
+      if(best<0) boxes.forEach((b,i)=>{if(b[0]>best){best=b[0];ri=i;}});
+      orderedBoxes=Array.from({length:boxes.length},(_,k)=>boxes[(ri+k)%boxes.length]);
+    } else {
+      // Boîtes via pentatonique parente (algorithme validé)
+      const parent = PENTA_PARENTS[def.pos] || PENTA_PARENTS.min;
+      const penta  = buildScale(notes[0], parent.ls, parent.iv);
+      const sc     = penta.map(pcOf), M=sc.length, openAbs=strings.map((s,i)=>i*5);
+      const boxes=[];
+      for(let q=1;q<=M;q++){
+        let idx=q-1, ca=(sc[q-1]-lowPc+12)%12, lo=Infinity, hi=-Infinity;
+        for(let si=0;si<strings.length;si++) for(let k=0;k<2;k++){
+          const fr=ca-openAbs[si]; lo=Math.min(lo,fr); hi=Math.max(hi,fr);
+          idx=(idx+1)%M; const nx=sc[idx]; let na=ca+1; while(((lowPc+na)%12)!==nx)na++; ca=na;
+        }
+        if(lo<0){lo+=12;hi+=12;}
+        boxes.push([lo,hi]);
+      }
+      orderedBoxes=boxes;
     }
-    const win = boxes[(state.position-1) % boxes.length];
-    box = {start:win[0], end:win[1]};
+
+    const win=orderedBoxes[(state.position-1)%orderedBoxes.length];
+    box={start:win[0], end:win[1]};
   }
 
   // Nombre de cases affichées : on étend si la boîte dépasse
