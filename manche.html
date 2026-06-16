@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Manche</title>
-<meta name="description" content="Visualise n'importe quelle note sur tout le manche de basse. Trouve toutes les positions d'une note en un clic sur 4 ou 5 cordes, jusqu'à la 24e case.">
-<meta name="keywords" content="notes manche basse, bass fretboard notes, position note basse, apprendre manche basse">
-<meta property="og:title" content="ScalaBass — Notes sur le manche">
-<meta property="og:description" content="Toutes les positions d'une note sur le manche de basse, en un clic.">
-<meta property="og:type" content="website">
+<title>Manche de basse interactif : toutes les notes | ScalaBass</title>
+<meta name="description" content="Visualise n'importe quelle note sur tout le manche de basse 4, 5 ou 6 cordes. Accordages multiples, droitier ou gaucher, jusqu'à 24 cases.">
+<meta name="keywords" content="manche basse, notes manche basse, fretboard basse, notes basse électrique, basse 5 cordes, basse 6 cordes">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/manche.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,6 +294,34 @@
   .htool-divider{width:1px;height:16px;background:var(--line);margin:0 2px;flex-shrink:0;align-self:center}
 
 </style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Manche de basse interactif : toutes les notes | ScalaBass">
+<meta property="og:description" content="Visualise n'importe quelle note sur tout le manche de basse 4, 5 ou 6 cordes. Accordages multiples, droitier ou gaucher, jusqu'à 24 cases.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/manche.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Manche de basse interactif : toutes les notes | ScalaBass">
+<meta name="twitter:description" content="Visualise n'importe quelle note sur tout le manche de basse 4, 5 ou 6 cordes. Accordages multiples, droitier ou gaucher, jusqu'à 24 cases.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Manche de basse",
+  "description": "Visualise n'importe quelle note sur tout le manche de basse 4, 5 ou 6 cordes. Accordages multiples, droitier ou gaucher, jusqu'à 24 cases.",
+  "url": "https://labussiere21.github.io/Gammes/manche.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -721,6 +746,7 @@ function buildNoteGrid(){
 /* ============================================================ RENDU */
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={

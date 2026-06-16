@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Gammes</title>
-<meta name="description" content="Visualise 73 gammes de basse sur le manche : modes diatoniques, pentatoniques, jazz, exotiques (Hijaz, Hirajoshi, Phrygien dominant, Double harmonique...). Positions, degrés, accords. Positions traditionnelles, degrés colorés, accords diatoniques.">
-<meta name="keywords" content="gammes basse, bass scales, pentatonique basse, modes basse, positions manche basse">
-<meta property="og:title" content="ScalaBass — Gammes de basse">
-<meta property="og:description" content="Toutes les gammes sur le manche de basse : positions, degrés, accords.">
-<meta property="og:type" content="website">
+<title>Gammes de basse : 72 gammes sur le manche | ScalaBass</title>
+<meta name="description" content="Visualise 72 gammes de basse sur le manche : modes, pentatoniques, blues, gammes exotiques. Notes, degrés, accords diatoniques et lecture audio. Notation Do Ré Mi ou A B C.">
+<meta name="keywords" content="gammes basse, gamme basse électrique, modes basse, pentatonique basse, gamme blues basse, manche basse, théorie musicale basse">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -488,6 +485,34 @@
   .play-btn.playing{background:rgba(217,168,73,.35); color:#160f08; background:var(--brass)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gammes de basse : 72 gammes sur le manche | ScalaBass">
+<meta property="og:description" content="Visualise 72 gammes de basse sur le manche : modes, pentatoniques, blues, gammes exotiques. Notes, degrés, accords diatoniques et lecture audio. Notation Do Ré Mi ou A B C.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gammes de basse : 72 gammes sur le manche | ScalaBass">
+<meta name="twitter:description" content="Visualise 72 gammes de basse sur le manche : modes, pentatoniques, blues, gammes exotiques. Notes, degrés, accords diatoniques et lecture audio. Notation Do Ré Mi ou A B C.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Gammes de basse",
+  "description": "Visualise 72 gammes de basse sur le manche : modes, pentatoniques, blues, gammes exotiques. Notes, degrés, accords diatoniques et lecture audio. Notation Do Ré Mi ou A B C.",
+  "url": "https://labussiere21.github.io/Gammes/",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -1288,6 +1313,7 @@ function currentScale(){
 
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
@@ -1804,9 +1830,9 @@ function updateMeta(){
   const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1)
     .replace('#','♯').replace('b','♭');
   const label = SCALE_LABELS_FR[state.scaleId] || state.scaleId;
-  const title = `Gamme de ${noteCap} ${label} à la basse — ScalaBass`;
-  const desc  = `Visualise la gamme de ${noteCap} ${label} sur le manche de basse. `
-    + `Notes, degrés, intervalles et accords diatoniques.`;
+  const title = `Gamme de ${noteCap} ${label} à la basse : notes et manche | ScalaBass`;
+  const desc  = `Gamme de ${noteCap} ${label} sur le manche de basse : notes, degrés, `
+    + `intervalles, accords diatoniques et lecture audio. Visualise les positions et improvise.`;
   document.title = title;
   let dm = document.querySelector('meta[name="description"]');
   if(dm) dm.setAttribute('content', desc);

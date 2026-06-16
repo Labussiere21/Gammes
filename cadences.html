@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Cadences</title>
-<meta name="description" content="107 cadences de basse par genre : jazz, blues, rock, pop, métal, flamenco, gipsy, ska et plus. Notes, accords et positions sur le manche.">
-<meta name="keywords" content="cadences basse, ii-V-I basse, progressions accords basse, cadence jazz basse, cadence blues basse">
-<meta property="og:title" content="ScalaBass — Cadences">
-<meta property="og:description" content="107 cadences classées par genre avec accords et manche de basse.">
-<meta property="og:type" content="website">
+<title>Cadences de basse : progressions jazz, blues, rock | ScalaBass</title>
+<meta name="description" content="Cadences de basse par genre : jazz, blues, rock, pop, métal, funk, flamenco. Écoute chaque progression d'accords et trouve les gammes pour improviser.">
+<meta name="keywords" content="cadences basse, progression accords basse, ii V I, cadence jazz, cadence blues, walking bass, progression harmonique">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/cadences.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -293,6 +290,34 @@
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cadences de basse : progressions jazz, blues, rock | ScalaBass">
+<meta property="og:description" content="Cadences de basse par genre : jazz, blues, rock, pop, métal, funk, flamenco. Écoute chaque progression d'accords et trouve les gammes pour improviser.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/cadences.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cadences de basse : progressions jazz, blues, rock | ScalaBass">
+<meta name="twitter:description" content="Cadences de basse par genre : jazz, blues, rock, pop, métal, funk, flamenco. Écoute chaque progression d'accords et trouve les gammes pour improviser.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Cadences",
+  "description": "Cadences de basse par genre : jazz, blues, rock, pop, métal, funk, flamenco. Écoute chaque progression d'accords et trouve les gammes pour improviser.",
+  "url": "https://labussiere21.github.io/Gammes/cadences.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -1129,6 +1154,7 @@ function syncUI(){
 }
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
