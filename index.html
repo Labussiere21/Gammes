@@ -1329,6 +1329,8 @@ function updateI18n(){
 
 function render(){
   updateI18n();
+  // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN/ES)
+  buildPiano();
   // synchro états visuels des segments
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on', b.dataset.acc===state.accPref));
   document.querySelectorAll('#scale-family button').forEach(b=>b.classList.toggle('on', b.dataset.fam===state.family));

@@ -1058,7 +1058,9 @@ function updateI18n(){
 }
 
 function render(){
-  if(typeof updateI18n==="function")updateI18n();
+  
+  // rafraîchir les noms de notes du piano (notation FR/EN/ES)
+  if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
   // Synchro visuels
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));

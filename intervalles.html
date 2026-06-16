@@ -840,7 +840,9 @@ function updateI18n(){
 }
 
 function render(){
-  updateI18n();
+  
+  // rafraîchir les noms de notes du piano (notation FR/EN/ES)
+  if(typeof buildPiano==='function') buildPiano();updateI18n();
   const SPELL_ARR=state.accPref==='#'?SHARP:FLAT;
   const rootNote=SPELL_ARR[state.rootPc];
   const ivDef=state.ivId?ALL_IVS.find(iv=>iv.id===state.ivId):null;

@@ -1168,7 +1168,7 @@ function updateI18n(){
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
 }
 
-function render(){syncUI();buildCadencesGrid();renderResult();}
+function render(){updateI18n();buildPiano();syncUI();buildCadencesGrid();renderResult();}
 
 /* ==================== INIT ==================== */
 buildPiano();buildGenreTabs();buildCadencesGrid();
