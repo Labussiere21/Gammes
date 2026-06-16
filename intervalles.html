@@ -633,33 +633,38 @@ function spellNote(pc, accPref){
 }
 
 function initNotationLang(){
-  // Segment notation
+  // ---- Toggle notation A B C / Do Ré Mi ----
   const ns=document.getElementById('notation-seg');
   if(ns){
     const stored=localStorage.getItem('sbnot')||'en';
     ns.querySelectorAll('button').forEach(b=>{
-      b.classList.toggle('on',b.dataset.notation===stored);
-      b.onclick=()=>{
-        localStorage.setItem('sbnot',b.dataset.notation);
-        ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-        if(typeof render==='function') render();
-        else if(typeof buildPiano==='function'){buildPiano();if(typeof renderFretboard==='function')renderFretboard();}
-      };
+      b.classList.toggle('on', b.dataset.notation===stored);
+    });
+    ns.addEventListener('click', e=>{
+      const b=e.target.closest('button[data-notation]'); if(!b) return;
+      localStorage.setItem('sbnot', b.dataset.notation);
+      ns.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+      if(typeof render==='function') render();
+      else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
-  // Segment langue
+  // ---- Toggle langue FR / EN / ES ----
   const ls=document.getElementById('lang-seg');
   if(ls){
     const stored=localStorage.getItem('sblang')||'fr';
-    ls.querySelectorAll('button:not([disabled])').forEach(b=>{
-      b.classList.toggle('on',b.dataset.lang===stored);
-      b.onclick=()=>{
-        localStorage.setItem('sblang',b.dataset.lang);
-        ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b&&!x.disabled));
-      };
+    ls.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.lang===stored);
+    });
+    ls.addEventListener('click', e=>{
+      const b=e.target.closest('button[data-lang]'); if(!b) return;
+      localStorage.setItem('sblang', b.dataset.lang);
+      ls.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+      if(typeof render==='function') render();
+      else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
 }
+
 /* ============================================================ DONNÉES */
 const INTERVALS_DATA = [
   {family:'Secondes', items:[
