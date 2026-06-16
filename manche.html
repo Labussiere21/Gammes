@@ -761,7 +761,9 @@ function updateI18n(){
 }
 
 function render(){
-  updateI18n();
+  
+  // rafraîchir les noms de notes du piano (notation FR/EN/ES)
+  if(typeof buildPiano==='function') buildPiano();updateI18n();
   const strings=currentStrings();
   const frets=state.frets;
 
