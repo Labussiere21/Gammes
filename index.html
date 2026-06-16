@@ -1881,6 +1881,7 @@ document.getElementById('accpref').addEventListener('click', e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.accPref=b.dataset.acc; buildPiano(); render();
 });
+initNotationLang();
 render();
 </script>
 </body>
