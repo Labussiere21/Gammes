@@ -516,8 +516,8 @@
         <div class="htool-divider"></div>
         <div class="htool-seg" id="lang-seg">
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
-          <button data-lang="en" disabled title="Bientôt disponible" style="min-width:34px;opacity:.35;cursor:default">EN</button>
-          <button data-lang="es" disabled title="Próximamente" style="min-width:34px;opacity:.35;cursor:default">ES</button>
+          <button data-lang="en" style="min-width:34px">EN</button>
+          <button data-lang="es" style="min-width:34px">ES</button>
         </div>
       </div>
     </div>
@@ -562,7 +562,7 @@
   <!-- Résultats -->
   <div class="grid">
     <section class="card">
-      <h2>La gamme</h2>
+      <h2 data-i18n="lbl_gamme">La gamme</h2>
       <div class="scale-name" id="scale-name"></div>
       <div class="sig" id="sig"></div>
       <div class="scale-struct" id="scale-struct"></div>
@@ -585,7 +585,7 @@
   <!-- Manche -->
   <section class="card fb-card">
     <div class="fb-head">
-      <h2>Sur le manche</h2>
+      <h2 data-i18n="lbl_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
           <div class="ctl-label">Afficher</div>
@@ -617,8 +617,8 @@
         <div>
           <div class="ctl-label">Main</div>
           <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on">🤜 Droitier</button>
-            <button data-hand="left">Gaucher 🤛</button>
+            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         <div style="flex-basis:100%; height:0"></div>
@@ -652,6 +652,137 @@
 </div>
 
 <script>
+
+
+/* ===== NOTATION & TRADUCTIONS ===== */
+const EN_TO_FR = {
+  'C':'Do','C#':'Do♯','Db':'Ré♭','D':'Ré','D#':'Ré♯','Eb':'Mi♭',
+  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
+  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
+  'B':'Si','B#':'Do','Cb':'Si',
+  // Doubles altérations courantes
+  'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
+  'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
+};
+const EN_TO_ES = {
+  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
+  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
+  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
+  'B':'Si','B#':'Do','Cb':'Si',
+};
+
+function currentLang(){return localStorage.getItem('sblang')||'fr';}
+function currentNotation(){return localStorage.getItem('sbnot')||'en';}
+
+// Convertit une note EN (ex: "Bb", "F#") vers la notation courante
+function prettyNote(noteEN){
+  const clean=noteEN.replace(/♯/g,'#').replace(/♭/g,'b');
+  const not=currentNotation();
+  if(not==='fr'){
+    if(EN_TO_FR[clean]) return EN_TO_FR[clean];
+    // Fallback : convertir lettre par lettre
+    const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
+    const letter=clean[0]; const acc=clean.slice(1);
+    return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
+  }
+  if(not==='es'){
+    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
+    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
+    const letter=clean[0]; const acc=clean.slice(1);
+    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
+  }
+  // EN : juste ♯/♭
+  return clean.replace(/#/g,'♯').replace(/b/g,'♭');
+}
+
+// t() : traduction d'une clé d'interface
+const _TR={
+  fr:{
+    lbl_gamme:'La gamme',lbl_degrees:'Degrés & accords diatoniques',lbl_degrees_nd:'Degrés & intervalles',
+    lbl_manche:'Sur le manche',lbl_tonique:'Tonique',lbl_type:'Type de gamme',
+    lbl_cordes:'Cordes',lbl_cases:'Cases',lbl_main:'Main',lbl_position:'Position (boîte)',
+    lbl_affichage:'Affichage',lbl_droitier:'🤜 Droitier',lbl_gaucher:'Gaucher 🤛',
+    lbl_note_btn:'Note',lbl_degre_btn:'Degré',lbl_tout:'Tout',
+    lbl_fam_all:'Toutes',lbl_fam_maj:'Majeures',lbl_fam_min:'Mineures',
+    lbl_flat:'♭ bémols',lbl_sharp:'♯ dièses',
+    lbl_th_deg:'Deg',lbl_th_note:'Note',lbl_th_iv:'Intervalle',
+    lbl_th_accord:'Accord',lbl_th_notes:'Notes',lbl_th_semis:'Demi-tons',
+    lbl_structure:'Structure',lbl_notes_iv:'Notes & intervalles',
+    lbl_th_num:'N°',lbl_th_role:'Rôle',
+    lbl_genre:'Genre',lbl_cad:'Cadence',lbl_gammes_imp:'Gammes pour improviser',
+    lbl_fond:'Fond.',lbl_acc:'Accord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
+    lbl_iv_title:'Intervalle',lbl_sur_manche:'Sur le manche',
+    lbl_clic_notes:'Cliquez des notes sur le piano ou le manche',
+    lbl_tab_acc:'Accords',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
+    lbl_effacer:'Effacer',lbl_partager:'🔗 Partager',
+    lbl_cercle:'Cercle des quintes',
+    lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
+    lbl_rel_min:'Relative mineure',lbl_par_min:'Parallèle mineure',
+    lbl_sdom:'Sous-dominante (IV)',lbl_dom:'Dominante (V)',
+    lbl_type_accord:'Type d\'accord',lbl_pos_ouverte:'Position ouverte',
+    lbl_root:'fondamentale',lbl_bientot:'Bientôt disponible',
+    lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
+    lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
+    lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+  },
+  en:{
+    lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
+    lbl_manche:'On the fretboard',lbl_tonique:'Root note',lbl_type:'Scale type',
+    lbl_cordes:'Strings',lbl_cases:'Frets',lbl_main:'Hand',lbl_position:'Position (box)',
+    lbl_affichage:'Display',lbl_droitier:'🤜 Right-handed',lbl_gaucher:'Left-handed 🤛',
+    lbl_note_btn:'Note',lbl_degre_btn:'Degree',lbl_tout:'All',
+    lbl_fam_all:'All',lbl_fam_maj:'Major',lbl_fam_min:'Minor',
+    lbl_flat:'♭ flats',lbl_sharp:'♯ sharps',
+    lbl_th_deg:'Deg',lbl_th_note:'Note',lbl_th_iv:'Interval',
+    lbl_th_accord:'Chord',lbl_th_notes:'Notes',lbl_th_semis:'Semitones',
+    lbl_structure:'Structure',lbl_notes_iv:'Notes & intervals',
+    lbl_th_num:'No.',lbl_th_role:'Role',
+    lbl_genre:'Genre',lbl_cad:'Cadence',lbl_gammes_imp:'Scales for soloing',
+    lbl_fond:'Root',lbl_acc:'Chord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
+    lbl_iv_title:'Interval',lbl_sur_manche:'On the fretboard',
+    lbl_clic_notes:'Click notes on the piano or fretboard',
+    lbl_tab_acc:'Chords',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
+    lbl_effacer:'Clear',lbl_partager:'🔗 Share',
+    lbl_cercle:'Circle of fifths',
+    lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
+    lbl_rel_min:'Relative minor',lbl_par_min:'Parallel minor',
+    lbl_sdom:'Subdominant (IV)',lbl_dom:'Dominant (V)',
+    lbl_type_accord:'Chord type',lbl_pos_ouverte:'Open position',
+    lbl_root:'root',lbl_bientot:'Coming soon',
+    lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
+    lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
+    lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+  },
+  es:{
+    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
+    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
+    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
+    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
+    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
+    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
+    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
+    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
+    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
+    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
+    lbl_th_num:'Nº',lbl_th_role:'Rol',
+    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
+    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
+    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
+    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
+    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
+    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
+    lbl_cercle:'Círculo de quintas',
+    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
+    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
+    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
+    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
+    lbl_root:'fundamental',lbl_bientot:'Próximamente',
+    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
+    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
+    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
+  }
+};
+function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
 /* ===== MODULE AUDIO ===== */
 let _sfInst=null,_audioCtx=null,_audioLoading=false;
@@ -851,7 +982,14 @@ function pcOf(name){
 }
 
 // Affichage propre des altérations (b -> ♭, # -> ♯)
-function pretty(n){ return n.replace(/b/g,'♭').replace(/#/g,'♯'); }
+function pretty(n){
+  // Si c'est une note pure (lettre + altérations), utiliser prettyNote()
+  // Si c'est un symbole d'accord (contient 7, maj, m, dim, etc.), laisser en EN
+  if(typeof prettyNote==='function' && n && /^[A-G][#b♯♭]*$/.test(n.replace(/♯/g,'#').replace(/♭/g,'b'))){
+    return prettyNote(n);
+  }
+  return n.replace(/b/g,'♭').replace(/#/g,'♯');
+}
 
 const SCALE_DEFS = [
   // ======= GROUPE 0 : MODES DIATONIQUES =======
@@ -1145,7 +1283,23 @@ function currentScale(){
   return {def, notes};
 }
 
+
+function updateI18n(){
+  if(typeof currentLang!=='function') return;
+  const lang=currentLang();
+  const NAV={
+    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes','voicings.html':'Accords'},
+    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths','voicings.html':'Chords'},
+    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as','voicings.html':'Acordes'},
+  };
+  const nm=NAV[lang]||NAV.fr;
+  document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
+  // Éléments data-i18n
+  if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+}
+
 function render(){
+  updateI18n();
   // synchro états visuels des segments
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on', b.dataset.acc===state.accPref));
   document.querySelectorAll('#scale-family button').forEach(b=>b.classList.toggle('on', b.dataset.fam===state.family));
