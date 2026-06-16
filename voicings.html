@@ -689,6 +689,14 @@ document.getElementById('notation-seg').addEventListener('click',e=>{
   render();
 });
 
+document.getElementById('lang-seg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b||!b.dataset.lang) return;
+  localStorage.setItem('sblang',b.dataset.lang);
+  document.querySelectorAll('#lang-seg button').forEach(x=>x.classList.toggle('on',x===b));
+  if(typeof updateI18n==='function') updateI18n();
+  render();
+});
+
 render();
 </script>
 </body>
