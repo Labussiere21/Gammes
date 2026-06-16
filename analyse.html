@@ -1002,6 +1002,7 @@ document.getElementById('fb-hand').addEventListener('click',e=>{
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   state.activeTab=t.dataset.tab; render();
 }));
+initNotationLang();
 render();
 updateI18n();
 </script>
