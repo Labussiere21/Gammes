@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Cycle des quintes</title>
-<meta name="description" content="Cycle des quintes interactif pour basse : clique sur une tonique et découvre sa gamme, ses modes, ses accords diatoniques et ses cadences.">
-<meta name="keywords" content="cycle des quintes basse, cercle des quintes, gammes basse, accords diatoniques">
-<meta property="og:title" content="ScalaBass — Cycle des quintes">
-<meta property="og:type" content="website">
+<title>Cycle des quintes interactif pour basse | ScalaBass</title>
+<meta name="description" content="Cycle des quintes interactif : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
+<meta name="keywords" content="cycle des quintes, cercle des quintes, armure tonalité, relative mineure, tonalités musique">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/quintes.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -212,6 +210,34 @@ h1 em{font-style:italic; color:var(--brass)}
   .htool-divider{width:1px;height:16px;background:var(--line);margin:0 2px;flex-shrink:0;align-self:center}
 
 </style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cycle des quintes interactif pour basse | ScalaBass">
+<meta property="og:description" content="Cycle des quintes interactif : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/quintes.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cycle des quintes interactif pour basse | ScalaBass">
+<meta name="twitter:description" content="Cycle des quintes interactif : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Cycle des quintes",
+  "description": "Cycle des quintes interactif : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.",
+  "url": "https://labussiere21.github.io/Gammes/quintes.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -666,6 +692,7 @@ function sigLabel(entry){
 /* ====================================================== RENDU PANNEAU */
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={

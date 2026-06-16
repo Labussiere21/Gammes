@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Accords de basse — ScalaBass</title>
-<meta name="description" content="Doigtés et accords pour basse : majeur, mineur, 7, maj7, m7, sus2, sus4, demi-diminué... Diagrammes de manche interactifs.">
+<title>Accords de basse : doigtés sur le manche | ScalaBass</title>
+<link rel="canonical" href="https://labussiere21.github.io/Gammes/voicings.html">
+<meta name="keywords" content="accords basse, doigtés accords basse, voicings basse, accord majeur basse, accord mineur basse, position accord basse">
+<meta name="description" content="Doigtés d'accords pour basse 4 cordes : majeur, mineur, 7, maj7, m7, demi-diminué, diminué, sus2, sus4. Diagrammes de manche avec intervalles et numéros de doigts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
@@ -107,6 +109,34 @@
   /* Filtre notes */
   .filter-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
 </style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Accords de basse : doigtés sur le manche | ScalaBass">
+<meta property="og:description" content="Doigtés d'accords pour basse 4 cordes : majeur, mineur, 7, maj7, m7, demi-diminué, diminué, sus2, sus4. Diagrammes de manche avec intervalles et numéros de doigts.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/voicings.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Accords de basse : doigtés sur le manche | ScalaBass">
+<meta name="twitter:description" content="Doigtés d'accords pour basse 4 cordes : majeur, mineur, 7, maj7, m7, demi-diminué, diminué, sus2, sus4. Diagrammes de manche avec intervalles et numéros de doigts.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Accords de basse",
+  "description": "Doigtés d'accords pour basse 4 cordes : majeur, mineur, 7, maj7, m7, demi-diminué, diminué, sus2, sus4. Diagrammes de manche avec intervalles et numéros de doigts.",
+  "url": "https://labussiere21.github.io/Gammes/voicings.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -651,6 +681,7 @@ function renderMainFretboard(v,startFret){
 /* ===== INIT ===== */
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={

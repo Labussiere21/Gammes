@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Arpèges</title>
-<meta name="description" content="17 arpèges de basse sur le manche : majeur, mineur, dominant 7, diminué, augmenté, sus2, sus4 et plus. Structure, intervalles et 5 positions traditionnelles.">
-<meta name="keywords" content="arpèges basse, bass arpeggios, arpège majeur basse, arpège mineur basse, positions arpèges basse">
-<meta property="og:title" content="ScalaBass — Arpèges de basse">
-<meta property="og:description" content="17 arpèges de basse avec positions traditionnelles sur le manche.">
-<meta property="og:type" content="website">
+<title>Arpèges de basse : majeur, mineur, 7, maj7 | ScalaBass</title>
+<meta name="description" content="Arpèges de basse sur le manche : majeur, mineur, 7, maj7, m7, diminué, augmenté. Positions, intervalles et lecture audio avec un vrai son de basse.">
+<meta name="keywords" content="arpèges basse, arpège basse électrique, arpège majeur basse, arpège mineur basse, maj7 basse, m7 basse">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/arpeges-basse.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -324,6 +321,34 @@
   .play-btn.playing{background:rgba(217,168,73,.35); color:#160f08; background:var(--brass)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arpèges de basse : majeur, mineur, 7, maj7 | ScalaBass">
+<meta property="og:description" content="Arpèges de basse sur le manche : majeur, mineur, 7, maj7, m7, diminué, augmenté. Positions, intervalles et lecture audio avec un vrai son de basse.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/arpeges-basse.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arpèges de basse : majeur, mineur, 7, maj7 | ScalaBass">
+<meta name="twitter:description" content="Arpèges de basse sur le manche : majeur, mineur, 7, maj7, m7, diminué, augmenté. Positions, intervalles et lecture audio avec un vrai son de basse.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Arpèges de basse",
+  "description": "Arpèges de basse sur le manche : majeur, mineur, 7, maj7, m7, diminué, augmenté. Positions, intervalles et lecture audio avec un vrai son de basse.",
+  "url": "https://labussiere21.github.io/Gammes/arpeges-basse.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -1018,6 +1043,7 @@ function renderFretboard(arpPcs, rootPc, posType, strings){
 /* ============================================================ RENDU */
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={

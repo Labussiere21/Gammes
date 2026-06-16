@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScalaBass — Intervalles</title>
-<meta name="description" content="Visualise tous les intervalles sur le manche de basse : secondes, tierces, quartes, quintes, sixtes, septièmes. Fondamentale et intervalle affichés simultanément.">
-<meta name="keywords" content="intervalles basse, bass intervals, tierce basse, quinte basse, visualiser intervalles manche">
-<meta property="og:title" content="ScalaBass — Intervalles de basse">
-<meta property="og:description" content="Visualise tous les intervalles musicaux sur le manche de basse.">
-<meta property="og:type" content="website">
+<title>Intervalles à la basse : tierce, quinte, octave | ScalaBass</title>
+<meta name="description" content="Visualise tous les intervalles sur le manche de basse : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
+<meta name="keywords" content="intervalles basse, tierce basse, quinte basse, octave basse, distance notes basse, théorie intervalle">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/intervalles.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -333,6 +330,34 @@
   .htool-divider{width:1px;height:16px;background:var(--line);margin:0 2px;flex-shrink:0;align-self:center}
 
 </style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Intervalles à la basse : tierce, quinte, octave | ScalaBass">
+<meta property="og:description" content="Visualise tous les intervalles sur le manche de basse : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/intervalles.html">
+<meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Intervalles à la basse : tierce, quinte, octave | ScalaBass">
+<meta name="twitter:description" content="Visualise tous les intervalles sur le manche de basse : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
+<meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ScalaBass — Intervalles",
+  "description": "Visualise tous les intervalles sur le manche de basse : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.",
+  "url": "https://labussiere21.github.io/Gammes/intervalles.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "inLanguage": ["fr", "en", "es"],
+  "isAccessibleForFree": true,
+  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -800,6 +825,7 @@ function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');i
 
 
 function updateI18n(){
+  try{document.documentElement.lang=(localStorage.getItem("sblang")||"fr");}catch(e){}
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
