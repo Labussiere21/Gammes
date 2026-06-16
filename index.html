@@ -432,7 +432,7 @@
 
   /* Positions / boîtes */
   .cell.in-box{background:rgba(217,168,73,.12); box-shadow:inset -1px 0 0 rgba(255,255,255,.04), inset 0 0 0 100px rgba(217,168,73,.06)}
-  .dot.ghost{opacity:.04; box-shadow:none; filter:saturate(0) brightness(.4); transform:scale(.75)}
+  .dot.ghost{opacity:.12; box-shadow:none; filter:saturate(.15) brightness(.5); transform:scale(.78)}
   .dot.ghost.root{box-shadow:none}
   .fb-caption{margin-top:14px; font-size:13px; color:var(--muted)}
   .fb-caption b{color:var(--brass); font-weight:700}
@@ -1050,6 +1050,9 @@ const GROUP_LABELS={
   2:'Modes dérivés & Jazz',
   3:'Gammes exotiques',
 };
+// Groupes repliés par défaut (stockés en state)
+if(!state.collapsedGroups) state.collapsedGroups=new Set();
+
 function buildScaleTypes(){
   const c=document.getElementById('scale-types'); c.innerHTML='';
   const visible=SCALE_DEFS.filter(s=>state.family==='all'||s.fam===state.family);
@@ -1057,14 +1060,30 @@ function buildScaleTypes(){
     state.scaleId=visible[0].id; state.position='all';
   }
   let lastGroup=-1;
+  let currentWrap=null;
   SCALE_DEFS.forEach(s=>{
     if(state.family!=='all' && s.fam!==state.family) return;
     if(s.group!==lastGroup){
       if(lastGroup>=0){const sep=document.createElement('div');sep.className='st-sep';c.appendChild(sep);}
-      const lbl=document.createElement('div');
-      lbl.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin:8px 0 4px;flex-basis:100%';
-      lbl.textContent=GROUP_LABELS[s.group]||'';
-      c.appendChild(lbl);
+      // Header cliquable
+      const hdr=document.createElement('div');
+      const collapsed=state.collapsedGroups.has(s.group);
+      hdr.style.cssText='display:flex;align-items:center;gap:6px;cursor:pointer;flex-basis:100%;margin:8px 0 4px;user-select:none';
+      hdr.innerHTML=`
+        <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)">${GROUP_LABELS[s.group]||''}</span>
+        <span class="grp-arrow" style="font-size:10px;color:var(--muted-2);transition:transform .15s;transform:rotate(${collapsed?'-90deg':'0deg'})"">▾</span>`;
+      hdr.onclick=()=>{
+        const g=s.group;
+        if(state.collapsedGroups.has(g)) state.collapsedGroups.delete(g);
+        else state.collapsedGroups.add(g);
+        buildScaleTypes();
+      };
+      c.appendChild(hdr);
+      // Wrapper des boutons de ce groupe
+      currentWrap=document.createElement('div');
+      currentWrap.style.cssText=`display:${collapsed?'none':'contents'}`;
+      currentWrap.dataset.group=s.group;
+      c.appendChild(currentWrap);
       lastGroup=s.group;
     }
     const b=document.createElement('button');
@@ -1072,7 +1091,7 @@ function buildScaleTypes(){
     b.dataset.id=s.id;
     b.innerHTML = s.label + (s.sub?` <span style="opacity:.55;font-weight:400">${s.sub}</span>`:'');
     b.onclick=()=>{ state.scaleId=s.id; state.position='all'; render(); };
-    c.appendChild(b);
+    (currentWrap||c).appendChild(b);
   });
 }
 
