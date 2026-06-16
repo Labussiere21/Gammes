@@ -807,8 +807,11 @@ const SCALE_DESC = {
   dorian_s4:  'Mode IV de la mineure harmonique. Dorien avec une 4ème augmentée — proche de la mineure roumaine.',
   lydian_s2:  'Mode VI de la mineure harmonique. Lydien avec une 2ème augmentée — couleur orientale lumineuse.',
   superlocrian_bb7: 'Mode VII de la mineure harmonique. Très altéré, utilisé en contexte jazz avancé.',
+  chromatic:  'Toutes les 12 notes de l\'octave. Fondamentale pour les exercices de déliement (1-2-3-4) et pour comprendre toutes les positions du manche.',
   bebop_maj:  'Gamme majeure avec une 5ème augmentée ajoutée comme note de passage (entre la 5te et la 6te). Crée des lignes bebop fluides sur les accords majeurs 6 et Δ7.',
   bebop_dom:  'Gamme mixolydienne avec une 7ème majeure ajoutée. La gamme bebop la plus courante, idéale sur les accords de dominante 7.',
+  penta_min_lead: 'Pentatonique mineure avec la 7ème majeure ajoutée comme note de guidage vers la tonique. Idéale pour les fins de phrases blues/jazz.',
+  boogie: "La gamme du boogie-woogie et du Rock'n'Roll classique. Combine les couleurs majeure et blues (♭3 et ♭7 de passage) pour créer des lignes de basse entraînantes sur les accords de dominante.",
   bebop_min:  'Gamme mineure avec une note de passage chromatique. Utilisée sur les accords mineurs en contexte bebop.',
   double_harm:'Aussi connue sous le nom de Byzantine ou Gypsy Major. Deux tétracordes harmoniques identiques contenant deux secondes augmentées. Sonorité très caractéristique, entre Orient et Occident.',
   hung_min:   'Aussi appelée Gypsy Minor. Mineure harmonique avec une 4ème augmentée — sonorité tsigane très reconnaissable. Utilisée en musique hongroise, jazz manouche et métal.',
@@ -863,12 +866,14 @@ const SCALE_DEFS = [
   {id:'locrian',         label:'Locrien',               sub:'mode VII',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
   // ======= GROUPE 1 : PENTATONIQUES & BLUES & SYMÉTRIQUES =======
   {id:'penta_min',       label:'Pentatonique min.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6],        iv:[0,3,5,7,10]},
+  {id:'penta_min_lead',  label:'Penta min. + guidage',  sub:'6 notes (♭3 4 5 ♭7 7)', group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6,6],   iv:[0,3,5,7,10,11]},
+  {id:"boogie",          label:"Rock'n'Roll / Boogie", sub:'7 notes',         group:1, diat:false, posType:'maj',   npos:5,  fam:'maj', ls:[0,1,2,2,4,5,6],   iv:[0,2,3,4,7,9,10]},
   {id:'penta_maj',       label:'Pentatonique maj.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,9]},
   {id:'penta_sus',       label:'Pentatonique sus',      sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,3,4,6],        iv:[0,2,5,7,10]},
   {id:'penta_dom',       label:'Pentatonique dominante',sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,10]},
   {id:'penta_min6',      label:'Pentatonique min. 6',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,5,6],        iv:[0,3,5,9,10]},
   {id:'penta_maj7',      label:'Pentatonique maj. 7',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,11]},
-  {id:'penta_majb2',     label:'Pentatonique maj. ♭2',  sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,0,2,4,5],        iv:[0,1,4,7,9]},
+  {id:'penta_majb2',     label:'Pentatonique maj. ♭2',  sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,1,4,7,9]},
   {id:'blues_min',       label:'Blues mineure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,4,6],      iv:[0,3,5,6,7,10]},
   {id:'blues_maj',       label:'Blues majeure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,2,4,5],      iv:[0,2,3,4,7,9]},
   {id:'blues_hex',       label:'Blues hexatonique',     sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,6],      iv:[0,2,3,5,7,10]},
@@ -878,6 +883,7 @@ const SCALE_DEFS = [
   {id:'half_dim',        label:'Demi-diminuée',         sub:'= Locrien',       group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10]},
   {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
   {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11]},
+  {id:'chromatic', label:'Chromatique', sub:'12 notes', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5,6,7,8,9,10,11], iv:[0,1,2,3,4,5,6,7,8,9,10,11]},
   // ======= GROUPE 2 : MODES DÉRIVÉS & JAZZ =======
   {id:'phryg_dom',       label:'Phrygien dominant',     sub:'Mode V harm.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
   {id:'lydian_dom',      label:'Lydien dominant',       sub:'Mode IV mél.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
@@ -905,7 +911,7 @@ const SCALE_DEFS = [
   {id:'enigmatic',       label:'Énigmatique',           sub:'Verdi',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,6,8,10,11]},
   {id:'napolitaine_maj', label:'Napolitaine majeure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,11]},
   {id:'napolitaine_min', label:'Napolitaine mineure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,11]},
-  {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,5],     iv:[0,2,4,6,9,10]},
+  {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,6],     iv:[0,2,4,6,9,10]},
   {id:'overtone',        label:'Acoustique (Overtone)', sub:'= Lydien dominant',   group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
   // ======= GROUPE 3 : ARABES / MAQAMS =======
   {id:'hijaz',           label:'Hijaz',                 sub:'Maqam (≈ Phryg. dom.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
@@ -1126,6 +1132,15 @@ function buildPositionButtons(n){
    ============================================================ */
 function currentScale(){
   const def = SCALE_DEFS.find(s=>s.id===state.scaleId);
+  // La gamme chromatique utilise les noms simples ♭ ou ♯ selon accPref
+  if(def.id==='chromatic'){
+    const CHROM_FLAT  = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+    const CHROM_SHARP = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+    const root = state.rootPc;
+    const table = state.accPref==='#' ? CHROM_SHARP : CHROM_FLAT;
+    const notes = def.iv.map(i => table[(root+i)%12]);
+    return {def, notes};
+  }
   const notes = buildScale(rootName(), def.ls, def.iv);
   return {def, notes};
 }
@@ -1574,6 +1589,9 @@ const SCALE_LABELS_FR = {
   dorian_b2:'Dorien b2', locrian6:'Locrien naturel 6', ionian_s5:'Ionien #5',
   dorian_s4:'Dorien #4', lydian_s2:'Lydien #2', superlocrian_bb7:'Super Locrien bb7',
   bebop_maj:'Bebop majeure', bebop_dom:'Bebop dominante',
+  chromatic:'Chromatique',
+  penta_min_lead:'Penta mineure guidage',
+  boogie:"Rock'n'Roll / Boogie",
   bebop_min:'Bebop mineure',
   double_harm:'Double harmonique', hung_min:'Mineure hongroise',
   hung_maj:'Majeure hongroise', gypsy_maj:'Tzigane majeure',
