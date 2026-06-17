@@ -44,7 +44,7 @@
   }
   .site-name{
     font-weight:700; letter-spacing:.18em; color:var(--brass);
-    font-size:13px; white-space:nowrap; flex-shrink:0;
+    font-size:22px; white-space:nowrap; flex-shrink:0;
   }
   .site-nav{
     display:flex; gap:2px; background:#0e0a07;
@@ -903,9 +903,9 @@ function currentStrings(){return STR4;}
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
 const BLACK=[{pc:1,after:0,s:'C♯',f:'D♭'},{pc:3,after:1,s:'D♯',f:'E♭'},{pc:6,after:3,s:'F♯',f:'G♭'},{pc:8,after:4,s:'G♯',f:'A♭'},{pc:10,after:5,s:'A♯',f:'B♭'}];
 function buildPiano(){
-  const p=document.getElementById('piano');p.innerHTML='';const W=47;
+  const p=document.getElementById('piano');p.innerHTML='';const W=59;
   WHITE.forEach(w=>{const k=document.createElement('button');k.className='wkey';k.dataset.pc=w.pc;k.innerHTML=`<span class="wlabel">${spellNote(w.pc,(typeof state!=='undefined'?state.accPref:'b'))}</span>`;p.appendChild(k);});
-  BLACK.forEach(b=>{const k=document.createElement('button');k.className='bkey';k.dataset.pc=b.pc;const main=spellNote(b.pc,state.accPref);const _eh={1:['C♯','D♭'],3:['D♯','E♭'],6:['F♯','G♭'],8:['G♯','A♭'],10:['A♯','B♭']};const _p=_eh[b.pc];const alt=_p?(state.accPref==='#'?_p[1]:_p[0]):'';k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;k.style.left=(8+(b.after+1)*W-15)+'px';p.appendChild(k);});
+  BLACK.forEach(b=>{const k=document.createElement('button');k.className='bkey';k.dataset.pc=b.pc;const main=spellNote(b.pc,state.accPref);const _eh={1:['C♯','D♭'],3:['D♯','E♭'],6:['F♯','G♭'],8:['G♯','A♭'],10:['A♯','B♭']};const _p=_eh[b.pc];const alt=_p?(state.accPref==='#'?_p[1]:_p[0]):'';k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;k.style.left=(8+(b.after+1)*W-19)+'px';p.appendChild(k);});
   p.addEventListener('click',e=>{const k=e.target.closest('[data-pc]');if(!k)return;state.rootPc=+k.dataset.pc;render();});
 }
 

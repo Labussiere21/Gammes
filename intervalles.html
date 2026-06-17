@@ -45,7 +45,7 @@
   }
   .site-name{
     font-weight:700; letter-spacing:.18em; color:var(--brass);
-    font-size:13px; white-space:nowrap; flex-shrink:0;
+    font-size:22px; white-space:nowrap; flex-shrink:0;
   }
   .site-nav{
     display:flex; gap:2px; background:#0e0a07;
@@ -771,7 +771,7 @@ const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{p
 const BLACK=[{pc:1,after:0,s:'C♯',f:'D♭'},{pc:3,after:1,s:'D♯',f:'E♭'},{pc:6,after:3,s:'F♯',f:'G♭'},{pc:8,after:4,s:'G♯',f:'A♭'},{pc:10,after:5,s:'A♯',f:'B♭'}];
 function buildPiano(){
   const p=document.getElementById('piano'); p.innerHTML='';
-  const W=47;
+  const W=59;
   WHITE.forEach(w=>{
     const k=document.createElement('button'); k.className='wkey'; k.dataset.pc=w.pc;
     k.innerHTML=`<span class="wlabel">${spellNote(w.pc,(typeof state!=='undefined'?state.accPref:'b'))}</span>`; p.appendChild(k);
@@ -785,7 +785,7 @@ function buildPiano(){
     const _isSharp = (typeof state!=='undefined'?state.accPref:'b')==='#';
     const alt = _pair ? (_isSharp ? _pair[1] : _pair[0]) : '';
     k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;
-    k.style.left=(8+(b.after+1)*W-15)+'px';
+    k.style.left=(8+(b.after+1)*W-19)+'px';
     p.appendChild(k);
   });
 }
