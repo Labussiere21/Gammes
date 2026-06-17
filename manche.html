@@ -337,7 +337,6 @@
         <a href="cadences.html"      class="nav-link">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
         <a href="quintes.html"       class="nav-link">Quintes</a>
-        <a href="voicings.html"       class="nav-link">Accords</a>
       </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -750,9 +749,9 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes','voicings.html':'Accords'},
-    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths','voicings.html':'Chords'},
-    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as','voicings.html':'Acordes'},
+    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
+    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
+    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
