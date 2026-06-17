@@ -875,7 +875,7 @@ function pretty(n){
   }
   return n.replace(/bb/g,'𝄫').replace(/b/g,'♭').replace(/#/g,'♯');
 }
-function spell(pc){return(state.accPref==='#'?SHARP_SPELL:FLAT_SPELL)[pc];}
+function spell(pc){return spellNote(pc,state.accPref);}
 function buildChordPcs(rootPc,quality){return(CHORD_INTERVALS[quality]||CHORD_INTERVALS['']).map(i=>(rootPc+i)%12);}
 function chordName(rootPc,quality){return spell(rootPc)+(CHORD_LABEL[quality]??quality);}
 function degLabel(d,q){
@@ -1051,7 +1051,7 @@ function renderResult(){
   // Gammes recommandées
   const scalesEl=document.getElementById('recommended-scales');
   if(scalesEl&&cad.scales){
-    const rootNote=FLAT_SPELL[state.rootPc];
+    const rootNote=spellNote(state.rootPc,state.accPref);
     const rn=rootNote[0].toUpperCase()+rootNote.slice(1);
     scalesEl.innerHTML='<span style="color:var(--muted-2);font-family:\'Space Mono\',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">Gammes pour improviser : </span>'
       +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'index.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${SCALE_NAMES[s]||s}</a>`).join('');
