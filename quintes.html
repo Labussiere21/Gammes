@@ -271,13 +271,6 @@ h1 em{font-style:italic; color:var(--brass)}
   <p class="lede">Clique sur une tonalité pour explorer sa gamme, ses modes, ses accords diatoniques et ses cadences les plus courantes.</p>
 </header>
 
-<div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
-  <div class="ctl-label" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2)">Altération</div>
-  <div class="seg" id="accpref">
-    <button data-acc="b">♭ bémols</button>
-    <button data-acc="#" class="on">♯ dièses</button>
-  </div>
-</div>
 
 <div class="main-grid">
 
@@ -518,22 +511,18 @@ function initNotationLang(){
 
 /* ====================================================== DONNÉES */
 const CIRCLE_OF_FIFTHS = [
-  // Position dans le cercle = ordre des quintes
-  // showSharp : visible en mode dièses | showFlat : visible en mode bémols
-  {pc:0,  sharp:'C',  flat:'C',   sharps:0, flats:0,  showSharp:true,  showFlat:true},
-  {pc:7,  sharp:'G',  flat:'G',   sharps:1, flats:0,  showSharp:true,  showFlat:true},
-  {pc:2,  sharp:'D',  flat:'D',   sharps:2, flats:0,  showSharp:true,  showFlat:true},
-  {pc:9,  sharp:'A',  flat:'A',   sharps:3, flats:0,  showSharp:true,  showFlat:true},
-  {pc:4,  sharp:'E',  flat:'E',   sharps:4, flats:0,  showSharp:true,  showFlat:true},
-  {pc:11, sharp:'B',  flat:'B',   sharps:5, flats:0,  showSharp:true,  showFlat:true},
-  {pc:6,  sharp:'F♯', flat:'G♭',  sharps:6, flats:6,  showSharp:true,  showFlat:true},
-  {pc:1,  sharp:'C♯', flat:'D♭',  sharps:7, flats:5,  showSharp:true,  showFlat:true},
-  // Les 3 suivantes n'existent qu'en version bémol en pratique
-  {pc:8,  sharp:'G♯', flat:'A♭',  sharps:0, flats:4,  showSharp:false, showFlat:true},
-  {pc:3,  sharp:'D♯', flat:'E♭',  sharps:0, flats:3,  showSharp:false, showFlat:true},
-  {pc:10, sharp:'A♯', flat:'B♭',  sharps:0, flats:2,  showSharp:false, showFlat:true},
-  // F masqué en mode dièses (évite E♯), visible en bémols (1 bémol)
-  {pc:5,  sharp:'F',  flat:'F',   sharps:0, flats:1,  showSharp:false, showFlat:true},
+  {pc:0,  name:'C',   enhar:'',   sharps:0, flats:0, acc:'b'},
+  {pc:7,  name:'G',   enhar:'',   sharps:1, flats:0, acc:'#'},
+  {pc:2,  name:'D',   enhar:'',   sharps:2, flats:0, acc:'#'},
+  {pc:9,  name:'A',   enhar:'',   sharps:3, flats:0, acc:'#'},
+  {pc:4,  name:'E',   enhar:'',   sharps:4, flats:0, acc:'#'},
+  {pc:11, name:'B',   enhar:'',   sharps:5, flats:0, acc:'#'},
+  {pc:6,  name:'F♯',  enhar:'G♭', sharps:6, flats:6, acc:'#'},
+  {pc:1,  name:'D♭',  enhar:'C♯', sharps:7, flats:5, acc:'b'},
+  {pc:8,  name:'A♭',  enhar:'',   sharps:0, flats:4, acc:'b'},
+  {pc:3,  name:'E♭',  enhar:'',   sharps:0, flats:3, acc:'b'},
+  {pc:10, name:'B♭',  enhar:'',   sharps:0, flats:2, acc:'b'},
+  {pc:5,  name:'F',   enhar:'',   sharps:0, flats:1, acc:'b'},
 ];
 
 const SCALE_MAJ  = [0,2,4,5,7,9,11];
@@ -582,7 +571,7 @@ const CADENCES_MIN = [
 ];
 
 /* ====================================================== ÉTAT */
-const state = { pc: null, accPref: '#', activeTab: 'modes' };
+const state = { pc: null, activeTab: 'modes' };
 
 const SHARP_SPELL = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const FLAT_SPELL  = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
@@ -593,7 +582,10 @@ function pretty(n){
   }
   return n.replace(/bb/g,'𝄫').replace(/b/g,'♭').replace(/#/g,'♯');
 }
-function spell(pc){ return (state.accPref==='#'?SHARP_SPELL:FLAT_SPELL)[pc]; }
+function spell(pc){
+  const e=state.pc!==null?CIRCLE_OF_FIFTHS.find(x=>x.pc===state.pc):null;
+  return ((e&&e.acc==='#')?SHARP_SPELL:FLAT_SPELL)[pc];
+}
 
 /* Construit la gamme majeure avec les bonnes lettres */
 function buildMajScale(rootPc){
@@ -602,8 +594,7 @@ function buildMajScale(rootPc){
   // Toniques non-naturelles → lettre depuis le nom du cercle
   if(!rootLetter){
     const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===rootPc);
-    const name = state.accPref==='#' ? entry.sharp : entry.flat;
-    rootLetter = name[0];
+    rootLetter = entry.name[0];
   }
   const rootLetterIdx = LETTERS.indexOf(rootLetter);
   return SCALE_MAJ.map((iv,i)=>{
@@ -618,19 +609,13 @@ function buildMajScale(rootPc){
 }
 
 /* ====================================================== CERCLE SVG */
-function visibleEntries(){
-  return CIRCLE_OF_FIFTHS.filter(e=> state.accPref==='#' ? e.showSharp : e.showFlat);
-}
-
 function buildCircle(){
   const wrap = document.getElementById('circle-wrap');
-  // Supprimer les anciens boutons
   wrap.querySelectorAll('.circle-btn').forEach(b=>b.remove());
   const R = wrap.offsetWidth/2 || 210;
   const cr = R - 26;
-  const visible = visibleEntries();
-  const total = visible.length; // 8 en mode ♯, 12 en mode ♭
-  visible.forEach((entry,i)=>{
+  const total = CIRCLE_OF_FIFTHS.length;
+  CIRCLE_OF_FIFTHS.forEach((entry,i)=>{
     const angle = (i/total)*2*Math.PI - Math.PI/2;
     const x = R + cr*Math.cos(angle);
     const y = R + cr*Math.sin(angle);
@@ -639,12 +624,8 @@ function buildCircle(){
     btn.style.left = x+'px';
     btn.style.top  = y+'px';
     btn.dataset.pc = entry.pc;
-    const name = state.accPref==='#' ? entry.sharp : entry.flat;
-    // Enharmonie : afficher seulement si l'autre nom existe ET est différent
-    const other = state.accPref==='#' ? entry.flat : entry.sharp;
-    const enhar = (other && other!==name) ? other : '';
-    btn.innerHTML = name + (enhar?`<span class="cb-enhar">${enhar}</span>`:'');
-    btn.setAttribute('aria-label', name);
+    btn.innerHTML = entry.name + (entry.enhar?`<span class="cb-enhar">${entry.enhar}</span>`:'');
+    btn.setAttribute('aria-label', entry.name);
     btn.onclick = ()=>{ state.pc=entry.pc; render(); };
     if(state.pc===entry.pc) btn.classList.add('active');
     wrap.appendChild(btn);
@@ -652,20 +633,10 @@ function buildCircle(){
 }
 
 function updateCircle(){
-  // Si la tonalité active n'est plus visible (ex: G# masqué en mode ♯), la désélectionner
-  if(state.pc!==null){
-    const entry=CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
-    if(entry && !(state.accPref==='#'?entry.showSharp:entry.showFlat)){
-      state.pc=null;
-    }
-  }
-  // Reconstruire le cercle (positions changent selon le nombre de boutons)
   buildCircle();
-  // Centre
   if(state.pc!==null){
     const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
-    const name = state.accPref==='#' ? entry.sharp : entry.flat;
-    document.getElementById('cc-note').textContent = name;
+    document.getElementById('cc-note').textContent = entry.name;
     document.getElementById('cc-sig').textContent = sigLabel(entry);
   } else {
     document.getElementById('cc-note').textContent = '—';
@@ -677,15 +648,14 @@ function sigLabel(entry){
   // En mode ♯ : afficher les dièses. En mode ♭ : afficher les bémols.
   // Les entrées sans armure dans le mode actuel (ex: G# en mode ♯)
   // ne sont jamais affichées (showSharp:false), donc ce cas ne devrait pas arriver.
-  if(state.accPref==='#'){
+  if(entry.acc==='#'){
     if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
-    if(entry.flats>0 && entry.sharps===0) return `${entry.flats} bémol${entry.flats>1?'s':''}`; // tonalité naturelle double (ex: B = 5 dièses)
-    return 'aucune altération';
+    if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
   } else {
     if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
     if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
-    return 'aucune altération';
   }
+  return 'aucune altération';
 }
 
 /* ====================================================== RENDU PANNEAU */
@@ -714,7 +684,7 @@ function render(){
   hint.style.display='none'; content.style.display='';
 
   const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===state.pc);
-  const name  = state.accPref==='#' ? entry.sharp : entry.flat;
+  const name  = entry.name;
   const notes = buildMajScale(state.pc);
 
   // Carte tonalité
@@ -852,7 +822,7 @@ function renderCadences(notes, name){
   // Cadences relatives mineures
   const relMinPc=(state.pc+9)%12;
   const relMinEntry=CIRCLE_OF_FIFTHS.find(e=>e.pc===relMinPc);
-  const relMinName=state.accPref==='#'?relMinEntry.sharp:relMinEntry.flat;
+  const relMinName=relMinEntry.name;
   const minNotes=buildMajScale(state.pc).slice(5).concat(buildMajScale(state.pc).slice(0,5)); // rotation éolien
 
   const h2=document.createElement('div');
@@ -886,12 +856,6 @@ function renderCadences(notes, name){
 /* ====================================================== INIT */
 buildCircle();
 
-document.getElementById('accpref').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b||!b.dataset.acc) return;
-  state.accPref=b.dataset.acc;
-  document.querySelectorAll('#accpref button').forEach(btn=>btn.classList.toggle('on',btn.dataset.acc===state.accPref));
-  render(); // updateCircle() appelé par render() → buildCircle() reconstruit
-});
 
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   state.activeTab=t.dataset.tab; render();

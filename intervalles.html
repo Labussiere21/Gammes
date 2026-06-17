@@ -409,6 +409,13 @@
       </div>
     </div>
 
+    <!-- Sélecteur gamme -->
+    <div style="margin-top:20px">
+      <div class="ctl-label">Gamme (optionnel)</div>
+      <div id="scale-sel" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px"></div>
+      <div id="degree-btns" style="display:none;flex-wrap:wrap;gap:5px"></div>
+    </div>
+
     <!-- Sélecteur intervalles -->
     <div style="margin-top:20px">
       <div class="ctl-label">Intervalle</div>
@@ -719,6 +726,17 @@ const INTERVALS_DATA = [
 ];
 const ALL_IVS = INTERVALS_DATA.flatMap(f=>f.items);
 
+const SCALES = [
+  {id:'maj',   label:'Majeur',         semis:[2,4,5,7,9,11]},
+  {id:'min',   label:'Mineur nat.',    semis:[2,3,5,7,8,10]},
+  {id:'minH',  label:'Min. harm.',     semis:[2,3,5,7,8,11]},
+  {id:'pentaM',label:'Penta. M',       semis:[2,4,7,9]},
+  {id:'pentam',label:'Penta. m',       semis:[3,5,7,10]},
+  {id:'blues', label:'Blues',          semis:[3,5,6,7,10]},
+  {id:'dor',   label:'Dorien',         semis:[2,3,5,7,9,10]},
+  {id:'mix',   label:'Mixolydien',     semis:[2,4,5,7,9,10]},
+];
+
 /* ============================================================ ÉTAT */
 const state = {
   rootPc: 9,      // La
@@ -728,6 +746,7 @@ const state = {
   strings: 4,
   frets: 12,
   hand: 'right',
+  scaleId: null,
 };
 const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
@@ -769,10 +788,6 @@ function buildPiano(){
     k.style.left=(8+(b.after+1)*W-15)+'px';
     p.appendChild(k);
   });
-  p.addEventListener('click',e=>{
-    const k=e.target.closest('[data-pc]'); if(!k) return;
-    state.rootPc=+k.dataset.pc; render();
-  });
 }
 
 /* ============================================================ SÉLECTEUR INTERVALLES */
@@ -793,6 +808,52 @@ function buildIvFamilies(){
       btns.appendChild(b);
     });
     col.appendChild(btns); c.appendChild(col);
+  });
+}
+
+/* ============================================================ GAMME */
+const ROMAN=['I','II','III','IV','V','VI','VII'];
+
+function buildScaleButtons(){
+  const el=document.getElementById('scale-sel'); el.innerHTML='';
+  SCALES.forEach(sc=>{
+    const b=document.createElement('button');
+    b.className='ivbtn'+(state.scaleId===sc.id?' on':'');
+    b.style.cssText='padding:5px 12px;font-size:12px;gap:0';
+    b.textContent=sc.label;
+    b.onclick=()=>{
+      state.scaleId=state.scaleId===sc.id?null:sc.id;
+      if(!state.scaleId) state.ivId=null;
+      render();
+    };
+    el.appendChild(b);
+  });
+}
+
+function buildDegreeButtons(){
+  const el=document.getElementById('degree-btns');
+  const sc=SCALES.find(s=>s.id===state.scaleId);
+  if(!sc){el.style.display='none';return;}
+  el.style.display='flex'; el.innerHTML='';
+  // Degré I = fondamentale
+  const r=document.createElement('button');
+  r.className='ivbtn'+(state.ivId===null?' on':'');
+  r.style.cssText='padding:5px 12px;font-size:12px;background:'+(state.ivId===null?'var(--c-root)':'')
+    +';border-color:'+(state.ivId===null?'var(--c-root)':'')
+    +';color:'+(state.ivId===null?'#fff8f0':'');
+  r.innerHTML='<span class="iv-sym">I</span>';
+  r.onclick=()=>{state.ivId=null;render();};
+  el.appendChild(r);
+  // Autres degrés
+  sc.semis.forEach((semi,idx)=>{
+    const iv=ALL_IVS.find(x=>x.semi===semi);
+    if(!iv) return;
+    const b=document.createElement('button');
+    b.className='ivbtn'+(state.ivId===iv.id?' on':'');
+    b.style.cssText='padding:5px 12px;font-size:12px';
+    b.innerHTML=`<span class="iv-sym">${ROMAN[idx+1]}</span>${iv.sym}`;
+    b.onclick=()=>{state.ivId=state.ivId===iv.id?null:iv.id;render();};
+    el.appendChild(b);
   });
 }
 
@@ -847,6 +908,9 @@ function render(){
   const ivDef=state.ivId?ALL_IVS.find(iv=>iv.id===state.ivId):null;
   const ivPc=ivDef?(state.rootPc+ivDef.semi)%12:null;
   const ivNote=ivPc!==null?SPELL_ARR[ivPc]:null;
+
+  // Gamme + degrés
+  buildScaleButtons(); buildDegreeButtons();
 
   // Synchro piano
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
@@ -1006,6 +1070,11 @@ function renderFretboard(strings, rootPc, ivPc, ivDef, rootNote, ivNote){
 
 /* ============================================================ INIT */
 buildPiano();
+document.getElementById('piano').addEventListener('click',e=>{
+  const k=e.target.closest('[data-pc]'); if(!k) return;
+  state.rootPc=+k.dataset.pc; render();
+});
+buildScaleButtons();
 buildTuningButtons();
 document.getElementById('fb-strings-ctl')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=TUNINGS[state.strings][0].id;buildTuningButtons();render();});
 document.getElementById('fb-hand')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
