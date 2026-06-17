@@ -319,6 +319,14 @@
   }
   .play-btn:hover{background:rgba(217,168,73,.25); transform:scale(1.08)}
   .play-btn.playing{background:rgba(217,168,73,.35); color:#160f08; background:var(--brass)}
+  @media(max-width:760px){
+    .eyebrow{flex-wrap:wrap;height:auto;gap:6px;padding-bottom:4px}
+    .site-name{font-size:17px}
+    .header-tools{width:100%}
+    .site-nav{order:9;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .site-nav::-webkit-scrollbar{display:none}
+    .piano-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">

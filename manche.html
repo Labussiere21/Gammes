@@ -293,6 +293,14 @@
   .htool-seg button[disabled]{opacity:.35;cursor:default;pointer-events:none}
   .htool-divider{width:1px;height:16px;background:var(--line);margin:0 2px;flex-shrink:0;align-self:center}
 
+  @media(max-width:760px){
+    .eyebrow{flex-wrap:wrap;height:auto;gap:6px;padding-bottom:4px}
+    .site-name{font-size:17px}
+    .header-tools{width:100%}
+    .site-nav{order:9;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .site-nav::-webkit-scrollbar{display:none}
+    .piano-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  }
 </style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Manche de basse interactif : toutes les notes | ScalaBass">
