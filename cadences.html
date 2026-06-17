@@ -944,7 +944,9 @@ function buildCadencesGrid(){
   const c=document.getElementById('cadences-grid');c.innerHTML='';
   CADENCES.filter(cad=>state.genre==='all'||cad.genre===state.genre).forEach(cad=>{
     const col=GENRE_COLORS[cad.genre]||'var(--brass)';
-    const degs=cad.degrees.map((dg,i)=>`<span class="cad-deg" style="color:${CHORD_COLORS[i%CHORD_COLORS.length]};border-color:${CHORD_COLORS[i%CHORD_COLORS.length]}44">${degLabel(dg.d,dg.q)}</span>`).join('');
+    const _dcm={};
+    cad.degrees.forEach(dg=>{const k=dg.d+'_'+dg.acc;if(!(k in _dcm))_dcm[k]=CHORD_COLORS[Object.keys(_dcm).length%CHORD_COLORS.length];});
+    const degs=cad.degrees.map((dg)=>{const col=_dcm[dg.d+'_'+dg.acc];return`<span class="cad-deg" style="color:${col};border-color:${col}44">${degLabel(dg.d,dg.q)}</span>`;}).join('');
     const card=document.createElement('div');
     card.className='cadence-card'+(state.cadenceId===cad.id?' active':'');
     card.innerHTML=`<div class="cad-header"><div class="cad-label">${cad.label}</div><div class="cad-genre" style="color:${col};border-color:${col}44">${cad.genre}</div></div><div class="cad-desc">${cad.desc}</div><div class="cad-degrees">${degs}</div>`;
@@ -958,12 +960,15 @@ function renderChart(cad){
   const zone=document.getElementById('cad-chart-zone');
   if(!cad||!cad.chart){zone.style.display='none';return;}
   zone.style.display='';
-  // Couleur par accord unique (même ordre que degrees)
+  // Couleur par degré unique — alignée sur la palette de renderResult (clé d+'_'+acc)
   const colorMap={};
-  cad.degrees.forEach((dg,i)=>{
-    const k=dg.d+'_'+dg.q;
+  cad.degrees.forEach(dg=>{
+    const k=dg.d+'_'+dg.acc;
     if(!(k in colorMap)) colorMap[k]=CHORD_COLORS[Object.keys(colorMap).length%CHORD_COLORS.length];
   });
+  // Mapping d+'_'+q → couleur pour les barres du chart (qui n'ont pas acc)
+  const chartColMap={};
+  cad.degrees.forEach(dg=>{chartColMap[dg.d+'_'+dg.q]=colorMap[dg.d+'_'+dg.acc];});
   // Développer les mesures
   const bars=[];
   cad.chart.forEach(([d,q,n])=>{for(let i=0;i<n;i++) bars.push({d,q});});
@@ -973,7 +978,7 @@ function renderChart(cad){
     <div class="cad-chart-title">Grille — ${total} mesure${total>1?'s':''}</div>
     <div class="cad-chart" style="grid-template-columns:repeat(${cols},1fr)">
       ${bars.map(({d,q},idx)=>{
-        const col=colorMap[d+'_'+q]||'var(--brass)';
+        const col=chartColMap[d+'_'+q]||'var(--brass)';
         const barNum=idx+1;
         return `<div class="cad-bar" style="color:${col};border-color:${col}55;background:${col}18">
           <span class="cad-bar-deg">${degLabel(d,q)}</span>
@@ -990,9 +995,16 @@ function renderResult(){
   if(!state.cadenceId){rz.style.display='none';return;}
   rz.style.display='';
   const cad=CADENCES.find(c=>c.id===state.cadenceId);if(!cad)return;
+  // Couleur par degré unique (d + acc), pas par position
+  const degColorMap={};
+  cad.degrees.forEach(dg=>{
+    const k=dg.d+'_'+dg.acc;
+    if(!(k in degColorMap)) degColorMap[k]=CHORD_COLORS[Object.keys(degColorMap).length%CHORD_COLORS.length];
+  });
   const chords=cad.degrees.map((dg,i)=>{
     const pc=degPcFull(state.rootPc,dg.d,dg.acc);
-    return{pc,pcs:buildChordPcs(pc,dg.q),quality:dg.q,name:chordName(pc,dg.q),col:CHORD_COLORS[i%CHORD_COLORS.length],deg:dg.d,roman:degLabel(dg.d,dg.q)};
+    const col=degColorMap[dg.d+'_'+dg.acc];
+    return{pc,pcs:buildChordPcs(pc,dg.q),quality:dg.q,name:chordName(pc,dg.q),col,deg:dg.d,roman:degLabel(dg.d,dg.q)};
   });
   const cur=chords[state.chordIdx];
   // Titre
