@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gamme de {{ root.fr }} {{ scale.label }} pour basse — {{ notes_str }}</title>
+  <meta name="description" content="Gamme de {{ root.fr }} {{ scale.label }} pour basse 4 cordes : {{ notes_str }}. {{ n_notes }} note{{ 's' if n_notes > 1 else '' }}. Intervalles : {{ ivstr }}. Positions sur le manche, tablature interactive.">
+  <link rel="canonical" href="{{ page_url }}">
+  <meta property="og:title" content="Gamme {{ root.fr }} {{ scale.label }} — Basse">
+  <meta property="og:description" content="{{ root.fr }} {{ scale.label }} : {{ notes_str }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ page_url }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Gamme de {{ root.fr }} {{ scale.label }} pour basse",
+    "description": "{{ root.fr }} {{ scale.label }} pour basse 4 cordes : {{ notes_str }}. Intervalles : {{ ivstr }}.",
+    "url": "{{ page_url }}",
+    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+  }
+  </script>
+  <style>
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:#c8a840;--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+    a{color:var(--brass);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* NAV */
+    .topnav{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .topnav .logo{font-weight:700;letter-spacing:.15em;font-size:13px;text-transform:uppercase;color:var(--brass)}
+    .topnav a{color:var(--muted);font-size:13px}
+    .topnav a:hover{color:var(--text)}
+
+    /* BREADCRUMB */
+    .breadcrumb{padding:10px 24px;font-size:12px;color:var(--muted)}
+    .breadcrumb a{color:var(--muted)}
+
+    /* MAIN */
+    main{max-width:860px;margin:0 auto;padding:28px 24px 64px}
+
+    h1{font-size:clamp(22px,4vw,34px);font-weight:700;line-height:1.2;margin-bottom:6px}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+
+    h2{font-size:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+
+    /* NOTES PILLS */
+    .notes-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+    .note-pill{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:var(--brass)}
+    .note-pill.root{border-color:var(--brass);background:var(--brass)18;color:var(--brass)}
+
+    /* INTERVALS */
+    .iv-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:"Space Mono",monospace;font-size:13px}
+    .iv-note{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--text)}
+    .iv-sep{color:var(--muted);font-size:11px;padding:0 2px}
+    .iv-label{color:var(--green);background:var(--green)15;border:1px solid var(--green)44;border-radius:5px;padding:2px 7px;font-size:11px}
+    .iv-label.ht{color:var(--red);background:var(--red)12;border-color:var(--red)44}
+    .iv-label.aug{color:var(--blue);background:var(--blue)12;border-color:var(--blue)44}
+
+    /* TRIADS TABLE */
+    .triad-table{width:100%;border-collapse:collapse;font-size:14px}
+    .triad-table th{text-align:left;padding:6px 10px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+    .triad-table td{padding:7px 10px;border-bottom:1px solid var(--line)88}
+    .triad-table tr:last-child td{border-bottom:none}
+    .roman{font-family:"Space Mono",monospace;font-weight:700;color:var(--brass)}
+    .q-maj{color:var(--green)}
+    .q-min{color:var(--blue)}
+    .q-dim{color:var(--red)}
+    .q-aug{color:#f08a3c}
+
+    /* DESC BLOCK */
+    .desc-block{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;line-height:1.7;color:#c8c8d8;font-size:14px}
+
+    /* CTA */
+    .cta-block{margin-top:40px;background:var(--panel);border:1px solid var(--brass)44;border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .cta-block p{font-size:14px;color:var(--muted);max-width:420px}
+    .cta-btn{display:inline-block;background:var(--brass);color:#1a1a20;font-weight:700;font-size:14px;padding:10px 22px;border-radius:8px;text-decoration:none;white-space:nowrap}
+    .cta-btn:hover{background:#e0b840;text-decoration:none}
+
+    /* FOOTER NAV */
+    .page-nav{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px}
+    .page-nav a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--muted)}
+    .page-nav a:hover{color:var(--text);text-decoration:none}
+    .page-nav .active{border-color:var(--brass)55;color:var(--brass)}
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="logo">ScalaBass</span>
+  <a href="{{ BASE_URL }}/">Gammes</a>
+  <a href="{{ BASE_URL }}/manche.html">Manche</a>
+  <a href="{{ BASE_URL }}/intervalles.html">Intervalles</a>
+  <a href="{{ BASE_URL }}/cadences.html">Cadences</a>
+  <a href="{{ BASE_URL }}/arpeges-basse.html">Arpèges</a>
+</nav>
+
+<div class="breadcrumb">
+  <a href="{{ BASE_URL }}/fr/gammes/">Toutes les gammes</a>
+  &rsaquo; {{ root.fr }}
+  &rsaquo; {{ scale.label }}
+</div>
+
+<main>
+  <h1>Gamme de {{ root.fr }} {{ scale.label }}</h1>
+  <p class="sub">
+    Basse 4 cordes
+    {%- if scale.sub %} &nbsp;·&nbsp; {{ scale.sub }}{% endif %}
+    &nbsp;·&nbsp; {{ n_notes }} note{{ 's' if n_notes > 1 else '' }}
+    &nbsp;·&nbsp; famille {{ 'majeure' if scale.fam == 'maj' else 'mineure' }}
+  </p>
+
+  <!-- NOTES -->
+  <h2>Notes</h2>
+  <div class="notes-row">
+    {% for note in notes_fr %}
+    <div class="note-pill{% if loop.first %} root{% endif %}">{{ note }}</div>
+    {% endfor %}
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:6px">
+    Notation anglaise : {{ notes_en | join(' – ') }}
+  </p>
+
+  <!-- INTERVALLES -->
+  <h2>Structure d'intervalles</h2>
+  <div class="iv-row">
+    {% for note in notes_fr %}
+    <span class="iv-note">{{ note }}</span>
+    {% if not loop.last %}
+    {% set nxt_iv = scale.iv[loop.index] - scale.iv[loop.index0] %}
+    {% set diff = (nxt_iv + 12) % 12 %}
+    {% if diff == 1 %}
+      <span class="iv-label ht">½T</span>
+    {% elif diff == 2 %}
+      <span class="iv-label">T</span>
+    {% elif diff == 3 %}
+      <span class="iv-label aug">T+½T</span>
+    {% else %}
+      <span class="iv-label aug">{{ diff }}×½T</span>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    <span class="iv-sep">→</span>
+    <span class="iv-note">{{ notes_fr[0] }}+oct.</span>
+    {% set last_diff = (12 - scale.iv[-1] + 12) % 12 %}
+    {% if last_diff == 1 %}
+      <span class="iv-label ht">½T</span>
+    {% elif last_diff == 2 %}
+      <span class="iv-label">T</span>
+    {% elif last_diff == 3 %}
+      <span class="iv-label aug">T+½T</span>
+    {% else %}
+      <span class="iv-label aug">{{ last_diff }}×½T</span>
+    {% endif %}
+  </div>
+
+  <!-- DEGRÉS / ACCORDS (diatoniques seulement) -->
+  {% if triads %}
+  <h2>Accords de la gamme (triades)</h2>
+  <table class="triad-table">
+    <thead>
+      <tr><th>Degré</th><th>Accord (en {{ root.fr }})</th><th>Qualité</th></tr>
+    </thead>
+    <tbody>
+      {% for t in triads %}
+      <tr>
+        <td class="roman">{{ t.roman }}</td>
+        <td><strong>{{ t.name }}</strong></td>
+        <td class="{% if t.quality == 'Majeur' %}q-maj{% elif t.quality == 'mineur' %}q-min{% elif t.quality == 'diminué' %}q-dim{% elif t.quality == 'augmenté' %}q-aug{% endif %}">{{ t.quality }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <!-- DESCRIPTION -->
+  <h2>À propos de cette gamme</h2>
+  <div class="desc-block">{{ desc }}</div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <p>Voir les positions sur le manche, le piano et les arpèges pour <strong>{{ root.fr }} {{ scale.label }}</strong> dans l'appli interactive.</p>
+    <a class="cta-btn" href="{{ app_link }}">Explorer dans ScalaBass →</a>
+  </div>
+
+  <!-- NAV AUTRES TONIQUES -->
+  <h2 style="margin-top:40px">Même gamme dans d'autres toniques</h2>
+  <div class="page-nav">
+    {% for r in [
+      {"fr":"Do","slug":"do"},{"fr":"Réb","slug":"re-bemol"},{"fr":"Ré","slug":"re"},
+      {"fr":"Mib","slug":"mi-bemol"},{"fr":"Mi","slug":"mi"},{"fr":"Fa","slug":"fa"},
+      {"fr":"Fa#","slug":"fa-diese"},{"fr":"Sol","slug":"sol"},{"fr":"Lab","slug":"la-bemol"},
+      {"fr":"La","slug":"la"},{"fr":"Sib","slug":"si-bemol"},{"fr":"Si","slug":"si"}
+    ] %}
+    <a href="{{ BASE_URL }}/fr/gammes/{{ r.slug }}/{{ scale_slug }}/{% if r.slug == root.slug %}#{% endif %}"
+       {% if r.slug == root.slug %}class="active"{% endif %}>{{ r.fr }}</a>
+    {% endfor %}
+  </div>
+
+</main>
+</body>
+</html>

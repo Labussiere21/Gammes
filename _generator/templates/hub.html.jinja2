@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gammes pour basse — 72 gammes × 12 toniques | ScalaBass</title>
+  <meta name="description" content="Toutes les gammes pour basse 4 cordes : gamme majeure, mineure, pentatoniques, blues, modes jazz, gammes exotiques. 864 pages avec notes, intervalles et positions sur le manche.">
+  <link rel="canonical" href="{{ BASE_URL }}/fr/gammes/">
+  <style>
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:#c8a840}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6}
+    a{color:var(--brass);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .topnav .logo{font-weight:700;letter-spacing:.15em;font-size:13px;text-transform:uppercase;color:var(--brass)}
+    .topnav a{color:var(--muted);font-size:13px}
+    main{max-width:980px;margin:0 auto;padding:28px 24px 64px}
+    h1{font-size:clamp(20px,3.5vw,30px);font-weight:700;margin-bottom:8px}
+    .intro{color:var(--muted);font-size:14px;max-width:640px;margin-bottom:36px}
+    h2{font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:5px}
+    .scale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:16px}
+    .scale-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+    .scale-card .name{font-weight:600;font-size:13px;margin-bottom:6px}
+    .scale-card .sub{font-size:11px;color:var(--muted);margin-bottom:8px}
+    .roots-row{display:flex;flex-wrap:wrap;gap:4px}
+    .roots-row a{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 7px}
+    .roots-row a:hover{color:var(--brass);text-decoration:none;border-color:var(--brass)44}
+    .group-labels{0:"Modes diatoniques",1:"Pentatoniques & Blues",2:"Modes jazz",3:"Gammes exotiques"}
+  </style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="logo">ScalaBass</span>
+  <a href="{{ BASE_URL }}/">Gammes</a>
+  <a href="{{ BASE_URL }}/manche.html">Manche</a>
+  <a href="{{ BASE_URL }}/intervalles.html">Intervalles</a>
+  <a href="{{ BASE_URL }}/cadences.html">Cadences</a>
+  <a href="{{ BASE_URL }}/arpeges-basse.html">Arpèges</a>
+</nav>
+<main>
+  <h1>Toutes les gammes pour basse</h1>
+  <p class="intro">{{ scales|length }} gammes × 12 toniques = {{ scales|length * 12 }} pages. Notes, intervalles, accords et positions sur le manche pour chaque combinaison.</p>
+
+  {% set groups = [
+    (0, "Modes diatoniques (7 notes)"),
+    (1, "Pentatoniques, Blues & Symétriques"),
+    (2, "Modes dérivés & Jazz"),
+    (3, "Gammes exotiques"),
+  ] %}
+  {% for gid, glabel in groups %}
+  <h2>{{ glabel }}</h2>
+  <div class="scale-grid">
+    {% for scale in scales if scale.group == gid %}
+    <div class="scale-card">
+      <div class="name">{{ scale.label }}</div>
+      {% if scale.sub %}<div class="sub">{{ scale.sub }}</div>{% endif %}
+      <div class="roots-row">
+        {% for r in roots %}
+        <a href="{{ BASE_URL }}/fr/gammes/{{ r.slug }}/{{ scale_slug(scale.id) }}/">{{ r.fr }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</main>
+</body>
+</html>

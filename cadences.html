@@ -1226,7 +1226,7 @@ function renderFretboard(chords){
   const strDiv=document.createElement('div');strDiv.className='fb-strings';
   display.forEach(s=>{
     const row=document.createElement('div');row.className='fb-row';row.style.setProperty('--str-h',(thickness[s.n]||2)+'px');
-    const lab=document.createElement('div');lab.className='str-label';lab.textContent=s.n;row.appendChild(lab);
+    const lab=document.createElement('div');lab.className='str-label';lab.textContent=prettyNote(s.n);row.appendChild(lab);
     for(let f=0;f<=state.frets;f++){
       const cell=document.createElement('div');cell.className='cell'+(f===0?' open nut-after':'');
       const pc=(s.pc+f)%12;
