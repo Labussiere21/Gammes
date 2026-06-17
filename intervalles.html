@@ -1013,7 +1013,7 @@ function renderFretboard(strings, rootPc, ivPc, ivDef, rootNote, ivNote){
 
   const lowPc=strings[0].pc;
   let display=strings.slice();
-  if(state.hand==='right') display.reverse();
+  display.reverse();
   const thickness={}; strings.forEach((s,i)=>{thickness[s.n]=(2+(strings.length-1-i)*0.7);});
 
   const SPELL_ARR=state.accPref==='#'?SHARP:FLAT;
@@ -1022,7 +1022,7 @@ function renderFretboard(strings, rootPc, ivPc, ivDef, rootNote, ivNote){
   display.forEach(s=>{
     const row=document.createElement('div'); row.className='fb-row';
     row.style.setProperty('--str-h',thickness[s.n].toFixed(1)+'px');
-    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=s.n;
+    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=prettyNote(s.n);
     row.appendChild(lab);
 
     for(let f=0;f<=frets;f++){

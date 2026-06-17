@@ -1660,9 +1660,8 @@ function renderFretboard(notes, rootPc, def){
   if(box) frets = Math.min(24, Math.max(frets, box.end));
   fb.style.setProperty('--frets', frets);
 
-  // Droitier : aigu (Sol) en haut, Gaucher : grave (E/B) en haut
   let display = strings.slice();
-  if(state.hand==='right') display.reverse();
+  display.reverse();
 
   const thickness = {}; strings.forEach((s,idx)=>{ thickness[s.n]= (2 + (strings.length-1-idx)*0.7); });
 
@@ -1670,7 +1669,7 @@ function renderFretboard(notes, rootPc, def){
   display.forEach(s=>{
     const row=document.createElement('div'); row.className='fb-row';
     row.style.setProperty('--str-h', thickness[s.n].toFixed(1)+'px');
-    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=s.n;
+    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=prettyNote(s.n);
     row.appendChild(lab);
     for(let f=0; f<=frets; f++){
       const inBox = box && f>=box.start && f<=box.end;

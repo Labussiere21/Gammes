@@ -718,7 +718,7 @@ function renderFretboard(){
   display.forEach(s=>{
     const row=document.createElement('div'); row.className='fb-row';
     row.style.setProperty('--str-h',(thick[s.n]||2)+'px');
-    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=s.n;
+    const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=prettyNote(s.n);
     row.appendChild(lab);
     for(let f=0;f<=state.frets;f++){
       const cell=document.createElement('div');
