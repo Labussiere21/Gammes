@@ -645,7 +645,7 @@ const NOTE_COLORS=[
 
 const state = {
   // selectedNotes = Map pc → couleur (ordre d'insertion = ordre des couleurs)
-  selectedNotes: new Map([[9, NOTE_COLORS[0]]]), // La par défaut
+  selectedNotes: new Map(),
   accPref: 'b',
   strings: 4,
   tuning: 'standard',
@@ -723,10 +723,6 @@ function buildPiano(){
     k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;
     k.style.left=(8+(b.after+1)*W-15)+'px';
     p.appendChild(k);
-  });
-  p.addEventListener('click',e=>{
-    const k=e.target.closest('[data-pc]'); if(!k) return;
-    toggleNote(+k.dataset.pc); render();
   });
 }
 
@@ -889,6 +885,10 @@ function renderFretboard(strings,frets){
 
 /* ============================================================ INIT */
 buildPiano();
+document.getElementById('piano').addEventListener('click',e=>{
+  const k=e.target.closest('[data-pc]'); if(!k) return;
+  toggleNote(+k.dataset.pc); render();
+});
 buildTuningButtons();
 document.getElementById('fb-strings-ctl')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=TUNINGS[state.strings][0].id;buildTuningButtons();render();});
 document.getElementById('fb-hand')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
