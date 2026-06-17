@@ -135,6 +135,14 @@
 
   /* Grille cadences */
   .cadences-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; margin-top:20px}
+
+  /* Chord chart (grille d'accords) */
+  .cad-chart-wrap{margin:0 0 18px;padding:14px;background:var(--panel);border-radius:10px;border:1px solid var(--line)}
+  .cad-chart-title{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-bottom:10px}
+  .cad-chart{display:grid;gap:3px}
+  .cad-bar{height:46px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-weight:700;border:1px solid;gap:1px;min-width:0}
+  .cad-bar-deg{font-size:11px;line-height:1}
+  .cad-bar-num{font-size:8px;opacity:.5;line-height:1}
   .cadence-card{
     background:linear-gradient(180deg,var(--panel-2),var(--panel));
     border:1px solid var(--line); border-radius:12px; padding:16px 18px;
@@ -288,6 +296,14 @@
   .play-btn[title="Jouer la cadence"]{
     width:auto; border-radius:8px; padding:0 14px; gap:6px; font-size:11px; letter-spacing:.06em;
   }
+  @media(max-width:760px){
+    .eyebrow{flex-wrap:wrap;height:auto;gap:6px;padding-bottom:4px}
+    .site-name{font-size:17px}
+    .header-tools{width:100%}
+    .site-nav{order:9;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .site-nav::-webkit-scrollbar{display:none}
+    .piano-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
@@ -414,6 +430,9 @@
 
     <!-- Vue globale : toutes les cartes d'accords -->
     <div class="chords-overview" id="chords-overview"></div>
+
+    <!-- Grille d'accords (chart) -->
+    <div id="cad-chart-zone" style="display:none"></div>
 
     <!-- Info accord actif -->
     <div class="chord-info" id="chord-info"></div>
@@ -724,8 +743,8 @@ const CADENCES=[
 // POP/ROCK
 {genre:'Pop/Rock',label:'I – V – vi – IV',desc:'La progression pop universelle',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
 {genre:'Pop/Rock',label:'vi – IV – I – V',desc:'Variante mineure pop',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – vi – IV – V',desc:'Années 50 / doo-wop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – IV – V',desc:'Rock basique',mode:'major',scales:['major','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – vi – IV – V',desc:'Années 50 / doo-wop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',2],[6,'m',2],[4,'',2],[5,'',2]]},
+{genre:'Pop/Rock',label:'I – IV – V',desc:'Rock basique',mode:'major',scales:['major','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',4],[4,'',2],[5,'',2]]},
 {genre:'Pop/Rock',label:'I – V',desc:'Power duo',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
 {genre:'Pop/Rock',label:'I – IV – I – V',desc:'Rock classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
 {genre:'Pop/Rock',label:'I – V – IV',desc:'Variante rock',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:4,acc:0,q:''}]},
@@ -740,15 +759,15 @@ const CADENCES=[
 {genre:'Doo-Wop',label:'I – iii – IV – V',desc:'Doo-wop étendu',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
 {genre:'Doo-Wop',label:'vi – ii – V – I',desc:'Turnaround doo-wop',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
 // BLUES
-{genre:'Blues',label:'I7 – IV7 – I7 – V7',desc:'Blues 12 mesures',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
-{genre:'Blues',label:'I7 – IV7 – I7 – V7 (quick change)',desc:'Blues 12 mesures avec quick change (IV dès la mesure 2)',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
+{genre:'Blues',label:'I7 – IV7 – I7 – V7',desc:'Blues 12 mesures',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',4],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
+{genre:'Blues',label:'I7 – IV7 – I7 – V7 (quick change)',desc:'Blues 12 mesures avec quick change (IV dès la mesure 2)',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',1],[4,'7',1],[1,'7',2],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
 {genre:'Blues',label:'I7 – IV7',desc:'Blues rapide',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'}]},
 {genre:'Blues',label:'I7 – IV7 – V7',desc:'Blues 3 accords',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
 {genre:'Blues',label:'I7 – ♭VII7 – IV7',desc:'Blues avec emprunt modal',mode:'major',scales:['blues_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:'7'},{d:4,acc:0,q:'7'}]},
-{genre:'Blues',label:'i7 – iv7 – V7',desc:'Blues mineur',mode:'minor',scales:['blues_min','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Blues',label:'i7 – iv7 – V7',desc:'Blues mineur',mode:'minor',scales:['blues_min','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'},{d:5,acc:0,q:'7'}],chart:[[1,'m7',4],[4,'m7',2],[1,'m7',2],[5,'7',1],[4,'m7',1],[1,'m7',1],[5,'7',1]]},
 // JAZZ
-{genre:'Jazz',label:'ii – V – I',desc:'La cadence jazz majeure',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}]},
-{genre:'Jazz',label:'iiø – V7alt – i',desc:'ii-V-I mineur jazz',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'m'}]},
+{genre:'Jazz',label:'ii – V – I',desc:'La cadence jazz majeure',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}],chart:[[2,'m7',2],[5,'7',2],[1,'maj7',4]]},
+{genre:'Jazz',label:'iiø – V7alt – i',desc:'ii-V-I mineur jazz',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'m'}],chart:[[2,'m7b5',2],[5,'7',2],[1,'m',4]]},
 {genre:'Jazz',label:'iii – vi – ii – V',desc:'Turnaround jazz',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
 {genre:'Jazz',label:'I – vi – ii – V',desc:'Rhythm changes (intro)',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
 {genre:'Jazz',label:'Imaj7 – VI7 – ii7 – V7',desc:'Anatole jazz',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
@@ -934,6 +953,37 @@ function buildCadencesGrid(){
   });
 }
 
+/* ==================== GRILLE ACCORD (CHART) ==================== */
+function renderChart(cad){
+  const zone=document.getElementById('cad-chart-zone');
+  if(!cad||!cad.chart){zone.style.display='none';return;}
+  zone.style.display='';
+  // Couleur par accord unique (même ordre que degrees)
+  const colorMap={};
+  cad.degrees.forEach((dg,i)=>{
+    const k=dg.d+'_'+dg.q;
+    if(!(k in colorMap)) colorMap[k]=CHORD_COLORS[Object.keys(colorMap).length%CHORD_COLORS.length];
+  });
+  // Développer les mesures
+  const bars=[];
+  cad.chart.forEach(([d,q,n])=>{for(let i=0;i<n;i++) bars.push({d,q});});
+  const total=bars.length;
+  const cols=total===12?4:(total<=8?total:4);
+  zone.innerHTML=`<div class="cad-chart-wrap">
+    <div class="cad-chart-title">Grille — ${total} mesure${total>1?'s':''}</div>
+    <div class="cad-chart" style="grid-template-columns:repeat(${cols},1fr)">
+      ${bars.map(({d,q},idx)=>{
+        const col=colorMap[d+'_'+q]||'var(--brass)';
+        const barNum=idx+1;
+        return `<div class="cad-bar" style="color:${col};border-color:${col}55;background:${col}18">
+          <span class="cad-bar-deg">${degLabel(d,q)}</span>
+          <span class="cad-bar-num">${barNum}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
 /* ==================== RÉSULTAT ==================== */
 function renderResult(){
   const rz=document.getElementById('result-zone');
@@ -1055,6 +1105,8 @@ function renderResult(){
     scalesEl.innerHTML='<span style="color:var(--muted-2);font-family:\'Space Mono\',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">Gammes pour improviser : </span>'
       +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'index.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${SCALE_NAMES[s]||s}</a>`).join('');
   }
+  // Grille d'accords
+  renderChart(cad);
   // Cartes accords
   const ov=document.getElementById('chords-overview');ov.innerHTML='';
   chords.forEach((ch,i)=>{
