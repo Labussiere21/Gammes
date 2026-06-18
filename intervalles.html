@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <style>
   :root{
     --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
@@ -142,6 +143,8 @@
     color:var(--muted-2); margin-bottom:7px; padding-bottom:5px; border-bottom:1px solid var(--line);
   }
   .iv-btns{display:flex; flex-direction:column; gap:4px}
+  .play-btn{background:var(--brass-dim);color:#1a1208;border:none;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
+  .play-btn:hover{background:var(--brass)}
   .ivbtn{
     display:flex; align-items:center; gap:9px;
     text-align:left; font-size:13px; cursor:pointer;
@@ -440,6 +443,7 @@
           <!-- rempli par JS -->
         </div>
         <div id="iv-info" style="font-size:14px; color:var(--muted); line-height:1.7"></div>
+        <div id="iv-play-wrap" style="margin-top:10px"></div>
       </div>
     </section>
 
@@ -572,7 +576,7 @@ const _TR={
     lbl_root:'fondamentale',lbl_bientot:'Bientôt disponible',
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
-    lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+    lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',lbl_jouer_iv:'Jouer l\'intervalle',
     lbl_select_iv:'Sélectionne un intervalle ci-dessus pour le visualiser sur le manche.',
     lbl_iv_lede:'Choisis une fondamentale, puis un intervalle : les deux notes s\'affichent partout sur le manche pour visualiser la distance entre elles.',
     lbl_fondamentale:'Fondamentale',lbl_alteration:'Altération',lbl_gamme_opt:'Gamme (optionnel)',lbl_iv_label:'Intervalle',
@@ -604,7 +608,7 @@ const _TR={
     lbl_root:'root',lbl_bientot:'Coming soon',
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
-    lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+    lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',lbl_jouer_iv:'Play interval',
     lbl_select_iv:'Select an interval above to visualize it on the fretboard.',
     lbl_iv_lede:'Pick a root note, then an interval: both notes appear everywhere on the fretboard so you can see the distance between them.',
     lbl_fondamentale:'Root',lbl_alteration:'Accidental',lbl_gamme_opt:'Scale (optional)',lbl_iv_label:'Interval',
@@ -634,6 +638,27 @@ function getNotationTable(accPref){
 }
 function spellNote(pc, accPref){
   return getNotationTable(accPref)[pc];
+}
+
+/* ===== MODULE AUDIO ===== */
+let _sfInst=null,_audioCtx=null;
+const NOTE_MAP_AUDIO={'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,'Do':0,'Ré':2,'Mi':4,'Fa':5,'Sol':7,'La':9,'Si':11};
+function noteToMidi(n,oct){
+  const clean=n.replace('♯','#').replace('♭','b');
+  const pc=NOTE_MAP_AUDIO[clean]??0;
+  return (oct+1)*12+pc;
+}
+async function initAudio(){
+  if(_sfInst) return _sfInst;
+  try{
+    _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    _sfInst=await Soundfont.instrument(_audioCtx,'electric_bass_finger',{
+      soundfont:'MusyngKite',
+      nameToUrl:(name,sf,fmt)=>`https://gleitz.github.io/midi-js-soundfonts/${sf}/${name}-${fmt}.js`,
+      format:'mp3',gain:3.5,
+    });
+    return _sfInst;
+  }catch(e){return null;}
 }
 
 function initNotationLang(){
@@ -929,6 +954,27 @@ function render(){
         <span class="sym-badge">${ivDef.sym}</span>
       </div>`;
     document.getElementById('iv-info').innerHTML=ivInfoHtml(ivDef);
+    // Bouton play intervalle
+    const playWrap=document.getElementById('iv-play-wrap');
+    if(playWrap){
+      playWrap.innerHTML='';
+      const btn=document.createElement('button');
+      btn.className='play-btn';
+      btn.title=t('lbl_jouer_iv')||'Play';
+      btn.textContent='▶';
+      btn.onclick=async()=>{
+        const inst=await initAudio(); if(!inst)return;
+        if(_audioCtx.state==='suspended') await _audioCtx.resume();
+        const baseOctave=2;
+        const midiRoot=(baseOctave+1)*12+state.rootPc;
+        let midiIv=(baseOctave+1)*12+ivPc;
+        if(ivPc<=state.rootPc) midiIv+=12;
+        const beat=60/76;
+        inst.play(midiRoot,_audioCtx.currentTime,{duration:beat*0.9,gain:3});
+        inst.play(midiIv,_audioCtx.currentTime+beat,{duration:beat*1.2,gain:3});
+      };
+      playWrap.appendChild(btn);
+    }
   } else {
     pair.innerHTML=`
       <div class="iv-note-box root-box">
