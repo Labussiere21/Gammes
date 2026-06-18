@@ -550,6 +550,7 @@
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
           <button data-lang="en" style="min-width:34px">EN</button>
           <button data-lang="es" style="min-width:34px">ES</button>
+          <button data-lang="de" style="min-width:34px">DE</button>
         </div>
       </div>
     </div>
@@ -695,6 +696,12 @@ const EN_TO_ES = {
   'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
   'B':'Si','B#':'Do','Cb':'Si',
 };
+const EN_TO_DE = {
+  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
+  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
+  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
+  'B':'H','B#':'His','Cb':'Ces',
+};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -703,9 +710,9 @@ function currentNotation(){return localStorage.getItem('sbnot')||'en';}
 function prettyNote(noteEN){
   const clean=noteEN.replace(/♯/g,'#').replace(/♭/g,'b');
   const not=currentNotation();
+  const lang=currentLang();
   if(not==='fr'){
     if(EN_TO_FR[clean]) return EN_TO_FR[clean];
-    // Fallback : convertir lettre par lettre
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -715,6 +722,12 @@ function prettyNote(noteEN){
     const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
+  }
+  if(lang==='de'){
+    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
+    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
+    const letter=clean[0]; const acc=clean.slice(1);
+    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -805,6 +818,34 @@ const _TR={
     lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
     lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
     lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
+  },
+  de:{
+    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
+    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
+    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
+    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
+    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
+    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
+    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
+    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
+    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
+    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
+    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
+    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
+    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
+    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
+    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
+    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
+    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
+    lbl_cercle:'Quintenzirkel',
+    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
+    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
+    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
+    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
+    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
+    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
+    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
+    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
   }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -869,6 +910,8 @@ const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
 const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
+const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
+const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -878,8 +921,10 @@ if(!window.state) window._notationReady=true; // sera lu par le state local
 function getNotationTable(accPref){
   const pref = (typeof state!=='undefined'&&state.accPref)||accPref||'b';
   const not  = localStorage.getItem('sbnot')||'en';
+  const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
   if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
+  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -1320,6 +1365,7 @@ function updateI18n(){
     fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
     es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
+    de:{'index.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','manche.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -1329,7 +1375,7 @@ function updateI18n(){
 
 function render(){
   updateI18n();
-  // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN/ES)
+  // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN/ES/DE)
   buildPiano();
   // synchro états visuels des segments
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on', b.dataset.acc===state.accPref));
