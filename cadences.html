@@ -360,42 +360,40 @@
       <div class="htool-seg" id="lang-seg">
         <button data-lang="fr" class="on" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
-        <button data-lang="es" style="min-width:34px">ES</button>
-        <button data-lang="de" style="min-width:34px">DE</button>
       </div>
     </div>
     </div>
     <h1>Ca<em>dences</em></h1>
-    <p class="lede">107 cadences classées par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une cadence, navigue accord par accord sur le manche.</p>
+    <p class="lede" data-i18n="lbl_cad_lede">107 cadences classées par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une cadence, navigue accord par accord sur le manche.</p>
   </header>
 
   <!-- Contrôles -->
   <section class="controls">
     <div class="ctl-row">
       <div>
-        <div class="ctl-label">Tonique</div>
+        <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div style="display:flex;flex-direction:column;gap:12px">
             <div>
-              <div class="ctl-label">Altération</div>
+              <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
               <div class="seg" id="accpref" role="group">
-                <button data-acc="b" class="on">♭ bémols</button>
-                <button data-acc="#">♯ dièses</button>
+                <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
+                <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
               </div>
             </div>
             <div>
-              <div class="ctl-label">Main</div>
+              <div class="ctl-label" data-i18n="lbl_main">Main</div>
               <div class="seg" id="fb-hand" role="group">
-                <button data-hand="right" class="on">🤜 Droitier</button>
-                <button data-hand="left">Gaucher 🤛</button>
+                <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+                <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div>
-        <div class="ctl-label">Cases</div>
+        <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
         <div class="seg" id="fb-frets-ctl" role="group">
           <button data-frets="12" class="on">12</button>
           <button data-frets="15">15</button>
@@ -405,7 +403,7 @@
     </div>
     <!-- Filtres genre -->
     <div style="margin-top:18px">
-      <div class="ctl-label">Genre</div>
+      <div class="ctl-label" data-i18n="lbl_genre_label">Genre</div>
       <div class="genre-tabs" id="genre-tabs"></div>
     </div>
   </section>
@@ -420,8 +418,8 @@
       <div class="chord-nav">
         <div id="play-cad-wrap"></div>
         <div class="chord-nav-btns">
-          <button id="btn-prev" onclick="navigate(-1)">← Préc.</button>
-          <button id="btn-next" onclick="navigate(+1)">Suiv. →</button>
+          <button id="btn-prev" onclick="navigate(-1)" data-i18n="lbl_prev">← Préc.</button>
+          <button id="btn-next" onclick="navigate(+1)" data-i18n="lbl_next">Suiv. →</button>
         </div>
         <span class="chord-counter" id="chord-counter"></span>
       </div>
@@ -442,13 +440,13 @@
     <!-- Manche -->
     <div class="fb-card">
       <div class="fb-head">
-        <h2>Sur le manche</h2>
+        <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
         <div class="fb-tools">
           <div>
-            <div class="ctl-label">Afficher</div>
+            <div class="ctl-label" data-i18n="lbl_affichage">Afficher</div>
             <div class="seg" id="fb-display" role="group">
-              <button data-disp="note" class="on">Notes</button>
-              <button data-disp="deg">Degrés</button>
+              <button data-disp="note" class="on" data-i18n="lbl_note_btn">Notes</button>
+              <button data-disp="deg" data-i18n="lbl_degre_btn">Degrés</button>
             </div>
           </div>
         </div>
@@ -473,18 +471,6 @@ const EN_TO_FR = {
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
-const EN_TO_ES = {
-  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
-  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
-  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
-  'B':'Si','B#':'Do','Cb':'Si',
-};
-const EN_TO_DE = {
-  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
-  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
-  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
-  'B':'H','B#':'His','Cb':'Ces',
-};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -499,18 +485,6 @@ function prettyNote(noteEN){
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(not==='es'){
-    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
-    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(lang==='de'){
-    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
-    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -545,6 +519,11 @@ const _TR={
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+    lbl_cad_lede:'107 cadences classées par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une cadence, navigue accord par accord sur le manche.',
+    lbl_alteration:'Altération',lbl_play_cad_btn:'▶ Cadence',lbl_stop_btn:'■ Stop',
+    lbl_chart_grid:'Grille',lbl_measures:'mesure',lbl_measures_pl:'mesures',
+    lbl_gammes_imp_label:'Gammes pour improviser :',lbl_select_cad:'Sélectionne une cadence pour la visualiser.',
+    lbl_genre_label:'Genre',lbl_prev:'← Préc.',lbl_next:'Suiv. →',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -573,63 +552,12 @@ const _TR={
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+    lbl_cad_lede:'107 cadences sorted by genre — Jazz, Blues, Rock, Metal, Flamenco, Gypsy and more. Pick a root note, click a cadence, and step through it chord by chord on the fretboard.',
+    lbl_alteration:'Accidental',lbl_play_cad_btn:'▶ Cadence',lbl_stop_btn:'■ Stop',
+    lbl_chart_grid:'Chart',lbl_measures:'bar',lbl_measures_pl:'bars',
+    lbl_gammes_imp_label:'Scales for soloing:',lbl_select_cad:'Select a cadence to visualize it.',
+    lbl_genre_label:'Genre',lbl_prev:'← Prev.',lbl_next:'Next →',
   },
-  es:{
-    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
-    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
-    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
-    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
-    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
-    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
-    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
-    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
-    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
-    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
-    lbl_th_num:'Nº',lbl_th_role:'Rol',
-    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
-    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
-    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
-    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
-    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
-    lbl_cercle:'Círculo de quintas',
-    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
-    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
-    lbl_root:'fundamental',lbl_bientot:'Próximamente',
-    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
-    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
-    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
-  },
-  de:{
-    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
-    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
-    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
-    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
-    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
-    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
-    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
-    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
-    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
-    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
-    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
-    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
-    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
-    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
-    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
-    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
-    lbl_cercle:'Quintenzirkel',
-    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
-    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
-    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
-    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
-    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
-    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
-  }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
@@ -691,10 +619,6 @@ const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B
 const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
-const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
-const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -706,8 +630,6 @@ function getNotationTable(accPref){
   const not  = localStorage.getItem('sbnot')||'en';
   const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
-  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
-  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -765,6 +687,15 @@ const SCALE_NAMES={
   blues_min:'Blues mineure',blues_maj:'Blues majeure',
   dim:'Diminuée',half_dim:'Demi-dim.',whole_tone:'Par tons',
 };
+const SCALE_NAMES_EN={
+  major:'Major',minor:'Natural minor',harmonic:'Harmonic minor',
+  melodic:'Melodic minor',dorian:'Dorian',phrygian:'Phrygian',
+  lydian:'Lydian',mixolydian:'Mixolydian',locrian:'Locrian',
+  penta_min:'Minor penta',penta_maj:'Major penta',
+  blues_min:'Minor blues',blues_maj:'Major blues',
+  dim:'Diminished',half_dim:'Half-dim.',whole_tone:'Whole tone',
+};
+function scaleName(s){ return (currentLang()==='en'?(SCALE_NAMES_EN[s]||SCALE_NAMES[s]||s):(SCALE_NAMES[s]||s)); }
 const SCALE_LINKS={
   major:'gammes.html?scale=major',minor:'gammes.html?scale=minor',
   harmonic:'gammes.html?scale=harmonic',melodic:'gammes.html?scale=melodic',
@@ -778,207 +709,207 @@ const SCALE_LINKS={
 /* ===================== 107 CADENCES ===================== */
 const CADENCES=[
 // TONAL
-{genre:'Tonal',label:'V – I',desc:'Cadence parfaite',mode:'major',scales:['major','penta_maj'],degrees:[{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Tonal',label:'V7 – I',desc:'Cadence parfaite avec 7ème',mode:'major',scales:['major','penta_maj'],degrees:[{d:5,acc:0,q:'7'},{d:1,acc:0,q:''}]},
-{genre:'Tonal',label:'IV – I',desc:'Cadence plagale (Amen)',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Tonal',label:'V – vi',desc:'Cadence rompue',mode:'major',scales:['major','minor'],degrees:[{d:5,acc:0,q:''},{d:6,acc:0,q:'m'}]},
-{genre:'Tonal',label:'I – V',desc:'Demi-cadence',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Tonal',label:'ii – V',desc:'Demi-cadence jazz',mode:'major',scales:['major'],degrees:[{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'Tonal',label:'IV – V',desc:'Demi-cadence plagale',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Tonal',label:'V – IV',desc:'Cadence évitée',mode:'major',scales:['major','mixolydian'],degrees:[{d:5,acc:0,q:''},{d:4,acc:0,q:''}]},
+{genre:'Tonal',label:'V – I',desc:'Cadence parfaite',desc_en:'Perfect cadence',mode:'major',scales:['major','penta_maj'],degrees:[{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Tonal',label:'V7 – I',desc:'Cadence parfaite avec 7ème',desc_en:'Perfect cadence with 7th',mode:'major',scales:['major','penta_maj'],degrees:[{d:5,acc:0,q:'7'},{d:1,acc:0,q:''}]},
+{genre:'Tonal',label:'IV – I',desc:'Cadence plagale (Amen)',desc_en:'Plagal cadence (Amen)',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Tonal',label:'V – vi',desc:'Cadence rompue',desc_en:'Interrupted cadence',mode:'major',scales:['major','minor'],degrees:[{d:5,acc:0,q:''},{d:6,acc:0,q:'m'}]},
+{genre:'Tonal',label:'I – V',desc:'Demi-cadence',desc_en:'Half cadence',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Tonal',label:'ii – V',desc:'Demi-cadence jazz',desc_en:'Jazz half cadence',mode:'major',scales:['major'],degrees:[{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Tonal',label:'IV – V',desc:'Demi-cadence plagale',desc_en:'Plagal half cadence',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Tonal',label:'V – IV',desc:'Cadence évitée',desc_en:'Avoided cadence',mode:'major',scales:['major','mixolydian'],degrees:[{d:5,acc:0,q:''},{d:4,acc:0,q:''}]},
 // POP/ROCK
-{genre:'Pop/Rock',label:'I – V – vi – IV',desc:'La progression pop universelle',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'vi – IV – I – V',desc:'Variante mineure pop',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – vi – IV – V',desc:'Années 50 / doo-wop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',2],[6,'m',2],[4,'',2],[5,'',2]]},
-{genre:'Pop/Rock',label:'I – IV – V',desc:'Rock basique',mode:'major',scales:['major','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',4],[4,'',2],[5,'',2]]},
-{genre:'Pop/Rock',label:'I – V',desc:'Power duo',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – IV – I – V',desc:'Rock classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – V – IV',desc:'Variante rock',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:4,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – IV – vi – V',desc:'Pop contemporaine',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'vi – V – IV – V',desc:'Rock ballade',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:5,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – iii – IV – V',desc:'Rock progressif',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'IV – V – I',desc:'Cadence plagale renforcée',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – ♭VII – IV',desc:'Emprunt modal',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – V – vi – IV',desc:'La progression pop universelle',desc_en:'The universal pop progression',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'vi – IV – I – V',desc:'Variante mineure pop',desc_en:'Minor pop variant',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – vi – IV – V',desc:'Années 50 / doo-wop',desc_en:'1950s / doo-wop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',2],[6,'m',2],[4,'',2],[5,'',2]]},
+{genre:'Pop/Rock',label:'I – IV – V',desc:'Rock basique',desc_en:'Basic rock',mode:'major',scales:['major','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}],chart:[[1,'',4],[4,'',2],[5,'',2]]},
+{genre:'Pop/Rock',label:'I – V',desc:'Power duo',desc_en:'Power duo',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – IV – I – V',desc:'Rock classique',desc_en:'Classic rock',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – V – IV',desc:'Variante rock',desc_en:'Rock variant',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – IV – vi – V',desc:'Pop contemporaine',desc_en:'Contemporary pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'vi – V – IV – V',desc:'Rock ballade',desc_en:'Rock ballad',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:5,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – iii – IV – V',desc:'Rock progressif',desc_en:'Progressive rock',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'IV – V – I',desc:'Cadence plagale renforcée',desc_en:'Reinforced plagal cadence',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – ♭VII – IV',desc:'Emprunt modal',desc_en:'Modal borrowing',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
 // DOO-WOP
-{genre:'Doo-Wop',label:'I – vi – IV – V',desc:'Doo-wop classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Doo-Wop',label:'I – vi – ii – V',desc:'Doo-wop jazz',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'Doo-Wop',label:'I – iii – IV – V',desc:'Doo-wop étendu',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Doo-Wop',label:'vi – ii – V – I',desc:'Turnaround doo-wop',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Doo-Wop',label:'I – vi – IV – V',desc:'Doo-wop classique',desc_en:'Classic doo-wop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Doo-Wop',label:'I – vi – ii – V',desc:'Doo-wop jazz',desc_en:'Jazz doo-wop',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Doo-Wop',label:'I – iii – IV – V',desc:'Doo-wop étendu',desc_en:'Extended doo-wop',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Doo-Wop',label:'vi – ii – V – I',desc:'Turnaround doo-wop',desc_en:'Doo-wop turnaround',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
 // BLUES
-{genre:'Blues',label:'I7 – IV7 – I7 – V7',desc:'Blues 12 mesures',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',4],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
-{genre:'Blues',label:'I7 – IV7 – I7 – V7 (quick change)',desc:'Blues 12 mesures avec quick change (IV dès la mesure 2)',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',1],[4,'7',1],[1,'7',2],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
-{genre:'Blues',label:'I7 – IV7',desc:'Blues rapide',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'}]},
-{genre:'Blues',label:'I7 – IV7 – V7',desc:'Blues 3 accords',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
-{genre:'Blues',label:'I7 – ♭VII7 – IV7',desc:'Blues avec emprunt modal',mode:'major',scales:['blues_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:'7'},{d:4,acc:0,q:'7'}]},
-{genre:'Blues',label:'i7 – iv7 – V7',desc:'Blues mineur',mode:'minor',scales:['blues_min','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'},{d:5,acc:0,q:'7'}],chart:[[1,'m7',4],[4,'m7',2],[1,'m7',2],[5,'7',1],[4,'m7',1],[1,'m7',1],[5,'7',1]]},
+{genre:'Blues',label:'I7 – IV7 – I7 – V7',desc:'Blues 12 mesures',desc_en:'12-bar blues',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',4],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
+{genre:'Blues',label:'I7 – IV7 – I7 – V7 (quick change)',desc:'Blues 12 mesures avec quick change (IV dès la mesure 2)',desc_en:'12-bar blues with quick change (IV on bar 2)',mode:'major',scales:['blues_maj','penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',1],[4,'7',1],[1,'7',2],[4,'7',2],[1,'7',2],[5,'7',1],[4,'7',1],[1,'7',1],[5,'7',1]]},
+{genre:'Blues',label:'I7 – IV7',desc:'Blues rapide',desc_en:'Fast blues',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'}]},
+{genre:'Blues',label:'I7 – IV7 – V7',desc:'Blues 3 accords',desc_en:'3-chord blues',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
+{genre:'Blues',label:'I7 – ♭VII7 – IV7',desc:'Blues avec emprunt modal',desc_en:'Blues with modal borrowing',mode:'major',scales:['blues_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:'7'},{d:4,acc:0,q:'7'}]},
+{genre:'Blues',label:'i7 – iv7 – V7',desc:'Blues mineur',desc_en:'Minor blues',mode:'minor',scales:['blues_min','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'},{d:5,acc:0,q:'7'}],chart:[[1,'m7',4],[4,'m7',2],[1,'m7',2],[5,'7',1],[4,'m7',1],[1,'m7',1],[5,'7',1]]},
 // JAZZ
-{genre:'Jazz',label:'ii – V – I',desc:'La cadence jazz majeure',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}],chart:[[2,'m7',2],[5,'7',2],[1,'maj7',4]]},
-{genre:'Jazz',label:'iiø – V7alt – i',desc:'ii-V-I mineur jazz',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'m'}],chart:[[2,'m7b5',2],[5,'7',2],[1,'m',4]]},
-{genre:'Jazz',label:'iii – vi – ii – V',desc:'Turnaround jazz',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'I – vi – ii – V',desc:'Rhythm changes (intro)',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'Imaj7 – VI7 – ii7 – V7',desc:'Anatole jazz',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'iii – VI7 – ii – V',desc:'Turnaround jazz II',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'I – #Idim – ii – V',desc:'Passage dim. chromatique',mode:'major',scales:['major','dim'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'vi – ii – V – I',desc:'Cadence jazz complète',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}]},
-{genre:'Jazz',label:'ii – ♭II7 – I',desc:'Substitution Triton',mode:'major',scales:['major','lydian'],degrees:[{d:2,acc:0,q:'m7'},{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'maj7'}]},
-{genre:'Jazz',label:'Imaj7 – IVmaj7',desc:'Mouvement de quartes maj.',mode:'major',scales:['major','lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'}]},
+{genre:'Jazz',label:'ii – V – I',desc:'La cadence jazz majeure',desc_en:'The major jazz cadence',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}],chart:[[2,'m7',2],[5,'7',2],[1,'maj7',4]]},
+{genre:'Jazz',label:'iiø – V7alt – i',desc:'ii-V-I mineur jazz',desc_en:'Minor jazz ii-V-I',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'m'}],chart:[[2,'m7b5',2],[5,'7',2],[1,'m',4]]},
+{genre:'Jazz',label:'iii – vi – ii – V',desc:'Turnaround jazz',desc_en:'Jazz turnaround',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'I – vi – ii – V',desc:'Rhythm changes (intro)',desc_en:'Rhythm changes (intro)',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'Imaj7 – VI7 – ii7 – V7',desc:'Anatole jazz',desc_en:'Jazz Anatole',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'iii – VI7 – ii – V',desc:'Turnaround jazz II',desc_en:'Jazz turnaround II',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'I – #Idim – ii – V',desc:'Passage dim. chromatique',desc_en:'Chromatic dim passage',mode:'major',scales:['major','dim'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'vi – ii – V – I',desc:'Cadence jazz complète',desc_en:'Full jazz cadence',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Jazz',label:'ii – ♭II7 – I',desc:'Substitution Triton',desc_en:'Tritone substitution',mode:'major',scales:['major','lydian'],degrees:[{d:2,acc:0,q:'m7'},{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Jazz',label:'Imaj7 – IVmaj7',desc:'Mouvement de quartes maj.',desc_en:'Major fourths movement',mode:'major',scales:['major','lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'}]},
 // BOSSA NOVA
-{genre:'Bossa Nova',label:'Imaj7 – VI7 – ii7 – V7',desc:'Bossa classique',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Bossa Nova',label:'iii – VI7 – ii7 – V7',desc:'Bossa variante',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Bossa Nova',label:'Imaj7 – IVmaj7',desc:'Bossa sobre',mode:'major',scales:['major','lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'}]},
-{genre:'Bossa Nova',label:'Imaj7 – #Idim7 – ii7 – V7',desc:'Bossa avec dim chromatique',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Bossa Nova',label:'Imaj7 – VI7 – ii7 – V7',desc:'Bossa classique',desc_en:'Classic bossa',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Bossa Nova',label:'iii – VI7 – ii7 – V7',desc:'Bossa variante',desc_en:'Bossa variant',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Bossa Nova',label:'Imaj7 – IVmaj7',desc:'Bossa sobre',desc_en:'Plain bossa',mode:'major',scales:['major','lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'}]},
+{genre:'Bossa Nova',label:'Imaj7 – #Idim7 – ii7 – V7',desc:'Bossa avec dim chromatique',desc_en:'Bossa with chromatic dim',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
 // SOUL/R&B
-{genre:'Soul/R&B',label:'I – vi – ii – V',desc:'Soul classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'Soul/R&B',label:'vi – ii – V – I',desc:'Soul progression',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Soul/R&B',label:'IV – V – iii – vi',desc:'Soul R&B classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
-{genre:'Soul/R&B',label:'I – iii – IV – iv',desc:'Borrowing mineur',mode:'major',scales:['major','minor'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'}]},
-{genre:'Soul/R&B',label:'I – IV – iv – I',desc:'Soul avec emprunt',mode:'major',scales:['major','dorian'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'},{d:1,acc:0,q:''}]},
+{genre:'Soul/R&B',label:'I – vi – ii – V',desc:'Soul classique',desc_en:'Classic soul',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Soul/R&B',label:'vi – ii – V – I',desc:'Soul progression',desc_en:'Soul progression',mode:'major',scales:['major'],degrees:[{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Soul/R&B',label:'IV – V – iii – vi',desc:'Soul R&B classique',desc_en:'Classic R&B soul',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
+{genre:'Soul/R&B',label:'I – iii – IV – iv',desc:'Borrowing mineur',desc_en:'Minor borrowing',mode:'major',scales:['major','minor'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'}]},
+{genre:'Soul/R&B',label:'I – IV – iv – I',desc:'Soul avec emprunt',desc_en:'Soul with borrowing',mode:'major',scales:['major','dorian'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'},{d:1,acc:0,q:''}]},
 // GOSPEL
-{genre:'Gospel',label:'I – IV – I',desc:'Gospel simple',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Gospel',label:'IV – #IVdim – I',desc:'Gospel avec dim chromatique',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:4,acc:1,q:'dim'},{d:1,acc:0,q:''}]},
-{genre:'Gospel',label:'iii – vi – ii – V – I',desc:'Gospel cadence complète',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Gospel',label:'♭VII – IV – I',desc:'Gospel modal',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:7,acc:-1,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Gospel',label:'I – ♭III – IV',desc:'Gospel soul',mode:'major',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:''},{d:3,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'Gospel',label:'I – #Idim – ii',desc:'Approche gospel',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:1,acc:1,q:'dim'},{d:2,acc:0,q:'m'}]},
-{genre:'Gospel',label:'I – VI7 – ii – V',desc:'Gospel jazz',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'Gospel',label:'IV – iv – I',desc:'Emprunt plagal',mode:'major',scales:['major','minor'],degrees:[{d:4,acc:0,q:''},{d:4,acc:0,q:'m'},{d:1,acc:0,q:''}]},
+{genre:'Gospel',label:'I – IV – I',desc:'Gospel simple',desc_en:'Simple gospel',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Gospel',label:'IV – #IVdim – I',desc:'Gospel avec dim chromatique',desc_en:'Gospel with chromatic dim',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:4,acc:1,q:'dim'},{d:1,acc:0,q:''}]},
+{genre:'Gospel',label:'iii – vi – ii – V – I',desc:'Gospel cadence complète',desc_en:'Full gospel cadence',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Gospel',label:'♭VII – IV – I',desc:'Gospel modal',desc_en:'Modal gospel',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:7,acc:-1,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Gospel',label:'I – ♭III – IV',desc:'Gospel soul',desc_en:'Gospel soul',mode:'major',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:''},{d:3,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Gospel',label:'I – #Idim – ii',desc:'Approche gospel',desc_en:'Gospel approach',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:1,acc:1,q:'dim'},{d:2,acc:0,q:'m'}]},
+{genre:'Gospel',label:'I – VI7 – ii – V',desc:'Gospel jazz',desc_en:'Gospel jazz',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Gospel',label:'IV – iv – I',desc:'Emprunt plagal',desc_en:'Plagal borrowing',mode:'major',scales:['major','minor'],degrees:[{d:4,acc:0,q:''},{d:4,acc:0,q:'m'},{d:1,acc:0,q:''}]},
 // COUNTRY
-{genre:'Country',label:'I – IV – V',desc:'Country basique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Country',label:'I – V – I',desc:'Country simple',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'Country',label:'I – IV – I – V',desc:'Country classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Country',label:'I – vi – IV – V',desc:'Country romantique',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Country',label:'I – ii – V',desc:'Country moderne',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Country',label:'I – IV – V',desc:'Country basique',desc_en:'Basic country',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Country',label:'I – V – I',desc:'Country simple',desc_en:'Simple country',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Country',label:'I – IV – I – V',desc:'Country classique',desc_en:'Classic country',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Country',label:'I – vi – IV – V',desc:'Country romantique',desc_en:'Romantic country',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Country',label:'I – ii – V',desc:'Country moderne',desc_en:'Modern country',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''}]},
 // FOLK
-{genre:'Folk',label:'I – IV – V',desc:'Folk traditionnel',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Folk',label:'I – V',desc:'Folk sobre',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Folk',label:'I – ♭VII – IV',desc:'Folk modal',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'Folk',label:'vi – IV – I – V',desc:'Folk moderne',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Folk',label:'I – IV – vi – V',desc:'Folk ballade',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Folk',label:'I – IV – V',desc:'Folk traditionnel',desc_en:'Traditional folk',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Folk',label:'I – V',desc:'Folk sobre',desc_en:'Plain folk',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Folk',label:'I – ♭VII – IV',desc:'Folk modal',desc_en:'Modal folk',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Folk',label:'vi – IV – I – V',desc:'Folk moderne',desc_en:'Modern folk',mode:'major',scales:['minor','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Folk',label:'I – IV – vi – V',desc:'Folk ballade',desc_en:'Folk ballad',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
 // REGGAE
-{genre:'Reggae',label:'I – IV',desc:'Reggae basique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''}]},
-{genre:'Reggae',label:'I – V – vi – IV',desc:'Reggae pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'Reggae',label:'i – ♭VII',desc:'Reggae roots mineur',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''}]},
-{genre:'Reggae',label:'I – ♭VII – IV',desc:'Reggae modal',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Reggae',label:'I – IV',desc:'Reggae basique',desc_en:'Basic reggae',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''}]},
+{genre:'Reggae',label:'I – V – vi – IV',desc:'Reggae pop',desc_en:'Reggae pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'Reggae',label:'i – ♭VII',desc:'Reggae roots mineur',desc_en:'Minor roots reggae',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''}]},
+{genre:'Reggae',label:'I – ♭VII – IV',desc:'Reggae modal',desc_en:'Modal reggae',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
 // FUNK
-{genre:'Funk',label:'I7 – IV7',desc:'Funk groove',mode:'major',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'}]},
-{genre:'Funk',label:'I7 – ♭VII7',desc:'Funk modal',mode:'major',scales:['mixolydian','dorian'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:'7'}]},
-{genre:'Funk',label:'I7 – ♭III7 – IV7',desc:'Funk chromatique',mode:'major',scales:['mixolydian','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:3,acc:-1,q:'7'},{d:4,acc:0,q:'7'}]},
-{genre:'Funk',label:'i7 – IV7',desc:'Funk dorien',mode:'minor',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'}]},
+{genre:'Funk',label:'I7 – IV7',desc:'Funk groove',desc_en:'Funk groove',mode:'major',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'}]},
+{genre:'Funk',label:'I7 – ♭VII7',desc:'Funk modal',desc_en:'Modal funk',mode:'major',scales:['mixolydian','dorian'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:'7'}]},
+{genre:'Funk',label:'I7 – ♭III7 – IV7',desc:'Funk chromatique',desc_en:'Chromatic funk',mode:'major',scales:['mixolydian','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:3,acc:-1,q:'7'},{d:4,acc:0,q:'7'}]},
+{genre:'Funk',label:'i7 – IV7',desc:'Funk dorien',desc_en:'Dorian funk',mode:'minor',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'}]},
 // MÉTAL
-{genre:'Métal',label:'i – ♭VII – ♭VI',desc:'Power metal classique',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Métal',label:'i – ♭VI – ♭VII',desc:'Métal épique',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Métal',label:'i – iv',desc:'Mineur basique',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'}]},
-{genre:'Métal',label:'i – ♭II',desc:'Métal phrygien',mode:'minor',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''}]},
-{genre:'Métal',label:'i – ♭III – ♭II',desc:'Métal intense',mode:'minor',scales:['phrygian','minor'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:2,acc:-1,q:''}]},
-{genre:'Métal',label:'i – ♭VII',desc:'Riff métal simple',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''}]},
-{genre:'Métal',label:'i – ♭VI',desc:'Métal sombre',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''}]},
-{genre:'Métal',label:'i – ♭VII – iv',desc:'Thrash / progressif',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:4,acc:0,q:'m'}]},
-{genre:'Métal',label:'i – ♭VII – ♭VI – V',desc:'Métal doom',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''},{d:5,acc:0,q:''}]},
-{genre:'Métal',label:'i – ♭VI – iv – V',desc:'Métal épique II',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:4,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'Métal',label:'i – ♭VII – ♭VI',desc:'Power metal classique',desc_en:'Classic power metal',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Métal',label:'i – ♭VI – ♭VII',desc:'Métal épique',desc_en:'Epic metal',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Métal',label:'i – iv',desc:'Mineur basique',desc_en:'Basic minor',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'}]},
+{genre:'Métal',label:'i – ♭II',desc:'Métal phrygien',desc_en:'Phrygian metal',mode:'minor',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''}]},
+{genre:'Métal',label:'i – ♭III – ♭II',desc:'Métal intense',desc_en:'Intense metal',mode:'minor',scales:['phrygian','minor'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:2,acc:-1,q:''}]},
+{genre:'Métal',label:'i – ♭VII',desc:'Riff métal simple',desc_en:'Simple metal riff',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''}]},
+{genre:'Métal',label:'i – ♭VI',desc:'Métal sombre',desc_en:'Dark metal',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''}]},
+{genre:'Métal',label:'i – ♭VII – iv',desc:'Thrash / progressif',desc_en:'Thrash / progressive',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:4,acc:0,q:'m'}]},
+{genre:'Métal',label:'i – ♭VII – ♭VI – V',desc:'Métal doom',desc_en:'Doom metal',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''},{d:5,acc:0,q:''}]},
+{genre:'Métal',label:'i – ♭VI – iv – V',desc:'Métal épique II',desc_en:'Epic metal II',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:4,acc:0,q:'m'},{d:5,acc:0,q:''}]},
 // HARD ROCK
-{genre:'Hard Rock',label:'I – ♭VII – IV',desc:'Hard rock classique',mode:'major',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'Hard Rock',label:'I – ♭VII',desc:'Power riff',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Hard Rock',label:'I – IV – ♭VII',desc:'Hard rock varié',mode:'major',scales:['mixolydian','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Hard Rock',label:'i – ♭VII – ♭VI',desc:'Hard rock mineur',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Hard Rock',label:'I – ♭VII – IV',desc:'Hard rock classique',desc_en:'Classic hard rock',mode:'major',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Hard Rock',label:'I – ♭VII',desc:'Power riff',desc_en:'Power riff',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Hard Rock',label:'I – IV – ♭VII',desc:'Hard rock varié',desc_en:'Varied hard rock',mode:'major',scales:['mixolydian','blues_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Hard Rock',label:'i – ♭VII – ♭VI',desc:'Hard rock mineur',desc_en:'Minor hard rock',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
 // FLAMENCO
-{genre:'Flamenco',label:'i – ♭VII – ♭VI – V',desc:'Cadence andalouse',mode:'minor',scales:['phrygian','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''},{d:5,acc:0,q:'7'}]},
-{genre:'Flamenco',label:'i – ♭II – I',desc:'Phrygien flamenca',mode:'minor',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:1,acc:0,q:''}]},
-{genre:'Flamenco',label:'iv – ♭III – ♭II – I',desc:'Cadence descendante',mode:'minor',scales:['harmonic','phrygian'],degrees:[{d:4,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:2,acc:-1,q:''},{d:1,acc:0,q:''}]},
+{genre:'Flamenco',label:'i – ♭VII – ♭VI – V',desc:'Cadence andalouse',desc_en:'Andalusian cadence',mode:'minor',scales:['phrygian','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''},{d:5,acc:0,q:'7'}]},
+{genre:'Flamenco',label:'i – ♭II – I',desc:'Phrygien flamenca',desc_en:'Flamenco Phrygian',mode:'minor',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:1,acc:0,q:''}]},
+{genre:'Flamenco',label:'iv – ♭III – ♭II – I',desc:'Cadence descendante',desc_en:'Descending cadence',mode:'minor',scales:['harmonic','phrygian'],degrees:[{d:4,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:2,acc:-1,q:''},{d:1,acc:0,q:''}]},
 // LATIN
-{genre:'Latin',label:'ii – V – I',desc:'Latin jazz / bossa',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}]},
-{genre:'Latin',label:'I – IV – V',desc:'Latin pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Latin',label:'I – V7',desc:'Latin simple',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:'7'}]},
-{genre:'Latin',label:'i – iv – V',desc:'Latin mineur',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
+{genre:'Latin',label:'ii – V – I',desc:'Latin jazz / bossa',desc_en:'Latin jazz / bossa',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Latin',label:'I – IV – V',desc:'Latin pop',desc_en:'Latin pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Latin',label:'I – V7',desc:'Latin simple',desc_en:'Simple latin',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:'7'}]},
+{genre:'Latin',label:'i – iv – V',desc:'Latin mineur',desc_en:'Minor latin',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
 // MODAL DORIEN
-{genre:'Modal Dorien',label:'i – IV',desc:'Dorien (ex: So What)',mode:'dorian',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'}]},
-{genre:'Modal Dorien',label:'i – IV – v',desc:'Dorien étendu',mode:'dorian',scales:['dorian'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'},{d:5,acc:0,q:'m'}]},
-{genre:'Modal Dorien',label:'i – IV – i',desc:'Vamp dorien',mode:'dorian',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'m7'}]},
+{genre:'Modal Dorien',label:'i – IV',desc:'Dorien (ex: So What)',desc_en:'Dorian (e.g. So What)',mode:'dorian',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'}]},
+{genre:'Modal Dorien',label:'i – IV – v',desc:'Dorien étendu',desc_en:'Extended Dorian',mode:'dorian',scales:['dorian'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'},{d:5,acc:0,q:'m'}]},
+{genre:'Modal Dorien',label:'i – IV – i',desc:'Vamp dorien',desc_en:'Dorian vamp',mode:'dorian',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'m7'}]},
 // MODAL MIXOLYDIEN
-{genre:'Modal Mixolydien',label:'I – ♭VII',desc:'Mixo (ex: Sweet Home Chicago)',mode:'mixolydian',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:''}]},
-{genre:'Modal Mixolydien',label:'I – ♭VII – IV',desc:'Mixo étendu',mode:'mixolydian',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'Modal Mixolydien',label:'I – IV – ♭VII',desc:'Mixo varié',mode:'mixolydian',scales:['mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Modal Mixolydien',label:'I – ♭VII',desc:'Mixo (ex: Sweet Home Chicago)',desc_en:'Mixo (e.g. Sweet Home Chicago)',mode:'mixolydian',scales:['mixolydian','penta_maj','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:''}]},
+{genre:'Modal Mixolydien',label:'I – ♭VII – IV',desc:'Mixo étendu',desc_en:'Extended Mixo',mode:'mixolydian',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Modal Mixolydien',label:'I – IV – ♭VII',desc:'Mixo varié',desc_en:'Varied Mixo',mode:'mixolydian',scales:['mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
 // MODAL PHRYGIEN
-{genre:'Modal Phrygien',label:'i – ♭II',desc:'Phrygien pur',mode:'phrygian',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''}]},
-{genre:'Modal Phrygien',label:'i – ♭II – ♭VII',desc:'Phrygien étendu',mode:'phrygian',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Modal Phrygien',label:'i – ♭II – i',desc:'Vamp phrygien',mode:'phrygian',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:1,acc:0,q:'m'}]},
+{genre:'Modal Phrygien',label:'i – ♭II',desc:'Phrygien pur',desc_en:'Pure Phrygian',mode:'phrygian',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''}]},
+{genre:'Modal Phrygien',label:'i – ♭II – ♭VII',desc:'Phrygien étendu',desc_en:'Extended Phrygian',mode:'phrygian',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Modal Phrygien',label:'i – ♭II – i',desc:'Vamp phrygien',desc_en:'Phrygian vamp',mode:'phrygian',scales:['phrygian','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:''},{d:1,acc:0,q:'m'}]},
 // MODAL ÉOLIEN
-{genre:'Modal Éolien',label:'i – ♭VI – ♭VII',desc:'Éolien classique',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Modal Éolien',label:'i – ♭VII – ♭VI',desc:'Éolien descendant',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Modal Éolien',label:'i – ♭VI',desc:'Éolien simple',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''}]},
+{genre:'Modal Éolien',label:'i – ♭VI – ♭VII',desc:'Éolien classique',desc_en:'Classic Aeolian',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Modal Éolien',label:'i – ♭VII – ♭VI',desc:'Éolien descendant',desc_en:'Descending Aeolian',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Modal Éolien',label:'i – ♭VI',desc:'Éolien simple',desc_en:'Simple Aeolian',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''}]},
 // MODAL LYDIEN
-{genre:'Modal Lydien',label:'I – II',desc:'Lydien (ex: The Simpsons)',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:2,acc:0,q:''}]},
-{genre:'Modal Lydien',label:'I – II – V',desc:'Lydien étendu',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:2,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Modal Lydien',label:'I – VII',desc:'Lydien doux',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:7,acc:0,q:'m'}]},
+{genre:'Modal Lydien',label:'I – II',desc:'Lydien (ex: The Simpsons)',desc_en:'Lydian (e.g. The Simpsons)',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:2,acc:0,q:''}]},
+{genre:'Modal Lydien',label:'I – II – V',desc:'Lydien étendu',desc_en:'Extended Lydian',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:2,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Modal Lydien',label:'I – VII',desc:'Lydien doux',desc_en:'Soft Lydian',mode:'lydian',scales:['lydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:7,acc:0,q:'m'}]},
 // ÉPIQUE/CINÉMA
-{genre:'Épique/Ciné',label:'i – ♭VI – ♭III – ♭VII',desc:'Épique (ex: Game of Thrones)',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Épique/Ciné',label:'i – ♭VII – ♭III – ♭VI',desc:'Épique variante',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:3,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Épique/Ciné',label:'I – V – vi – iii – IV',desc:'Pachelbel / épique majeur',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'Épique/Ciné',label:'i – iv – ♭VI – V',desc:'Épique dramatique',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:5,acc:0,q:''}]},
-{genre:'Épique/Ciné',label:'i – ♭III – ♭VII – IV',desc:'Epic orchestral',mode:'minor',scales:['minor'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Épique/Ciné',label:'i – ♭VI – ♭III – ♭VII',desc:'Épique (ex: Game of Thrones)',desc_en:'Epic (e.g. Game of Thrones)',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Épique/Ciné',label:'i – ♭VII – ♭III – ♭VI',desc:'Épique variante',desc_en:'Epic variant',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:3,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Épique/Ciné',label:'I – V – vi – iii – IV',desc:'Pachelbel / épique majeur',desc_en:'Pachelbel / epic major',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'Épique/Ciné',label:'i – iv – ♭VI – V',desc:'Épique dramatique',desc_en:'Dramatic epic',mode:'minor',scales:['minor','harmonic'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:5,acc:0,q:''}]},
+{genre:'Épique/Ciné',label:'i – ♭III – ♭VII – IV',desc:'Epic orchestral',desc_en:'Epic orchestral',mode:'minor',scales:['minor'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
 // J-POP
-{genre:'J-Pop',label:'vi – IV – V – I',desc:'4536 / J-Pop classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
-{genre:'J-Pop',label:'IV – V – iii – vi',desc:'6415 / J-Pop émotionnelle',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
-{genre:'J-Pop',label:'vi – V – IV – V',desc:'J-Pop tendue',mode:'major',scales:['major','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:5,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'J-Pop',label:'vi – IV – V – I',desc:'4536 / J-Pop classique',desc_en:'4536 / classic J-Pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'J-Pop',label:'IV – V – iii – vi',desc:'6415 / J-Pop émotionnelle',desc_en:'6415 / emotional J-Pop',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
+{genre:'J-Pop',label:'vi – V – IV – V',desc:'J-Pop tendue',desc_en:'Tense J-Pop',mode:'major',scales:['major','penta_min'],degrees:[{d:6,acc:0,q:'m'},{d:5,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:''}]},
 // POP/ROCK (additions)
-{genre:'Pop/Rock',label:'I – iii – vi – IV',desc:'Pop moderne',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'I – IV – ♭VII – IV',desc:'Boucle mixolydienne',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Pop/Rock',label:'I – V – vi – iii – IV',desc:'Boucle 5 degrés',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'Pop/Rock',label:'i – ♭III – ♭VII – ♭VI',desc:'Pop rock mineur',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Pop/Rock',label:'I – ♭VI – ♭VII – I',desc:'Accords empruntés',mode:'major',scales:['mixolydian','minor'],degrees:[{d:1,acc:0,q:''},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Pop/Rock',label:'I – iii – vi – IV',desc:'Pop moderne',desc_en:'Modern pop',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – IV – ♭VII – IV',desc:'Boucle mixolydienne',desc_en:'Mixolydian loop',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Pop/Rock',label:'I – V – vi – iii – IV',desc:'Boucle 5 degrés',desc_en:'5-degree loop',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'i – ♭III – ♭VII – ♭VI',desc:'Pop rock mineur',desc_en:'Minor pop rock',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Pop/Rock',label:'I – ♭VI – ♭VII – I',desc:'Accords empruntés',desc_en:'Borrowed chords',mode:'major',scales:['mixolydian','minor'],degrees:[{d:1,acc:0,q:''},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
 // BLUES (additions)
-{genre:'Blues',label:'I – V – IV – IV – I – V – I – V',desc:'Blues 8 mesures',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'},{d:4,acc:0,q:'7'}],chart:[[1,'7',1],[5,'7',1],[4,'7',2],[1,'7',1],[5,'7',1],[1,'7',1],[5,'7',1]]},
+{genre:'Blues',label:'I – V – IV – IV – I – V – I – V',desc:'Blues 8 mesures',desc_en:'8-bar blues',mode:'major',scales:['blues_maj','penta_maj'],degrees:[{d:1,acc:0,q:'7'},{d:5,acc:0,q:'7'},{d:4,acc:0,q:'7'}],chart:[[1,'7',1],[5,'7',1],[4,'7',2],[1,'7',1],[5,'7',1],[1,'7',1],[5,'7',1]]},
 // JAZZ (additions)
-{genre:'Jazz',label:'IVmaj7 – V7 – Imaj7 – vi7',desc:'Pont Montgomery-Ward',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:'maj7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'}]},
-{genre:'Jazz',label:'Imaj7 – IVmaj7 – ii7 – V7',desc:'Montgomery-Ward',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'III7 – VI7 – II7 – V7',desc:'Ragtime / pont rhythm changes',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz',label:'iv7 – ♭VII7 – Imaj7',desc:'Backdoor progression',mode:'major',scales:['major','dorian'],degrees:[{d:4,acc:0,q:'m7'},{d:7,acc:-1,q:'7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Jazz',label:'IVmaj7 – V7 – Imaj7 – vi7',desc:'Pont Montgomery-Ward',desc_en:'Montgomery-Ward bridge',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:'maj7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'}]},
+{genre:'Jazz',label:'Imaj7 – IVmaj7 – ii7 – V7',desc:'Montgomery-Ward',desc_en:'Montgomery-Ward',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'III7 – VI7 – II7 – V7',desc:'Ragtime / pont rhythm changes',desc_en:'Ragtime / rhythm changes bridge',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz',label:'iv7 – ♭VII7 – Imaj7',desc:'Backdoor progression',desc_en:'Backdoor progression',mode:'major',scales:['major','dorian'],degrees:[{d:4,acc:0,q:'m7'},{d:7,acc:-1,q:'7'},{d:1,acc:0,q:'maj7'}]},
 // JAZZ MANOUCHE (nouveau genre)
-{genre:'Jazz Manouche',label:'Imaj7 – VI7 – ii7 – V7',desc:'Pompe manouche classique',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz Manouche',label:'Im7 – VI7 – iiø – V7',desc:'Manouche mineur',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:1,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz Manouche',label:'Imaj7 – ♯Idim7 – ii7 – V7',desc:'Passage chromatique ascendant',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
-{genre:'Jazz Manouche',label:'III7 – VI7 – II7 – V7',desc:'Pont manouche (cycle des quintes)',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz Manouche',label:'Imaj7 – VI7 – ii7 – V7',desc:'Pompe manouche classique',desc_en:'Classic gypsy jazz pump',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz Manouche',label:'Im7 – VI7 – iiø – V7',desc:'Manouche mineur',desc_en:'Minor gypsy jazz',mode:'minor',scales:['harmonic','melodic'],degrees:[{d:1,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7b5'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz Manouche',label:'Imaj7 – ♯Idim7 – ii7 – V7',desc:'Passage chromatique ascendant',desc_en:'Ascending chromatic passage',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Jazz Manouche',label:'III7 – VI7 – II7 – V7',desc:'Pont manouche (cycle des quintes)',desc_en:'Gypsy jazz bridge (circle of fifths)',mode:'major',scales:['major'],degrees:[{d:3,acc:0,q:'7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
 // BAROQUE (nouveau genre)
-{genre:'Baroque',label:'I – V – vi – iii – IV – I – IV – V',desc:'Canon de Pachelbel',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}],chart:[[1,'',1],[5,'',1],[6,'m',1],[3,'m',1],[4,'',1],[1,'',1],[4,'',1],[5,'',1]]},
-{genre:'Baroque',label:'i – V – i – ♭VII – ♭III – ♭VII – i – V',desc:'Folies d\'Espagne',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:5,acc:0,q:'7'},{d:7,acc:-1,q:''},{d:3,acc:-1,q:''}],chart:[[1,'m',1],[5,'7',1],[1,'m',1],[7,'',1],[3,'',1],[7,'',1],[1,'m',1],[5,'7',1]]},
-{genre:'Baroque',label:'i – ♭VII – i – V – ♭III – ♭VII – i – V',desc:'Passamezzo antico',mode:'minor',scales:['minor'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:5,acc:0,q:''},{d:3,acc:-1,q:''}]},
-{genre:'Baroque',label:'i – iv – V – i',desc:'Cadence baroque mineure',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
-{genre:'Baroque',label:'I – IV – V7 – I',desc:'Cadence tonale classique',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:'7'}]},
+{genre:'Baroque',label:'I – V – vi – iii – IV – I – IV – V',desc:'Canon de Pachelbel',desc_en:'Pachelbel\'s Canon',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}],chart:[[1,'',1],[5,'',1],[6,'m',1],[3,'m',1],[4,'',1],[1,'',1],[4,'',1],[5,'',1]]},
+{genre:'Baroque',label:'i – V – i – ♭VII – ♭III – ♭VII – i – V',desc:'Folies d\'Espagne',desc_en:'Folias de España',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:5,acc:0,q:'7'},{d:7,acc:-1,q:''},{d:3,acc:-1,q:''}],chart:[[1,'m',1],[5,'7',1],[1,'m',1],[7,'',1],[3,'',1],[7,'',1],[1,'m',1],[5,'7',1]]},
+{genre:'Baroque',label:'i – ♭VII – i – V – ♭III – ♭VII – i – V',desc:'Passamezzo antico',desc_en:'Passamezzo antico',mode:'minor',scales:['minor'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:5,acc:0,q:''},{d:3,acc:-1,q:''}]},
+{genre:'Baroque',label:'i – iv – V – i',desc:'Cadence baroque mineure',desc_en:'Minor baroque cadence',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
+{genre:'Baroque',label:'I – IV – V7 – I',desc:'Cadence tonale classique',desc_en:'Classic tonal cadence',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:'7'}]},
 // HIP-HOP (nouveau genre)
-{genre:'Hip-Hop',label:'i – ♭VII – ♭VI',desc:'Boucle boom bap',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Hip-Hop',label:'i – ♭VI – ♭VII',desc:'Montée dramatique',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Hip-Hop',label:'vi – IV – I – V',desc:'Hip-hop mélodique',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Hip-Hop',label:'im7 – ♭III7 – iv7',desc:'Soul trap',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m7'},{d:3,acc:-1,q:'7'},{d:4,acc:0,q:'m7'}]},
-{genre:'Hip-Hop',label:'im7 – iv7',desc:'Vamp sample minimaliste',mode:'minor',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'}]},
-{genre:'Hip-Hop',label:'I – V – vi – iii',desc:'Mélodique lumineux',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'}]},
+{genre:'Hip-Hop',label:'i – ♭VII – ♭VI',desc:'Boucle boom bap',desc_en:'Boom bap loop',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Hip-Hop',label:'i – ♭VI – ♭VII',desc:'Montée dramatique',desc_en:'Dramatic rise',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Hip-Hop',label:'vi – IV – I – V',desc:'Hip-hop mélodique',desc_en:'Melodic hip-hop',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Hip-Hop',label:'im7 – ♭III7 – iv7',desc:'Soul trap',desc_en:'Soul trap',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m7'},{d:3,acc:-1,q:'7'},{d:4,acc:0,q:'m7'}]},
+{genre:'Hip-Hop',label:'im7 – iv7',desc:'Vamp sample minimaliste',desc_en:'Minimalist sample vamp',mode:'minor',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:4,acc:0,q:'m7'}]},
+{genre:'Hip-Hop',label:'I – V – vi – iii',desc:'Mélodique lumineux',desc_en:'Bright melodic',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'}]},
 // NÉO-SOUL (nouveau genre)
-{genre:'Néo-Soul',label:'Im7 – ♭VIImaj7',desc:'Vamp néo-soul minimal',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m7'},{d:7,acc:-1,q:'maj7'}]},
-{genre:'Néo-Soul',label:'Imaj7 – iii7 – vi7 – ♭VII7',desc:'Groovy néo-soul',mode:'major',scales:['major','mixolydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'m7'},{d:7,acc:-1,q:'7'}]},
-{genre:'Néo-Soul',label:'ii7 – V7 – Imaj7 – iii7',desc:'ii-V-I étendu',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'}]},
-{genre:'Néo-Soul',label:'Im7 – ♭VImaj7 – ♭IIImaj7 – V7',desc:'Cycle modal doux',mode:'minor',scales:['dorian','melodic'],degrees:[{d:1,acc:0,q:'m7'},{d:6,acc:-1,q:'maj7'},{d:3,acc:-1,q:'maj7'},{d:5,acc:0,q:'7'}]},
-{genre:'Néo-Soul',label:'I7 – IV7 – ♭VII7',desc:'Funk soul',mode:'major',scales:['mixolydian','dorian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:7,acc:-1,q:'7'}]},
+{genre:'Néo-Soul',label:'Im7 – ♭VIImaj7',desc:'Vamp néo-soul minimal',desc_en:'Minimal neo-soul vamp',mode:'minor',scales:['dorian','minor'],degrees:[{d:1,acc:0,q:'m7'},{d:7,acc:-1,q:'maj7'}]},
+{genre:'Néo-Soul',label:'Imaj7 – iii7 – vi7 – ♭VII7',desc:'Groovy néo-soul',desc_en:'Groovy neo-soul',mode:'major',scales:['major','mixolydian'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'m7'},{d:7,acc:-1,q:'7'}]},
+{genre:'Néo-Soul',label:'ii7 – V7 – Imaj7 – iii7',desc:'ii-V-I étendu',desc_en:'Extended ii-V-I',mode:'major',scales:['major','melodic'],degrees:[{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'},{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'}]},
+{genre:'Néo-Soul',label:'Im7 – ♭VImaj7 – ♭IIImaj7 – V7',desc:'Cycle modal doux',desc_en:'Soft modal cycle',mode:'minor',scales:['dorian','melodic'],degrees:[{d:1,acc:0,q:'m7'},{d:6,acc:-1,q:'maj7'},{d:3,acc:-1,q:'maj7'},{d:5,acc:0,q:'7'}]},
+{genre:'Néo-Soul',label:'I7 – IV7 – ♭VII7',desc:'Funk soul',desc_en:'Funk soul',mode:'major',scales:['mixolydian','dorian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:7,acc:-1,q:'7'}]},
 // ÉLECTRONIQUE (nouveau genre)
-{genre:'Électronique',label:'i – ♭VI – ♭III – ♭VII',desc:'Trance / progressive house',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''}]},
-{genre:'Électronique',label:'i – ♭VII – ♭VI – ♭VII',desc:'Boucle house',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Électronique',label:'i – iv – ♭VII – IV',desc:'Big room drop',mode:'minor',scales:['minor','dorian'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'Électronique',label:'vi – IV – I – V',desc:'EDM pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'Électronique',label:'I – ♭VII – IV – I',desc:'Synth-pop',mode:'major',scales:['mixolydian'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Électronique',label:'i – ♭VI – ♭III – ♭VII',desc:'Trance / progressive house',desc_en:'Trance / progressive house',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Électronique',label:'i – ♭VII – ♭VI – ♭VII',desc:'Boucle house',desc_en:'House loop',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Électronique',label:'i – iv – ♭VII – IV',desc:'Big room drop',desc_en:'Big room drop',mode:'minor',scales:['minor','dorian'],degrees:[{d:1,acc:0,q:'m'},{d:4,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Électronique',label:'vi – IV – I – V',desc:'EDM pop',desc_en:'EDM pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'Électronique',label:'I – ♭VII – IV – I',desc:'Synth-pop',desc_en:'Synth-pop',mode:'major',scales:['mixolydian'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
 // SAMBA (nouveau genre)
-{genre:'Samba',label:'I – V7 – I',desc:'Samba simple',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:'7'}]},
-{genre:'Samba',label:'I – IV – V7 – I',desc:'Samba basique',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:'7'}]},
-{genre:'Samba',label:'i – V7 – i',desc:'Samba mineure',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
-{genre:'Samba',label:'I – II7 – V7 – I',desc:'Samba avec dominante secondaire',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
-{genre:'Samba',label:'Imaj7 – VI7 – ii7 – V7',desc:'Samba jazz',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Samba',label:'I – V7 – I',desc:'Samba simple',desc_en:'Simple samba',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:'7'}]},
+{genre:'Samba',label:'I – IV – V7 – I',desc:'Samba basique',desc_en:'Basic samba',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:5,acc:0,q:'7'}]},
+{genre:'Samba',label:'i – V7 – i',desc:'Samba mineure',desc_en:'Minor samba',mode:'minor',scales:['harmonic','minor'],degrees:[{d:1,acc:0,q:'m'},{d:5,acc:0,q:'7'}]},
+{genre:'Samba',label:'I – II7 – V7 – I',desc:'Samba avec dominante secondaire',desc_en:'Samba with secondary dominant',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:2,acc:0,q:'7'},{d:5,acc:0,q:'7'}]},
+{genre:'Samba',label:'Imaj7 – VI7 – ii7 – V7',desc:'Samba jazz',desc_en:'Samba jazz',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
 // K-POP (nouveau genre)
-{genre:'K-Pop',label:'vi – IV – I – V',desc:'4536 K-Pop classique',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
-{genre:'K-Pop',label:'I – iii – vi – V',desc:'K-Pop verse',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
-{genre:'K-Pop',label:'I – V – vi – iii – IV',desc:'K-Pop chorus épique',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
-{genre:'K-Pop',label:'i – ♭III – ♭VII – IV',desc:'K-Pop chorus sombre',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
-{genre:'K-Pop',label:'IV – V – iii – vi',desc:'6415 K-Pop émotionnelle',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
+{genre:'K-Pop',label:'vi – IV – I – V',desc:'4536 K-Pop classique',desc_en:'4536 classic K-Pop',mode:'major',scales:['major','penta_maj'],degrees:[{d:6,acc:0,q:'m'},{d:4,acc:0,q:''},{d:1,acc:0,q:''},{d:5,acc:0,q:''}]},
+{genre:'K-Pop',label:'I – iii – vi – V',desc:'K-Pop verse',desc_en:'K-Pop verse',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:5,acc:0,q:''}]},
+{genre:'K-Pop',label:'I – V – vi – iii – IV',desc:'K-Pop chorus épique',desc_en:'Epic K-Pop chorus',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'m'},{d:4,acc:0,q:''}]},
+{genre:'K-Pop',label:'i – ♭III – ♭VII – IV',desc:'K-Pop chorus sombre',desc_en:'Dark K-Pop chorus',mode:'minor',scales:['minor','penta_min'],degrees:[{d:1,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'K-Pop',label:'IV – V – iii – vi',desc:'6415 K-Pop émotionnelle',desc_en:'6415 emotional K-Pop',mode:'major',scales:['major'],degrees:[{d:4,acc:0,q:''},{d:5,acc:0,q:''},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'}]},
 // FLAMENCO (additions)
-{genre:'Flamenco',label:'i – ♭VII – ♭VI – ♭VII',desc:'Rumba flamenca',mode:'minor',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
-{genre:'Flamenco',label:'♭II – i',desc:'Résolution phrygienne',mode:'minor',scales:['phrygian'],degrees:[{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'m'}]},
+{genre:'Flamenco',label:'i – ♭VII – ♭VI – ♭VII',desc:'Rumba flamenca',desc_en:'Flamenco rumba',mode:'minor',scales:['phrygian'],degrees:[{d:1,acc:0,q:'m'},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''}]},
+{genre:'Flamenco',label:'♭II – i',desc:'Résolution phrygienne',desc_en:'Phrygian resolution',mode:'minor',scales:['phrygian'],degrees:[{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'m'}]},
 // SOUL/R&B (addition)
-{genre:'Soul/R&B',label:'Imaj7 – iii7 – vi7 – IVmaj7',desc:'Soul doux',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'m7'},{d:4,acc:0,q:'maj7'}]},
+{genre:'Soul/R&B',label:'Imaj7 – iii7 – vi7 – IVmaj7',desc:'Soul doux',desc_en:'Soft soul',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'m7'},{d:4,acc:0,q:'maj7'}]},
 ];
 CADENCES.forEach((c,i)=>c.id='cad_'+i);
 
@@ -1038,11 +969,24 @@ function buildPiano(){
 }
 
 /* ==================== GENRE TABS ==================== */
+const GENRE_EN={
+  'all':'All','Tonal':'Tonal','Pop/Rock':'Pop/Rock','Doo-Wop':'Doo-Wop','Blues':'Blues',
+  'Jazz':'Jazz','Bossa Nova':'Bossa Nova','Soul/R&B':'Soul/R&B','Gospel':'Gospel','Country':'Country',
+  'Folk':'Folk','Reggae':'Reggae','Funk':'Funk','Métal':'Metal','Hard Rock':'Hard Rock',
+  'Flamenco':'Flamenco','Latin':'Latin','Modal Dorien':'Dorian modal','Modal Mixolydien':'Mixolydian modal',
+  'Modal Phrygien':'Phrygian modal','Modal Éolien':'Aeolian modal','Modal Lydien':'Lydian modal',
+  'Épique/Ciné':'Epic/Cinematic','J-Pop':'J-Pop','Jazz Manouche':'Gypsy Jazz','Baroque':'Baroque',
+  'Hip-Hop':'Hip-Hop','Néo-Soul':'Neo-Soul','Électronique':'Electronic','Samba':'Samba','K-Pop':'K-Pop',
+};
+function genreLabel(g){
+  if(g==='all') return currentLang()==='en'?'All':'Tous';
+  return currentLang()==='en' ? (GENRE_EN[g]||g) : g;
+}
 const GENRES=['all',...[...new Set(CADENCES.map(c=>c.genre))]];
 function buildGenreTabs(){
   const c=document.getElementById('genre-tabs');c.innerHTML='';
   GENRES.forEach(g=>{
-    const b=document.createElement('button');b.className='gtab';b.dataset.genre=g;b.textContent=g==='all'?'Tous':g;
+    const b=document.createElement('button');b.className='gtab';b.dataset.genre=g;b.textContent=genreLabel(g);
     b.onclick=()=>{state.genre=g;state.cadenceId=null;buildCadencesGrid();syncUI();};
     c.appendChild(b);
   });
@@ -1058,7 +1002,8 @@ function buildCadencesGrid(){
     const degs=cad.degrees.map((dg)=>{const col=_dcm[dg.d+'_'+dg.acc];return`<span class="cad-deg" style="color:${col};border-color:${col}44">${degLabel(dg.d,dg.q)}</span>`;}).join('');
     const card=document.createElement('div');
     card.className='cadence-card'+(state.cadenceId===cad.id?' active':'');
-    card.innerHTML=`<div class="cad-header"><div class="cad-label">${cad.label}</div><div class="cad-genre" style="color:${col};border-color:${col}44">${cad.genre}</div></div><div class="cad-desc">${cad.desc}</div><div class="cad-degrees">${degs}</div>${cad.chart?'<span class="cad-has-chart">grille</span>':''}`;
+    const _desc=(currentLang()==='en'&&cad.desc_en)?cad.desc_en:cad.desc;
+    card.innerHTML=`<div class="cad-header"><div class="cad-label">${cad.label}</div><div class="cad-genre" style="color:${col};border-color:${col}44">${genreLabel(cad.genre)}</div></div><div class="cad-desc">${_desc}</div><div class="cad-degrees">${degs}</div>${cad.chart?`<span class="cad-has-chart">${currentLang()==='en'?'chart':'grille'}</span>`:''}`;
     card.onclick=()=>{state.cadenceId=cad.id;state.chordIdx=0;render();};
     c.appendChild(card);
   });
@@ -1084,7 +1029,7 @@ function renderChart(cad){
   const total=bars.length;
   const cols=total<=4?total:total%4===0?4:total%3===0?3:total<=7?total:4;
   zone.innerHTML=`<div class="cad-chart-wrap">
-    <div class="cad-chart-title">⊞ Grille — ${total} mesure${total>1?'s':''}</div>
+    <div class="cad-chart-title">⊞ ${t('lbl_chart_grid')} — ${total} ${total>1?t('lbl_measures_pl'):t('lbl_measures')}</div>
     <div class="cad-chart" style="grid-template-columns:repeat(${cols},1fr)">
       ${bars.map(({d,q},idx)=>{
         const col=chartColMap[d+'_'+q]||'var(--brass)';
@@ -1118,7 +1063,7 @@ function renderResult(){
   const cur=chords[state.chordIdx];
   // Titre
   const col=GENRE_COLORS[cad.genre]||'var(--brass)';
-  document.getElementById('result-title').innerHTML=`<span class="rtag" style="color:${col}">${cad.genre} — </span><b>${spell(state.rootPc)}</b> ${cad.label}`;
+  document.getElementById('result-title').innerHTML=`<span class="rtag" style="color:${col}">${genreLabel(cad.genre)} — </span><b>${spell(state.rootPc)}</b> ${cad.label}`;
   // Bouton ▶ Jouer toute la cadence
   const pcw=document.getElementById('play-cad-wrap');
   if(pcw && typeof makePlayBtn!=='undefined'){
@@ -1128,8 +1073,8 @@ function renderResult(){
     const toggle=document.createElement('div');
     toggle.className='seg'; toggle.style.cssText='display:inline-flex;margin-right:6px';
     toggle.innerHTML=`
-      <button class="on" data-playmode="root" style="font-size:10px;padding:4px 9px">Fond.</button>
-      <button data-playmode="chord" style="font-size:10px;padding:4px 9px">Accord</button>`;
+      <button class="on" data-playmode="root" style="font-size:10px;padding:4px 9px">${t('lbl_fond')}</button>
+      <button data-playmode="chord" style="font-size:10px;padding:4px 9px">${t('lbl_acc')}</button>`;
     toggle.addEventListener('click',e=>{
       const b=e.target.closest('button'); if(!b) return;
       toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
@@ -1156,7 +1101,7 @@ function renderResult(){
 
     const btn=document.createElement('button');
     btn.className='play-btn'; btn.style.cssText='width:auto;border-radius:8px;padding:0 14px;font-size:11px;letter-spacing:.06em';
-    btn.innerHTML='▶ Cadence'; btn.title='Jouer la cadence';
+    btn.innerHTML=t('lbl_play_cad_btn'); btn.title=t('lbl_jouer_cad');
 
     btn.onclick=async()=>{
       // STOP si en cours
@@ -1165,7 +1110,7 @@ function renderResult(){
         _cadTimers.forEach(t=>clearTimeout(t));
         _cadTimers=[];
         if(_sfInst) _sfInst.stop();
-        btn.innerHTML='▶ Cadence'; btn.classList.remove('playing');
+        btn.innerHTML=t('lbl_play_cad_btn'); btn.classList.remove('playing');
         return;
       }
 
@@ -1173,7 +1118,7 @@ function renderResult(){
       if(_audioCtx.state==='suspended') await _audioCtx.resume();
 
       _cadPlaying=true;
-      btn.innerHTML='■ Stop'; btn.classList.add('playing');
+      btn.innerHTML=t('lbl_stop_btn'); btn.classList.add('playing');
 
       const BEAT=0.4;
       const REPS=+(rythSel.querySelector('button.on')?.dataset.reps||4);
@@ -1213,7 +1158,7 @@ function renderResult(){
       _cadTimers.push(setTimeout(()=>{
         _cadPlaying=false;
         _cadTimers=[];
-        btn.innerHTML='▶ Cadence'; btn.classList.remove('playing');
+        btn.innerHTML=t('lbl_play_cad_btn'); btn.classList.remove('playing');
       }, totalMs));
     };
     pcw.appendChild(btn);
@@ -1223,8 +1168,8 @@ function renderResult(){
   if(scalesEl&&cad.scales){
     const rootNote=spellNote(state.rootPc,state.accPref);
     const rn=rootNote[0].toUpperCase()+rootNote.slice(1);
-    scalesEl.innerHTML='<span style="color:var(--muted-2);font-family:\'Space Mono\',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">Gammes pour improviser : </span>'
-      +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'gammes.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${SCALE_NAMES[s]||s}</a>`).join('');
+    scalesEl.innerHTML=`<span style="color:var(--muted-2);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">${t('lbl_gammes_imp_label')} </span>`
+      +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'gammes.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${scaleName(s)}</a>`).join('');
   }
   // Grille d'accords
   renderChart(cad);
@@ -1301,7 +1246,7 @@ function renderFretboard(chords){
   const lg=document.getElementById('legend');lg.innerHTML='';
   cur.pcs.forEach((pc,i)=>{
     const el=document.createElement('div');el.className='legend-item';
-    el.innerHTML=`<span class="leg-dot" style="background:${CHORD_COLORS[i]||cur.col}${i===0?';box-shadow:0 0 0 2px rgba(255,255,255,.7)':''}"></span>${spell(pc)}${i===0?' — fondamentale':''}`;
+    el.innerHTML=`<span class="leg-dot" style="background:${CHORD_COLORS[i]||cur.col}${i===0?';box-shadow:0 0 0 2px rgba(255,255,255,.7)':''}"></span>${spell(pc)}${i===0?' — '+t('lbl_root'):''}`;
     lg.appendChild(el);
   });
 }
@@ -1332,8 +1277,6 @@ function updateI18n(){
   const NAV={
     fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -1341,7 +1284,7 @@ function updateI18n(){
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
 }
 
-function render(){updateI18n();buildPiano();syncUI();buildCadencesGrid();renderResult();}
+function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCadencesGrid();renderResult();}
 
 /* ==================== INIT ==================== */
 buildPiano();buildGenreTabs();buildCadencesGrid();

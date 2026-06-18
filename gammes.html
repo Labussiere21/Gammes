@@ -549,36 +549,34 @@
         <div class="htool-seg" id="lang-seg">
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
           <button data-lang="en" style="min-width:34px">EN</button>
-          <button data-lang="es" style="min-width:34px">ES</button>
-          <button data-lang="de" style="min-width:34px">DE</button>
         </div>
       </div>
     </div>
     <h1>Gam<em>mes</em></h1>
-    <p class="lede">Choisis une tonique, une gamme, et lis-la note par note&nbsp;: degrés, armure, accords de chaque degré, et la position exacte sur le manche de ta basse.</p>
+    <p class="lede" data-i18n="lbl_lede">Choisis une tonique, une gamme, et lis-la note par note&nbsp;: degrés, armure, accords de chaque degré, et la position exacte sur le manche de ta basse.</p>
   </header>
 
   <!-- Contrôles -->
   <section class="controls">
     <div class="ctl-row">
       <div class="ctl-block">
-        <div class="ctl-label">Tonique</div>
+        <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div style="display:flex;flex-direction:column;gap:12px">
             <div>
-              <div class="ctl-label">Altération</div>
+              <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
               <div class="seg" id="accpref" role="group" aria-label="Préférence d'altération">
-                <button data-acc="b" class="on">♭ bémols</button>
-                <button data-acc="#">♯ dièses</button>
+                <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
+                <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
               </div>
             </div>
             <div>
-              <div class="ctl-label">Famille</div>
+              <div class="ctl-label" data-i18n="lbl_famille">Famille</div>
               <div class="seg" id="scale-family" role="group">
-                <button data-fam="all" class="on">Toutes</button>
-                <button data-fam="maj">Majeures</button>
-                <button data-fam="min">Mineures</button>
+                <button data-fam="all" class="on" data-i18n="lbl_fam_all">Toutes</button>
+                <button data-fam="maj" data-i18n="lbl_fam_maj">Majeures</button>
+                <button data-fam="min" data-i18n="lbl_fam_min">Mineures</button>
               </div>
             </div>
           </div>
@@ -587,7 +585,7 @@
     </div>
 
     <div style="margin-top:20px">
-      <div class="ctl-label">Gamme</div>
+      <div class="ctl-label" data-i18n="lbl_gamme_label">Gamme</div>
       <div class="scale-types" id="scale-types"></div>
     </div>
   </section>
@@ -607,7 +605,7 @@
     </section>
 
     <section class="card">
-      <h2>Degrés &amp; accords diatoniques</h2>
+      <h2 data-i18n="lbl_diat_title">Degrés &amp; accords diatoniques</h2>
       <table>
         <thead id="degrees-head"></thead>
         <tbody id="degrees-body"></tbody>
@@ -621,14 +619,14 @@
       <h2 data-i18n="lbl_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          <div class="ctl-label">Afficher</div>
+          <div class="ctl-label" data-i18n="lbl_affichage">Afficher</div>
           <div class="seg" id="fb-display" role="group">
-            <button data-disp="note" class="on">Notes</button>
-            <button data-disp="deg">Degrés</button>
+            <button data-disp="note" class="on" data-i18n="lbl_note_btn">Notes</button>
+            <button data-disp="deg" data-i18n="lbl_degre_btn">Degrés</button>
           </div>
         </div>
         <div>
-          <div class="ctl-label">Cordes</div>
+          <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
             <button data-str="5">5</button>
@@ -636,11 +634,11 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Accordage</div>
+          <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <div class="seg" id="fb-tuning-ctl" role="group"></div>
         </div>
         <div>
-          <div class="ctl-label">Cases</div>
+          <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
           <div class="seg" id="fb-frets-ctl" role="group">
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
@@ -648,7 +646,7 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Main</div>
+          <div class="ctl-label" data-i18n="lbl_main">Main</div>
           <div class="seg" id="fb-hand" role="group">
             <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
             <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
@@ -656,7 +654,7 @@
         </div>
         <div style="flex-basis:100%; height:0"></div>
         <div>
-          <div class="ctl-label">Position (boîte)</div>
+          <div class="ctl-label" data-i18n="lbl_position">Position (boîte)</div>
           <div class="seg" id="fb-position" role="group"></div>
         </div>
       </div>
@@ -690,18 +688,6 @@ const EN_TO_FR = {
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
-const EN_TO_ES = {
-  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
-  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
-  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
-  'B':'Si','B#':'Do','Cb':'Si',
-};
-const EN_TO_DE = {
-  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
-  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
-  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
-  'B':'H','B#':'His','Cb':'Ces',
-};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -716,18 +702,6 @@ function prettyNote(noteEN){
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(not==='es'){
-    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
-    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(lang==='de'){
-    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
-    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -762,6 +736,16 @@ const _TR={
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+    lbl_composed_of:'est composée de {n} notes : {notes}.',lbl_key_sig:'Son armure comporte',
+    lbl_no_acc:'aucune altération',lbl_sharp_s:'{n} dièse(s)',lbl_flat_s:'{n} bémol(s)',
+    lbl_relative:'Sa relative mineure est',lbl_relative_maj:'Sa relative majeure est',
+    lbl_part_of:'Elle fait partie des gammes',lbl_maj_sound:'majeures (sonorité lumineuse)',lbl_min_sound:'mineures (sonorité plus sombre)',
+    lbl_alterations:'altérations',lbl_diat_title:'Degrés & accords diatoniques',lbl_nd_title:'Degrés & intervalles',
+    grp_0:'Modes diatoniques',grp_1:'Pentatoniques, blues & symétriques',grp_2:'Modes jazz',grp_3:'Gammes exotiques',
+    lbl_accordage:'Accordage',lbl_gamme_label:'Gamme',
+    lbl_alteration:'Altération',lbl_famille:'Famille',
+    lbl_lede:'Choisis une tonique, une gamme, et lis-la note par note : degrés, armure, accords de chaque degré, et la position exacte sur le manche de ta basse.',
+    lbl_pos_all:'Tout',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -790,63 +774,17 @@ const _TR={
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+    lbl_composed_of:'is made of {n} notes: {notes}.',lbl_key_sig:'Key signature:',
+    lbl_no_acc:'no accidentals',lbl_sharp_s:'{n} sharp(s)',lbl_flat_s:'{n} flat(s)',
+    lbl_relative:'Its relative minor is',lbl_relative_maj:'Its relative major is',
+    lbl_part_of:'It belongs to the',lbl_maj_sound:'major scales (bright sound)',lbl_min_sound:'minor scales (darker sound)',
+    lbl_alterations:'accidentals',lbl_diat_title:'Degrees & diatonic chords',lbl_nd_title:'Degrees & intervals',
+    grp_0:'Diatonic modes',grp_1:'Pentatonic, blues & symmetric',grp_2:'Jazz modes',grp_3:'Exotic scales',
+    lbl_accordage:'Tuning',lbl_gamme_label:'Scale',
+    lbl_alteration:'Accidental',lbl_famille:'Family',
+    lbl_lede:'Pick a root note and a scale, then read it note by note: degrees, key signature, the chord on each degree, and the exact shape on your bass fretboard.',
+    lbl_pos_all:'All',
   },
-  es:{
-    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
-    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
-    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
-    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
-    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
-    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
-    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
-    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
-    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
-    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
-    lbl_th_num:'Nº',lbl_th_role:'Rol',
-    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
-    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
-    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
-    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
-    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
-    lbl_cercle:'Círculo de quintas',
-    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
-    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
-    lbl_root:'fundamental',lbl_bientot:'Próximamente',
-    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
-    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
-    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
-  },
-  de:{
-    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
-    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
-    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
-    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
-    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
-    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
-    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
-    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
-    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
-    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
-    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
-    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
-    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
-    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
-    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
-    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
-    lbl_cercle:'Quintenzirkel',
-    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
-    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
-    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
-    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
-    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
-    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
-  }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
@@ -908,10 +846,6 @@ const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B
 const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
-const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
-const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -923,8 +857,6 @@ function getNotationTable(accPref){
   const not  = localStorage.getItem('sbnot')||'en';
   const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
-  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
-  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -1066,84 +998,84 @@ function pretty(n){
 
 const SCALE_DEFS = [
   // ======= GROUPE 0 : MODES DIATONIQUES =======
-  {id:'major',           label:'Majeure',               sub:'Ionien',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11]},
-  {id:'minor',           label:'Mineure naturelle',     sub:'Éolien',          group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10]},
-  {id:'harmonic',        label:'Mineure harmonique',    sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
-  {id:'melodic',         label:'Mineure mélodique',     sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11]},
-  {id:'dorian',          label:'Dorien',                sub:'mode II',         group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
-  {id:'phrygian',        label:'Phrygien',              sub:'mode III',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
-  {id:'lydian',          label:'Lydien',                sub:'mode IV',         group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
-  {id:'mixolydian',      label:'Mixolydien',            sub:'mode V',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
-  {id:'locrian',         label:'Locrien',               sub:'mode VII',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10]},
+  {id:'major',           label:'Majeure',               sub:'Ionien',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,11], label_en:'Major', sub_en:'Ionian'},
+  {id:'minor',           label:'Mineure naturelle',     sub:'Éolien',          group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,10], label_en:'Natural minor', sub_en:'Aeolian'},
+  {id:'harmonic',        label:'Mineure harmonique',    sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11], label_en:'Harmonic minor', sub_en:''},
+  {id:'melodic',         label:'Mineure mélodique',     sub:'',                group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,11], label_en:'Melodic minor', sub_en:''},
+  {id:'dorian',          label:'Dorien',                sub:'mode II',         group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10], label_en:'Dorian', sub_en:'mode II'},
+  {id:'phrygian',        label:'Phrygien',              sub:'mode III',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10], label_en:'Phrygian', sub_en:'mode III'},
+  {id:'lydian',          label:'Lydien',                sub:'mode IV',         group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11], label_en:'Lydian', sub_en:'mode IV'},
+  {id:'mixolydian',      label:'Mixolydien',            sub:'mode V',          group:0, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10], label_en:'Mixolydian', sub_en:'mode V'},
+  {id:'locrian',         label:'Locrien',               sub:'mode VII',        group:0, diat:true,  posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,8,10], label_en:'Locrian', sub_en:'mode VII'},
   // ======= GROUPE 1 : PENTATONIQUES & BLUES & SYMÉTRIQUES =======
-  {id:'penta_min',       label:'Pentatonique min.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6],        iv:[0,3,5,7,10]},
-  {id:'penta_maj',       label:'Pentatonique maj.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,9]},
-  {id:'blues_min',       label:'Blues mineure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,4,6],      iv:[0,3,5,6,7,10]},
-  {id:'blues_maj',       label:'Blues majeure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,2,4,5],      iv:[0,2,3,4,7,9]},
-  {id:'penta_dom',       label:'Pentatonique dominante',sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,10]},
-  {id:'penta_min6',      label:'Pentatonique min. 6',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,5,6],        iv:[0,3,5,9,10]},
-  {id:'penta_sus',       label:'Pentatonique sus',      sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,3,4,6],        iv:[0,2,5,7,10]},
-  {id:'blues_dom',       label:'Blues dominante',       sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5],      iv:[0,2,4,6,7,10]},
-  {id:'blues_hex',       label:'Blues hexatonique',     sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,6],      iv:[0,2,3,5,7,10]},
-  {id:'penta_maj7',      label:'Pentatonique maj. 7',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,11]},
-  {id:'penta_min_lead',  label:'Penta min. + guidage',  sub:'6 notes (♭3 4 5 ♭7 7)', group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6,6],   iv:[0,3,5,7,10,11]},
-  {id:"boogie",          label:"Rock'n'Roll / Boogie", sub:'7 notes',         group:1, diat:false, posType:'maj',   npos:5,  fam:'maj', ls:[0,1,2,2,4,5,6],   iv:[0,2,3,4,7,9,10]},
-  {id:'penta_majb2',     label:'Pentatonique maj. ♭2',  sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,1,4,7,9]},
-  {id:'dim',             label:'Diminuée T-½T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11]},
-  {id:'dim_ht',          label:'Diminuée ½T-T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,0,1,2,3,4,5,6], iv:[0,1,3,4,6,7,9,10]},
-  {id:'half_dim',        label:'Demi-diminuée',         sub:'= Locrien',       group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10]},
-  {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10]},
-  {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11]},
-  {id:'chromatic', label:'Chromatique', sub:'12 notes', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5,6,7,8,9,10,11], iv:[0,1,2,3,4,5,6,7,8,9,10,11]},
+  {id:'penta_min',       label:'Pentatonique min.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6],        iv:[0,3,5,7,10], label_en:'Minor pentatonic', sub_en:'5 notes'},
+  {id:'penta_maj',       label:'Pentatonique maj.',     sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,9], label_en:'Major pentatonic', sub_en:'5 notes'},
+  {id:'blues_min',       label:'Blues mineure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,4,6],      iv:[0,3,5,6,7,10], label_en:'Minor blues', sub_en:'6 notes'},
+  {id:'blues_maj',       label:'Blues majeure',         sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,2,4,5],      iv:[0,2,3,4,7,9], label_en:'Major blues', sub_en:'6 notes'},
+  {id:'penta_dom',       label:'Pentatonique dominante',sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,10], label_en:'Dominant pentatonic', sub_en:'5 notes'},
+  {id:'penta_min6',      label:'Pentatonique min. 6',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,5,6],        iv:[0,3,5,9,10], label_en:'Minor 6 pentatonic', sub_en:'5 notes'},
+  {id:'penta_sus',       label:'Pentatonique sus',      sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,3,4,6],        iv:[0,2,5,7,10], label_en:'Sus pentatonic', sub_en:'5 notes'},
+  {id:'blues_dom',       label:'Blues dominante',       sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5],      iv:[0,2,4,6,7,10], label_en:'Dominant blues', sub_en:'6 notes'},
+  {id:'blues_hex',       label:'Blues hexatonique',     sub:'6 notes',         group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,6],      iv:[0,2,3,5,7,10], label_en:'Blues hexatonic', sub_en:'6 notes'},
+  {id:'penta_maj7',      label:'Pentatonique maj. 7',   sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,2,4,7,11], label_en:'Major 7 pentatonic', sub_en:'5 notes'},
+  {id:'penta_min_lead',  label:'Penta min. + guidage',  sub:'6 notes (♭3 4 5 ♭7 7)', group:1, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,2,3,4,6,6],   iv:[0,3,5,7,10,11], label_en:'Minor leading pentatonic', sub_en:'6 notes (♭3 4 5 ♭7 7)'},
+  {id:"boogie",          label:"Rock'n'Roll / Boogie", sub:'7 notes',         group:1, diat:false, posType:'maj',   npos:5,  fam:'maj', ls:[0,1,2,2,4,5,6],   iv:[0,2,3,4,7,9,10], label_en:'Rock\'n\'Roll / Boogie', sub_en:'7 notes'},
+  {id:'penta_majb2',     label:'Pentatonique maj. ♭2',  sub:'5 notes',         group:1, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,4,5],        iv:[0,1,4,7,9], label_en:'Maj. b2 pentatonic', sub_en:'5 notes'},
+  {id:'dim',             label:'Diminuée T-½T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,1,2,3,4,5,5,6], iv:[0,2,3,5,6,8,9,11], label_en:'Diminished T-½T', sub_en:'8 notes, symmetric'},
+  {id:'dim_ht',          label:'Diminuée ½T-T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,0,1,2,3,4,5,6], iv:[0,1,3,4,6,7,9,10], label_en:'Diminished ½T-T', sub_en:'8 notes, symmetric'},
+  {id:'half_dim',        label:'Demi-diminuée',         sub:'= Locrien',       group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10], label_en:'Half diminished', sub_en:'= Locrian'},
+  {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10], label_en:'Whole tone', sub_en:'6 notes, symmetric'},
+  {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11], label_en:'Augmented hexatonic', sub_en:'6 notes, symmetric'},
+  {id:'chromatic', label:'Chromatique', sub:'12 notes', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5,6,7,8,9,10,11], iv:[0,1,2,3,4,5,6,7,8,9,10,11], label_en:'Chromatic', sub_en:'12 notes'},
   // ======= GROUPE 2 : MODES DÉRIVÉS & JAZZ =======
-  {id:'phryg_dom',       label:'Phrygien dominant',     sub:'Mode V harm.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
-  {id:'lydian_dom',      label:'Lydien dominant',       sub:'Mode IV mél.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
-  {id:'altered',         label:'Altérée',               sub:'Mode VII mél.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,2,4,5,6], iv:[0,1,3,4,6,8,10]},
-  {id:'locrian_s2',      label:'Locrien ♯2',            sub:'Mode VI mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,6,8,10]},
-  {id:'lydian_aug',      label:'Lydien augmenté',       sub:'Mode III mél.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,8,9,11]},
-  {id:'mixo_b6',         label:'Mixolydien ♭6',         sub:'Mode V mél.',     group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,8,10]},
-  {id:'dorian_b2',       label:'Dorien ♭2',             sub:'Mode II mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,10]},
-  {id:'locrian6',        label:'Locrien ♮6',            sub:'Mode II harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,9,10]},
-  {id:'ionian_s5',       label:'Ionien ♯5',             sub:'Mode III harm.',  group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,8,9,11]},
-  {id:'dorian_s4',       label:'Dorien ♯4',             sub:'Mode IV harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
-  {id:'lydian_s2',       label:'Lydien ♯2',             sub:'Mode VI harm.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,11]},
-  {id:'superlocrian_bb7',label:'Super Locrien 𝄫7',      sub:'Mode VII harm.',  group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,9]},
-  {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes (♯5)',     group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,4,5,6], iv:[0,2,4,5,7,8,9,11]},
-  {id:'bebop_dom',       label:'Bebop dominante',       sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11]},
-  {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10]},
+  {id:'phryg_dom',       label:'Phrygien dominant',     sub:'Mode V harm.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10], label_en:'Phrygian dominant', sub_en:'Mode V harm.'},
+  {id:'lydian_dom',      label:'Lydien dominant',       sub:'Mode IV mél.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10], label_en:'Lydian dominant', sub_en:'Mode IV mel.'},
+  {id:'altered',         label:'Altérée',               sub:'Mode VII mél.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,2,4,5,6], iv:[0,1,3,4,6,8,10], label_en:'Altered', sub_en:'Mode VII mel.'},
+  {id:'locrian_s2',      label:'Locrien ♯2',            sub:'Mode VI mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,6,8,10], label_en:'Locrian #2', sub_en:'Mode VI mel.'},
+  {id:'lydian_aug',      label:'Lydien augmenté',       sub:'Mode III mél.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,8,9,11], label_en:'Lydian augmented', sub_en:'Mode III mel.'},
+  {id:'mixo_b6',         label:'Mixolydien ♭6',         sub:'Mode V mél.',     group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,8,10], label_en:'Mixolydian b6', sub_en:'Mode V mel.'},
+  {id:'dorian_b2',       label:'Dorien ♭2',             sub:'Mode II mél.',    group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,10], label_en:'Dorian b2', sub_en:'Mode II mel.'},
+  {id:'locrian6',        label:'Locrien ♮6',            sub:'Mode II harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,6,9,10], label_en:'Locrian nat.6', sub_en:'Mode II harm.'},
+  {id:'ionian_s5',       label:'Ionien ♯5',             sub:'Mode III harm.',  group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,8,9,11], label_en:'Ionian #5', sub_en:'Mode III harm.'},
+  {id:'dorian_s4',       label:'Dorien ♯4',             sub:'Mode IV harm.',   group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10], label_en:'Dorian #4', sub_en:'Mode IV harm.'},
+  {id:'lydian_s2',       label:'Lydien ♯2',             sub:'Mode VI harm.',   group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,11], label_en:'Lydian #2', sub_en:'Mode VI harm.'},
+  {id:'superlocrian_bb7',label:'Super Locrien 𝄫7',      sub:'Mode VII harm.',  group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,9], label_en:'Super Locrian bb7', sub_en:'Mode VII harm.'},
+  {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes (♯5)',     group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,4,5,6], iv:[0,2,4,5,7,8,9,11], label_en:'Bebop major', sub_en:'8 notes (#5)'},
+  {id:'bebop_dom',       label:'Bebop dominante',       sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11], label_en:'Bebop dominant', sub_en:'8 notes'},
+  {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10], label_en:'Bebop minor', sub_en:'8 notes'},
   // ======= GROUPE 3 : EXOTIQUES =======
-  {id:'double_harm',     label:'Double harmonique',     sub:'Byzantine / Tsigane', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
-  {id:'hung_min',        label:'Mineure hongroise',     sub:'Gypsy minor',         group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,11]},
-  {id:'hung_maj',        label:'Majeure hongroise',     sub:'Hungarian major',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,10]},
-  {id:'gypsy_maj',       label:'Tzigane majeure',       sub:'Gypsy major',         group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
-  {id:'romanian_min',    label:'Mineure roumaine',      sub:'Dorien ♯4',           group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10]},
-  {id:'persian',         label:'Persane',               sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,6,8,11]},
-  {id:'arabic',          label:'Arabe',                 sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10]},
-  {id:'enigmatic',       label:'Énigmatique',           sub:'Verdi',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,6,8,10,11]},
-  {id:'napolitaine_maj', label:'Napolitaine majeure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,11]},
-  {id:'napolitaine_min', label:'Napolitaine mineure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,11]},
-  {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,6],     iv:[0,2,4,6,9,10]},
-  {id:'overtone',        label:'Acoustique (Overtone)', sub:'= Lydien dominant',   group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10]},
+  {id:'double_harm',     label:'Double harmonique',     sub:'Byzantine / Tsigane', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11], label_en:'Double harmonic', sub_en:'Byzantine / Gypsy'},
+  {id:'hung_min',        label:'Mineure hongroise',     sub:'Gypsy minor',         group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,11], label_en:'Hungarian minor', sub_en:'Gypsy minor'},
+  {id:'hung_maj',        label:'Majeure hongroise',     sub:'Hungarian major',     group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,3,4,6,7,9,10], label_en:'Hungarian major', sub_en:'Hungarian major'},
+  {id:'gypsy_maj',       label:'Tzigane majeure',       sub:'Gypsy major',         group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10], label_en:'Gypsy major', sub_en:'Gypsy major'},
+  {id:'romanian_min',    label:'Mineure roumaine',      sub:'Dorien ♯4',           group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,9,10], label_en:'Romanian minor', sub_en:'Dorian #4'},
+  {id:'persian',         label:'Persane',               sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,6,8,11], label_en:'Persian', sub_en:'Exotic'},
+  {id:'arabic',          label:'Arabe',                 sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,6,8,10], label_en:'Arabic', sub_en:'Exotic'},
+  {id:'enigmatic',       label:'Énigmatique',           sub:'Verdi',               group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,6,8,10,11], label_en:'Enigmatic', sub_en:'Verdi'},
+  {id:'napolitaine_maj', label:'Napolitaine majeure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,9,11], label_en:'Neapolitan major', sub_en:'Exotic'},
+  {id:'napolitaine_min', label:'Napolitaine mineure',   sub:'Exotique',            group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,11], label_en:'Neapolitan minor', sub_en:'Exotic'},
+  {id:'prometheus',      label:'Prometheus',            sub:'Scriabine',           group:3, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,5,6],     iv:[0,2,4,6,9,10], label_en:'Prometheus', sub_en:'Scriabin'},
+  {id:'overtone',        label:'Acoustique (Overtone)', sub:'= Lydien dominant',   group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10], label_en:'Overtone', sub_en:'= Lydian dominant'},
   // ======= GROUPE 3 : ARABES / MAQAMS =======
-  {id:'hijaz',           label:'Hijaz',                 sub:'Maqam (≈ Phryg. dom.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10]},
-  {id:'hijaz_kar',       label:'Hijaz Kar',             sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
-  {id:'bayati',          label:'Bayati',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
-  {id:'nahawand',        label:'Nahawand',              sub:'Maqam (≈ min. harm.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11]},
-  {id:'rast',            label:'Rast',                  sub:'Maqam (≈ Mixolydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10]},
-  {id:'nikriz',          label:'Nikriz',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,10]},
-  {id:'saba',            label:'Saba',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,10]},
-  {id:'kurd',            label:'Kurd',                  sub:'Maqam (≈ Phrygien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10]},
+  {id:'hijaz',           label:'Hijaz',                 sub:'Maqam (≈ Phryg. dom.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10], label_en:'Hijaz', sub_en:'Maqam (≈ Phryg. dom.)'},
+  {id:'hijaz_kar',       label:'Hijaz Kar',             sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11], label_en:'Hijaz Kar', sub_en:'Maqam'},
+  {id:'bayati',          label:'Bayati',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10], label_en:'Bayati', sub_en:'Maqam'},
+  {id:'nahawand',        label:'Nahawand',              sub:'Maqam (≈ min. harm.)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,8,11], label_en:'Nahawand', sub_en:'Maqam (≈ harm. min.)'},
+  {id:'rast',            label:'Rast',                  sub:'Maqam (≈ Mixolydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,9,10], label_en:'Rast', sub_en:'Maqam (≈ Mixolydian)'},
+  {id:'nikriz',          label:'Nikriz',                sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,10], label_en:'Nikriz', sub_en:'Maqam'},
+  {id:'saba',            label:'Saba',                  sub:'Maqam',               group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,10], label_en:'Saba', sub_en:'Maqam'},
+  {id:'kurd',            label:'Kurd',                  sub:'Maqam (≈ Phrygien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,5,7,8,10], label_en:'Kurd', sub_en:'Maqam (≈ Phrygian)'},
   // ======= GROUPE 3 : JAPONAISES =======
-  {id:'hirajoshi',       label:'Hirajoshi',             sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,8]},
-  {id:'insen',           label:'Insen',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,7,10]},
-  {id:'kumoi',           label:'Kumoi',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,9]},
-  {id:'iwato',           label:'Iwato',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,6,10]},
-  {id:'yo',              label:'Yo',                    sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'maj', ls:[0,1,3,4,5],       iv:[0,2,5,7,9]},
+  {id:'hirajoshi',       label:'Hirajoshi',             sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,8], label_en:'Hirajoshi', sub_en:'Japanese, 5 notes'},
+  {id:'insen',           label:'Insen',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,7,10], label_en:'Insen', sub_en:'Japanese, 5 notes'},
+  {id:'kumoi',           label:'Kumoi',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,2,4,5],       iv:[0,2,3,7,9], label_en:'Kumoi', sub_en:'Japanese, 5 notes'},
+  {id:'iwato',           label:'Iwato',                 sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'min', ls:[0,1,3,4,6],       iv:[0,1,5,6,10], label_en:'Iwato', sub_en:'Japanese, 5 notes'},
+  {id:'yo',              label:'Yo',                    sub:'Japonaise, 5 notes',  group:3, diat:false, posType:'sym',   npos:3,  fam:'maj', ls:[0,1,3,4,5],       iv:[0,2,5,7,9], label_en:'Yo', sub_en:'Japanese, 5 notes'},
   // ======= GROUPE 3 : INDIENNES =======
-  {id:'bhairav',         label:'Bhairav',               sub:'Raga',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11]},
-  {id:'todi',            label:'Todi',                  sub:'Raga',                group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,6,7,8,11]},
-  {id:'kafi',            label:'Kafi',                  sub:'Raga indien (≈ Dorien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10]},
-  {id:'kalyan',          label:'Kalyan',                sub:'Raga indien (≈ Lydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11]},
+  {id:'bhairav',         label:'Bhairav',               sub:'Raga',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11], label_en:'Bhairav', sub_en:'Raga'},
+  {id:'todi',            label:'Todi',                  sub:'Raga',                group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,6,7,8,11], label_en:'Todi', sub_en:'Raga'},
+  {id:'kafi',            label:'Kafi',                  sub:'Raga indien (≈ Dorien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10], label_en:'Kafi', sub_en:'Indian raga (≈ Dorian)'},
+  {id:'kalyan',          label:'Kalyan',                sub:'Raga indien (≈ Lydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11], label_en:'Kalyan', sub_en:'Indian raga (≈ Lydian)'},
 ];
 
 // Pentatoniques de référence pour les 5 positions (boîtes traditionnelles)
@@ -1158,6 +1090,12 @@ const INTERVAL_NAMES = {
   4:'3ce Majeure', 5:'4te Juste', 6:'Triton', 7:'5te Juste',
   8:'6te mineure', 9:'6te Majeure', 10:'7ème mineure', 11:'7ème Majeure'
 };
+const INTERVAL_NAMES_EN = {
+  0:'Root', 1:'Minor 2nd', 2:'Major 2nd', 3:'Minor 3rd',
+  4:'Major 3rd', 5:'Perfect 4th', 6:'Tritone', 7:'Perfect 5th',
+  8:'Minor 6th', 9:'Major 6th', 10:'Minor 7th', 11:'Major 7th'
+};
+function ivName(semis){ return (currentLang()==='en'?INTERVAL_NAMES_EN:INTERVAL_NAMES)[semis]; }
 const DEG_COLORS = ['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
 const DEG_SHORT = {0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'b6',9:'6',10:'b7',11:'7'};
 
@@ -1288,7 +1226,7 @@ function buildScaleTypes(){
       const collapsed=state.collapsedGroups.has(s.group);
       hdr.style.cssText='display:flex;align-items:center;gap:6px;cursor:pointer;flex-basis:100%;margin:8px 0 4px;user-select:none';
       hdr.innerHTML=`
-        <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)">${GROUP_LABELS[s.group]||''}</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)">${t('grp_'+s.group)||GROUP_LABELS[s.group]||''}</span>
         <span class="grp-arrow" style="font-size:10px;color:var(--muted-2);transition:transform .15s;transform:rotate(${collapsed?'-90deg':'0deg'})"">▾</span>`;
       hdr.onclick=()=>{
         const g=s.group;
@@ -1307,7 +1245,9 @@ function buildScaleTypes(){
     const b=document.createElement('button');
     b.className='stbtn'+(s.id===state.scaleId?' on':'');
     b.dataset.id=s.id;
-    b.innerHTML = s.label + (s.sub?` <span style="opacity:.55;font-weight:400">${s.sub}</span>`:'');
+    const _l=(currentLang()==='en'&&s.label_en)?s.label_en:s.label;
+    const _s=(currentLang()==='en'&&s.sub_en!==undefined)?s.sub_en:s.sub;
+    b.innerHTML = _l + (_s?` <span style="opacity:.55;font-weight:400">${_s}</span>`:'');
     b.onclick=()=>{ state.scaleId=s.id; state.position='all'; render(); };
     (currentWrap||c).appendChild(b);
   });
@@ -1334,7 +1274,7 @@ function buildPositionButtons(n){
     b.onclick=()=>{ state.position=val; render(); };
     return b;
   };
-  c.appendChild(mk('all','Tout'));
+  c.appendChild(mk('all',t('lbl_pos_all')));
   for(let i=1;i<=n;i++) c.appendChild(mk(i, String(i)));
 }
 
@@ -1364,8 +1304,6 @@ function updateI18n(){
   const NAV={
     fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -1375,7 +1313,9 @@ function updateI18n(){
 
 function render(){
   updateI18n();
-  // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN/ES/DE)
+  // reconstruire la liste des gammes pour rafraîchir les libellés (FR/EN)
+  buildScaleTypes();
+  // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN)
   buildPiano();
   // synchro états visuels des segments
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on', b.dataset.acc===state.accPref));
@@ -1393,19 +1333,22 @@ function render(){
   const rootPc = pcOf(notes[0]);
 
   // Carte d'identité
+  const _lang=currentLang();
+  const _defLabel=(_lang==='en'&&def.label_en)?def.label_en:def.label;
+  const _defSub=(_lang==='en'&&def.sub_en!==undefined)?def.sub_en:def.sub;
   document.getElementById('scale-name').innerHTML =
-    `<b>${pretty(notes[0])}</b> ${def.label}` + (def.sub?` <span style="font-size:.5em;color:var(--muted)">${def.sub}</span>`:'');
+    `<b>${pretty(notes[0])}</b> ${_defLabel}` + (_defSub?` <span style="font-size:.5em;color:var(--muted)">${_defSub}</span>`:'');
 
   // Armure (compte des altérations dans la gamme)
   let sharps=0, flats=0;
   notes.forEach(n=>{ for(const c of n.slice(1)){ if(c==='#')sharps++; else if(c==='b')flats++; } });
   const sig = document.getElementById('sig');
   let chip;
-  if(sharps>0) chip = `<span class="sig-chip sharp">${sharps} dièse${sharps>1?'s':''} ♯</span>`;
-  else if(flats>0) chip = `<span class="sig-chip flat">${flats} bémol${flats>1?'s':''} ♭</span>`;
-  else chip = `<span class="sig-chip none">aucune altération</span>`;
+  if(sharps>0) chip = `<span class="sig-chip sharp">${t('lbl_sharp_s').replace('{n}',sharps)} ♯</span>`;
+  else if(flats>0) chip = `<span class="sig-chip flat">${t('lbl_flat_s').replace('{n}',flats)} ♭</span>`;
+  else chip = `<span class="sig-chip none">${t('lbl_no_acc')}</span>`;
   const alt = notes.filter(n=>n.length>1).map(pretty).join(' · ') || '—';
-  sig.innerHTML = chip + `<span class="sig-notes">altérations : ${alt}</span>`;
+  sig.innerHTML = chip + `<span class="sig-notes">${t('lbl_alterations')} : ${alt}</span>`;
 
   // Description de la gamme
   const descEl = document.getElementById('scale-desc');
@@ -1455,10 +1398,10 @@ function render(){
   const tb=document.getElementById('degrees-body'); tb.innerHTML='';
   // Titre de la section selon le type de gamme
   const sectionH2=document.querySelector('#degrees-head')?.closest('section')?.querySelector('h2');
-  if(sectionH2) sectionH2.textContent = def.diat ? 'Degrés & accords diatoniques' : 'Degrés & intervalles';
+  if(sectionH2) sectionH2.textContent = def.diat ? t('lbl_diat_title') : t('lbl_nd_title');
 
   if(def.diat){
-    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Intervalle</th><th>Accord</th><th>Notes</th></tr>';
+    head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_iv')}</th><th>${t('lbl_th_accord')}</th><th>${t('lbl_th_notes')}</th></tr>`;
     notes.forEach((n,i)=>{
       const semis=(pcOf(n)-rootPc+12)%12;
       const tri=triadOf(notes,i);
@@ -1475,7 +1418,7 @@ function render(){
       tr.innerHTML=`
         <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
         <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
-        <td class="interval">${INTERVAL_NAMES[semis]}</td>
+        <td class="interval">${ivName(semis)}</td>
         <td><span class="rn">${tri.roman}</span> &nbsp;</td>
         <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
       tr.querySelector('td:nth-child(4)').appendChild(csym);
@@ -1483,8 +1426,10 @@ function render(){
     });
   } else {
     // Noms d'intervalles détaillés pour gammes non-diatoniques
-    const IV_FULL={0:'Unisson',1:'2nde min.',2:'2nde maj.',3:'3ce min.',4:'3ce maj.',5:'4te juste',6:'Triton',7:'5te juste',8:'5te aug.',9:'6te maj.',10:'7ème min.',11:'7ème maj.'};
-    head.innerHTML='<tr><th>Deg</th><th>Note</th><th>Demi-tons</th><th>Intervalle</th></tr>';
+    const IV_FULL=(currentLang()==='en')
+      ? {0:'Unison',1:'Min. 2nd',2:'Maj. 2nd',3:'Min. 3rd',4:'Maj. 3rd',5:'Perfect 4th',6:'Tritone',7:'Perfect 5th',8:'Aug. 5th',9:'Maj. 6th',10:'Min. 7th',11:'Maj. 7th'}
+      : {0:'Unisson',1:'2nde min.',2:'2nde maj.',3:'3ce min.',4:'3ce maj.',5:'4te juste',6:'Triton',7:'5te juste',8:'5te aug.',9:'6te maj.',10:'7ème min.',11:'7ème maj.'};
+    head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_semis')}</th><th>${t('lbl_th_iv')}</th></tr>`;
     notes.forEach((n,i)=>{
       const semis=(pcOf(n)-rootPc+12)%12;
       const tr=document.createElement('tr');
@@ -1492,7 +1437,7 @@ function render(){
         <td class="deg-num" style="color:${DEG_COLORS[i%DEG_COLORS.length]}">${i+1}</td>
         <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i%DEG_COLORS.length]}"></span>${pretty(n)}</td>
         <td class="interval" style="color:var(--muted)">${semis}</td>
-        <td class="interval">${IV_FULL[semis]||INTERVAL_NAMES[semis]||''}</td>`;
+        <td class="interval">${IV_FULL[semis]||ivName(semis)||''}</td>`;
       tb.appendChild(tr);
     });
   }
@@ -1551,7 +1496,7 @@ function render(){
         document.querySelectorAll('#fretboard .dot').forEach(d=>d.classList.remove('playing'));
         pills.forEach(p=>p.classList.remove('playing'));
       }, (noteNames.length+1)*beat*1000+200);
-    },'Jouer la gamme','▶');
+    },t('lbl_jouer_gamme'),'▶');
     psw.appendChild(btn);
   }
 
@@ -1560,7 +1505,7 @@ function render(){
   notes.forEach((n,i)=>{
     const el=document.createElement('div');
     el.className='legend-item'+(i===0?' root-leg':'');
-    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])} — ${pretty(n)}${i===0?' (fondamentale)':''}`;
+    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])} — ${pretty(n)}${i===0?' ('+t('lbl_root')+')':''}`;
     lg.appendChild(el);
   });
 }
@@ -1577,7 +1522,7 @@ function render(){
       <div class="ct-row">
         <span class="ct-deg" style="color:${d['c'+k]}">${pretty(DEG_SHORT[+d['i'+k]])}</span>
         <span class="ct-note" style="color:${d['c'+k]}">${pretty(d['n'+k])}</span>
-        <span class="ct-interval">${INTERVAL_NAMES[+d['i'+k]]}</span>
+        <span class="ct-interval">${ivName(+d['i'+k])}</span>
       </div>`).join('');
     tip.innerHTML=`
       <div class="ct-title"><b>${pretty(d.sym)}</b></div>
@@ -1743,9 +1688,10 @@ function renderFretboard(notes, rootPc, def){
   if(box){
     let lowNote=null;
     for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
-    cap.innerHTML = `<b>Position ${state.position}</b> — cases ${box.start} à ${box.end}`
-      + (lowNote?`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`:'') + '.'
-      + `<span class="hint">Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière.</span>`;
+    const _en=currentLang()==='en';
+    cap.innerHTML = `<b>${_en?'Position':'Position'} ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
+      + (lowNote?(_en?`, lowest note ${pretty(lowNote)} on the ${strings[0].n} string`:`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`):'') + '.'
+      + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
   } else {
     cap.textContent='';
   }
@@ -1781,7 +1727,7 @@ function buildTuningButtons(){
   // Vérifier que le tuning actuel est valide pour le nombre de cordes
   if(!tuns.find(t=>t.id===state.tuning)) state.tuning=tuns[0].id;
   tuns.forEach(t=>{
-    const b=document.createElement('button'); b.textContent=t.label;
+    const b=document.createElement('button'); b.textContent=(currentLang()==='en'?(t.label.replace('½ ton bas','½ step down').replace('1 ton bas','1 step down')):t.label);
     b.className=t.id===state.tuning?'on':'';
     b.onclick=()=>{state.tuning=t.id; render();};
     c.appendChild(b);
@@ -1894,10 +1840,13 @@ function updateMeta(){
 function updateScaleText(notes, def, rootPc){
   const el = document.getElementById('scale-text');
   if(!el) return;
+  const lang = currentLang();
   const accPref = state.accPref;
   const noteRaw = (accPref==='#' ? PC_TO_NOTE_SHARP : PC_TO_NOTE_FLAT)[rootPc];
   const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1).replace('#','♯').replace('b','♭');
-  const label = SCALE_LABELS_FR[def.id] || def.label;
+  const label = (lang==='en' && def.label_en) ? def.label_en : (SCALE_LABELS_FR[def.id] || def.label);
+  const majWord = lang==='en' ? 'major' : 'majeure';
+  const minWord = lang==='en' ? 'minor' : 'mineure';
   const noteList = notes.map(pretty).join(', ');
   // Relative majeure/mineure
   let relative = '';
@@ -1905,23 +1854,26 @@ function updateScaleText(notes, def, rootPc){
     const relPc = (rootPc+3)%12;
     const relNote = PC_TO_NOTE_FLAT[relPc];
     const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
-    relative = ` Sa relative majeure est <strong>${relCap} majeure</strong>.`;
+    relative = ` ${t('lbl_relative_maj')} <strong>${relCap} ${majWord}</strong>.`;
   } else if(def.pos==='maj'){
     const relPc = (rootPc+9)%12;
     const relNote = PC_TO_NOTE_FLAT[relPc];
     const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
-    relative = ` Sa relative mineure est <strong>${relCap} mineure</strong>.`;
+    relative = ` ${t('lbl_relative')} <strong>${relCap} ${minWord}</strong>.`;
   }
   // Armure
   let sharps=0,flats=0;
   notes.forEach(n=>{for(const c of n.slice(1)){if(c==='#')sharps++;else if(c==='b')flats++;}});
-  const armure = sharps>0 ? `${sharps} dièse${sharps>1?'s':''}`
-    : flats>0 ? `${flats} bémol${flats>1?'s':''}`
-    : 'aucune altération';
+  const armure = sharps>0 ? t('lbl_sharp_s').replace('{n}',sharps)
+    : flats>0 ? t('lbl_flat_s').replace('{n}',flats)
+    : t('lbl_no_acc');
+  const scaleWord = lang==='en' ? 'scale' : 'gamme';
+  const ofWord = lang==='en' ? 'of' : 'de';
+  const composed = t('lbl_composed_of').replace('{n}',notes.length).replace('{notes}',`<strong>${noteList}</strong>`);
   el.innerHTML = `
-    <p>La gamme de <strong>${noteCap} ${label}</strong> est composée de ${notes.length} notes :
-    <strong>${noteList}</strong>. Son armure comporte ${armure}.${relative}</p>
-    <p>Elle fait partie des gammes ${def.fam==='maj'?'majeures (sonorité lumineuse)':'mineures (sonorité plus sombre)'}.</p>`;
+    <p>${lang==='en'?'The':'La'} ${scaleWord} ${ofWord} <strong>${noteCap} ${label}</strong> ${composed}
+    ${t('lbl_key_sig')} ${armure}.${relative}</p>
+    <p>${t('lbl_part_of')} ${def.fam==='maj'?t('lbl_maj_sound'):t('lbl_min_sound')}.</p>`;
 }
 
 buildPiano();

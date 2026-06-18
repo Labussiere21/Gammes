@@ -270,13 +270,11 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="htool-seg" id="lang-seg">
         <button data-lang="fr" class="on" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
-        <button data-lang="es" style="min-width:34px">ES</button>
-        <button data-lang="de" style="min-width:34px">DE</button>
       </div>
     </div>
   </div>
   <h1>Cycle des <em>quintes</em></h1>
-  <p class="lede">Clique sur une tonalité pour explorer sa gamme, ses modes, ses accords diatoniques et ses cadences les plus courantes.</p>
+  <p class="lede" data-i18n="lbl_q_lede">Clique sur une tonalité pour explorer sa gamme, ses modes, ses accords diatoniques et ses cadences les plus courantes.</p>
 </header>
 
 
@@ -287,7 +285,7 @@ h1 em{font-style:italic; color:var(--brass)}
     <div class="circle-wrap" id="circle-wrap">
       <div class="circle-bg"></div>
       <div class="circle-center">
-        <div class="cc-label">Tonalité</div>
+        <div class="cc-label" data-i18n="lbl_tonalite">Tonalité</div>
         <div class="cc-note" id="cc-note">—</div>
         <div class="cc-sig" id="cc-sig"></div>
       </div>
@@ -298,7 +296,7 @@ h1 em{font-style:italic; color:var(--brass)}
   <div class="info-panel" id="info-panel">
     <div class="hint" id="hint">
       <div class="hint-icon">🎯</div>
-      <p>Clique sur une tonalité dans le cercle</p>
+      <p data-i18n="lbl_hint_click">Clique sur une tonalité dans le cercle</p>
     </div>
     <div id="content" style="display:none">
       <!-- Carte tonalité -->
@@ -312,10 +310,10 @@ h1 em{font-style:italic; color:var(--brass)}
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab on" data-tab="modes">Modes</button>
-        <button class="tab" data-tab="chords">Accords</button>
-        <button class="tab" data-tab="relatives">Relatives</button>
-        <button class="tab" data-tab="cadences">Cadences</button>
+        <button class="tab on" data-tab="modes" data-i18n="lbl_tab_modes">Modes</button>
+        <button class="tab" data-tab="chords" data-i18n="lbl_tab_chords">Accords</button>
+        <button class="tab" data-tab="relatives" data-i18n="lbl_tab_rel">Relatives</button>
+        <button class="tab" data-tab="cadences" data-i18n="lbl_tab_cad">Cadences</button>
       </div>
       <div id="tab-modes"></div>
       <div id="tab-chords" style="display:none"></div>
@@ -339,18 +337,6 @@ const EN_TO_FR = {
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
-const EN_TO_ES = {
-  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
-  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
-  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
-  'B':'Si','B#':'Do','Cb':'Si',
-};
-const EN_TO_DE = {
-  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
-  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
-  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
-  'B':'H','B#':'His','Cb':'Ces',
-};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -365,18 +351,6 @@ function prettyNote(noteEN){
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(not==='es'){
-    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
-    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(lang==='de'){
-    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
-    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -411,6 +385,10 @@ const _TR={
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+    lbl_q_lede:'Clique sur une tonalité pour explorer sa gamme, ses modes, ses accords diatoniques et ses cadences les plus courantes.',
+    lbl_tonalite:'Tonalité',lbl_hint_click:'Clique sur une tonalité dans le cercle',
+    lbl_tab_chords:'Accords',lbl_word_maj:'majeur',lbl_word_min:'mineur',lbl_degre:'degré',
+    lbl_in_key:'En',lbl_relative_paren:'(relative)',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -439,63 +417,11 @@ const _TR={
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+    lbl_q_lede:'Click a key to explore its scale, its modes, its diatonic chords and its most common cadences.',
+    lbl_tonalite:'Key',lbl_hint_click:'Click a key in the circle',
+    lbl_tab_chords:'Chords',lbl_word_maj:'major',lbl_word_min:'minor',lbl_degre:'degree',
+    lbl_in_key:'In',lbl_relative_paren:'(relative)',
   },
-  es:{
-    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
-    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
-    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
-    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
-    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
-    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
-    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
-    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
-    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
-    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
-    lbl_th_num:'Nº',lbl_th_role:'Rol',
-    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
-    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
-    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
-    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
-    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
-    lbl_cercle:'Círculo de quintas',
-    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
-    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
-    lbl_root:'fundamental',lbl_bientot:'Próximamente',
-    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
-    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
-    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
-  },
-  de:{
-    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
-    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
-    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
-    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
-    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
-    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
-    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
-    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
-    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
-    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
-    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
-    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
-    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
-    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
-    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
-    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
-    lbl_cercle:'Quintenzirkel',
-    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
-    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
-    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
-    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
-    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
-    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
-  }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
@@ -505,10 +431,6 @@ const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B
 const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
-const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
-const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -520,8 +442,6 @@ function getNotationTable(accPref){
   const not  = localStorage.getItem('sbnot')||'en';
   const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
-  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
-  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -583,23 +503,23 @@ const LETTERS    = ['C','D','E','F','G','A','B'];
 const LP         = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 
 const MODES = [
-  {deg:1, name:'Ionien',      sub:'Majeure',           iv:[0,2,4,5,7,9,11],  qual:'maj7',  symb:'I'},
-  {deg:2, name:'Dorien',      sub:'Min. jazz',         iv:[0,2,3,5,7,9,10],  qual:'m7',    symb:'ii'},
-  {deg:3, name:'Phrygien',    sub:'Min. flamenco',     iv:[0,1,3,5,7,8,10],  qual:'m7',    symb:'iii'},
-  {deg:4, name:'Lydien',      sub:'Maj. flottant',     iv:[0,2,4,6,7,9,11],  qual:'maj7',  symb:'IV'},
-  {deg:5, name:'Mixolydien',  sub:'Dom. blues/rock',   iv:[0,2,4,5,7,9,10],  qual:'7',     symb:'V'},
-  {deg:6, name:'Éolien',      sub:'Min. naturelle',    iv:[0,2,3,5,7,8,10],  qual:'m7',    symb:'vi'},
-  {deg:7, name:'Locrien',     sub:'Dim. jazz',         iv:[0,1,3,5,6,8,10],  qual:'ø',     symb:'vii°'},
+  {deg:1, name:'Ionien',      name_en:'Ionian',     sub:'Majeure',         sub_en:'Major',          iv:[0,2,4,5,7,9,11],  qual:'maj7',  symb:'I'},
+  {deg:2, name:'Dorien',      name_en:'Dorian',     sub:'Min. jazz',       sub_en:'Jazz min.',      iv:[0,2,3,5,7,9,10],  qual:'m7',    symb:'ii'},
+  {deg:3, name:'Phrygien',    name_en:'Phrygian',   sub:'Min. flamenco',   sub_en:'Flamenco min.',  iv:[0,1,3,5,7,8,10],  qual:'m7',    symb:'iii'},
+  {deg:4, name:'Lydien',      name_en:'Lydian',     sub:'Maj. flottant',   sub_en:'Floating maj.',  iv:[0,2,4,6,7,9,11],  qual:'maj7',  symb:'IV'},
+  {deg:5, name:'Mixolydien',  name_en:'Mixolydian', sub:'Dom. blues/rock', sub_en:'Dom. blues/rock',iv:[0,2,4,5,7,9,10],  qual:'7',     symb:'V'},
+  {deg:6, name:'Éolien',      name_en:'Aeolian',    sub:'Min. naturelle',  sub_en:'Natural min.',   iv:[0,2,3,5,7,8,10],  qual:'m7',    symb:'vi'},
+  {deg:7, name:'Locrien',     name_en:'Locrian',    sub:'Dim. jazz',       sub_en:'Jazz dim.',      iv:[0,1,3,5,6,8,10],  qual:'ø',     symb:'vii°'},
 ];
 
 const DIATONIC_QUALITIES = [
-  {symb:'I',    qual:'Maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
-  {symb:'ii',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
-  {symb:'iii',  qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
-  {symb:'IV',   qual:'Maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
-  {symb:'V',    qual:'maj',  short:'',    long:'Majeur',       iv:[0,4,7]},
-  {symb:'vi',   qual:'min',  short:'m',   long:'Mineur',       iv:[0,3,7]},
-  {symb:'vii°', qual:'dim',  short:'°',   long:'Diminué',      iv:[0,3,6]},
+  {symb:'I',    qual:'Maj',  short:'',    long:'Majeur',  long_en:'Major',      iv:[0,4,7]},
+  {symb:'ii',   qual:'min',  short:'m',   long:'Mineur',  long_en:'Minor',      iv:[0,3,7]},
+  {symb:'iii',  qual:'min',  short:'m',   long:'Mineur',  long_en:'Minor',      iv:[0,3,7]},
+  {symb:'IV',   qual:'Maj',  short:'',    long:'Majeur',  long_en:'Major',      iv:[0,4,7]},
+  {symb:'V',    qual:'maj',  short:'',    long:'Majeur',  long_en:'Major',      iv:[0,4,7]},
+  {symb:'vi',   qual:'min',  short:'m',   long:'Mineur',  long_en:'Minor',      iv:[0,3,7]},
+  {symb:'vii°', qual:'dim',  short:'°',   long:'Diminué', long_en:'Diminished', iv:[0,3,6]},
 ];
 
 const CADENCES_MAJ = [
@@ -700,14 +620,16 @@ function sigLabel(entry){
   // En mode ♯ : afficher les dièses. En mode ♭ : afficher les bémols.
   // Les entrées sans armure dans le mode actuel (ex: G# en mode ♯)
   // ne sont jamais affichées (showSharp:false), donc ce cas ne devrait pas arriver.
+  const _sh=n=>`${n} ${t('lbl_diese')}${(currentLang()==='en')?(n>1?'s':''):(n>1?'s':'')}`;
+  const _fl=n=>`${n} ${t('lbl_bemol')}${(n>1?'s':'')}`;
   if(entry.acc==='#'){
-    if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
-    if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
+    if(entry.sharps>0) return _sh(entry.sharps);
+    if(entry.flats>0)  return _fl(entry.flats);
   } else {
-    if(entry.flats>0)  return `${entry.flats} bémol${entry.flats>1?'s':''}`;
-    if(entry.sharps>0) return `${entry.sharps} dièse${entry.sharps>1?'s':''}`;
+    if(entry.flats>0)  return _fl(entry.flats);
+    if(entry.sharps>0) return _sh(entry.sharps);
   }
-  return 'aucune altération';
+  return t('lbl_aucune_alt');
 }
 
 /* ====================================================== RENDU PANNEAU */
@@ -719,8 +641,6 @@ function updateI18n(){
   const NAV={
     fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -741,7 +661,7 @@ function render(){
   const notes = buildMajScale(state.pc);
 
   // Carte tonalité
-  document.getElementById('tonic-name').textContent = name+' majeur';
+  document.getElementById('tonic-name').textContent = name+' '+t('lbl_word_maj');
   document.getElementById('tonic-sig').textContent  = sigLabel(entry);
   const tn = document.getElementById('tonic-notes');
   tn.innerHTML = notes.map((n,i)=>`<span class="tn${i===0?' root':''}">${n}</span>`).join('');
@@ -774,9 +694,9 @@ function renderModes(notes){
     card.className='mode-card';
     card.href=`gammes.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
     card.innerHTML=`
-      <div class="mc-deg" style="color:${col}">${mode.symb} — degré ${mode.deg}</div>
-      <div class="mc-name">${rootNote} ${mode.name}</div>
-      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted-2);margin-top:2px">${mode.sub}</div>
+      <div class="mc-deg" style="color:${col}">${mode.symb} — ${t('lbl_degre')} ${mode.deg}</div>
+      <div class="mc-name">${rootNote} ${(currentLang()==='en'&&mode.name_en)?mode.name_en:mode.name}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted-2);margin-top:2px">${(currentLang()==='en'&&mode.sub_en)?mode.sub_en:mode.sub}</div>
       <div class="mc-notes">${modeNotes.join(' ')}</div>`;
     c.appendChild(card);
   });
@@ -796,7 +716,7 @@ function renderChords(notes){
     card.innerHTML=`
       <div class="cd-deg" style="color:${col}">${q.symb}</div>
       <div class="cd-name">${rootNote}${q.short}</div>
-      <div class="cd-quality">${q.long}</div>`;
+      <div class="cd-quality">${(currentLang()==='en'&&q.long_en)?q.long_en:q.long}</div>`;
     c.appendChild(card);
   });
 }
@@ -824,11 +744,12 @@ function renderRelatives(entry, name){
   const ivRaw = FLAT_RAW[ivPc];
   const vRaw  = FLAT_RAW[vPc];
 
+  const _maj=t('lbl_word_maj'), _min=t('lbl_word_min');
   const items=[
-    {label:'Relative mineure',      name:relMinName+' mineur',   href:`gammes.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
-    {label:'Parallèle mineure',     name:parallelName+' mineur', href:`gammes.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
-    {label:'Sous-dominante (IV)',   name:ivName+' majeur',       href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
-    {label:'Dominante (V)',         name:vName+' majeur',        href:`quintes.html#${vRaw}`, col:'var(--d5)'},
+    {label:t('lbl_rel_min'),  name:relMinName+' '+_min,   href:`gammes.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
+    {label:t('lbl_par_min'),  name:parallelName+' '+_min, href:`gammes.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
+    {label:t('lbl_sdom'),     name:ivName+' '+_maj,       href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
+    {label:t('lbl_dom'),      name:vName+' '+_maj,        href:`quintes.html#${vRaw}`, col:'var(--d5)'},
   ];
 
   const grid = document.createElement('div'); grid.className='relatives-grid';
@@ -857,7 +778,7 @@ function renderCadences(notes, name){
   // Cadences majeures
   const h = document.createElement('div');
   h.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:10px';
-  h.textContent='En '+name+' majeur';
+  h.textContent=t('lbl_in_key')+' '+name+' '+t('lbl_word_maj');
   c.appendChild(h);
 
   CADENCES_MAJ.forEach(cad=>{
@@ -880,7 +801,7 @@ function renderCadences(notes, name){
 
   const h2=document.createElement('div');
   h2.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin:18px 0 10px';
-  h2.textContent='En '+relMinName+' mineur (relative)';
+  h2.textContent=t('lbl_in_key')+' '+relMinName+' '+t('lbl_word_min')+' '+t('lbl_relative_paren');
   c.appendChild(h2);
 
   CADENCES_MIN.forEach(cad=>{
