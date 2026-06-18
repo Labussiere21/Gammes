@@ -979,6 +979,80 @@ const SCALE_DESC = {
   kafi:       'Raga proche du mode dorien occidental. Très utilisé dans la musique populaire indienne.',
   kalyan:     'Raga proche du mode lydien occidental. L\'un des ragas du soir les plus populaires.',
 };
+const SCALE_DESC_EN = {
+  major:      'The reference scale of Western music. Seven notes, bright and stable sound. Most pop, rock, and classical melodies rely on it.',
+  minor:      'Also called the Aeolian mode, this is the basic minor scale. Dark and expressive tone, widely used in rock, metal, and classical music.',
+  harmonic:   'Variant of the natural minor with a raised 7th. That extra half-step creates a characteristic tension found in classical music, flamenco, and neoclassical metal.',
+  melodic:    'Minor with raised 6th and 7th. Widely used in jazz to improvise over minor chords.',
+  dorian:     'Mode II of the major scale. Minor with a major 6th — sound between natural minor and major. Very common in jazz, funk, and rock (e.g. So What by Miles Davis).',
+  phrygian:   'Mode III of the major scale. Starts with a half-step, dark and Eastern-flavored. Widely used in flamenco and metal.',
+  lydian:     'Mode IV of the major scale. Like major but with an augmented 4th — floating, mysterious character. Common in film scores.',
+  mixolydian: 'Mode V of the major scale. Like major but with a minor 7th — the rock, blues, and funk scale. Foundation for dominant-chord grooves.',
+  locrian:    'Mode VII of the major scale. The only mode with a diminished fifth — rarely used alone but fundamental in jazz theory and metal.',
+  penta_min:  'Five notes from the minor scale (no 2nd or 6th). The most universal scale for improvising in rock, blues, and metal. Easy to memorize, sounds great everywhere.',
+  penta_maj:  'Five notes from the major scale (no 4th or 7th). The bright version of the pentatonic, widely used in country, pop, and rock.',
+  penta_sus:  'Pentatonic built on a sus4 chord. Open and ambiguous sound, used in jazz and fusion.',
+  penta_dom:  'Dominant pentatonic — ideal for improvising over dominant 7 chords in jazz and blues.',
+  penta_min6: 'Minor pentatonic with a major 6th. Dorian color condensed into 5 notes, widely used in jazz.',
+  penta_maj7: 'Major pentatonic with the major 7th. Jazzier flavor than the standard major pentatonic.',
+  penta_majb2:'Major pentatonic with a flat 2nd. Oriental color.',
+  blues_min:  'The minor pentatonic with the added tritone (♭5). The quintessential blues scale — maximum expressiveness for rock, blues, and jazz.',
+  blues_maj:  'Major version of the blues scale. Major pentatonic with an added minor 3rd — widely used in country blues and rock and roll.',
+  blues_hex:  'Hexatonic blues scale covering both major and minor colors. Very versatile.',
+  blues_dom:  'Blues focused on the dominant chord. Ideal for 12-bar blues and funk grooves.',
+  dim:        '8-note scale alternating whole and half steps. Symmetric, repeats every 3 semitones. Tense, unstable sound — widely used in jazz over diminished chords.',
+  dim_ht:     'Half-whole diminished scale (reverse of the above). Used over dominant 7♭9 chords. Also called "dominant diminished".',
+  half_dim:   '7-note scale corresponding to the half-diminished arpeggio. Main use: improvising over ø (m7♭5) chords in jazz.',
+  whole_tone: 'Six notes all a whole tone apart. No clear tonic, dreamy and blurry sound. Widely used by Debussy and in impressionist jazz.',
+  aug_hex:    'Augmented hexatonic scale alternating minor third and half-step. Symmetric structure repeating every 4 semitones.',
+  phryg_dom:  'Mode V of the harmonic minor. Major with ♭2 — Arabic, Spanish, and flamenco color. Sought after in neoclassical metal, flamenco, and Eastern music.',
+  lydian_dom: 'Mode IV of the melodic minor. Lydian with a minor 7th — very modern jazz color. The go-to scale over dominant 7 chords in jazz fusion.',
+  altered:    'Mode VII of the melodic minor. Contains all possible alterations (♭9, ♯9, ♭5, ♯5). The most tense jazz scale, used over V7alt chords.',
+  locrian_s2: 'Mode VI of the melodic minor. Locrian with a natural 2nd — less harsh than pure Locrian, used over ø chords in jazz.',
+  lydian_aug: 'Mode III of the melodic minor. Lydian with an augmented 5th — dreamy and modern sound.',
+  mixo_b6:    'Mode V of the melodic minor. Mixolydian with a flat 6th — color between major and minor.',
+  dorian_b2:  'Mode II of the melodic minor. Dorian with a flat 2nd — Eastern color.',
+  locrian6:   'Mode II of the harmonic minor. Locrian with a natural 6th — less dissonant than standard Locrian.',
+  ionian_s5:  'Mode III of the harmonic minor. Ionian with an augmented 5th.',
+  dorian_s4:  'Mode IV of the harmonic minor. Dorian with an augmented 4th — close to the Romanian minor.',
+  lydian_s2:  'Mode VI of the harmonic minor. Lydian with an augmented 2nd — bright Oriental color.',
+  superlocrian_bb7: 'Mode VII of the harmonic minor. Highly altered, used in advanced jazz contexts.',
+  chromatic:  'All 12 notes of the octave. Essential for finger-independence exercises (1-2-3-4) and understanding every position on the fretboard.',
+  bebop_maj:  'Major scale with an added augmented 5th as a passing note (between the 5th and 6th). Creates smooth bebop lines over major 6 and Δ7 chords.',
+  bebop_dom:  'Mixolydian scale with an added major 7th. The most common bebop scale, ideal over dominant 7 chords.',
+  penta_min_lead: 'Minor pentatonic with the major 7th added as a leading tone toward the tonic. Ideal for ending blues/jazz phrases.',
+  boogie:     "The scale of boogie-woogie and classic Rock\'n\'Roll. Combines major and blues colors (♭3 and ♭7 as passing tones) to create driving bass lines over dominant chords.",
+  bebop_min:  'Minor scale with a chromatic passing note. Used over minor chords in a bebop context.',
+  double_harm:'Also known as Byzantine or Gypsy Major. Two identical harmonic tetrachords each containing two augmented seconds. Very distinctive sound, between Orient and Occident.',
+  hung_min:   'Also called Gypsy Minor. Harmonic minor with an augmented 4th — very recognizable gypsy sound. Used in Hungarian music, gypsy jazz, and metal.',
+  hung_maj:   'Hungarian major with augmented 2nd and 4th. Exotic and bright sound.',
+  gypsy_maj:  'Gypsy major scale. Close to Phrygian dominant, with a warm Oriental color.',
+  romanian_min:'Minor with an augmented 4th. Widely present in Balkan and Eastern European folk music.',
+  persian:    'Traditional Persian scale with two augmented seconds and a diminished fifth — very Oriental and mysterious sound.',
+  arabic:     'Traditional Arabic scale. Close to the Locrian mode, Oriental color.',
+  enigmatic:  'Created by Verdi. Scale with unusual intervals and a unique chromatic ascent.',
+  napolitaine_maj: 'Major with a flat 2nd — melancholic and Romantic color.',
+  napolitaine_min: 'Minor with a flat 2nd and flat 6th.',
+  prometheus: 'Scale invented by Alexander Scriabin. Six notes with a mystical, futuristic character.',
+  overtone:   'Also called the acoustic scale. Corresponds to the natural harmonic series — identical to Lydian dominant.',
+  hijaz:      'Fundamental Arabic maqam with a characteristic augmented second — intense and recognizable Oriental color.',
+  hijaz_kar:  'Hijaz with two augmented seconds. Even more Oriental in sound than simple Hijaz.',
+  bayati:     'Very widespread maqam in Arabic and Turkish music. Expressive and melancholic color.',
+  nahawand:   'Maqam close to the Western harmonic minor. Widely used in Arabic and Turkish music.',
+  rast:       'One of the fundamental maqams of Arabic music. Close to Mixolydian, basis of many compositions.',
+  nikriz:     'Maqam with an augmented 4th and minor 7th. Intense Oriental color.',
+  saba:       'Very expressive and melancholic maqam, widely used in classical Arabic music.',
+  kurd:       'Maqam close to the Western Phrygian mode. Dark and heavy sound.',
+  hirajoshi:  'Traditional Japanese pentatonic scale. Its close half-steps create a melancholic and contemplative sound evocative of the koto.',
+  insen:      'Japanese pentatonic scale. Close to the Phrygian mode, very minimalist and dark.',
+  kumoi:      'Japanese pentatonic scale. Soft and slightly sad sound, widely used in traditional music.',
+  iwato:      'Japanese pentatonic scale based on the Locrian mode. Very dissonant and rare.',
+  yo:         'Japanese major pentatonic scale. Brighter than the other traditional Japanese scales.',
+  bhairav:    'Fundamental morning raga of Indian classical music. Double harmonic with a serious and meditative color.',
+  todi:       'Very expressive raga with two augmented seconds. Intense and complex sound.',
+  kafi:       'Raga close to the Western Dorian mode. Widely used in Indian popular music.',
+  kalyan:     'Raga close to the Western Lydian mode. One of the most popular evening ragas.',
+};
 
 function pcOf(name){
   let pc = LETTER_PC[name[0]];
@@ -1352,7 +1426,9 @@ function render(){
 
   // Description de la gamme
   const descEl = document.getElementById('scale-desc');
-  const desc = SCALE_DESC[state.scaleId];
+  const descFr = SCALE_DESC[state.scaleId];
+  const descEn = SCALE_DESC_EN[state.scaleId];
+  const desc = (currentLang()==='en' && descEn) ? descEn : descFr;
   if(desc && descEl){
     descEl.textContent = desc;
     descEl.style.display = '';
@@ -1465,10 +1541,10 @@ function render(){
       const pills=[...document.querySelectorAll('#scale-notes .note-pill')];
       // Calculer les MIDI en séquence strictement montante
       // Si le pc suivant est <= pc précédent → incrémenter l'octave
-      let oct=2;
+      let seqOct=2;
       const midiSeq=scalePcs.map((pc,i)=>{
-        if(i>0 && pc<=scalePcs[i-1]) oct++;
-        return (oct+1)*12+pc;
+        if(i>0&&(pc<scalePcs[i-1]||pc<rootPc)) seqOct=3;
+        return (seqOct+1)*12+pc;
       });
       midiSeq.forEach((midi,i)=>{
         inst.play(midi,_audioCtx.currentTime+i*beat,{duration:beat*0.9,gain:3});
