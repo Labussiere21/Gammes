@@ -22,7 +22,7 @@ REPO_ROOT  = Path(__file__).parent.parent
 OUT_ROOT   = REPO_ROOT / "fr" / "gammes"
 TMPL_DIR   = Path(__file__).parent / "templates"
 BASE_URL   = "https://labussiere21.github.io/Gammes"
-APP_URL    = f"{BASE_URL}/index.html"
+APP_URL    = f"{BASE_URL}/gammes.html"
 
 # ---------------------------------------------------------------------------
 # DONNÉES : NOTES (12 toniques canoniques)
