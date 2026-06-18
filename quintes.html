@@ -253,10 +253,10 @@ h1 em{font-style:italic; color:var(--brass)}
   <div class="eyebrow">
     <span class="site-name">ScalaBass</span>
           <nav class="site-nav">
-        <a href="index.html"         class="nav-link">Gammes</a>
+        <a href="gammes.html"        class="nav-link">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="intervalles.html"   class="nav-link">Intervalles</a>
-        <a href="manche.html"        class="nav-link">Manche</a>
+        <a href="index.html"         class="nav-link">Manche</a>
         <a href="cadences.html"      class="nav-link">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
         <a href="quintes.html"       class="nav-link active">Quintes</a>
@@ -717,10 +717,10 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
-    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'index.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','manche.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
+    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
+    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
+    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
+    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -772,7 +772,7 @@ function renderModes(notes){
     const rootRaw = FLAT_RAW[rootPc];
     const card = document.createElement('a');
     card.className='mode-card';
-    card.href=`index.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
+    card.href=`gammes.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
     card.innerHTML=`
       <div class="mc-deg" style="color:${col}">${mode.symb} — degré ${mode.deg}</div>
       <div class="mc-name">${rootNote} ${mode.name}</div>
@@ -825,8 +825,8 @@ function renderRelatives(entry, name){
   const vRaw  = FLAT_RAW[vPc];
 
   const items=[
-    {label:'Relative mineure',      name:relMinName+' mineur',   href:`index.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
-    {label:'Parallèle mineure',     name:parallelName+' mineur', href:`index.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
+    {label:'Relative mineure',      name:relMinName+' mineur',   href:`gammes.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
+    {label:'Parallèle mineure',     name:parallelName+' mineur', href:`gammes.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
     {label:'Sous-dominante (IV)',   name:ivName+' majeur',       href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
     {label:'Dominante (V)',         name:vName+' majeur',        href:`quintes.html#${vRaw}`, col:'var(--d5)'},
   ];

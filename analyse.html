@@ -269,10 +269,10 @@
   <div class="eyebrow">
     <span class="site-name">ScalaBass</span>
           <nav class="site-nav">
-        <a href="index.html"         class="nav-link">Gammes</a>
+        <a href="gammes.html"        class="nav-link">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="intervalles.html"   class="nav-link">Intervalles</a>
-        <a href="manche.html"        class="nav-link">Manche</a>
+        <a href="index.html"         class="nav-link">Manche</a>
         <a href="cadences.html"      class="nav-link">Cadences</a>
         <a href="analyse.html"       class="nav-link active">Analyse</a>
         <a href="quintes.html"       class="nav-link">Quintes</a>
@@ -928,7 +928,7 @@ function renderScaleCards(scales,userPcs){
     const noteChips=r.scalePcs.map(pc=>
       `<span class="rc-note ${userSet.has(pc)?'in':'out'}">${spell(pc)}</span>`).join('');
     const rootRaw=FLAT_RAW[r.root].toLowerCase();
-    const link=`<a class="rc-link" href="index.html?root=${rootRaw}&scale=${r.def.id}">→ Voir sur le manche</a>`;
+    const link=`<a class="rc-link" href="gammes.html?root=${rootRaw}&scale=${r.def.id}">→ Voir sur le manche</a>`;
     const card=document.createElement('div');
     card.className=`result-card ${exactClass(pct)}`;
     card.innerHTML=`
@@ -1034,10 +1034,10 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
-    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'index.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','manche.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
+    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
+    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
+    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
+    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});

@@ -343,10 +343,10 @@
     <div class="eyebrow">
       <span class="site-name">ScalaBass</span>
             <nav class="site-nav">
-        <a href="index.html"         class="nav-link">Gammes</a>
+        <a href="gammes.html"        class="nav-link">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="intervalles.html"   class="nav-link">Intervalles</a>
-        <a href="manche.html"        class="nav-link">Manche</a>
+        <a href="index.html"         class="nav-link">Manche</a>
         <a href="cadences.html"      class="nav-link active">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
         <a href="quintes.html"       class="nav-link">Quintes</a>
@@ -766,13 +766,13 @@ const SCALE_NAMES={
   dim:'Diminuée',half_dim:'Demi-dim.',whole_tone:'Par tons',
 };
 const SCALE_LINKS={
-  major:'index.html?scale=major',minor:'index.html?scale=minor',
-  harmonic:'index.html?scale=harmonic',melodic:'index.html?scale=melodic',
-  dorian:'index.html?scale=dorian',phrygian:'index.html?scale=phrygian',
-  lydian:'index.html?scale=lydian',mixolydian:'index.html?scale=mixolydian',
-  penta_min:'index.html?scale=penta_min',penta_maj:'index.html?scale=penta_maj',
-  blues_min:'index.html?scale=blues_min',blues_maj:'index.html?scale=blues_maj',
-  dim:'index.html?scale=dim',
+  major:'gammes.html?scale=major',minor:'gammes.html?scale=minor',
+  harmonic:'gammes.html?scale=harmonic',melodic:'gammes.html?scale=melodic',
+  dorian:'gammes.html?scale=dorian',phrygian:'gammes.html?scale=phrygian',
+  lydian:'gammes.html?scale=lydian',mixolydian:'gammes.html?scale=mixolydian',
+  penta_min:'gammes.html?scale=penta_min',penta_maj:'gammes.html?scale=penta_maj',
+  blues_min:'gammes.html?scale=blues_min',blues_maj:'gammes.html?scale=blues_maj',
+  dim:'gammes.html?scale=dim',
 };
 
 /* ===================== 107 CADENCES ===================== */
@@ -1224,7 +1224,7 @@ function renderResult(){
     const rootNote=spellNote(state.rootPc,state.accPref);
     const rn=rootNote[0].toUpperCase()+rootNote.slice(1);
     scalesEl.innerHTML='<span style="color:var(--muted-2);font-family:\'Space Mono\',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">Gammes pour improviser : </span>'
-      +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'index.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${SCALE_NAMES[s]||s}</a>`).join('');
+      +cad.scales.map(s=>`<a href="${(SCALE_LINKS[s]||'gammes.html')}&root=${FLAT_SPELL[state.rootPc].toLowerCase()}" style="font-family:\'Space Mono\',monospace;font-size:11px;font-weight:700;color:var(--brass);text-decoration:none;background:rgba(217,168,73,.1);border:1px solid rgba(217,168,73,.3);padding:3px 9px;border-radius:6px;white-space:nowrap">${rn} ${SCALE_NAMES[s]||s}</a>`).join('');
   }
   // Grille d'accords
   renderChart(cad);
@@ -1330,10 +1330,10 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'index.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','manche.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
-    en:{'index.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','manche.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'index.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','manche.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'index.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','manche.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
+    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
+    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
+    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
+    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
