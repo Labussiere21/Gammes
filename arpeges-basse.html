@@ -382,27 +382,25 @@
         <div class="htool-seg" id="lang-seg">
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
           <button data-lang="en" style="min-width:34px">EN</button>
-          <button data-lang="es" style="min-width:34px">ES</button>
-          <button data-lang="de" style="min-width:34px">DE</button>
         </div>
       </div>
     </div>
     <h1>Ar<em>pèges</em></h1>
-    <p class="lede">Choisis une tonique et un arpège : structure, notes, intervalles, et toutes les positions sur le manche de ta basse.</p>
+    <p class="lede" data-i18n="lbl_arp_lede">Choisis une tonique et un arpège : structure, notes, intervalles, et toutes les positions sur le manche de ta basse.</p>
   </header>
 
   <!-- Contrôles -->
   <section class="controls">
     <div class="ctl-row">
       <div>
-        <div class="ctl-label">Tonique</div>
+        <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div>
-            <div class="ctl-label">Altération</div>
+            <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
             <div class="seg" id="accpref" role="group">
-              <button data-acc="b" class="on">♭ bémols</button>
-              <button data-acc="#">♯ dièses</button>
+              <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
+              <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
             </div>
           </div>
         </div>
@@ -410,7 +408,7 @@
     </div>
 
     <div style="margin-top:18px">
-      <div class="ctl-label">Arpège</div>
+      <div class="ctl-label" data-i18n="lbl_arpege">Arpège</div>
       <div class="arp-groups" id="arp-groups"></div>
     </div>
   </section>
@@ -418,7 +416,7 @@
   <!-- Résultats -->
   <div class="grid">
     <section class="card">
-      <h2>Structure</h2>
+      <h2 data-i18n="lbl_structure">Structure</h2>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="arp-name" id="arp-name"></div>
         <div id="play-arp-wrap"></div>
@@ -428,9 +426,9 @@
     </section>
 
     <section class="card">
-      <h2>Notes &amp; intervalles</h2>
+      <h2 data-i18n="lbl_notes_iv">Notes &amp; intervalles</h2>
       <table>
-        <thead><tr><th>N°</th><th>Note</th><th>Intervalle</th><th>Rôle</th></tr></thead>
+        <thead><tr><th data-i18n="lbl_th_num">N°</th><th data-i18n="lbl_th_note">Note</th><th data-i18n="lbl_th_iv">Intervalle</th><th data-i18n="lbl_th_role">Rôle</th></tr></thead>
         <tbody id="arp-tbody"></tbody>
       </table>
     </section>
@@ -439,19 +437,19 @@
   <!-- Manche -->
   <section class="card fb-card">
     <div class="fb-head">
-      <h2>Sur le manche</h2>
+      <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          <div class="ctl-label">Afficher</div>
+          <div class="ctl-label" data-i18n="lbl_affichage">Afficher</div>
           <div class="seg" id="fb-display" role="group">
-            <button data-disp="note" class="on">Notes</button>
-            <button data-disp="deg">Degrés</button>
+            <button data-disp="note" class="on" data-i18n="lbl_note_btn">Notes</button>
+            <button data-disp="deg" data-i18n="lbl_degre_btn">Degrés</button>
           </div>
         </div>
         <div>
           
         <div>
-          <div class="ctl-label">Cordes</div>
+          <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
             <button data-str="5">5</button>
@@ -459,12 +457,12 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Accordage</div>
+          <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <div class="seg" id="fb-tuning-ctl" role="group"></div>
         </div>
         </div>
         <div>
-          <div class="ctl-label">Cases</div>
+          <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
           <div class="seg" id="fb-frets-ctl" role="group">
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
@@ -474,16 +472,16 @@
         <div>
           
         <div>
-          <div class="ctl-label">Main</div>
+          <div class="ctl-label" data-i18n="lbl_main">Main</div>
           <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on">🤜 Droitier</button>
-            <button data-hand="left">Gaucher 🤛</button>
+            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         </div>
         <div style="flex-basis:100%;height:0"></div>
         <div>
-          <div class="ctl-label">Position</div>
+          <div class="ctl-label" data-i18n="lbl_position">Position</div>
           <div class="seg" id="fb-position" role="group"></div>
         </div>
       </div>
@@ -508,18 +506,6 @@ const EN_TO_FR = {
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
-const EN_TO_ES = {
-  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
-  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
-  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
-  'B':'Si','B#':'Do','Cb':'Si',
-};
-const EN_TO_DE = {
-  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
-  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
-  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
-  'B':'H','B#':'His','Cb':'Ces',
-};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -534,18 +520,6 @@ function prettyNote(noteEN){
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(not==='es'){
-    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
-    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(lang==='de'){
-    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
-    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -580,6 +554,9 @@ const _TR={
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
+    lbl_alteration:'Altération',lbl_accordage:'Accordage',lbl_arpege:'Arpège',
+    lbl_arp_lede:'Choisis une tonique et un arpège : structure, notes, intervalles, et toutes les positions sur le manche de ta basse.',
+    lbl_open_fret:'à vide',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -608,63 +585,10 @@ const _TR={
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
+    lbl_alteration:'Accidental',lbl_accordage:'Tuning',lbl_arpege:'Arpeggio',
+    lbl_arp_lede:'Pick a root note and an arpeggio: structure, notes, intervals, and every shape across your bass fretboard.',
+    lbl_open_fret:'open',
   },
-  es:{
-    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
-    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
-    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
-    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
-    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
-    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
-    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
-    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
-    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
-    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
-    lbl_th_num:'Nº',lbl_th_role:'Rol',
-    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
-    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
-    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
-    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
-    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
-    lbl_cercle:'Círculo de quintas',
-    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
-    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
-    lbl_root:'fundamental',lbl_bientot:'Próximamente',
-    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
-    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
-    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
-  },
-  de:{
-    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
-    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
-    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
-    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
-    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
-    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
-    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
-    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
-    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
-    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
-    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
-    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
-    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
-    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
-    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
-    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
-    lbl_cercle:'Quintenzirkel',
-    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
-    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
-    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
-    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
-    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
-    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
-  }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
@@ -726,10 +650,6 @@ const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B
 const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
-const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
-const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -741,8 +661,6 @@ function getNotationTable(accPref){
   const not  = localStorage.getItem('sbnot')||'en';
   const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
-  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
-  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -794,6 +712,8 @@ function pretty(n){
 }
 
 const INT_NAMES={0:'Fondamentale',1:'2nde mineure',2:'2nde Majeure',3:'3ce mineure',4:'3ce Majeure',5:'4te Juste',6:'Triton / ♭5',7:'5te Juste',8:'5te augmentée',9:'6te Majeure / 𝄫7',10:'7ème mineure',11:'7ème Majeure'};
+const INT_NAMES_EN={0:'Root',1:'Minor 2nd',2:'Major 2nd',3:'Minor 3rd',4:'Major 3rd',5:'Perfect 4th',6:'Tritone / ♭5',7:'Perfect 5th',8:'Augmented 5th',9:'Major 6th / 𝄫7',10:'Minor 7th',11:'Major 7th'};
+function intName(i){ return (currentLang()==='en'?INT_NAMES_EN:INT_NAMES)[i]; }
 const DEG_LABEL={0:'1',1:'♭2',2:'2',3:'♭3',4:'3',5:'4',6:'♭5',7:'5',8:'♯5/♭6',9:'6/𝄫7',10:'♭7',11:'7'};
 const DEG_SHORT_RAW={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
 const DEG_COLORS=['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
@@ -802,35 +722,40 @@ const ROLES={
   0:'Fondamentale',4:'Tierce Majeure',3:'Tierce mineure',7:'Quinte juste',8:'Quinte augmentée',
   6:'Quinte diminuée (triton)',9:'Sixte Majeure',10:'7ème mineure (dominante)',11:'7ème Majeure',2:'2nde / 9e',5:'4te / 11e'
 };
+const ROLES_EN={
+  0:'Root',4:'Major third',3:'Minor third',7:'Perfect fifth',8:'Augmented fifth',
+  6:'Diminished fifth (tritone)',9:'Major sixth',10:'Minor 7th (dominant)',11:'Major 7th',2:'2nd / 9th',5:'4th / 11th'
+};
+function roleName(i){ return (currentLang()==='en'?ROLES_EN:ROLES)[i]; }
 
 // Arpèges : iv = intervalles relatifs à la fondamentale
 const GROUPS = [
-  {label:'Tierce Majeure', arps:[
-    {id:'maj',    label:'Majeur',         sub:'',     iv:[0,4,7],        sym:'',      posType:'maj'},
-    {id:'maj7',   label:'Majeur 7',       sub:'Δ7',   iv:[0,4,7,11],     sym:'maj7',  posType:'maj'},
-    {id:'dom7',   label:'Dominant 7',     sub:'7',    iv:[0,4,7,10],     sym:'7',     posType:'maj'},
-    {id:'maj6',   label:'Majeur 6',       sub:'6',    iv:[0,4,7,9],      sym:'6',     posType:'maj'},
+  {label:'Tierce Majeure', label_en:'Major third', arps:[
+    {id:'maj',    label:'Majeur',         label_en:'Major',       sub:'',     iv:[0,4,7],        sym:'',      posType:'maj'},
+    {id:'maj7',   label:'Majeur 7',       label_en:'Major 7',     sub:'Δ7',   iv:[0,4,7,11],     sym:'maj7',  posType:'maj'},
+    {id:'dom7',   label:'Dominant 7',     label_en:'Dominant 7',  sub:'7',    iv:[0,4,7,10],     sym:'7',     posType:'maj'},
+    {id:'maj6',   label:'Majeur 6',       label_en:'Major 6',     sub:'6',    iv:[0,4,7,9],      sym:'6',     posType:'maj'},
   ]},
-  {label:'Tierce mineure', arps:[
-    {id:'min',    label:'Mineur',         sub:'m',    iv:[0,3,7],        sym:'m',     posType:'min'},
-    {id:'min7',   label:'Mineur 7',       sub:'m7',   iv:[0,3,7,10],     sym:'m7',    posType:'min'},
-    {id:'min6',   label:'Mineur 6',       sub:'m6',   iv:[0,3,7,9],      sym:'m6',    posType:'min'},
-    {id:'minmaj7',label:'Mineur Maj7',    sub:'mΔ7',  iv:[0,3,7,11],     sym:'mMaj7', posType:'min'},
+  {label:'Tierce mineure', label_en:'Minor third', arps:[
+    {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],        sym:'m',     posType:'min'},
+    {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],     sym:'m7',    posType:'min'},
+    {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],      sym:'m6',    posType:'min'},
+    {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],     sym:'mMaj7', posType:'min'},
   ]},
-  {label:'Sans tierce', arps:[
-    {id:'sus2',   label:'Sus2',           sub:'sus2', iv:[0,2,7],        sym:'sus2',  posType:'maj'},
-    {id:'sus4',   label:'Sus4',           sub:'sus4', iv:[0,5,7],        sym:'sus4',  posType:'maj'},
-    {id:'dom7sus4',label:'7sus4',         sub:'7sus4',iv:[0,5,7,10],     sym:'7sus4', posType:'maj'},
+  {label:'Sans tierce', label_en:'No third', arps:[
+    {id:'sus2',   label:'Sus2',           label_en:'Sus2',        sub:'sus2', iv:[0,2,7],        sym:'sus2',  posType:'maj'},
+    {id:'sus4',   label:'Sus4',           label_en:'Sus4',        sub:'sus4', iv:[0,5,7],        sym:'sus4',  posType:'maj'},
+    {id:'dom7sus4',label:'7sus4',         label_en:'7sus4',       sub:'7sus4',iv:[0,5,7,10],     sym:'7sus4', posType:'maj'},
   ]},
-  {label:'Quinte augmentée', arps:[
-    {id:'aug',    label:'Augmenté',       sub:'+',    iv:[0,4,8],        sym:'aug',   posType:'sym'},
-    {id:'aug7',   label:'7 Augmenté',     sub:'7+',   iv:[0,4,8,10],     sym:'7aug',  posType:'maj'},
+  {label:'Quinte augmentée', label_en:'Augmented fifth', arps:[
+    {id:'aug',    label:'Augmenté',       label_en:'Augmented',   sub:'+',    iv:[0,4,8],        sym:'aug',   posType:'sym'},
+    {id:'aug7',   label:'7 Augmenté',     label_en:'Augmented 7', sub:'7+',   iv:[0,4,8,10],     sym:'7aug',  posType:'maj'},
   ]},
-  {label:'Quinte diminuée', arps:[
-    {id:'dim',    label:'Diminué',        sub:'°',    iv:[0,3,6],        sym:'dim',   posType:'sym'},
-    {id:'halfdim',label:'Demi-diminué',   sub:'ø',    iv:[0,3,6,10],     sym:'m7♭5',  posType:'min'},
-    {id:'dim7',   label:'7 Diminué',      sub:'°7 · 7e dim. = enharmonie 6te',   iv:[0,3,6,9],      sym:'dim7',  posType:'sym'},
-    {id:'dom7b5', label:'7 ♭5',           sub:'7♭5',  iv:[0,4,6,10],     sym:'7♭5',   posType:'maj'},
+  {label:'Quinte diminuée', label_en:'Diminished fifth', arps:[
+    {id:'dim',    label:'Diminué',        label_en:'Diminished',  sub:'°',    iv:[0,3,6],        sym:'dim',   posType:'sym'},
+    {id:'halfdim',label:'Demi-diminué',   label_en:'Half-diminished', sub:'ø',    iv:[0,3,6,10],     sym:'m7♭5',  posType:'min'},
+    {id:'dim7',   label:'7 Diminué',      label_en:'Diminished 7', sub:'°7 · 7e dim. = enharmonie 6te', sub_en:'°7 · dim 7th = 6th enharmonic', iv:[0,3,6,9],      sym:'dim7',  posType:'sym'},
+    {id:'dom7b5', label:'7 ♭5',           label_en:'7 ♭5',        sub:'7♭5',  iv:[0,4,6,10],     sym:'7♭5',   posType:'maj'},
   ]},
 ];
 const ALL_ARPS = GROUPS.flatMap(g=>g.arps);
@@ -894,12 +819,13 @@ function buildArpGroups(){
   const c=document.getElementById('arp-groups'); c.innerHTML='';
   GROUPS.forEach(g=>{
     const col=document.createElement('div'); col.className='arp-group';
-    const lbl=document.createElement('div'); lbl.className='arp-group-label'; lbl.textContent=g.label;
+    const lbl=document.createElement('div'); lbl.className='arp-group-label'; lbl.textContent=(currentLang()==='en'&&g.label_en)?g.label_en:g.label;
     col.appendChild(lbl);
     const btns=document.createElement('div'); btns.className='arp-btns';
     g.arps.forEach(a=>{
       const b=document.createElement('button'); b.className='arpbtn'; b.dataset.id=a.id;
-      b.innerHTML=`${a.label}<span class="abadge">${a.sub||'—'}</span>`;
+      const _al=(currentLang()==='en'&&a.label_en)?a.label_en:a.label;
+      b.innerHTML=`${_al}<span class="abadge">${a.sub||'—'}</span>`;
       b.onclick=()=>{state.arpId=a.id;state.position='all';render();};
       btns.appendChild(b);
     });
@@ -918,7 +844,7 @@ function buildPositionButtons(n){
     b.onclick=()=>{state.position=val;render();};
     return b;
   };
-  c.appendChild(mk('all','Tout'));
+  c.appendChild(mk('all',t('lbl_tout')));
   for(let i=1;i<=n;i++) c.appendChild(mk(i,String(i)));
 }
 
@@ -945,7 +871,7 @@ const TUNINGS = {
 };
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
 function currentStrings(){const tuns=TUNINGS[state.strings];const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];return tun.notes.map(n=>({n,pc:pcOf_n(n)}));}
-function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
+function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=(currentLang()==='en'?(t.label.replace('½ ton bas','½ step down').replace('1 ton bas','1 step down')):t.label);b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
 
 
 function computeBoxes(arpPcs, rootPc, posType, strings){
@@ -1037,7 +963,7 @@ function renderFretboard(arpPcs, rootPc, posType, strings){
           ? pretty(SPELL[pc])
           : pretty(info.degLabel);
         d.textContent=label;
-        d.title=`${s.n} case ${f} — degré ${pretty(info.degLabel)}`;
+        d.title=`${s.n} ${t('lbl_cases')} ${f} — ${t('lbl_degre_btn')} ${pretty(info.degLabel)}`;
         cell.appendChild(d);
       }
       row.appendChild(cell);
@@ -1049,8 +975,9 @@ function renderFretboard(arpPcs, rootPc, posType, strings){
   // Caption
   const cap=document.getElementById('fb-caption');
   if(box){
-    cap.innerHTML=`<b>Position ${state.position}</b> — cases ${box.start} à ${box.end}.`
-      +`<span class="hint">Les boîtes s'imbriquent et se répètent une octave plus haut. « Tout » réaffiche l'arpège complet.</span>`;
+    const _en=currentLang()==='en';
+    cap.innerHTML=`<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}.`
+      +`<span class="hint">${_en?'Boxes overlap and repeat one octave higher. “All” shows the whole arpeggio again.':"Les boîtes s'imbriquent et se répètent une octave plus haut. « Tout » réaffiche l'arpège complet."}</span>`;
   } else { cap.textContent=''; }
 
   // Inlays
@@ -1079,7 +1006,7 @@ function renderFretboard(arpPcs, rootPc, posType, strings){
   arpPcs.forEach((pc,i)=>{
     const semi=(pc-rootPc+12)%12;
     const el=document.createElement('div'); el.className='legend-item'+(i===0?' root-leg':'');
-    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT_RAW[semi])} — ${pretty(SPELL_R[pc])}${i===0?' (fond.)':''}`;
+    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT_RAW[semi])} — ${pretty(SPELL_R[pc])}${i===0?' ('+t('lbl_root')+')':''}`;
     lg.appendChild(el);
   });
 
@@ -1095,8 +1022,6 @@ function updateI18n(){
   const NAV={
     fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
@@ -1106,8 +1031,9 @@ function updateI18n(){
 
 function render(){
   
-  // rafraîchir les noms de notes du piano (notation FR/EN/ES)
+  // rafraîchir les noms de notes du piano (notation FR/EN)
   if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
+  if(typeof buildArpGroups==='function') buildArpGroups();
   // Synchro visuels
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
@@ -1125,13 +1051,13 @@ function render(){
   const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
 
   // Nom et badge
-  document.getElementById('arp-name').innerHTML=`<b>${pretty(root)}</b> ${arpDef.label}`;
+  document.getElementById('arp-name').innerHTML=`<b>${pretty(root)}</b> ${(currentLang()==='en'&&arpDef.label_en)?arpDef.label_en:arpDef.label}`;
   // Bouton ▶ jouer l'arpège
   const paw=document.getElementById('play-arp-wrap');
   if(paw){
     paw.innerHTML='';
     const noteNames=arpPcs.map(pc=>SPELL[pc].replace('♯','#').replace('♭','b'));
-    const btn=makePlayBtn(()=>playSequence(noteNames,70,2),'Jouer l\'arpège','▶');
+    const btn=makePlayBtn(()=>playSequence(noteNames,70,2),t('lbl_jouer_arp'),'▶');
     paw.appendChild(btn);
   }
   // Badge : tonique + symbole d'accord (vide pour majeur = juste la tonique)
@@ -1153,8 +1079,8 @@ function render(){
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="tdeg" style="color:${DEG_COLORS[i]}">${i+1}</td>
       <td class="tnote"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(FLAT_SPELL[pc])}</td>
-      <td class="tint">${INT_NAMES[semi]||'—'}</td>
-      <td class="tdesc">${ROLES[semi]||'—'}</td>`;
+      <td class="tint">${intName(semi)||'—'}</td>
+      <td class="tdesc">${roleName(semi)||'—'}</td>`;
     tb.appendChild(tr);
   });
 

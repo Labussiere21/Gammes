@@ -391,27 +391,25 @@
       <div class="htool-seg" id="lang-seg">
         <button data-lang="fr" class="on" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
-        <button data-lang="es" style="min-width:34px">ES</button>
-        <button data-lang="de" style="min-width:34px">DE</button>
       </div>
     </div>
     </div>
     <h1>Inter<em>valles</em></h1>
-    <p class="lede">Choisis une fondamentale, puis un intervalle : les deux notes s'affichent partout sur le manche pour visualiser la distance entre elles.</p>
+    <p class="lede" data-i18n="lbl_iv_lede">Choisis une fondamentale, puis un intervalle : les deux notes s'affichent partout sur le manche pour visualiser la distance entre elles.</p>
   </header>
 
   <!-- Contrôles -->
   <section class="controls">
     <div class="ctl-row">
       <div>
-        <div class="ctl-label">Fondamentale</div>
+        <div class="ctl-label" data-i18n="lbl_fondamentale">Fondamentale</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div>
-            <div class="ctl-label">Altération</div>
+            <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
             <div class="seg" id="accpref" role="group">
-              <button data-acc="b" class="on">♭ bémols</button>
-              <button data-acc="#">♯ dièses</button>
+              <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
+              <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
             </div>
           </div>
         </div>
@@ -420,14 +418,14 @@
 
     <!-- Sélecteur gamme -->
     <div style="margin-top:20px">
-      <div class="ctl-label">Gamme (optionnel)</div>
+      <div class="ctl-label" data-i18n="lbl_gamme_opt">Gamme (optionnel)</div>
       <div id="scale-sel" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px"></div>
       <div id="degree-btns" style="display:none;flex-wrap:wrap;gap:5px"></div>
     </div>
 
     <!-- Sélecteur intervalles -->
     <div style="margin-top:20px">
-      <div class="ctl-label">Intervalle</div>
+      <div class="ctl-label" data-i18n="lbl_iv_label">Intervalle</div>
       <div class="iv-families" id="iv-families"></div>
     </div>
   </section>
@@ -436,7 +434,7 @@
   <div class="main-grid">
     <!-- Résumé -->
     <section class="card">
-      <h2>Intervalle</h2>
+      <h2 data-i18n="lbl_iv_label">Intervalle</h2>
       <div class="iv-summary">
         <div class="iv-pair" id="iv-pair">
           <!-- rempli par JS -->
@@ -447,14 +445,14 @@
 
     <!-- Récap tableau -->
     <section class="card">
-      <h2>Récapitulatif des intervalles</h2>
+      <h2 data-i18n="lbl_recap">Récapitulatif des intervalles</h2>
       <table class="recap-table">
         <thead>
           <tr>
-            <th>Symbole</th>
-            <th>Nom</th>
-            <th style="text-align:right">Tons</th>
-            <th>Cases</th>
+            <th data-i18n="lbl_th_symbole">Symbole</th>
+            <th data-i18n="lbl_th_nom">Nom</th>
+            <th style="text-align:right" data-i18n="lbl_th_tons">Tons</th>
+            <th data-i18n="lbl_cases">Cases</th>
           </tr>
         </thead>
         <tbody id="recap-body"></tbody>
@@ -465,19 +463,19 @@
   <!-- Manche -->
   <section class="card fb-card">
     <div class="fb-head">
-      <h2>Sur le manche</h2>
+      <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          <div class="ctl-label">Afficher</div>
+          <div class="ctl-label" data-i18n="lbl_affichage">Afficher</div>
           <div class="seg" id="fb-display" role="group">
-            <button data-disp="note" class="on">Notes</button>
-            <button data-disp="deg">Degrés</button>
+            <button data-disp="note" class="on" data-i18n="lbl_note_btn">Notes</button>
+            <button data-disp="deg" data-i18n="lbl_degre_btn">Degrés</button>
           </div>
         </div>
         <div>
           
         <div>
-          <div class="ctl-label">Cordes</div>
+          <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
             <button data-str="5">5</button>
@@ -485,12 +483,12 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Accordage</div>
+          <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <div class="seg" id="fb-tuning-ctl" role="group"></div>
         </div>
         </div>
         <div>
-          <div class="ctl-label">Cases</div>
+          <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
           <div class="seg" id="fb-frets-ctl" role="group">
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
@@ -500,10 +498,10 @@
         <div>
           
         <div>
-          <div class="ctl-label">Main</div>
+          <div class="ctl-label" data-i18n="lbl_main">Main</div>
           <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on">🤜 Droitier</button>
-            <button data-hand="left">Gaucher 🤛</button>
+            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         </div>
@@ -527,18 +525,6 @@ const EN_TO_FR = {
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
-const EN_TO_ES = {
-  'C':'Do','C#':'Do♯','Db':'Re♭','D':'Re','D#':'Re♯','Eb':'Mi♭',
-  'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
-  'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
-  'B':'Si','B#':'Do','Cb':'Si',
-};
-const EN_TO_DE = {
-  'C':'C','C#':'Cis','Db':'Des','D':'D','D#':'Dis','Eb':'Es',
-  'E':'E','E#':'Eis','Fb':'Fes','F':'F','F#':'Fis','Gb':'Ges',
-  'G':'G','G#':'Gis','Ab':'As','A':'A','A#':'Ais','Bb':'B',
-  'B':'H','B#':'His','Cb':'Ces',
-};
 
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
@@ -553,18 +539,6 @@ function prettyNote(noteEN){
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(not==='es'){
-    if(EN_TO_ES[clean]) return EN_TO_ES[clean];
-    const ES_L={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (ES_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
-  }
-  if(lang==='de'){
-    if(EN_TO_DE[clean]) return EN_TO_DE[clean];
-    const DE_L={C:'C',D:'D',E:'E',F:'F',G:'G',A:'A',B:'H'};
-    const letter=clean[0]; const acc=clean.slice(1);
-    return (DE_L[letter]||letter)+acc.replace(/#/g,'is').replace(/b/g,'es');
   }
   // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
@@ -600,6 +574,9 @@ const _TR={
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
     lbl_select_iv:'Sélectionne un intervalle ci-dessus pour le visualiser sur le manche.',
+    lbl_iv_lede:'Choisis une fondamentale, puis un intervalle : les deux notes s\'affichent partout sur le manche pour visualiser la distance entre elles.',
+    lbl_fondamentale:'Fondamentale',lbl_alteration:'Altération',lbl_gamme_opt:'Gamme (optionnel)',lbl_iv_label:'Intervalle',
+    lbl_recap:'Récapitulatif des intervalles',lbl_th_symbole:'Symbole',lbl_th_nom:'Nom',lbl_th_tons:'Tons',lbl_accordage:'Accordage',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -629,65 +606,10 @@ const _TR={
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
     lbl_select_iv:'Select an interval above to visualize it on the fretboard.',
+    lbl_iv_lede:'Pick a root note, then an interval: both notes appear everywhere on the fretboard so you can see the distance between them.',
+    lbl_fondamentale:'Root',lbl_alteration:'Accidental',lbl_gamme_opt:'Scale (optional)',lbl_iv_label:'Interval',
+    lbl_recap:'Interval summary',lbl_th_symbole:'Symbol',lbl_th_nom:'Name',lbl_th_tons:'Tones',lbl_accordage:'Tuning',
   },
-  es:{
-    lbl_gamme:'La escala',lbl_degrees:'Grados & acordes diatónicos',lbl_degrees_nd:'Grados & intervalos',
-    lbl_manche:'En el diapasón',lbl_tonique:'Tónica',lbl_type:'Tipo de escala',
-    lbl_cordes:'Cuerdas',lbl_cases:'Trastes',lbl_main:'Mano',lbl_position:'Posición (caja)',
-    lbl_affichage:'Vista',lbl_droitier:'🤜 Diestro',lbl_gaucher:'Zurdo 🤛',
-    lbl_note_btn:'Nota',lbl_degre_btn:'Grado',lbl_tout:'Todo',
-    lbl_fam_all:'Todas',lbl_fam_maj:'Mayores',lbl_fam_min:'Menores',
-    lbl_flat:'♭ bemoles',lbl_sharp:'♯ sostenidos',
-    lbl_th_deg:'Gr.',lbl_th_note:'Nota',lbl_th_iv:'Intervalo',
-    lbl_th_accord:'Acorde',lbl_th_notes:'Notas',lbl_th_semis:'Semitonos',
-    lbl_structure:'Estructura',lbl_notes_iv:'Notas & intervalos',
-    lbl_th_num:'Nº',lbl_th_role:'Rol',
-    lbl_genre:'Género',lbl_cad:'Cadencia',lbl_gammes_imp:'Escalas para improvisar',
-    lbl_fond:'Fund.',lbl_acc:'Acorde',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervalo',lbl_sur_manche:'En el diapasón',
-    lbl_clic_notes:'Haz clic en notas del piano o diapasón',
-    lbl_tab_acc:'Acordes',lbl_tab_gam:'Escalas',lbl_tab_cad:'Cadencias',
-    lbl_effacer:'Borrar',lbl_partager:'🔗 Compartir',
-    lbl_cercle:'Círculo de quintas',
-    lbl_tab_modes:'Modos',lbl_tab_rel:'Relativas',
-    lbl_rel_min:'Relativa menor',lbl_par_min:'Paralela menor',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Tipo de acorde',lbl_pos_ouverte:'Posición abierta',
-    lbl_root:'fundamental',lbl_bientot:'Próximamente',
-    lbl_aucune_alt:'sin alteraciones',lbl_diese:'sostenido',lbl_bemol:'bemol',
-    lbl_jouer_gamme:'Tocar escala',lbl_jouer_cad:'Tocar cadencia',
-    lbl_jouer_acc:'Tocar acorde',lbl_jouer_arp:'Tocar arpegio',
-    lbl_select_iv:'Selecciona un intervalo para visualizarlo en el diapasón.',
-  },
-  de:{
-    lbl_gamme:'Die Tonleiter',lbl_degrees:'Stufen & diatonische Akkorde',lbl_degrees_nd:'Stufen & Intervalle',
-    lbl_manche:'Auf dem Griffbrett',lbl_tonique:'Grundton',lbl_type:'Tonleitertyp',
-    lbl_cordes:'Saiten',lbl_cases:'Bünde',lbl_main:'Hand',lbl_position:'Position (Box)',
-    lbl_affichage:'Anzeige',lbl_droitier:'🤜 Rechtshänder',lbl_gaucher:'Linkshänder 🤛',
-    lbl_note_btn:'Note',lbl_degre_btn:'Stufe',lbl_tout:'Alle',
-    lbl_fam_all:'Alle',lbl_fam_maj:'Dur',lbl_fam_min:'Moll',
-    lbl_flat:'♭ Vorzeichen',lbl_sharp:'♯ Kreuz',
-    lbl_th_deg:'St.',lbl_th_note:'Note',lbl_th_iv:'Intervall',
-    lbl_th_accord:'Akkord',lbl_th_notes:'Noten',lbl_th_semis:'Halbtöne',
-    lbl_structure:'Struktur',lbl_notes_iv:'Noten & Intervalle',
-    lbl_th_num:'Nr.',lbl_th_role:'Rolle',
-    lbl_genre:'Genre',lbl_cad:'Kadenz',lbl_gammes_imp:'Tonleitern zum Improvisieren',
-    lbl_fond:'Grundton',lbl_acc:'Akkord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
-    lbl_iv_title:'Intervall',lbl_sur_manche:'Auf dem Griffbrett',
-    lbl_clic_notes:'Noten auf Klavier oder Griffbrett klicken',
-    lbl_tab_acc:'Akkorde',lbl_tab_gam:'Tonleitern',lbl_tab_cad:'Kadenzen',
-    lbl_effacer:'Löschen',lbl_partager:'🔗 Teilen',
-    lbl_cercle:'Quintenzirkel',
-    lbl_tab_modes:'Modi',lbl_tab_rel:'Parallele',
-    lbl_rel_min:'Parallele Moll',lbl_par_min:'Gleichnamige Moll',
-    lbl_sdom:'Subdominante (IV)',lbl_dom:'Dominante (V)',
-    lbl_type_accord:'Akkordtyp',lbl_pos_ouverte:'Offene Lage',
-    lbl_root:'Grundton',lbl_bientot:'Demnächst verfügbar',
-    lbl_aucune_alt:'keine Vorzeichen',lbl_diese:'Kreuz',lbl_bemol:'B',
-    lbl_jouer_gamme:'Tonleiter spielen',lbl_jouer_cad:'Kadenz spielen',
-    lbl_jouer_acc:'Akkord spielen',lbl_jouer_arp:'Arpeggio spielen',
-    lbl_select_iv:'Wähle oben ein Intervall aus, um es auf dem Griffbrett zu sehen.',
-  }
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
@@ -697,10 +619,6 @@ const NOTE_NAMES_EN    = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B
 const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_ES    = ['Do','Re♭','Re','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
-const NOTE_NAMES_ES_SH = ['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
-const NOTE_NAMES_DE    = ['C','Des','D','Es','E','F','Ges','G','As','A','B','H'];
-const NOTE_NAMES_DE_SH = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','Ais','H'];
 
 // Récupérer depuis localStorage ou défaut
 const _storedNotation = localStorage.getItem('sbnot')||'en';
@@ -712,8 +630,6 @@ function getNotationTable(accPref){
   const not  = localStorage.getItem('sbnot')||'en';
   const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
-  if(not==='es') return pref==='#'?NOTE_NAMES_ES_SH:NOTE_NAMES_ES;
-  if(lang==='de') return pref==='#'?NOTE_NAMES_DE_SH:NOTE_NAMES_DE;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
 function spellNote(pc, accPref){
@@ -755,33 +671,33 @@ function initNotationLang(){
 
 /* ============================================================ DONNÉES */
 const INTERVALS_DATA = [
-  {family:'Secondes', families:{fr:'Secondes',en:'Seconds',es:'Segundas',de:'Sekunden'}, items:[
-    {id:'b2',  sym:'♭2',  label:'2nde mineure', labels:{fr:'2nde mineure',en:'Minor 2nd',es:'2ª menor',de:'Kleine Sekunde'},  semi:1,  tons:'½',   cases:1},
-    {id:'2',   sym:'2',   label:'2nde Majeure', labels:{fr:'2nde Majeure',en:'Major 2nd',es:'2ª Mayor',de:'Große Sekunde'},  semi:2,  tons:'1',   cases:2},
+  {family:'Secondes', families:{fr:'Secondes',en:'Seconds'}, items:[
+    {id:'b2',  sym:'♭2',  label:'2nde mineure', labels:{fr:'2nde mineure',en:'Minor 2nd'},  semi:1,  tons:'½',   cases:1},
+    {id:'2',   sym:'2',   label:'2nde Majeure', labels:{fr:'2nde Majeure',en:'Major 2nd'},  semi:2,  tons:'1',   cases:2},
   ]},
-  {family:'Tierces', families:{fr:'Tierces',en:'Thirds',es:'Terceras',de:'Terzen'}, items:[
-    {id:'b3',  sym:'♭3',  label:'3ce mineure',  labels:{fr:'3ce mineure',en:'Minor 3rd',es:'3ª menor',de:'Kleine Terz'},    semi:3,  tons:'1½',  cases:3},
-    {id:'3',   sym:'3',   label:'3ce Majeure',  labels:{fr:'3ce Majeure',en:'Major 3rd',es:'3ª Mayor',de:'Große Terz'},    semi:4,  tons:'2',   cases:4},
+  {family:'Tierces', families:{fr:'Tierces',en:'Thirds'}, items:[
+    {id:'b3',  sym:'♭3',  label:'3ce mineure',  labels:{fr:'3ce mineure',en:'Minor 3rd'},    semi:3,  tons:'1½',  cases:3},
+    {id:'3',   sym:'3',   label:'3ce Majeure',  labels:{fr:'3ce Majeure',en:'Major 3rd'},    semi:4,  tons:'2',   cases:4},
   ]},
-  {family:'Quartes', families:{fr:'Quartes',en:'Fourths',es:'Cuartas',de:'Quarten'}, items:[
-    {id:'4',   sym:'4',   label:'4te Juste',    labels:{fr:'4te Juste',en:'Perfect 4th',es:'4ª Justa',de:'Reine Quarte'},   semi:5,  tons:'2½',  cases:5},
+  {family:'Quartes', families:{fr:'Quartes',en:'Fourths'}, items:[
+    {id:'4',   sym:'4',   label:'4te Juste',    labels:{fr:'4te Juste',en:'Perfect 4th'},   semi:5,  tons:'2½',  cases:5},
   ]},
-  {family:'Triton', families:{fr:'Triton',en:'Tritone',es:'Tritono',de:'Tritonus'}, items:[
-    {id:'tt',  sym:'TT',  label:'Triton (♯4 / ♭5)', labels:{fr:'Triton (♯4/♭5)',en:'Tritone (♯4/♭5)',es:'Tritono (♯4/♭5)',de:'Tritonus (♯4/♭5)'}, semi:6, tons:'3', cases:6, enhar:true},
+  {family:'Triton', families:{fr:'Triton',en:'Tritone'}, items:[
+    {id:'tt',  sym:'TT',  label:'Triton (♯4 / ♭5)', labels:{fr:'Triton (♯4/♭5)',en:'Tritone (♯4/♭5)'}, semi:6, tons:'3', cases:6, enhar:true},
   ]},
-  {family:'Quintes', families:{fr:'Quintes',en:'Fifths',es:'Quintas',de:'Quinten'}, items:[
-    {id:'5',   sym:'5',   label:'5te Juste',    labels:{fr:'5te Juste',en:'Perfect 5th',es:'5ª Justa',de:'Reine Quinte'},   semi:7,  tons:'3½',  cases:7},
-    {id:'s5b6',sym:'♯5',  label:'5te aug. / 6te min.', labels:{fr:'5te aug./6te min.',en:'Aug 5th/min 6th',es:'5ª aum./6ª men.',de:'Überm. Quinte/kl. Sexte'}, semi:8, tons:'4', cases:8, enhar:true},
+  {family:'Quintes', families:{fr:'Quintes',en:'Fifths'}, items:[
+    {id:'5',   sym:'5',   label:'5te Juste',    labels:{fr:'5te Juste',en:'Perfect 5th'},   semi:7,  tons:'3½',  cases:7},
+    {id:'s5b6',sym:'♯5',  label:'5te aug. / 6te min.', labels:{fr:'5te aug./6te min.',en:'Aug 5th/min 6th'}, semi:8, tons:'4', cases:8, enhar:true},
   ]},
-  {family:'Sixtes', families:{fr:'Sixtes',en:'Sixths',es:'Sextas',de:'Sexten'}, items:[
-    {id:'6',   sym:'6',   label:'6te Majeure',  labels:{fr:'6te Majeure',en:'Major 6th',es:'6ª Mayor',de:'Große Sexte'},   semi:9,  tons:'4½',  cases:9},
+  {family:'Sixtes', families:{fr:'Sixtes',en:'Sixths'}, items:[
+    {id:'6',   sym:'6',   label:'6te Majeure',  labels:{fr:'6te Majeure',en:'Major 6th'},   semi:9,  tons:'4½',  cases:9},
   ]},
-  {family:'Septièmes', families:{fr:'Septièmes',en:'Sevenths',es:'Séptimas',de:'Septimen'}, items:[
-    {id:'b7',  sym:'♭7',  label:'7ème mineure', labels:{fr:'7ème mineure',en:'Minor 7th',es:'7ª menor',de:'Kleine Septime'}, semi:10, tons:'5',   cases:10},
-    {id:'7',   sym:'7',   label:'7ème Majeure', labels:{fr:'7ème Majeure',en:'Major 7th',es:'7ª Mayor',de:'Große Septime'}, semi:11, tons:'5½',  cases:11},
+  {family:'Septièmes', families:{fr:'Septièmes',en:'Sevenths'}, items:[
+    {id:'b7',  sym:'♭7',  label:'7ème mineure', labels:{fr:'7ème mineure',en:'Minor 7th'}, semi:10, tons:'5',   cases:10},
+    {id:'7',   sym:'7',   label:'7ème Majeure', labels:{fr:'7ème Majeure',en:'Major 7th'}, semi:11, tons:'5½',  cases:11},
   ]},
-  {family:'Octave', families:{fr:'Octave',en:'Octave',es:'Octava',de:'Oktave'}, items:[
-    {id:'8',   sym:'8',   label:'Octave Juste', labels:{fr:'Octave Juste',en:'Perfect Octave',es:'Octava Justa',de:'Reine Oktave'}, semi:12, tons:'6', cases:12},
+  {family:'Octave', families:{fr:'Octave',en:'Octave'}, items:[
+    {id:'8',   sym:'8',   label:'Octave Juste', labels:{fr:'Octave Juste',en:'Perfect Octave'}, semi:12, tons:'6', cases:12},
   ]},
 ];
 const ALL_IVS = INTERVALS_DATA.flatMap(f=>f.items);
@@ -790,8 +706,6 @@ function famLabel(fam){ return (fam.families&&fam.families[currentLang()])||fam.
 function fretUnit(n){
   const lang=currentLang();
   if(lang==='en') return n>1?'frets':'fret';
-  if(lang==='es') return n>1?'trastes':'traste';
-  if(lang==='de') return n>1?'Bünde':'Bund';
   return n>1?'cases':'case';
 }
 function ivInfoHtml(ivDef){
@@ -799,20 +713,18 @@ function ivInfoHtml(ivDef){
   const lb=ivLabel(ivDef);
   const s=ivDef.semi, c=ivDef.cases, ts=ivDef.tons;
   if(lang==='en') return `<strong style="color:var(--cream)">${lb}</strong> = <strong style="color:var(--brass)">${s} semitone${s>1?'s':''}</strong> = <strong style="color:var(--brass)">${c} fret${c>1?'s':''}</strong> on the fretboard<br><span style="color:var(--muted-2)">${ts} tone${ts!=='1'&&ts!=='½'?'s':''}</span>`;
-  if(lang==='es') return `<strong style="color:var(--cream)">${lb}</strong> = <strong style="color:var(--brass)">${s} semitono${s>1?'s':''}</strong> = <strong style="color:var(--brass)">${c} traste${c>1?'s':''}</strong> en el diapasón<br><span style="color:var(--muted-2)">${ts} tono${ts!=='1'&&ts!=='½'?'s':''}</span>`;
-  if(lang==='de') return `<strong style="color:var(--cream)">${lb}</strong> = <strong style="color:var(--brass)">${s} ${s>1?'Halbtöne':'Halbton'}</strong> = <strong style="color:var(--brass)">${c} ${c>1?'Bünde':'Bund'}</strong> auf dem Griffbrett<br><span style="color:var(--muted-2)">${ts} ${ts!=='1'&&ts!=='½'?'Ganztöne':'Ganzton'}</span>`;
   return `<strong style="color:var(--cream)">${lb}</strong> = <strong style="color:var(--brass)">${s} demi-ton${s>1?'s':''}</strong> = <strong style="color:var(--brass)">${c} case${c>1?'s':''}</strong> sur le manche<br><span style="color:var(--muted-2)">${ts} ton${ts!=='1'&&ts!=='½'?'s':''}</span>`;
 }
 
 const SCALES = [
-  {id:'maj',   label:'Majeur',         semis:[2,4,5,7,9,11]},
-  {id:'min',   label:'Mineur nat.',    semis:[2,3,5,7,8,10]},
-  {id:'minH',  label:'Min. harm.',     semis:[2,3,5,7,8,11]},
-  {id:'pentaM',label:'Penta. M',       semis:[2,4,7,9]},
-  {id:'pentam',label:'Penta. m',       semis:[3,5,7,10]},
-  {id:'blues', label:'Blues',          semis:[3,5,6,7,10]},
-  {id:'dor',   label:'Dorien',         semis:[2,3,5,7,9,10]},
-  {id:'mix',   label:'Mixolydien',     semis:[2,4,5,7,9,10]},
+  {id:'maj',   label:'Majeur',         label_en:'Major',        semis:[2,4,5,7,9,11]},
+  {id:'min',   label:'Mineur nat.',    label_en:'Nat. minor',   semis:[2,3,5,7,8,10]},
+  {id:'minH',  label:'Min. harm.',     label_en:'Harm. minor',  semis:[2,3,5,7,8,11]},
+  {id:'pentaM',label:'Penta. M',       label_en:'Penta. M',     semis:[2,4,7,9]},
+  {id:'pentam',label:'Penta. m',       label_en:'Penta. m',     semis:[3,5,7,10]},
+  {id:'blues', label:'Blues',          label_en:'Blues',        semis:[3,5,6,7,10]},
+  {id:'dor',   label:'Dorien',         label_en:'Dorian',       semis:[2,3,5,7,9,10]},
+  {id:'mix',   label:'Mixolydien',     label_en:'Mixolydian',   semis:[2,4,5,7,9,10]},
 ];
 
 /* ============================================================ ÉTAT */
@@ -898,7 +810,7 @@ function buildScaleButtons(){
     const b=document.createElement('button');
     b.className='ivbtn'+(state.scaleId===sc.id?' on':'');
     b.style.cssText='padding:5px 12px;font-size:12px;gap:0';
-    b.textContent=sc.label;
+    b.textContent=(currentLang()==='en'&&sc.label_en)?sc.label_en:sc.label;
     b.onclick=()=>{
       state.scaleId=state.scaleId===sc.id?null:sc.id;
       if(!state.scaleId) state.ivId=null;
@@ -958,7 +870,7 @@ const TUNINGS = {
 };
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
 function currentStrings(){const tuns=TUNINGS[state.strings];const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];return tun.notes.map(n=>({n,pc:pcOf_n(n)}));}
-function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
+function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=(currentLang()==='en'?(t.label.replace('½ ton bas','½ step down').replace('1 ton bas','1 step down')):t.label);b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
 
 
 
@@ -969,8 +881,6 @@ function updateI18n(){
   const NAV={
     fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
     en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
-    es:{'gammes.html':'Escalas','arpeges-basse.html':'Arpegios','intervalles.html':'Intervalos','index.html':'Diapasón','cadences.html':'Cadencias','analyse.html':'Análisis','quintes.html':'Círculo 5as'},
-    de:{'gammes.html':'Tonleitern','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervalle','index.html':'Griffbrett','cadences.html':'Kadenzen','analyse.html':'Analyse','quintes.html':'Quintenzirkel'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
