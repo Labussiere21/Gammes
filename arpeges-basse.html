@@ -1056,8 +1056,9 @@ function render(){
   const paw=document.getElementById('play-arp-wrap');
   if(paw){
     paw.innerHTML='';
-    const noteNames=arpPcs.map(pc=>SPELL[pc].replace('♯','#').replace('♭','b'));
-    const btn=makePlayBtn(()=>playSequence(noteNames,70,2),t('lbl_jouer_arp'),'▶');
+    const ascMidi=[];let _oct=2,_prev=-1;
+    for(const pc of arpPcs){if(_prev>=0&&pc<=_prev)_oct++;ascMidi.push((_oct+1)*12+pc);_prev=pc;}
+    const btn=makePlayBtn(()=>playSequence(ascMidi,70),t('lbl_jouer_arp'),'▶');
     paw.appendChild(btn);
   }
   // Badge : tonique + symbole d'accord (vide pour majeur = juste la tonique)
