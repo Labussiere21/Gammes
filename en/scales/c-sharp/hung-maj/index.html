@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>C# Hungarian Major Scale for Bass — C♯ – D♯♯ – E♯ – F♯♯ – G♯ – A♯ – B</title>
+  <meta name="description" content="C# Hungarian Major scale for bass: C♯ – D♯♯ – E♯ – F♯♯ – G♯ – A♯ – B. 7 notes. Intervals: T+½T – ½T – T – ½T – T – ½T – T.">
+  <link rel="canonical" href="https://labussiere21.github.io/Gammes/en/scales/db/hung-maj/">
+  <link rel="alternate" hreflang="fr" href="https://labussiere21.github.io/Gammes/fr/gammes/re-bemol/hung-maj/">
+  <link rel="alternate" hreflang="en" href="https://labussiere21.github.io/Gammes/en/scales/db/hung-maj/">
+  <link rel="alternate" hreflang="x-default" href="https://labussiere21.github.io/Gammes/fr/gammes/re-bemol/hung-maj/">
+  <meta property="og:title" content="C# Hungarian Major Scale — Bass">
+  <meta property="og:description" content="C# Hungarian Major: C♯ – D♯♯ – E♯ – F♯♯ – G♯ – A♯ – B">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://labussiere21.github.io/Gammes/en/scales/c-sharp/hung-maj/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "C# Hungarian Major scale for bass",
+    "description": "C# Hungarian Major for bass: C♯ – D♯♯ – E♯ – F♯♯ – G♯ – A♯ – B. Intervals: T+½T – ½T – T – ½T – T – ½T – T.",
+    "url": "https://labussiere21.github.io/Gammes/en/scales/c-sharp/hung-maj/",
+    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+  }
+  </script>
+  <style>
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:#c8a840;--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+    a{color:var(--brass);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .topnav{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .topnav .logo{font-weight:700;letter-spacing:.15em;font-size:13px;text-transform:uppercase;color:var(--brass)}
+    .topnav a{color:var(--muted);font-size:13px}
+    .topnav a:hover{color:var(--text)}
+
+    .breadcrumb{padding:10px 24px;font-size:12px;color:var(--muted)}
+    .breadcrumb a{color:var(--muted)}
+
+    main{max-width:860px;margin:0 auto;padding:28px 24px 64px}
+
+    h1{font-size:clamp(22px,4vw,34px);font-weight:700;line-height:1.2;margin-bottom:6px}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+
+    h2{font-size:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+
+    .notes-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+    .note-pill{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:var(--brass)}
+    .note-pill.root{border-color:var(--brass);background:var(--brass)18;color:var(--brass)}
+
+    .iv-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:"Space Mono",monospace;font-size:13px}
+    .iv-note{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--text)}
+    .iv-sep{color:var(--muted);font-size:11px;padding:0 2px}
+    .iv-label{color:var(--green);background:var(--green)15;border:1px solid var(--green)44;border-radius:5px;padding:2px 7px;font-size:11px}
+    .iv-label.ht{color:var(--red);background:var(--red)12;border-color:var(--red)44}
+    .iv-label.aug{color:var(--blue);background:var(--blue)12;border-color:var(--blue)44}
+
+    .triad-table{width:100%;border-collapse:collapse;font-size:14px}
+    .triad-table th{text-align:left;padding:6px 10px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+    .triad-table td{padding:7px 10px;border-bottom:1px solid var(--line)88}
+    .triad-table tr:last-child td{border-bottom:none}
+    .roman{font-family:"Space Mono",monospace;font-weight:700;color:var(--brass)}
+    .q-maj{color:var(--green)}
+    .q-min{color:var(--blue)}
+    .q-dim{color:var(--red)}
+    .q-aug{color:#f08a3c}
+
+    .desc-block{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;line-height:1.7;color:#c8c8d8;font-size:14px}
+
+    .cta-block{margin-top:40px;background:var(--panel);border:1px solid var(--brass)44;border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .cta-block p{font-size:14px;color:var(--muted);max-width:420px}
+    .cta-btn{display:inline-block;background:var(--brass);color:#1a1a20;font-weight:700;font-size:14px;padding:10px 22px;border-radius:8px;text-decoration:none;white-space:nowrap}
+    .cta-btn:hover{background:#e0b840;text-decoration:none}
+
+    .page-nav{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px}
+    .page-nav a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--muted)}
+    .page-nav a:hover{color:var(--text);text-decoration:none}
+    .page-nav .active{border-color:var(--brass)55;color:var(--brass)}
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="logo">ScalaBass</span>
+  <a href="https://labussiere21.github.io/Gammes/">Manche</a>
+  <a href="https://labussiere21.github.io/Gammes/gammes.html">Gammes</a>
+  <a href="https://labussiere21.github.io/Gammes/intervalles.html">Intervalles</a>
+  <a href="https://labussiere21.github.io/Gammes/cadences.html">Cadences</a>
+  <a href="https://labussiere21.github.io/Gammes/arpeges-basse.html">Arpèges</a>
+</nav>
+
+<div class="breadcrumb">
+  <a href="https://labussiere21.github.io/Gammes/en/scales/">All scales</a>
+  
+  &rsaquo; C#
+  
+  &rsaquo; Hungarian Major
+</div>
+
+<main>
+  <h1>C# Hungarian Major Scale</h1>
+  <p class="sub">
+    4-string bass &nbsp;·&nbsp; Hungarian major
+    &nbsp;·&nbsp; 7 notes
+    &nbsp;·&nbsp; major family
+  </p>
+
+  <h2>Notes</h2>
+  <div class="notes-row">
+    
+    <div class="note-pill root">C♯</div>
+    
+    <div class="note-pill">D♯♯</div>
+    
+    <div class="note-pill">E♯</div>
+    
+    <div class="note-pill">F♯♯</div>
+    
+    <div class="note-pill">G♯</div>
+    
+    <div class="note-pill">A♯</div>
+    
+    <div class="note-pill">B</div>
+    
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:6px">
+    Solfège : Do♯ – Ré♯♯ – Mi♯ – Fa♯♯ – Sol♯ – La♯ – Si
+  </p>
+
+  <h2>Interval Structure</h2>
+  <div class="iv-row">
+    
+    <span class="iv-note">C♯</span>
+    
+    
+    
+    
+      <span class="iv-label aug">T+½T</span>
+    
+    
+    
+    <span class="iv-note">D♯♯</span>
+    
+    
+    
+    
+      <span class="iv-label ht">½T</span>
+    
+    
+    
+    <span class="iv-note">E♯</span>
+    
+    
+    
+    
+      <span class="iv-label">T</span>
+    
+    
+    
+    <span class="iv-note">F♯♯</span>
+    
+    
+    
+    
+      <span class="iv-label ht">½T</span>
+    
+    
+    
+    <span class="iv-note">G♯</span>
+    
+    
+    
+    
+      <span class="iv-label">T</span>
+    
+    
+    
+    <span class="iv-note">A♯</span>
+    
+    
+    
+    
+      <span class="iv-label ht">½T</span>
+    
+    
+    
+    <span class="iv-note">B</span>
+    
+    
+    <span class="iv-sep">→</span>
+    <span class="iv-note">C♯+oct.</span>
+    
+    
+      <span class="iv-label">T</span>
+    
+  </div>
+
+  
+  <h2>Scale Chords (triads)</h2>
+  <table class="triad-table">
+    <thead>
+      <tr><th>Degree</th><th>Chord (in C#)</th><th>Quality</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td class="roman">I</td>
+        <td><strong>C♯</strong></td>
+        <td class="q-maj">Major</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">ii°</td>
+        <td><strong>D♯♯°</strong></td>
+        <td class="q-dim">diminished</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">iii°</td>
+        <td><strong>E♯°</strong></td>
+        <td class="q-dim">diminished</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">iv°</td>
+        <td><strong>F♯♯°</strong></td>
+        <td class="q-dim">diminished</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">V</td>
+        <td><strong>G♯?</strong></td>
+        <td class="">—</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">vi</td>
+        <td><strong>A♯m</strong></td>
+        <td class="q-min">minor</td>
+      </tr>
+      
+      <tr>
+        <td class="roman">VII</td>
+        <td><strong>B?</strong></td>
+        <td class="">—</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  
+
+  <h2>About this scale</h2>
+  <div class="desc-block">The Hungarian major has a minor 3rd between the 2nd and 3rd degrees, creating an exotic sound in a major context. Used in Central European folk music and experimental jazz.</div>
+
+  <div class="cta-block">
+    <p>See fretboard positions for <strong>C# Hungarian Major</strong> in the interactive app.</p>
+    <a class="cta-btn" href="https://labussiere21.github.io/Gammes/gammes.html?root=C#&amp;scale=hung_maj">Explore in ScalaBass →</a>
+  </div>
+
+  <h2 style="margin-top:40px">Same scale in other keys</h2>
+  <div class="page-nav">
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/c/hung-maj/"
+       >C</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/db/hung-maj/"
+       >Db</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/d/hung-maj/"
+       >D</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/eb/hung-maj/"
+       >Eb</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/e/hung-maj/"
+       >E</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/f/hung-maj/"
+       >F</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/f-sharp/hung-maj/"
+       >F#</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/g/hung-maj/"
+       >G</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/ab/hung-maj/"
+       >Ab</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/a/hung-maj/"
+       >A</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/bb/hung-maj/"
+       >Bb</a>
+    
+    <a href="https://labussiere21.github.io/Gammes/en/scales/b/hung-maj/"
+       >B</a>
+    
+  </div>
+
+</main>
+</body>
+</html>
