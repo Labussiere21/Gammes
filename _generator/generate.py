@@ -45,6 +45,21 @@ ROOTS = [
     {"pc": 11, "name": "B",  "fr": "Si",   "slug": "si",        "slug_en": "b"},
 ]
 
+# Enharmonies : 5 toniques supplémentaires (dièses/bémols manquants)
+# canonical_slug / canonical_slug_en pointent vers la page principale
+ENHARMONIC_ROOTS = [
+    {"pc": 1,  "name": "C#", "fr": "Do♯",  "slug": "do-diese",  "slug_en": "c-sharp",
+     "canonical_slug": "re-bemol",  "canonical_slug_en": "db"},
+    {"pc": 3,  "name": "D#", "fr": "Ré♯",  "slug": "re-diese",  "slug_en": "d-sharp",
+     "canonical_slug": "mi-bemol",  "canonical_slug_en": "eb"},
+    {"pc": 6,  "name": "Gb", "fr": "Sol♭", "slug": "sol-bemol", "slug_en": "g-flat",
+     "canonical_slug": "fa-diese",  "canonical_slug_en": "f-sharp"},
+    {"pc": 8,  "name": "G#", "fr": "Sol♯", "slug": "sol-diese", "slug_en": "g-sharp",
+     "canonical_slug": "la-bemol",  "canonical_slug_en": "ab"},
+    {"pc": 10, "name": "A#", "fr": "La♯",  "slug": "la-diese",  "slug_en": "a-sharp",
+     "canonical_slug": "si-bemol",  "canonical_slug_en": "bb"},
+]
+
 # ---------------------------------------------------------------------------
 # DONNÉES : GAMMES
 # ---------------------------------------------------------------------------
@@ -434,6 +449,7 @@ def main():
                 "n_notes":     n_notes,
                 "app_link":    app_link,
                 "page_url":    page_url_fr,
+                "canonical_url": page_url_fr,
                 "alt_url_fr":  page_url_fr,
                 "alt_url_en":  page_url_en,
                 "BASE_URL":    BASE_URL,
@@ -487,6 +503,7 @@ def main():
                 "n_notes":     n_notes,
                 "app_link":    app_link,
                 "page_url":    page_url_en,
+                "canonical_url": page_url_en,
                 "alt_url_fr":  page_url_fr,
                 "alt_url_en":  page_url_en,
                 "BASE_URL":    BASE_URL,
@@ -515,6 +532,129 @@ def main():
                 "ui_schema_desc":  f"{root['name']} {scale.get('label_en', scale['label'])} for 4-string bass: {notes_str_en}. Intervals: {ivstr}.",
             }
             out_dir_en = OUT_ROOT_EN / root["slug_en"] / slug_s
+            out_dir_en.mkdir(parents=True, exist_ok=True)
+            (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
+            pages_en.append(page_url_en)
+
+    # ---- Pages enharmoniques (canonical → page principale bémol/dièse) ----
+    print("Génération des pages enharmoniques …")
+    for scale in SCALE_DEFS:
+        slug_s = scale_slug(scale["id"])
+        for eroot in ENHARMONIC_ROOTS:
+            notes_raw = build_scale(eroot["name"], scale["ls"], scale["iv"])
+            notes_fr  = [fr_note(n) for n in notes_raw]
+            notes_en  = [pretty(n)  for n in notes_raw]
+            ivstr     = interval_str(scale["iv"])
+            n_notes   = len(scale["iv"])
+            app_link  = f"{APP_URL}?root={eroot['name']}&scale={scale['id']}"
+
+            page_url_fr      = f"{BASE_URL}/fr/gammes/{eroot['slug']}/{slug_s}/"
+            canonical_url_fr = f"{BASE_URL}/fr/gammes/{eroot['canonical_slug']}/{slug_s}/"
+            page_url_en      = f"{BASE_URL}/en/scales/{eroot['slug_en']}/{slug_s}/"
+            canonical_url_en = f"{BASE_URL}/en/scales/{eroot['canonical_slug_en']}/{slug_s}/"
+
+            # FR
+            triads_fr = build_triads(eroot["name"], scale["ls"], scale["iv"], lang='fr')
+            desc_fr   = SCALE_DESCS.get(scale["id"]) or GROUP_DESCS.get(scale["group"], "")
+            notes_str = " – ".join(notes_fr)
+            ctx_fr = {
+                "lang":        "fr",
+                "root":        eroot,
+                "scale":       scale,
+                "scale_slug":  slug_s,
+                "label":       scale["label"],
+                "sub":         scale.get("sub", ""),
+                "notes_primary":   notes_fr,
+                "notes_secondary": notes_en,
+                "notes_secondary_label": "Notation anglaise",
+                "notes_str":   notes_str,
+                "ivstr":       ivstr,
+                "triads":      triads_fr,
+                "desc":        desc_fr,
+                "n_notes":     n_notes,
+                "app_link":    app_link,
+                "page_url":    page_url_fr,
+                "canonical_url": canonical_url_fr,
+                "alt_url_fr":  canonical_url_fr,
+                "alt_url_en":  canonical_url_en,
+                "BASE_URL":    BASE_URL,
+                "nav_roots":   [{"name": r["fr"],   "slug": r["slug"]}    for r in ROOTS],
+                "nav_base":    f"{BASE_URL}/fr/gammes",
+                "ui_title":         f"Gamme de {eroot['fr']} {scale['label']} pour basse — {notes_str}",
+                "ui_meta_desc":     f"Gamme de {eroot['fr']} {scale['label']} pour basse : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Intervalles : {ivstr}.",
+                "ui_h1":            f"Gamme de {eroot['fr']} {scale['label']}",
+                "ui_bass":          "Basse 4 cordes",
+                "ui_family":        f"famille {'majeure' if scale['fam']=='maj' else 'mineure'}",
+                "ui_notes":         "Notes",
+                "ui_ivstruct":      "Structure d'intervalles",
+                "ui_triads_title":  "Accords de la gamme (triades)",
+                "ui_degree":        "Degré",
+                "ui_chord":         f"Accord (en {eroot['fr']})",
+                "ui_quality":       "Qualité",
+                "ui_about":         "À propos de cette gamme",
+                "ui_cta_text":      f"Voir les positions sur le manche pour <strong>{eroot['fr']} {scale['label']}</strong> dans l'appli interactive.",
+                "ui_cta_btn":       "Explorer dans ScalaBass →",
+                "ui_other_keys":    "Même gamme dans d'autres toniques",
+                "ui_all_scales":    "Toutes les gammes",
+                "ui_og_title":      f"Gamme {eroot['fr']} {scale['label']} — Basse",
+                "ui_og_desc":       f"{eroot['fr']} {scale['label']} : {notes_str}",
+                "ui_schema_head":   f"Gamme de {eroot['fr']} {scale['label']} pour basse",
+                "ui_schema_desc":   f"{eroot['fr']} {scale['label']} pour basse : {notes_str}. Intervalles : {ivstr}.",
+            }
+            out_dir_fr = OUT_ROOT_FR / eroot["slug"] / slug_s
+            out_dir_fr.mkdir(parents=True, exist_ok=True)
+            (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
+            pages_fr.append(page_url_fr)
+
+            # EN
+            triads_en = build_triads(eroot["name"], scale["ls"], scale["iv"], lang='en')
+            desc_en   = SCALE_DESCS_EN.get(scale["id"]) or GROUP_DESCS_EN.get(scale["group"], "")
+            notes_str_en = " – ".join(notes_en)
+            ctx_en = {
+                "lang":        "en",
+                "root":        eroot,
+                "scale":       scale,
+                "scale_slug":  slug_s,
+                "label":       scale.get("label_en", scale["label"]),
+                "sub":         scale.get("sub_en", scale.get("sub", "")),
+                "notes_primary":   notes_en,
+                "notes_secondary": notes_fr,
+                "notes_secondary_label": "Solfège",
+                "notes_str":   notes_str_en,
+                "ivstr":       ivstr,
+                "triads":      triads_en,
+                "desc":        desc_en,
+                "n_notes":     n_notes,
+                "app_link":    app_link,
+                "page_url":    page_url_en,
+                "canonical_url": canonical_url_en,
+                "alt_url_fr":  canonical_url_fr,
+                "alt_url_en":  canonical_url_en,
+                "BASE_URL":    BASE_URL,
+                "nav_roots":   [{"name": r["name"], "slug": r["slug_en"]} for r in ROOTS],
+                "nav_base":    f"{BASE_URL}/en/scales",
+                "ui_title":        f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale for Bass — {notes_str_en}",
+                "ui_meta_desc":    f"{eroot['name']} {scale.get('label_en', scale['label'])} scale for bass: {notes_str_en}. {n_notes} note{'s' if n_notes>1 else ''}. Intervals: {ivstr}.",
+                "ui_h1":           f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale",
+                "ui_bass":         "4-string bass",
+                "ui_family":       f"{'major' if scale['fam']=='maj' else 'minor'} family",
+                "ui_notes":        "Notes",
+                "ui_ivstruct":     "Interval Structure",
+                "ui_triads_title": "Scale Chords (triads)",
+                "ui_degree":       "Degree",
+                "ui_chord":        f"Chord (in {eroot['name']})",
+                "ui_quality":      "Quality",
+                "ui_about":        "About this scale",
+                "ui_cta_text":     f"See fretboard positions for <strong>{eroot['name']} {scale.get('label_en', scale['label'])}</strong> in the interactive app.",
+                "ui_cta_btn":      "Explore in ScalaBass →",
+                "ui_other_keys":   "Same scale in other keys",
+                "ui_all_scales":   "All scales",
+                "ui_og_title":     f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale — Bass",
+                "ui_og_desc":      f"{eroot['name']} {scale.get('label_en', scale['label'])}: {notes_str_en}",
+                "ui_schema_head":  f"{eroot['name']} {scale.get('label_en', scale['label'])} scale for bass",
+                "ui_schema_desc":  f"{eroot['name']} {scale.get('label_en', scale['label'])} for bass: {notes_str_en}. Intervals: {ivstr}.",
+            }
+            out_dir_en = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
             pages_en.append(page_url_en)
