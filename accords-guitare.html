@@ -478,11 +478,6 @@ h1 em{font-style:italic; color:var(--brass)}
             <button data-hand="left">Gaucher 🤛</button>
           </div>
         </div>
-        <div style="flex-basis:100%;height:0"></div>
-        <div>
-          <div class="ctl-label">Position</div>
-          <div class="seg" id="fb-position"></div>
-        </div>
       </div>
     </div>
     <div class="fb-scroll"><div class="fretboard" id="fretboard"></div></div>
@@ -652,28 +647,72 @@ const A_SH = {
 const D_SH = {
   p5:  b=>[null,null,b,b+2,b+3,null],
   maj: b=>[null,null,b,b+2,b+3,b+2],
+  min: b=>[null,null,b,b+2,b+3,b+1],
 };
 // G-shape: root on both E strings (like open G chord)
 const G_SH = {
-  maj: r=>{ const rr=r<3?r+12:r; return [rr,rr-1,rr-3,rr-3,rr-3,rr]; },
+  maj:  r=>{ const rr=r<3?r+12:r;  return [rr,rr-1,rr-3,rr-3,rr-3,rr]; },
+  min:  r=>{ const rr=r<4?r+12:r;  return [rr,rr-2,rr-3,rr-3,rr-4,rr]; },
+  '7':  r=>{ const rr=r<3?r+12:r;  return [rr,rr-1,rr-3,rr-3,rr-3,rr-2]; },
+  maj7: r=>{ const rr=r<3?r+12:r;  return [rr,rr-1,rr-3,rr-3,rr-3,rr-1]; },
+  m7:   r=>{ const rr=r<4?r+12:r;  return [rr,rr-2,rr-3,rr-3,rr-4,rr-2]; },
 };
 // C-shape: root on A string, shape derived from open C chord
 const C_SH = {
   maj: b=>{ const bb=b<3?b+12:b; return [null,bb,bb-1,bb-3,bb-2,bb-3]; },
+  min: b=>{ const bb=b<3?b+12:b; return [null,bb,bb-2,bb-3,bb-2,bb]; },
 };
 // barre fret for each shape
 const eB = r => (r-4+12)%12;
 const aB = r => (r-9+12)%12;
 const dB = r => (r-2+12)%12;
 
-// CAGED shape definitions for major chords
-const CAGED_DEFS = [
-  { shape:'C', fn: r => C_SH.maj(aB(r)) },
-  { shape:'A', fn: r => A_SH.maj(aB(r)) },
-  { shape:'G', fn: r => G_SH.maj(eB(r)) },
-  { shape:'E', fn: r => E_SH.maj(eB(r)) },
-  { shape:'D', fn: r => D_SH.maj(dB(r)) },
+// CAGED windows: fret range [wMin, wMax] for each shape
+const CAGED_WINDOWS = [
+  { shape:'C', winFn: r=>{ const b=aB(r),bb=b<3?b+12:b; return [Math.max(0,bb-3),bb+2]; } },
+  { shape:'A', winFn: r=>{ const b=aB(r);               return [b,b+5]; } },
+  { shape:'G', winFn: r=>{ const b=eB(r),bb=b<3?b+12:b; return [Math.max(0,bb-3),bb+2]; } },
+  { shape:'E', winFn: r=>{ const b=eB(r);               return [b,b+5]; } },
+  { shape:'D', winFn: r=>{ const b=dB(r);               return [b,b+4]; } },
 ];
+
+// Windowed voicing finder — returns voicing array ({f,pc,iv}|null) within [winMin,winMax]
+function findVoicingInWindow(rootPc, intervals, winMin, winMax){
+  const chordPcs=intervals.map(i=>(rootPc+i)%12);
+  const chordSet=new Set(chordPcs);
+  const ivByPc={}; intervals.forEach(iv=>{ivByPc[(rootPc+iv)%12]=iv;});
+  const rootPC=rootPc%12;
+  const minReq=Math.min(intervals.length,3);
+  const strOpts=OPEN_PCS.map(open=>{
+    const list=[];
+    for(let f=winMin;f<=Math.min(winMax,22);f++){
+      const pc=(open+f)%12; if(chordSet.has(pc)) list.push({f,pc,iv:ivByPc[pc]});
+    }
+    return list;
+  });
+  const patterns=[[0,1,2,3,4,5],[1,2,3,4,5],[2,3,4,5],[0,1,2,3,4],[1,2,3,4]];
+  for(const ap of patterns){
+    let result=null;
+    (function en(idx,combo,mnF,mxF,pcs,hasR){
+      if(result)return;
+      if(idx===ap.length){
+        if(!hasR||pcs.size<minReq)return;
+        const full=Array(6).fill(null);
+        ap.forEach((si,ci)=>{full[si]=combo[ci];});
+        result=full.map((x,s)=>x===null?null:{f:x.f,pc:x.pc,iv:ivByPc[x.pc]});
+        return;
+      }
+      for(const opt of strOpts[ap[idx]]){
+        let nMn=mnF,nMx=mxF;
+        if(opt.f>0){nMn=mnF<0?opt.f:Math.min(mnF,opt.f);nMx=mxF<0?opt.f:Math.max(mxF,opt.f);if(nMx-nMn>4)continue;}
+        const np=new Set(pcs);np.add(opt.pc);
+        en(idx+1,[...combo,opt],nMn,nMx,np,hasR||opt.pc===rootPC);
+      }
+    })(0,[],-1,-1,new Set(),false);
+    if(result)return result;
+  }
+  return null;
+}
 
 // Hardcoded open/standard positions [E,A,D,G,B,e], null=muted
 const SPECIALS = {
@@ -1044,11 +1083,8 @@ function renderDiagrams(def){
 
   voicings.forEach((v, idx)=>{
     const posN=idx+1;
-    const isSelected=state.position==='all'?idx===0:String(state.position)===String(posN);
     const card=document.createElement('div');
-    card.className='diagram-card'+(isSelected?' highlight':'');
-    card.title=`Cliquer pour afficher la position ${posN} sur le manche`;
-    card.onclick=()=>{ state.position=posN; render(); };
+    card.className='diagram-card';
 
     const posLabel=document.createElement('div'); posLabel.className='diagram-pos';
     const played=v.filter(x=>x);
@@ -1081,24 +1117,54 @@ function renderDiagrams(def){
 function renderCAGED(){
   const section=document.getElementById('caged-section');
   const def=currentChordDef();
-  if(!def||def.id!=='maj'){ section.style.display='none'; return; }
+  if(!def){ section.style.display='none'; return; }
   section.style.display='';
-  document.getElementById('caged-chord-name').textContent=spellPc(state.rootPc)+' Majeur';
+  document.getElementById('caged-chord-name').textContent=spellPc(state.rootPc)+(def.sym?' '+def.sym:'');
 
   const ivs=def.iv;
+  const ct=def.id;
+  const r=state.rootPc;
   const grid=document.getElementById('caged-grid');
   grid.innerHTML='';
 
-  const cards=CAGED_DEFS.map(cd=>{
-    const fa=cd.fn(state.rootPc);
-    const voicing=arrToVoicing(fa,state.rootPc,ivs);
-    const played=fa.filter(f=>f!==null&&f>0);
-    const minFret=played.length?Math.min(...played):0;
-    return {shape:cd.shape,fa,voicing,minFret};
-  }).sort((a,b)=>a.minFret-b.minFret);
+  // Template lookup for each shape/chord type
+  const TMPL={
+    C:{maj:b=>C_SH.maj(b), min:b=>C_SH.min(b)},
+    A:Object.fromEntries(Object.keys(A_SH).map(k=>[k,b=>A_SH[k](b)])),
+    G:Object.fromEntries(Object.keys(G_SH).map(k=>[k,b=>G_SH[k](b)])),
+    E:Object.fromEntries(Object.keys(E_SH).map(k=>[k,b=>E_SH[k](b)])),
+    D:{p5:b=>D_SH.p5(b), maj:b=>D_SH.maj(b), min:b=>D_SH.min(b)},
+  };
 
-  cards.forEach(cd=>{
-    const {shape,voicing,minFret}=cd;
+  const cards=CAGED_WINDOWS.map(cw=>{
+    const [wMin,wMax]=cw.winFn(r);
+    let voicing=null;
+
+    // Try template first
+    const tmplFn=TMPL[cw.shape]?.[ct];
+    if(tmplFn){
+      let anchor;
+      if(cw.shape==='C'||cw.shape==='A') anchor=aB(r);
+      else if(cw.shape==='G'||cw.shape==='E') anchor=eB(r);
+      else anchor=dB(r);
+      const fa=tmplFn(anchor);
+      if(fa) voicing=arrToVoicing(fa,r,ivs);
+    }
+    // Windowed fallback for any chord type without a template
+    if(!voicing) voicing=findVoicingInWindow(r,ivs,wMin,wMax);
+    if(!voicing) return null;
+
+    const played=voicing.filter(x=>x&&x.f>0).map(x=>x.f);
+    const minFret=played.length?Math.min(...played):0;
+    return {shape:cw.shape,voicing,minFret};
+  }).filter(Boolean).sort((a,b)=>a.minFret-b.minFret);
+
+  if(!cards.length){
+    grid.innerHTML='<div class="no-voicings">Aucune position CAGED trouvée.</div>';
+    return;
+  }
+
+  cards.forEach(({shape,voicing,minFret})=>{
     const card=document.createElement('div');
     card.className='diagram-card';
 
@@ -1137,20 +1203,6 @@ function renderCAGED(){
 }
 
 /* ============================================================ FRETBOARD */
-function buildPositionButtons(n){
-  const c=document.getElementById('fb-position'); if(!c)return;
-  if(state.position!=='all'&&parseInt(state.position)>n) state.position='all';
-  c.innerHTML='';
-  const mk=(val,lbl)=>{
-    const b=document.createElement('button'); b.textContent=lbl;
-    b.className=String(state.position)===String(val)?'on':'';
-    b.onclick=()=>{ state.position=val; render(); };
-    return b;
-  };
-  c.appendChild(mk('all','Tout'));
-  for(let i=1;i<=n;i++) c.appendChild(mk(i,String(i)));
-}
-
 function buildTuningButtons(){
   const c=document.getElementById('fb-tuning-ctl'); if(!c)return;
   c.innerHTML='';
@@ -1180,25 +1232,7 @@ function renderFretboard(def){
   const pcToIv={};
   def.iv.forEach(iv=>{ pcToIv[(state.rootPc+iv)%12]=iv; });
 
-  // Determine highlight box from selected position
-  let box=null, highlightSet=null;
-  const vOffset=nStr-6; // 0 for 6-string, 1 for 7-string (voicings always 6-string)
-  if(state.position!=='all'&&_currentVoicings.length){
-    const vIdx=parseInt(state.position)-1;
-    const v=_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
-    if(v){
-      highlightSet=new Set();
-      v.forEach((x,s)=>{ if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`); });
-      const nonOpen=v.filter(x=>x&&x.f>0);
-      if(nonOpen.length){
-        const minF=Math.min(...nonOpen.map(x=>x.f));
-        const maxF=Math.max(...nonOpen.map(x=>x.f));
-        box={start:Math.max(0,minF-1),end:maxF+1};
-      } else { box={start:0,end:3}; }
-    }
-  }
-
-  const fCount=box?Math.min(24,Math.max(state.frets,box.end)):state.frets;
+  const fCount=state.frets;
 
   // Build strings (reversed: high string on top)
   const dispPcs=[...oPcs].reverse();
@@ -1214,15 +1248,13 @@ function renderFretboard(def){
     lab.textContent=dispNames[di]; row.appendChild(lab);
 
     for(let f=0;f<=fCount;f++){
-      const inBox=box&&f>=box.start&&f<=box.end;
       const cell=document.createElement('div');
-      cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
+      cell.className='cell'+(f===0?' open nut-after':'');
       const pc=(sPc+f)%12;
       const iv=pcToIv[pc];
       if(iv!==undefined){
-        const isHL=highlightSet?highlightSet.has(`${origIdx}:${f}`):true;
         const d=document.createElement('div');
-        d.className='dot'+(iv===0?' root':'')+(highlightSet&&!isHL?' ghost':'');
+        d.className='dot'+(iv===0?' root':'');
         d.style.background=IV_COLOR[iv]||'#d9a849';
         d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
         cell.appendChild(d);
@@ -1272,7 +1304,6 @@ function render(){
   renderFormula(def);
   renderDiagrams(def);
   renderCAGED();
-  buildPositionButtons(_currentVoicings.length);
   buildTuningButtons();
   renderFretboard(def);
 }
