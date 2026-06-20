@@ -405,6 +405,7 @@ const CHORD_GROUPS = [
     { id:'7sus4',  sym:'7sus4',label:'7 Sus4',          iv:[0,5,7,10] },
     { id:'7sus2',  sym:'7sus2',label:'7 Sus2',          iv:[0,2,7,10] },
     { id:'7b5',    sym:'7♭5',  label:'7 ♭5',            iv:[0,4,6,10] },
+    { id:'m7s5',   sym:'m7♯5', label:'Mineur 7 ♯5',     iv:[0,3,8,10] },
   ]},
   { id:'neuf', label:'9èmes', chords:[
     { id:'maj9',   sym:'Δ9',   label:'Majeur 9',        iv:[0,4,7,11,2] },
@@ -436,6 +437,7 @@ const CHORD_GROUPS = [
     { id:'7s9b5',  sym:'7♯9♭5',label:'7 ♯9♭5',           iv:[0,4,6,10,3] },
     { id:'7b9s5',  sym:'7♭9♯5',label:'7 ♭9♯5',           iv:[0,4,8,10,1] },
     { id:'7s9s5',  sym:'7♯9♯5',label:'7 ♯9♯5',           iv:[0,4,8,10,3] },
+    { id:'13b5',   sym:'13♭5', label:'13 ♭5',            iv:[0,4,6,10,9] },
   ]},
   { id:'inv', label:'Renversements', chords:[
     { id:'maj_1',  sym:'/3',    label:'Maj 1er renv. (/3)',  iv:[0,4,7],     bassIv:4 },
@@ -460,31 +462,40 @@ const OPEN_MIDI = [40, 45, 50, 55, 59, 64];
 
 // E-shape barre: root on low-E string at fret b
 const E_SH = {
-  maj:  b=>[b,b+2,b+2,b+1,b,b],
-  min:  b=>[b,b+2,b+2,b,b,b],
-  '7':  b=>[b,b+2,b,b+1,b,b],
-  maj7: b=>[b,b+2,b+1,b+1,b,b],
-  m7:   b=>[b,b+2,b,b,b,b],
-  sus4: b=>[b,b+2,b+2,b+2,b,b],
-  sus2: b=>b>0?[b,b+2,b+2,b-1,b,b]:null,
-  dim:  b=>[b,b+2,b+3,b+1,null,null],
-  aug:  b=>[b,b+3,b+3,b+2,b+1,null],
+  maj:   b=>[b,b+2,b+2,b+1,b,b],
+  min:   b=>[b,b+2,b+2,b,b,b],
+  '7':   b=>[b,b+2,b,b+1,b,b],
+  maj7:  b=>[b,b+2,b+1,b+1,b,b],
+  m7:    b=>[b,b+2,b,b,b,b],
+  mmaj7: b=>[b,b+2,b+1,b,b,b],
+  sus4:  b=>[b,b+2,b+2,b+2,b,b],
+  sus2:  b=>b>0?[b,b+2,b+2,b-1,b,b]:null,
+  dim:   b=>[b,b+2,b+3,b+1,null,null],
+  aug:   b=>[b,b+3,b+3,b+2,b+1,null],
+  p5:    b=>[b,b+2,b+2,null,null,null],
 };
 // A-shape barre: root on A string at fret b, low-E muted
 const A_SH = {
-  maj:  b=>[null,b,b+2,b+2,b+2,b],
-  min:  b=>[null,b,b+2,b+2,b+1,b],
-  '7':  b=>[null,b,b+2,b,b+2,b],
-  maj7: b=>[null,b,b+2,b+1,b+2,b],
-  m7:   b=>[null,b,b+2,b,b+1,b],
-  sus4: b=>b<=9?[null,b,b+2,b+2,b+3,b]:null,
-  sus2: b=>[null,b,b+2,b+2,b,b],
-  dim:  b=>[null,b,b+1,b+2,b+1,null],
-  aug:  b=>[null,b,b+3,b+3,b+2,null],
+  maj:   b=>[null,b,b+2,b+2,b+2,b],
+  min:   b=>[null,b,b+2,b+2,b+1,b],
+  '7':   b=>[null,b,b+2,b,b+2,b],
+  maj7:  b=>[null,b,b+2,b+1,b+2,b],
+  m7:    b=>[null,b,b+2,b,b+1,b],
+  mmaj7: b=>[null,b,b+2,b+1,b+1,b],
+  sus4:  b=>b<=9?[null,b,b+2,b+2,b+3,b]:null,
+  sus2:  b=>[null,b,b+2,b+2,b,b],
+  dim:   b=>[null,b,b+1,b+2,b+1,null],
+  aug:   b=>[null,b,b+3,b+3,b+2,null],
+  p5:    b=>[null,b,b+2,b+2,null,null],
+};
+// D-shape barre: root on D string at fret b (power chords)
+const D_SH = {
+  p5: b=>[null,null,b,b+2,b+3,null],
 };
 // barre fret for each shape
 const eB = r => (r-4+12)%12;
 const aB = r => (r-9+12)%12;
+const dB = r => (r-2+12)%12;
 
 // Hardcoded open/standard positions [E,A,D,G,B,e], null=muted
 const SPECIALS = {
@@ -523,6 +534,16 @@ const SPECIALS = {
   '4_dim':  [[0,1,2,0,null,null]],
   '9_aug':  [[null,0,3,2,2,1]],
   '4_aug':  [[0,3,2,1,1,0]],
+  // Power chords (p5) — open & low positions
+  '4_p5':   [[0,2,2,null,null,null]],    // E5
+  '9_p5':   [[null,0,2,2,null,null]],    // A5
+  '2_p5':   [[null,null,0,2,3,null]],    // D5
+  '7_p5':   [[3,5,5,null,null,null]],    // G5
+  '11_p5':  [[null,2,4,4,null,null]],    // B5
+  // mM7 open positions
+  '4_mmaj7':  [[0,2,1,0,0,0]],           // EmM7
+  '9_mmaj7':  [[null,0,2,1,1,0]],        // AmM7
+  '2_mmaj7':  [[null,null,0,2,2,1]],     // DmM7
 };
 
 // Convert fret array to voicing object array
@@ -550,7 +571,7 @@ function faValid(fa, rootPc, intervals) {
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
-const TMPL_TYPES = new Set(['maj','min','7','maj7','m7','sus2','sus4','dim','aug']);
+const TMPL_TYPES = new Set(['maj','min','7','maj7','m7','mmaj7','sus2','sus4','dim','aug','p5']);
 const _voiceCache = {};
 
 function findVoicings(rootPc, intervals, bassIv, chordId) {
@@ -577,7 +598,9 @@ function findVoicings(rootPc, intervals, bassIv, chordId) {
     if (E_SH[ct]) { const b=eB(rootPc); const fa=E_SH[ct](b); tryFa(fa); }
     // 3. A-shape barre
     if (A_SH[ct]) { const b=aB(rootPc); const fa=A_SH[ct](b); tryFa(fa); }
-    // 4. Second E-shape if first was open (add barre version too)
+    // 4. D-shape barre
+    if (D_SH[ct]) { const b=dB(rootPc); const fa=D_SH[ct](b); tryFa(fa); }
+    // 5. Second E-shape if first was open (add barre version too)
     if (E_SH[ct]) { const b=eB(rootPc); if (b===0) { const fa2=E_SH[ct](12); tryFa(fa2); } }
   } else {
     // Algorithmic fallback for extensions, inversions, etc.
