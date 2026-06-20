@@ -454,94 +454,179 @@ function currentChordDef(){
   return g?g.chords.find(c=>c.id===state.chordId)||g.chords[0]:null;
 }
 
-/* ============================================================ VOICING ALGORITHM */
-const OPEN_PCS = [4, 9, 2, 7, 11, 4]; // E A D G B E
-// String MIDI base (open): E2=40 A2=45 D3=50 G3=55 B3=59 E4=64
+/* ============================================================ VOICING SYSTEM */
+const OPEN_PCS = [4, 9, 2, 7, 11, 4]; // E A D G B e
 const OPEN_MIDI = [40, 45, 50, 55, 59, 64];
 
-// Allowed patterns of active (played) strings
-const ACTIVE_PATTERNS = [
-  [0,1,2,3,4,5],
-  [1,2,3,4,5],
-  [2,3,4,5],
-  [0,1,2,3,4],
-  [0,1,2,3],
-  [1,2,3,4],
-  [0,1,2,3,5], // skip high e (rare but valid)
-];
+// E-shape barre: root on low-E string at fret b
+const E_SH = {
+  maj:  b=>[b,b+2,b+2,b+1,b,b],
+  min:  b=>[b,b+2,b+2,b,b,b],
+  '7':  b=>[b,b+2,b,b+1,b,b],
+  maj7: b=>[b,b+2,b+1,b+1,b,b],
+  m7:   b=>[b,b+2,b,b,b,b],
+  sus4: b=>[b,b+2,b+2,b+2,b,b],
+  sus2: b=>b>0?[b,b+2,b+2,b-1,b,b]:null,
+  dim:  b=>[b,b+2,b+3,b+1,null,null],
+  aug:  b=>[b,b+3,b+3,b+2,b+1,null],
+};
+// A-shape barre: root on A string at fret b, low-E muted
+const A_SH = {
+  maj:  b=>[null,b,b+2,b+2,b+2,b],
+  min:  b=>[null,b,b+2,b+2,b+1,b],
+  '7':  b=>[null,b,b+2,b,b+2,b],
+  maj7: b=>[null,b,b+2,b+1,b+2,b],
+  m7:   b=>[null,b,b+2,b,b+1,b],
+  sus4: b=>b<=9?[null,b,b+2,b+2,b+3,b]:null,
+  sus2: b=>[null,b,b+2,b+2,b,b],
+  dim:  b=>[null,b,b+1,b+2,b+1,null],
+  aug:  b=>[null,b,b+3,b+3,b+2,null],
+};
+// barre fret for each shape
+const eB = r => (r-4+12)%12;
+const aB = r => (r-9+12)%12;
 
+// Hardcoded open/standard positions [E,A,D,G,B,e], null=muted
+const SPECIALS = {
+  '0_maj':  [[null,3,2,0,1,0]],
+  '2_maj':  [[null,null,0,2,3,2]],
+  '4_maj':  [[0,2,2,1,0,0]],
+  '5_maj':  [[1,3,3,2,1,1]],
+  '7_maj':  [[3,2,0,0,0,3]],
+  '9_maj':  [[null,0,2,2,2,0]],
+  '11_maj': [[null,2,4,4,4,2]],
+  '2_min':  [[null,null,0,2,3,1]],
+  '4_min':  [[0,2,2,0,0,0]],
+  '9_min':  [[null,0,2,2,1,0]],
+  '0_7':    [[null,3,2,3,1,0]],
+  '2_7':    [[null,null,0,2,1,2]],
+  '4_7':    [[0,2,0,1,0,0]],
+  '7_7':    [[3,2,0,0,0,1]],
+  '9_7':    [[null,0,2,0,2,0]],
+  '11_7':   [[null,2,1,2,0,2]],
+  '0_maj7': [[null,3,2,0,0,0]],
+  '2_maj7': [[null,null,0,2,2,2]],
+  '4_maj7': [[0,2,1,1,0,0]],
+  '7_maj7': [[3,2,0,0,0,2]],
+  '9_maj7': [[null,0,2,1,2,0]],
+  '2_m7':   [[null,null,0,2,1,1]],
+  '4_m7':   [[0,2,0,0,0,0]],
+  '9_m7':   [[null,0,2,0,1,0]],
+  '9_sus2': [[null,0,2,2,0,0]],
+  '2_sus2': [[null,null,0,2,3,0]],
+  '4_sus2': [[0,2,4,4,0,0]],
+  '9_sus4': [[null,0,2,2,3,0]],
+  '2_sus4': [[null,null,0,2,3,3]],
+  '4_sus4': [[0,2,2,2,0,0]],
+  '7_sus4': [[3,3,0,0,1,3]],
+  '9_dim':  [[null,0,1,2,1,null]],
+  '4_dim':  [[0,1,2,0,null,null]],
+  '9_aug':  [[null,0,3,2,2,1]],
+  '4_aug':  [[0,3,2,1,1,0]],
+};
+
+// Convert fret array to voicing object array
+function arrToVoicing(fa, rootPc, intervals) {
+  const ivByPc = {};
+  intervals.forEach(iv => { ivByPc[(rootPc+iv)%12] = iv; });
+  return fa.map((f,s) => {
+    if (f===null) return null;
+    const pc = (OPEN_PCS[s]+f)%12;
+    return {f, pc, iv: ivByPc[pc]??0};
+  });
+}
+
+function faValid(fa, rootPc, intervals) {
+  const cPcs = new Set(intervals.map(i=>(rootPc+i)%12));
+  const rpc = rootPc%12;
+  let hasRoot=false, count=0; const played=new Set();
+  for (let s=0;s<6;s++) {
+    const f=fa[s]; if (f===null) continue; count++;
+    const pc=(OPEN_PCS[s]+f)%12;
+    if (!cPcs.has(pc)) return false;
+    if (pc===rpc) hasRoot=true;
+    played.add(pc);
+  }
+  return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
+}
+
+const TMPL_TYPES = new Set(['maj','min','7','maj7','m7','sus2','sus4','dim','aug']);
 const _voiceCache = {};
 
-function findVoicings(rootPc, intervals, bassIv) {
-  const cacheKey = `${rootPc}|${intervals.join(',')}|${bassIv??''}`;
-  if (_voiceCache[cacheKey]) return _voiceCache[cacheKey];
+function findVoicings(rootPc, intervals, bassIv, chordId) {
+  const ck = `${rootPc}|${intervals.join(',')}|${bassIv??''}|${chordId||''}`;
+  if (_voiceCache[ck]) return _voiceCache[ck];
 
-  const chordPcs = intervals.map(i => (rootPc + i) % 12);
-  const chordSet = new Set(chordPcs);
-  const ivByPc = {};
-  intervals.forEach(iv => { ivByPc[(rootPc + iv) % 12] = iv; });
-  const rootPC = rootPc % 12;
-
-  // Per-string option lists
-  const strOpts = OPEN_PCS.map(open => {
-    const list = [];
-    for (let f = 0; f <= 14; f++) {
-      const pc = (open + f) % 12;
-      if (chordSet.has(pc)) list.push({ f, pc, iv: ivByPc[pc] });
-    }
-    return list;
-  });
-
-  const minRequired = chordPcs.length <= 2 ? 2 : chordPcs.length <= 3 ? 3 : chordPcs.length <= 4 ? 3 : 4;
-  const voicings = [];
   const seen = new Set();
+  const results = [];
 
-  for (const activeStr of ACTIVE_PATTERNS) {
-    if (activeStr.length < 3) continue;
-
-    function enumerate(idx, combo, minF, maxF, pcsSet, hasRoot, lowestPc) {
-      if (voicings.length >= 12) return;
-      if (idx === activeStr.length) {
-        if (!hasRoot) return;
-        if (pcsSet.size < minRequired) return;
-        // Inversion: check lowest string has the required bass interval
-        if (bassIv !== undefined && bassIv !== null && lowestPc !== (rootPc + bassIv) % 12) return;
-
-        const full = Array(6).fill(null);
-        activeStr.forEach((si, ci) => { full[si] = combo[ci]; });
-        const key = full.map(x => x === null ? 'x' : x.f).join(',');
-        if (seen.has(key)) return;
-        seen.add(key);
-        voicings.push(full);
-        return;
-      }
-      const si = activeStr[idx];
-      for (const opt of strOpts[si]) {
-        let nMin = minF, nMax = maxF;
-        if (opt.f > 0) {
-          nMin = minF < 0 ? opt.f : Math.min(minF, opt.f);
-          nMax = maxF < 0 ? opt.f : Math.max(maxF, opt.f);
-          if (nMax - nMin > 4) continue;
-        }
-        const np = new Set(pcsSet); np.add(opt.pc);
-        const newLowest = idx === 0 ? opt.pc : lowestPc;
-        enumerate(idx+1, [...combo, opt], nMin, nMax, np,
-          hasRoot || opt.pc === rootPC, newLowest);
-      }
-    }
-
-    enumerate(0, [], -1, -1, new Set(), false, -1);
-    if (voicings.length >= 12) break;
+  function tryFa(fa) {
+    if (!fa || results.length>=6) return;
+    if (!faValid(fa, rootPc, intervals)) return;
+    const key = fa.map(x=>x===null?'x':x).join(',');
+    if (seen.has(key)) return;
+    seen.add(key);
+    results.push(arrToVoicing(fa, rootPc, intervals));
   }
 
-  voicings.sort((a, b) => {
-    const getMin = v => { const f=v.filter(x=>x&&x.f>0).map(x=>x.f); return f.length?Math.min(...f):0; };
-    return getMin(a) - getMin(b);
-  });
+  const ct = chordId||'';
+  if (TMPL_TYPES.has(ct) && bassIv==null) {
+    // 1. Open/special positions first
+    (SPECIALS[`${rootPc}_${ct}`]||[]).forEach(tryFa);
+    // 2. E-shape barre
+    if (E_SH[ct]) { const b=eB(rootPc); const fa=E_SH[ct](b); tryFa(fa); }
+    // 3. A-shape barre
+    if (A_SH[ct]) { const b=aB(rootPc); const fa=A_SH[ct](b); tryFa(fa); }
+    // 4. Second E-shape if first was open (add barre version too)
+    if (E_SH[ct]) { const b=eB(rootPc); if (b===0) { const fa2=E_SH[ct](12); tryFa(fa2); } }
+  } else {
+    // Algorithmic fallback for extensions, inversions, etc.
+    const chordPcs=intervals.map(i=>(rootPc+i)%12);
+    const chordSet=new Set(chordPcs);
+    const ivByPc={}; intervals.forEach(iv=>{ivByPc[(rootPc+iv)%12]=iv;});
+    const rootPC=rootPc%12;
+    const strOpts=OPEN_PCS.map(open=>{
+      const list=[];
+      for (let f=0;f<=14;f++){const pc=(open+f)%12;if(chordSet.has(pc))list.push({f,pc,iv:ivByPc[pc]});}
+      return list;
+    });
+    const minReq=chordPcs.length<=3?3:chordPcs.length<=4?3:4;
+    const raw=[]; const rawSeen=new Set();
+    const patterns=[[0,1,2,3,4,5],[1,2,3,4,5],[2,3,4,5],[0,1,2,3,4],[1,2,3,4]];
+    for (const ap of patterns) {
+      if (raw.length>=12) break;
+      (function en(idx,combo,mnF,mxF,pcs,hasR,lowPc){
+        if (raw.length>=12) return;
+        if (idx===ap.length){
+          if (!hasR||pcs.size<minReq) return;
+          if (bassIv!=null&&lowPc!==(rootPc+bassIv)%12) return;
+          const full=Array(6).fill(null);
+          ap.forEach((si,ci)=>{full[si]=combo[ci];});
+          const k=full.map(x=>x===null?'x':x.f).join(',');
+          if (rawSeen.has(k)) return; rawSeen.add(k); raw.push(full); return;
+        }
+        const si=ap[idx];
+        for (const opt of strOpts[si]){
+          let nMn=mnF,nMx=mxF;
+          if (opt.f>0){nMn=mnF<0?opt.f:Math.min(mnF,opt.f);nMx=mxF<0?opt.f:Math.max(mxF,opt.f);if(nMx-nMn>4)continue;}
+          const np=new Set(pcs);np.add(opt.pc);
+          en(idx+1,[...combo,opt],nMn,nMx,np,hasR||opt.pc===rootPC,idx===0?opt.pc:lowPc);
+        }
+      })(0,[],- 1,-1,new Set(),false,-1);
+    }
+    raw.sort((a,b)=>{
+      const gm=v=>{const f=v.filter(x=>x&&x.f>0).map(x=>x.f);return f.length?Math.min(...f):0;};
+      return gm(a)-gm(b);
+    });
+    raw.slice(0,6).forEach(fa=>{
+      const v=fa.map((x,s)=>x===null?null:{f:x.f,pc:x.pc,iv:x.iv});
+      const k=fa.map(x=>x===null?'x':x.f).join(',');
+      if (!seen.has(k)){seen.add(k);results.push(v);}
+    });
+  }
 
-  const result = voicings.slice(0, 6);
-  _voiceCache[cacheKey] = result;
-  return result;
+  _voiceCache[ck]=results;
+  return results;
 }
 
 /* ============================================================ SVG CHORD DIAGRAM */
@@ -751,7 +836,7 @@ function renderDiagrams(def){
   const grid=document.getElementById('diagrams-grid'); grid.innerHTML='';
   if(!def){ grid.innerHTML='<div class="no-voicings">Aucun accord sélectionné.</div>'; return; }
 
-  const voicings=findVoicings(state.rootPc, def.iv, def.bassIv);
+  const voicings=findVoicings(state.rootPc, def.iv, def.bassIv, def.id);
   _currentVoicings=voicings;
 
   if(!voicings.length){ grid.innerHTML='<div class="no-voicings">Aucune position trouvée pour cet accord (tessiture trop complexe).</div>'; return; }
