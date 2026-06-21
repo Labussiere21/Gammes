@@ -288,8 +288,8 @@ h1 em{font-style:italic; color:var(--brass)}
 .fb-scroll{overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch; scrollbar-width:thin}
 .fretboard{--fret-w:54px; --open-w:40px; --label-w:28px; min-width:max-content}
 .fb-strings{
-  background:linear-gradient(180deg,#3d1020,#250b14);
-  border:1px solid #1a0810; border-radius:5px; overflow:hidden;
+  background:linear-gradient(180deg,#3a2510,#201408);
+  border:1px solid #100a04; border-radius:5px; overflow:hidden;
   box-shadow:inset 0 2px 14px rgba(0,0,0,.55),0 16px 40px -30px #000; position:relative;
 }
 .fb-row{display:flex; align-items:center; height:42px; position:relative}
@@ -303,7 +303,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .str-label{width:var(--label-w); flex:none; text-align:center; z-index:4; font-family:"Space Mono",monospace; font-weight:700; font-size:11px; color:var(--muted)}
 .cell{
   width:var(--fret-w); flex:none; height:100%; display:flex; align-items:center; justify-content:center;
-  position:relative; z-index:2; border-right:2px solid rgba(100,20,40,.85); box-shadow:inset -1px 0 0 rgba(255,255,255,.1)
+  position:relative; z-index:2; border-right:2px solid rgba(20,12,5,.9); box-shadow:inset -1px 0 0 rgba(255,255,255,.08)
 }
 .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
 .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
@@ -477,6 +477,11 @@ h1 em{font-style:italic; color:var(--brass)}
             <button data-hand="right" class="on">🤜 Droitier</button>
             <button data-hand="left">Gaucher 🤛</button>
           </div>
+        </div>
+        <div style="flex-basis:100%;height:0"></div>
+        <div>
+          <div class="ctl-label">Position</div>
+          <div class="seg" id="fb-position"></div>
         </div>
       </div>
     </div>
@@ -1083,8 +1088,11 @@ function renderDiagrams(def){
 
   voicings.forEach((v, idx)=>{
     const posN=idx+1;
+    const isSelected=state.position==='all'?idx===0:String(state.position)===String(posN);
     const card=document.createElement('div');
-    card.className='diagram-card';
+    card.className='diagram-card'+(isSelected?' highlight':'');
+    card.title=`Cliquer pour voir la position ${posN} sur le manche`;
+    card.onclick=()=>{ state.position=posN; render(); };
 
     const posLabel=document.createElement('div'); posLabel.className='diagram-pos';
     const played=v.filter(x=>x);
@@ -1203,6 +1211,20 @@ function renderCAGED(){
 }
 
 /* ============================================================ FRETBOARD */
+function buildPositionButtons(n){
+  const c=document.getElementById('fb-position'); if(!c)return;
+  if(state.position!=='all'&&parseInt(state.position)>n) state.position='all';
+  c.innerHTML='';
+  const mk=(val,lbl)=>{
+    const b=document.createElement('button'); b.textContent=lbl;
+    b.className=String(state.position)===String(val)?'on':'';
+    b.onclick=()=>{ state.position=val; render(); };
+    return b;
+  };
+  c.appendChild(mk('all','Tout'));
+  for(let i=1;i<=n;i++) c.appendChild(mk(i,String(i)));
+}
+
 function buildTuningButtons(){
   const c=document.getElementById('fb-tuning-ctl'); if(!c)return;
   c.innerHTML='';
@@ -1232,7 +1254,24 @@ function renderFretboard(def){
   const pcToIv={};
   def.iv.forEach(iv=>{ pcToIv[(state.rootPc+iv)%12]=iv; });
 
-  const fCount=state.frets;
+  // Position box from selected voicing
+  let box=null, highlightSet=null;
+  const vOffset=nStr-6;
+  if(state.position!=='all'&&_currentVoicings.length){
+    const vIdx=parseInt(state.position)-1;
+    const v=_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
+    if(v){
+      highlightSet=new Set();
+      v.forEach((x,s)=>{ if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`); });
+      const nonOpen=v.filter(x=>x&&x.f>0);
+      if(nonOpen.length){
+        const minF=Math.min(...nonOpen.map(x=>x.f));
+        const maxF=Math.max(...nonOpen.map(x=>x.f));
+        box={start:Math.max(0,minF-1),end:maxF+1};
+      } else { box={start:0,end:3}; }
+    }
+  }
+  const fCount=box?Math.min(24,Math.max(state.frets,box.end)):state.frets;
 
   // Build strings (reversed: high string on top)
   const dispPcs=[...oPcs].reverse();
@@ -1248,13 +1287,15 @@ function renderFretboard(def){
     lab.textContent=dispNames[di]; row.appendChild(lab);
 
     for(let f=0;f<=fCount;f++){
+      const inBox=box&&f>=box.start&&f<=box.end;
       const cell=document.createElement('div');
-      cell.className='cell'+(f===0?' open nut-after':'');
+      cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
       const pc=(sPc+f)%12;
       const iv=pcToIv[pc];
       if(iv!==undefined){
+        const isHL=highlightSet?highlightSet.has(`${origIdx}:${f}`):true;
         const d=document.createElement('div');
-        d.className='dot'+(iv===0?' root':'');
+        d.className='dot'+(iv===0?' root':'')+(highlightSet&&!isHL?' ghost':'');
         d.style.background=IV_COLOR[iv]||'#d9a849';
         d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
         cell.appendChild(d);
@@ -1304,6 +1345,7 @@ function render(){
   renderFormula(def);
   renderDiagrams(def);
   renderCAGED();
+  buildPositionButtons(_currentVoicings.length);
   buildTuningButtons();
   renderFretboard(def);
 }
