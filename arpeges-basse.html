@@ -853,20 +853,20 @@ function buildPositionButtons(n){
 /* --- Accordages --- */
 const TUNINGS = {
   4:[
-    {id:'standard',  label:'Standard',   notes:['E','A','D','G']},
-    {id:'drop_d',    label:'Drop D',     notes:['D','A','D','G']},
-    {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb']},
-    {id:'full_down', label:'1 ton bas',  notes:['D','G','C','F']},
+    {id:'standard',   label:'Standard',   notes:['E','A','D','G'],         midi:[28,33,38,43]},
+    {id:'drop_d',     label:'Drop D',     notes:['D','A','D','G'],         midi:[26,33,38,43]},
+    {id:'half_down',  label:'½ ton bas',  notes:['Eb','Ab','Db','Gb'],     midi:[27,32,37,42]},
+    {id:'full_down',  label:'1 ton bas',  notes:['D','G','C','F'],         midi:[26,31,36,41]},
   ],
   5:[
-    {id:'standard5', label:'Standard',   notes:['B','E','A','D','G']},
-    {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','G']},
-    {id:'high_c',    label:'High C',     notes:['E','A','D','G','C']},
-    {id:'half_down5',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb']},
+    {id:'standard5',  label:'Standard',   notes:['B','E','A','D','G'],     midi:[23,28,33,38,43]},
+    {id:'drop_a',     label:'Drop A',     notes:['A','E','A','D','G'],     midi:[21,28,33,38,43]},
+    {id:'high_c',     label:'High C',     notes:['E','A','D','G','C'],     midi:[28,33,38,43,48]},
+    {id:'half_down5', label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb'],midi:[22,27,32,37,42]},
   ],
   6:[
-    {id:'standard6', label:'Standard',   notes:['B','E','A','D','G','C']},
-    {id:'half_down6',label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb','B']},
+    {id:'standard6',  label:'Standard',   notes:['B','E','A','D','G','C'], midi:[23,28,33,38,43,48]},
+    {id:'half_down6', label:'½ ton bas',  notes:['Bb','Eb','Ab','Db','Gb','B'],midi:[22,27,32,37,42,47]},
   ],
 };
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
@@ -1056,7 +1056,16 @@ function render(){
   const paw=document.getElementById('play-arp-wrap');
   if(paw){
     paw.innerHTML='';
-    const ascMidi=[];let _oct=2,_prev=-1;
+    const tuns=TUNINGS[state.strings];
+    const tun=tuns.find(t2=>t2.id===state.tuning)||tuns[0];
+    let startFret=0;
+    if(state.position!=='all'){
+      const boxes=computeBoxes(arpPcs,rootPc,arpDef.posType,strings);
+      const win=boxes[(parseInt(state.position)-1)%boxes.length];
+      if(win) startFret=win[0];
+    }
+    let _oct=Math.floor((tun.midi[0]+startFret)/12)-1,_prev=-1;
+    const ascMidi=[];
     for(const pc of arpPcs){if(_prev>=0&&pc<=_prev)_oct++;ascMidi.push((_oct+1)*12+pc);_prev=pc;}
     const btn=makePlayBtn(()=>playSequence(ascMidi,70),t('lbl_jouer_arp'),'▶');
     paw.appendChild(btn);
