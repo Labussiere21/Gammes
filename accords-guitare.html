@@ -206,6 +206,16 @@ h1 em{font-style:italic; color:var(--brass)}
 .diagrams-head{
   display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;
 }
+.mode-seg{
+  display:inline-flex; border:1px solid var(--line); border-radius:7px; overflow:hidden;
+}
+.mode-seg button{
+  background:none; border:none; padding:5px 11px;
+  font-family:"Space Mono",monospace; font-size:11px; font-weight:700;
+  color:var(--muted-2); cursor:pointer; transition:.12s; letter-spacing:.05em;
+}
+.mode-seg button.on{background:rgba(196,16,44,.18); color:var(--cherry);}
+.mode-seg button:hover:not(.on){background:rgba(255,255,255,.04);}
 .diagrams-head h2{
   font-family:"Space Mono",monospace; font-weight:700; font-size:12px;
   letter-spacing:.22em; text-transform:uppercase; color:var(--muted-2); margin:0;
@@ -423,6 +433,11 @@ h1 em{font-style:italic; color:var(--brass)}
   <section class="diagrams-section">
     <div class="diagrams-head">
       <h2 id="diagrams-title">Positions sur le manche</h2>
+      <div class="mode-seg" id="diagram-mode-seg">
+        <button data-mode="degree" class="on">Degrés</button>
+        <button data-mode="note">Notes</button>
+        <button data-mode="fingering">Doigté</button>
+      </div>
       <button class="play-btn" id="play-all-btn" onclick="playAllChord()">▶ Jouer l'accord</button>
     </div>
     <div class="diagrams-grid" id="diagrams-grid">
@@ -509,6 +524,7 @@ const state = {
   hand: 'right',
   display: 'note',
   position: 1,
+  diagramMode: 'degree',
 };
 
 function noteTbl(){ const n=state.notation,a=state.accPref; return n==='fr'?(a==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR):(a==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN); }
@@ -655,6 +671,7 @@ const D_SH = {
   p5:  b=>[null,null,b,b+2,b+3,null],
   maj: b=>[null,null,b,b+2,b+3,b+2],
   min: b=>[null,null,b,b+2,b+3,b+1],
+  aug: b=>b>=2?[null,null,b,b+3,b+3,b+2]:null,
 };
 // G-shape: root on both E strings (like open G chord)
 const G_SH = {
@@ -763,6 +780,9 @@ const SPECIALS = {
   '7_aug':  [[3,2,1,0,0,3]],             // G aug
   '9_aug':  [[null,0,3,2,2,1]],          // A aug
   '11_aug': [[null,2,1,0,0,3]],          // B aug
+  '1_aug':  [[null,4,3,2,2,1]],          // C#/Db aug
+  '3_aug':  [[null,6,5,4,4,3]],          // D#/Eb aug
+  '10_aug': [[null,1,4,3,3,2]],          // Bb aug
   // Power chords (p5) — open & low positions
   '4_p5':   [[0,2,2,null,null,null]],    // E5
   '9_p5':   [[null,0,2,2,null,null]],    // A5
@@ -783,6 +803,26 @@ function arrToVoicing(fa, rootPc, intervals) {
     if (f===null) return null;
     const pc = (OPEN_PCS[s]+f)%12;
     return {f, pc, iv: ivByPc[pc]??0};
+  });
+}
+
+function computeFingering(voicing) {
+  const fretted = voicing.map((v,i) => v && v.f > 0 ? {s:i, f:v.f} : null).filter(Boolean);
+  if (!fretted.length) return voicing.map(v => v ? 0 : null);
+  const frets = fretted.map(x => x.f);
+  const minF = Math.min(...frets);
+  const atMin = fretted.filter(x => x.f === minF);
+  const hasBarré = atMin.length >= 2;
+  const uniqueFrets = [...new Set(frets)].sort((a,b) => a-b);
+  const nonBarré = hasBarré ? uniqueFrets.filter(f => f !== minF) : uniqueFrets;
+  const fingerMap = {};
+  if (hasBarré) fingerMap[minF] = 1;
+  const fingerStart = hasBarré ? (nonBarré.length <= 1 ? 3 : 2) : 1;
+  nonBarré.forEach((f,i) => { fingerMap[f] = Math.min(fingerStart + i, 4); });
+  return voicing.map(v => {
+    if (!v) return null;
+    if (v.f === 0) return 0;
+    return fingerMap[v.f] ?? null;
   });
 }
 
@@ -896,10 +936,11 @@ const IV_NAME_FR = {
   6:'♯11e', 7:'5te', 8:'5te aug.', 9:'6te/13e', 10:'7e min.', 11:'7e maj.'
 };
 
-function makeSVG(voicing) {
-  const S = 19; // string spacing
-  const F = 19; // fret spacing
-  const PL = 14; const PT = 26; const PB = 6;
+function makeSVG(voicing, fingering, mode) {
+  if (!mode) mode = state.diagramMode;
+  const S = 22; // string spacing
+  const F = 22; // fret spacing
+  const PL = 16; const PT = 28; const PB = 8;
   const nFrets = 5;
   const W = PL * 2 + 5 * S;
   const H = PT + nFrets * F + PB;
@@ -938,29 +979,40 @@ function makeSVG(voicing) {
     if (rel >= 1 && rel <= nFrets) {
       const cy = PT + (rel - 0.5) * F;
       if (af === 12) {
-        svg += `<circle cx="${PL+1.5*S}" cy="${cy}" r="1.8" fill="#4a1525" opacity=".7"/>`;
-        svg += `<circle cx="${PL+3.5*S}" cy="${cy}" r="1.8" fill="#4a1525" opacity=".7"/>`;
+        svg += `<circle cx="${PL+1.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;
+        svg += `<circle cx="${PL+3.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;
       } else {
-        svg += `<circle cx="${PL+2.5*S}" cy="${cy}" r="1.8" fill="#4a1525" opacity=".7"/>`;
+        svg += `<circle cx="${PL+2.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;
       }
     }
   }
   // String markers
+  const NOTE_NAMES_SVG = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   for (let s = 0; s < 6; s++) {
     const x = PL + s * S;
     const v = voicing[s];
     if (v === null) {
-      svg += `<line x1="${x-4}" y1="${PT-16}" x2="${x+4}" y2="${PT-8}" stroke="#e8503a" stroke-width="1.5"/>`;
-      svg += `<line x1="${x+4}" y1="${PT-16}" x2="${x-4}" y2="${PT-8}" stroke="#e8503a" stroke-width="1.5"/>`;
+      svg += `<line x1="${x-4}" y1="${PT-18}" x2="${x+4}" y2="${PT-10}" stroke="#e8503a" stroke-width="1.5"/>`;
+      svg += `<line x1="${x+4}" y1="${PT-18}" x2="${x-4}" y2="${PT-10}" stroke="#e8503a" stroke-width="1.5"/>`;
     } else if (v.f === 0) {
-      svg += `<circle cx="${x}" cy="${PT-11}" r="4.5" fill="none" stroke="#9d8a72" stroke-width="1.3"/>`;
+      svg += `<circle cx="${x}" cy="${PT-13}" r="5" fill="none" stroke="#9d8a72" stroke-width="1.3"/>`;
     } else {
       const rel = v.f - startFret;
       const cy = PT + (rel - 0.5) * F;
       const col = IV_COLOR[v.iv] || '#d9a849';
-      svg += `<circle cx="${x}" cy="${cy}" r="7" fill="${col}"/>`;
-      const lbl = IV_LABEL[v.iv] || '?';
-      const fs = lbl.length > 2 ? 6 : 7;
+      svg += `<circle cx="${x}" cy="${cy}" r="9" fill="${col}"/>`;
+      let lbl, fs;
+      if (mode === 'fingering') {
+        const fg = fingering ? fingering[s] : null;
+        lbl = fg === 0 ? '0' : fg === null ? '?' : String(fg);
+        fs = 9;
+      } else if (mode === 'note') {
+        lbl = NOTE_NAMES_SVG[v.pc];
+        fs = lbl.length > 2 ? 7 : 8;
+      } else {
+        lbl = IV_LABEL[v.iv] || '?';
+        fs = lbl.length > 2 ? 7 : 8;
+      }
       svg += `<text x="${x}" y="${cy+fs/2+1}" font-family="Space Mono,monospace" font-size="${fs}" fill="#160f08" text-anchor="middle" font-weight="700">${lbl}</text>`;
     }
   }
@@ -1119,7 +1171,8 @@ function renderDiagrams(def){
     posLabel.textContent=`Position ${posN}${minFr>2?' (case '+minFr+')':''}`;
     card.appendChild(posLabel);
 
-    const svgWrap=document.createElement('div'); svgWrap.innerHTML=makeSVG(v);
+    const fg=computeFingering(v);
+    const svgWrap=document.createElement('div'); svgWrap.innerHTML=makeSVG(v, fg);
     card.appendChild(svgWrap);
 
     const tabStr=v.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
@@ -1160,7 +1213,7 @@ function renderCAGED(){
     A:Object.fromEntries(Object.keys(A_SH).map(k=>[k,b=>A_SH[k](b)])),
     G:Object.fromEntries(Object.keys(G_SH).map(k=>[k,b=>G_SH[k](b)])),
     E:Object.fromEntries(Object.keys(E_SH).map(k=>[k,b=>E_SH[k](b)])),
-    D:{p5:b=>D_SH.p5(b), maj:b=>D_SH.maj(b), min:b=>D_SH.min(b)},
+    D:Object.fromEntries(Object.keys(D_SH).map(k=>[k,b=>D_SH[k](b)])),
   };
 
   const cards=CAGED_WINDOWS.map(cw=>{
@@ -1205,8 +1258,9 @@ function renderCAGED(){
     posEl.textContent=minFret>0?'Case '+minFret:'Position ouverte';
     card.appendChild(posEl);
 
+    const fg=computeFingering(voicing);
     const svgWrap=document.createElement('div');
-    svgWrap.innerHTML=makeSVG(voicing);
+    svgWrap.innerHTML=makeSVG(voicing, fg);
     card.appendChild(svgWrap);
 
     const tabStr=voicing.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
@@ -1386,6 +1440,12 @@ document.getElementById('acc-seg').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.accPref=b.dataset.acc;
   document.querySelectorAll('#acc-seg button').forEach(x=>x.classList.toggle('on',x===b));
+  render();
+});
+document.getElementById('diagram-mode-seg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.diagramMode=b.dataset.mode;
+  document.querySelectorAll('#diagram-mode-seg button').forEach(x=>x.classList.toggle('on',x===b));
   render();
 });
 
