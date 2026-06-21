@@ -144,6 +144,8 @@
   .dot-sel{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:"Space Mono",monospace; font-weight:700; font-size:12px; position:relative; z-index:4; animation:popIn .15s ease both; cursor:pointer;}
   .dot-ghost{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; position:relative; z-index:4; cursor:pointer; border:2px solid; opacity:0.28; transition:opacity .12s;}
   .cell:hover .dot-ghost{opacity:0.55;}
+  .root-badge{font-size:9px;font-weight:900;background:currentColor;color:#160f08;border-radius:3px;padding:1px 4px;margin-right:3px;vertical-align:middle;}
+  .root-pill{box-shadow:0 0 0 1.5px currentColor;}
   .fretboard.lefty .fb-row{flex-direction:row-reverse}
   .fretboard.lefty .fb-inlays{flex-direction:row-reverse}
   .fretboard.lefty .cell.nut-after::after{right:auto;left:-1px;background:linear-gradient(270deg,#efe6d3,#c8bb9c)}
@@ -637,13 +639,14 @@ const CAD_LITE = [
 ];
 
 /* ============================================================ ÉTAT */
-const NOTE_COLORS = [
-  '#e8503a','#f08a3c','#f2c14e','#57c08a','#45a3d9','#8c7bd6',
-  '#e06aa8','#60c8a0','#d97040','#7ec8e3','#b887e0','#e87050'
+const DEGREE_COLORS = [
+  '#d9a849','#d96428','#e08c28','#c8c828','#7cc828','#28bf70',
+  '#28bfb0','#2878d9','#5028d9','#9028c8','#c028a8','#d92860'
 ];
 const state = {
-  selectedPcs: new Map(),        // piano : pc → color
-  selectedPositions: new Map(),  // manche : "sIdx-fret" → {pc, color}
+  selectedPcs: new Map(),        // piano : pc → true
+  selectedPositions: new Map(),  // manche : "sIdx-fret" → {pc}
+  rootPc: null,
   accPref: 'b',
   strings: 4, frets: 12, hand: 'right',
   activeTab: 'chords',
@@ -661,33 +664,43 @@ function spell(pc){ return spellNote(pc, state.accPref); }
 function spellRaw(pc){ return (state.accPref==='#'?['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']:FLAT_RAW)[pc]; }
 const SCALE_MAJ=[0,2,4,5,7,9,11];
 
+function getCurrentRoot(){
+  const allPcs=[...state.selectedPcs.keys(),...[...state.selectedPositions.values()].map(v=>v.pc)];
+  if(state.rootPc!==null && allPcs.includes(state.rootPc)) return state.rootPc;
+  return allPcs[0]??null;
+}
+function noteColor(pc){
+  const r=getCurrentRoot(); if(r===null) return DEGREE_COLORS[0];
+  return DEGREE_COLORS[(pc-r+12)%12];
+}
 function getPcsForAnalysis(){
-  const m=new Map(state.selectedPcs);
-  for(const [,v] of state.selectedPositions) if(!m.has(v.pc)) m.set(v.pc,v.color);
+  const m=new Map();
+  for(const [pc] of state.selectedPcs) m.set(pc,noteColor(pc));
+  for(const [,v] of state.selectedPositions) if(!m.has(v.pc)) m.set(v.pc,noteColor(v.pc));
   return m;
 }
-function nextColor(){
-  const all=getPcsForAnalysis();
-  const used=new Set(all.values());
-  return NOTE_COLORS.find(c=>!used.has(c))||NOTE_COLORS[all.size%NOTE_COLORS.length];
-}
 function togglePc(pc){
-  if(state.selectedPcs.has(pc)) state.selectedPcs.delete(pc);
-  else state.selectedPcs.set(pc,nextColor());
+  if(state.selectedPcs.has(pc)){
+    state.selectedPcs.delete(pc);
+    const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
+    toRm.forEach(k=>state.selectedPositions.delete(k));
+    if(state.rootPc===pc) state.rootPc=null;
+  } else {
+    state.selectedPcs.set(pc,true);
+  }
 }
 function togglePosition(sIdx,fret,pc){
   const key=`${sIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
     state.selectedPositions.delete(key);
   } else if(state.selectedPcs.has(pc)){
-    const color=state.selectedPcs.get(pc);
-    state.selectedPositions.set(key,{pc,color});
+    state.selectedPositions.set(key,{pc});
     state.selectedPcs.delete(pc);
   } else {
-    state.selectedPositions.set(key,{pc,color:nextColor()});
+    state.selectedPositions.set(key,{pc});
   }
 }
-function clearAll(){ state.selectedPcs.clear(); state.selectedPositions.clear(); render(); }
+function clearAll(){ state.selectedPcs.clear(); state.selectedPositions.clear(); state.rootPc=null; render(); }
 
 /* ============================================================ PIANO */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -710,10 +723,6 @@ function buildPiano(){
     k.innerHTML=`<span class="bname">${main}</span>${alt?`<span class="balt">${alt}</span>`:''}`;
     k.style.left=(8+(b.after+1)*W-19)+'px';
     p.appendChild(k);
-  });
-  p.addEventListener('click',e=>{
-    const k=e.target.closest('[data-pc]'); if(!k) return;
-    togglePc(+k.dataset.pc); render();
   });
 }
 
@@ -750,12 +759,13 @@ function renderFretboard(){
       const posKey=`${s.sIdx}-${f}`;
       const posEntry=state.selectedPositions.get(posKey);
       if(posEntry){
+        const c=noteColor(posEntry.pc);
         const d=document.createElement('div'); d.className='dot-sel';
-        d.style.cssText=`background:${posEntry.color};color:#160f08;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 3px 8px rgba(0,0,0,.5)`;
+        d.style.cssText=`background:${c};color:#160f08;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 3px 8px rgba(0,0,0,.5)`;
         d.textContent=spell(pc); d.title=`${s.n} ${t('lbl_cases')} ${f} — ${spell(pc)}`;
         cell.appendChild(d);
       } else if(state.selectedPcs.has(pc)){
-        const ghostColor=state.selectedPcs.get(pc);
+        const ghostColor=noteColor(pc);
         const d=document.createElement('div'); d.className='dot-ghost';
         d.style.cssText=`color:${ghostColor};border-color:${ghostColor}`;
         d.textContent=spell(pc); d.title=`Placer ${spell(pc)} ici`;
@@ -974,7 +984,7 @@ function readUrlParams(){
   notesStr.split(',').forEach(n=>{
     const pc=NOTE_MAP[n.toLowerCase().trim()];
     if(pc!==undefined && !state.selectedPcs.has(pc))
-      state.selectedPcs.set(pc,nextColor());
+      state.selectedPcs.set(pc,true);
   });
 }
 
@@ -986,17 +996,22 @@ function renderSelectedNotes(){
     c.innerHTML=`<span class="empty-hint">${t('lbl_no_note_hint')}</span>`;
     return;
   }
+  const root=getCurrentRoot();
   [..._allPcs.entries()].forEach(([pc,color])=>{
-    const pill=document.createElement('button'); pill.className='note-pill';
+    const isRoot=pc===root;
+    const pill=document.createElement('button'); pill.className='note-pill'+(isRoot?' root-pill':'');
     pill.style.cssText=`background:${color}22;border:1px solid ${color};color:${color}`;
-    pill.innerHTML=`${spell(pc)} <span class="rm">×</span>`;
-    pill.title='Clic pour retirer';
-    pill.onclick=()=>{
-      state.selectedPcs.delete(pc);
-      const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
-      toRm.forEach(k=>state.selectedPositions.delete(k));
+    pill.innerHTML=`${isRoot?'<span class="root-badge">I</span>':''}${spell(pc)} <span class="rm">×</span>`;
+    pill.title=isRoot?'Fondamentale — clic sur une autre note pour changer':'Clic → fondamentale · × pour retirer';
+    pill.addEventListener('click',e=>{
+      if(e.target.classList.contains('rm')){
+        state.selectedPcs.delete(pc);
+        const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
+        toRm.forEach(k=>state.selectedPositions.delete(k));
+        if(state.rootPc===pc) state.rootPc=null;
+      } else { state.rootPc=pc; }
       render();
-    };
+    });
     c.appendChild(pill);
   });
 }
@@ -1052,6 +1067,10 @@ function render(){
 
 /* ============================================================ INIT */
 buildPiano();
+document.getElementById('piano').addEventListener('click',e=>{
+  const k=e.target.closest('[data-pc]'); if(!k) return;
+  togglePc(+k.dataset.pc); render();
+});
 readUrlParams();
 
 document.getElementById('accpref').addEventListener('click',e=>{
