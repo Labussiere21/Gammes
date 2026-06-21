@@ -454,7 +454,7 @@ const _TR={
     lbl_clear_all:'✕ Effacer tout',lbl_share_analysis:'🔗 Partager l\'analyse',
     lbl_no_chord:'Aucun accord reconnu',lbl_no_scale:'Aucune gamme reconnue',
     lbl_no_cad:'Aucune cadence reconnue<br><small>Sélectionne des fondamentales d\'accords</small>',
-    lbl_see_arp:'→ Voir l\'arpège',lbl_see_fb:'→ Voir sur le manche',lbl_see_cad:'→ Voir la cadence',
+    lbl_see_acc:'→ Voir l\'accord',lbl_see_arp:'→ Voir l\'arpège',lbl_see_fb:'→ Voir sur le manche',lbl_see_cad:'→ Voir la cadence',
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) hors accord',lbl_in_scale:'dans la gamme',lbl_out_scale:'hors gamme',
     lbl_on_word:'sur',lbl_chords_recognized:'accords reconnus',lbl_no_note_hint:'Aucune note — clique sur le piano ou le manche',
     lbl_copy_link:'Copie ce lien :',lbl_deselect:'clic pour désélect.',
@@ -492,7 +492,7 @@ const _TR={
     lbl_clear_all:'✕ Clear all',lbl_share_analysis:'🔗 Share analysis',
     lbl_no_chord:'No chord recognized',lbl_no_scale:'No scale recognized',
     lbl_no_cad:'No cadence recognized<br><small>Select chord root notes</small>',
-    lbl_see_arp:'→ See arpeggio',lbl_see_fb:'→ See on fretboard',lbl_see_cad:'→ See cadence',
+    lbl_see_acc:'→ See chord',lbl_see_arp:'→ See arpeggio',lbl_see_fb:'→ See on fretboard',lbl_see_cad:'→ See cadence',
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) outside chord',lbl_in_scale:'in the scale',lbl_out_scale:'outside scale',
     lbl_on_word:'of',lbl_chords_recognized:'chords recognized',lbl_no_note_hint:'No note — click on the piano or fretboard',
     lbl_copy_link:'Copy this link:',lbl_deselect:'click to deselect',
@@ -655,7 +655,7 @@ function pretty(n){
   }
   return n.replace(/bb/g,'𝄫').replace(/b/g,'♭').replace(/#/g,'♯');
 }
-function spell(pc){ return (state.accPref==='#'?SHARP:FLAT)[pc]; }
+function spell(pc){ return spellNote(pc, state.accPref); }
 function spellRaw(pc){ return (state.accPref==='#'?['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']:FLAT_RAW)[pc]; }
 const SCALE_MAJ=[0,2,4,5,7,9,11];
 
@@ -869,7 +869,7 @@ function renderChordCards(chords,userPcs){
     const noteChips=r.chordPcs.map(pc=>
       `<span class="rc-note ${userSet.has(pc)?'in':'out'}">${spell(pc)}</span>`).join('');
     const extraNote=r.extra>0?`<span style="font-size:11px;color:var(--muted-2)"> +${r.extra} ${t('lbl_out_chord')}</span>`:'';
-    const link=r.type.id?`<a class="rc-link" href="arpeges-basse.html">${t('lbl_see_arp')}</a>`:'';
+    const link=r.type.id?`<a class="rc-link" href="arpeges-basse.html">${t('lbl_see_acc')}</a>`:'';
     const card=document.createElement('div');
     card.className=`result-card ${exactClass(pct)}`;
     card.innerHTML=`
