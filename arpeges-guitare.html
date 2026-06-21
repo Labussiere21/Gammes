@@ -1099,7 +1099,7 @@ function render(){
   arpDef.iv.forEach((iv,i)=>{
     if(i>0){const sep=document.createElement('span');sep.className='sep';sep.textContent='–';formDiv.appendChild(sep);}
     const df=document.createElement('div'); df.className='df';
-    df.innerHTML=`<span class="dlabel" style="color:${DEG_COLORS[i]}">${pretty(DEG_SHORT_RAW[iv]||'?')}</span><span class="dname" style="color:${i===0?'var(--d1)':'var(--cream)'}">${pretty(SPELL[arpPcs[i]])}</span>`;
+    df.innerHTML=`<span class="dlabel" style="color:${DEG_COLORS[iv]}">${pretty(DEG_SHORT_RAW[iv]||'?')}</span><span class="dname" style="color:${DEG_COLORS[iv]}">${pretty(SPELL[arpPcs[i]])}</span>`;
     formDiv.appendChild(df);
   });
 
@@ -1108,8 +1108,8 @@ function render(){
   arpPcs.forEach((pc,i)=>{
     const semi=(pc-rootPc+12)%12;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="tdeg" style="color:${DEG_COLORS[i]}">${i+1}</td>
-      <td class="tnote"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(FLAT_SPELL[pc])}</td>
+    tr.innerHTML=`<td class="tdeg" style="color:${DEG_COLORS[semi]}">${i+1}</td>
+      <td class="tnote"><span class="swatch" style="background:${DEG_COLORS[semi]}"></span>${pretty(FLAT_SPELL[pc])}</td>
       <td class="tint">${intName(semi)||'—'}</td>
       <td class="tdesc">${roleName(semi)||'—'}</td>`;
     tb.appendChild(tr);
