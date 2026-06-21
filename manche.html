@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -8,5 +8,22 @@
 </head>
 <body>
 <p>Redirection vers <a href="index.html">le manche de basse</a>…</p>
-</body>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    Éditeur : Nicolas Boudras &mdash; contact@scalabass.com<br>
+    Hébergement : GitHub Pages (GitHub Inc., San Francisco, CA, USA)<br>
+    ScalaBass est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
+    Les préférences d'affichage (notation, langue) sont stockées localement dans votre navigateur (localStorage).
+  </div>
+</footer></body>
 </html>
