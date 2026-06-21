@@ -819,6 +819,9 @@ function renderChordCards(chords,userPcs){
       <div class="rc-sub">${r.matched}/${r.total} ${t('lbl_notes_word')}${extraNote?'  '+extraNote:''}</div>
       <div class="rc-notes">${noteChips}</div>
       ${link}`;
+    card.style.cursor='pointer';
+    card.classList.toggle('active',state.rootPc===r.root);
+    card.addEventListener('click',e=>{if(e.target.closest('a'))return;state.rootPc=(state.rootPc===r.root)?null:r.root;render();});
     c.appendChild(card);
   });
 }
@@ -846,6 +849,9 @@ function renderScaleCards(scales,userPcs){
       <div class="rc-sub">${r.matched} ${r.matched>1?t('lbl_notes_word'):t('lbl_note_word')} ${t('lbl_on_word')} ${r.total} ${t('lbl_in_scale')}${r.extra>0?` · +${r.extra} ${t('lbl_out_scale')}`:''}</div>
       <div class="rc-notes">${noteChips}</div>
       ${link}`;
+    card.style.cursor='pointer';
+    card.classList.toggle('active',state.rootPc===r.root);
+    card.addEventListener('click',e=>{if(e.target.closest('a'))return;state.rootPc=(state.rootPc===r.root)?null:r.root;render();});
     c.appendChild(card);
   });
 }
