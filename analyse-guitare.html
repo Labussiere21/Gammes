@@ -821,7 +821,7 @@ function renderChordCards(chords,userPcs){
       ${link}`;
     card.style.cursor='pointer';
     card.classList.toggle('active',state.rootPc===r.root);
-    card.addEventListener('click',e=>{if(e.target.closest('a'))return;state.rootPc=(state.rootPc===r.root)?null:r.root;render();});
+    card.addEventListener('click',e=>{if(e.target.closest('a'))return;if(state.rootPc!==r.root){state.rootPc=r.root;r.chordPcs.forEach(pc=>{if(!state.selectedPcs.has(pc))state.selectedPcs.set(pc,true);});}else{state.rootPc=null;}render();});
     c.appendChild(card);
   });
 }
@@ -851,7 +851,7 @@ function renderScaleCards(scales,userPcs){
       ${link}`;
     card.style.cursor='pointer';
     card.classList.toggle('active',state.rootPc===r.root);
-    card.addEventListener('click',e=>{if(e.target.closest('a'))return;state.rootPc=(state.rootPc===r.root)?null:r.root;render();});
+    card.addEventListener('click',e=>{if(e.target.closest('a'))return;if(state.rootPc!==r.root){state.rootPc=r.root;r.scalePcs.forEach(pc=>{if(!state.selectedPcs.has(pc))state.selectedPcs.set(pc,true);});}else{state.rootPc=null;}render();});
     c.appendChild(card);
   });
 }
