@@ -1060,7 +1060,7 @@ function render(){
     const tun=tuns.find(t2=>t2.id===state.tuning)||tuns[0];
     let startFret=0;
     if(state.position!=='all'){
-      const boxes=computeBoxes(arpPcs,rootPc,arpDef.posType,strings);
+      const boxes=computeBoxes(arpPcs,rootPc,arpDef.posType,currentStrings());
       const win=boxes[(parseInt(state.position)-1)%boxes.length];
       if(win) startFret=win[0];
     }

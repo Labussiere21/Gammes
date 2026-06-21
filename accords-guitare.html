@@ -978,20 +978,28 @@ async function initAudio(){
   }catch(e){_audioLoading=false;return null;}
 }
 
-async function playVoicing(voicing, mode='chord'){
+async function playVoicing(voicing, mode='chord', minFret=0){
   const inst = await initAudio(); if(!inst) return;
   if(_audioCtx.state==='suspended') await _audioCtx.resume();
-  const notes = [];
-  for(let s=0;s<6;s++){
+  const openMidi = currentTuning().midi;
+  const nStr = Math.min(voicing.length, openMidi.length);
+  const rawNotes = [];
+  for(let s=0;s<nStr;s++){
     const v = voicing[s];
     if(v===null) continue;
-    const midi = OPEN_MIDI[s] + (v.f||0);
-    notes.push(midi);
+    rawNotes.push(openMidi[s] + (v.f||0));
   }
+  // Shift higher neck positions up an octave so they sound distinctly different
+  // Positions at case ≥5 get +12, ≥12 get +24; capped to keep notes ≤ MIDI 84 (C6)
+  let boost = minFret >= 12 ? 24 : minFret >= 5 ? 12 : 0;
+  if(boost > 0 && Math.max(...rawNotes) + boost > 84) boost -= 12;
+  if(boost > 0 && Math.max(...rawNotes) + boost > 84) boost = 0;
+  const notes = rawNotes.map(n => n + boost);
+  notes.sort((a,b)=>a-b);
   if(mode==='chord'){
-    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.025, {duration:1.8,gain:2.5}));
+    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.05, {duration:2.0,gain:2.5}));
   } else {
-    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.18, {duration:0.7,gain:2.5}));
+    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.20, {duration:0.8,gain:2.5}));
   }
 }
 
@@ -1001,8 +1009,12 @@ async function playAllChord(){
   const btn = document.getElementById('play-all-btn');
   if(btn.classList.contains('playing')) return;
   btn.classList.add('playing'); btn.textContent='■ Stop';
-  try{ await playVoicing(_currentVoicings[0], 'chord'); }catch(e){}
-  setTimeout(()=>{ btn.classList.remove('playing'); btn.textContent='▶ Jouer l\'accord'; }, 2200);
+  // Play the currently selected position, not always the first one
+  const idx = state.position==='all' ? 0 : Math.min(parseInt(state.position)-1, _currentVoicings.length-1);
+  const _v = _currentVoicings[idx];
+  const _minFr = _v ? _v.reduce((m,x)=>x&&x.f>0?Math.min(m,x.f):m, Infinity) : 0;
+  try{ await playVoicing(_v, 'chord', isFinite(_minFr)?_minFr:0); }catch(e){}
+  setTimeout(()=>{ btn.classList.remove('playing'); btn.textContent='▶ Jouer l\'accord'; }, 2400);
 }
 
 /* ============================================================ PIANO */
@@ -1113,7 +1125,7 @@ function renderDiagrams(def){
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return; _pl=true; pb.classList.add('playing'); pb.textContent='■';
-      try{ await playVoicing(v,'chord'); }catch(e){}
+      try{ await playVoicing(v,'chord',minFr); }catch(e){}
       setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML='▶ Écouter'; },2200);
     };
     card.appendChild(pb);
@@ -1202,7 +1214,7 @@ function renderCAGED(){
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return; _pl=true; pb.classList.add('playing'); pb.textContent='■';
-      try{ await playVoicing(voicing,'chord'); }catch(e){}
+      try{ await playVoicing(voicing,'chord',minFret); }catch(e){}
       setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML='▶ Écouter'; },2200);
     };
     card.appendChild(pb);
