@@ -383,7 +383,7 @@
         <a href="gammes-guitare.html"  class="nav-link">Gammes</a>
         <a href="arpeges-guitare.html" class="nav-link active">Arpèges</a>
         <a href="accords-guitare.html" class="nav-link">Accords</a>
-        <a href="intervalles.html"     class="nav-link">Intervalles</a>
+        <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
         <a href="cadences.html"        class="nav-link">Cadences</a>
       </nav>
       <div class="header-tools">
@@ -1030,8 +1030,8 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles.html':'Intervalles','cadences.html':'Cadences'},
-    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles.html':'Intervals','cadences.html':'Cadences'},
+    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles-guitare.html':'Intervalles','cadences.html':'Cadences'},
+    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles-guitare.html':'Intervals','cadences.html':'Cadences'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
