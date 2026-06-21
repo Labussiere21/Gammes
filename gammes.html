@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -496,7 +496,19 @@
 .inst-btn:hover{color:var(--cream)}
 .inst-btn.bass-btn.active{background:var(--brass);color:#160f08;font-weight:700}
 .inst-btn.guit-btn.active{background:#bf1828;color:#fff;font-weight:700}
-</style>
+
+  /* Footer */
+  .site-footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,40px) 28px;max-width:1180px;margin:0 auto;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2)}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .footer-copy{letter-spacing:.04em}
+  .footer-links{display:flex;gap:14px;align-items:center}
+  .footer-links a{color:var(--muted);text-decoration:none;transition:color .12s}
+  .footer-links a:hover{color:var(--cream)}
+  .footer-sep{opacity:.35}
+  .footer-ml-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--muted);letter-spacing:.04em;padding:0;transition:color .12s}
+  .footer-ml-btn:hover{color:var(--cream)}
+  .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
+  .footer-ml.open{display:block}</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gammes de basse : 72 gammes sur le manche | ScalaBass">
@@ -2010,5 +2022,22 @@ document.getElementById('accpref').addEventListener('click', e=>{
 initNotationLang();
 render();
 </script>
-</body>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    Éditeur : Nicolas Boudras &mdash; contact@scalabass.com<br>
+    Hébergement : GitHub Pages (GitHub Inc., San Francisco, CA, USA)<br>
+    ScalaBass est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
+    Les préférences d'affichage (notation, langue) sont stockées localement dans votre navigateur (localStorage).
+  </div>
+</footer></body>
 </html>
