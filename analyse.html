@@ -389,7 +389,7 @@
 <!-- Résultats -->
 <div class="results-zone" id="results-zone" style="display:none">
   <div class="tabs">
-    <button class="tab on" data-tab="chords"><span data-i18n="lbl_tab_acc">Accords</span> <span class="count" id="count-chords">0</span></button>
+    <button class="tab on" data-tab="chords"><span data-i18n="lbl_tab_acc">Arpèges</span> <span class="count" id="count-chords">0</span></button>
     <button class="tab" data-tab="scales"><span data-i18n="lbl_tab_gam">Gammes</span> <span class="count" id="count-scales">0</span></button>
     <button class="tab" data-tab="cadences"><span data-i18n="lbl_tab_cad">Cadences</span> <span class="count" id="count-cad">0</span></button>
   </div>
@@ -449,7 +449,7 @@ const _TR={
     lbl_fond:'Fond.',lbl_acc:'Accord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
     lbl_iv_title:'Intervalle',lbl_sur_manche:'Sur le manche',
     lbl_clic_notes:'Cliquez des notes sur le piano ou le manche',
-    lbl_tab_acc:'Accords',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
+    lbl_tab_acc:'Arpèges',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
     lbl_effacer:'Effacer',lbl_partager:'🔗 Partager',
     lbl_cercle:'Cercle des quintes',
     lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
@@ -463,7 +463,7 @@ const _TR={
     lbl_ana_lede:'Entre n\'importe quelles notes sur le piano ou le manche — détecte instantanément les accords, gammes et cadences correspondants. Construis tes voicings note par note.',
     lbl_notes_sel:'Notes sélectionnées',lbl_alteration:'Altération',lbl_clavier:'Clavier',lbl_manche_label:'Manche',
     lbl_clear_all:'✕ Effacer tout',lbl_share_analysis:'🔗 Partager l\'analyse',
-    lbl_no_chord:'Aucun accord reconnu',lbl_no_scale:'Aucune gamme reconnue',
+    lbl_no_chord:'Aucun arpège reconnu',lbl_no_scale:'Aucune gamme reconnue',
     lbl_no_cad:'Aucune cadence reconnue<br><small>Sélectionne des fondamentales d\'accords</small>',
     lbl_see_acc:'→ Voir l\'accord',lbl_see_arp:'→ Voir l\'arpège',lbl_see_fb:'→ Voir sur le manche',lbl_see_cad:'→ Voir la cadence',
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) hors accord',lbl_in_scale:'dans la gamme',lbl_out_scale:'hors gamme',
@@ -487,7 +487,7 @@ const _TR={
     lbl_fond:'Root',lbl_acc:'Chord',lbl_x1:'×1',lbl_x2:'×2',lbl_x4:'×4',lbl_x8:'×8',
     lbl_iv_title:'Interval',lbl_sur_manche:'On the fretboard',
     lbl_clic_notes:'Click notes on the piano or fretboard',
-    lbl_tab_acc:'Chords',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
+    lbl_tab_acc:'Arpeggios',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
     lbl_effacer:'Clear',lbl_partager:'🔗 Share',
     lbl_cercle:'Circle of fifths',
     lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
@@ -501,7 +501,7 @@ const _TR={
     lbl_ana_lede:'Enter any notes on the piano or fretboard — instantly detects matching chords, scales and cadences. Build your voicings note by note.',
     lbl_notes_sel:'Selected notes',lbl_alteration:'Accidental',lbl_clavier:'Keyboard',lbl_manche_label:'Fretboard',
     lbl_clear_all:'✕ Clear all',lbl_share_analysis:'🔗 Share analysis',
-    lbl_no_chord:'No chord recognized',lbl_no_scale:'No scale recognized',
+    lbl_no_chord:'No arpeggio recognized',lbl_no_scale:'No scale recognized',
     lbl_no_cad:'No cadence recognized<br><small>Select chord root notes</small>',
     lbl_see_acc:'→ See chord',lbl_see_arp:'→ See arpeggio',lbl_see_fb:'→ See on fretboard',lbl_see_cad:'→ See cadence',
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) outside chord',lbl_in_scale:'in the scale',lbl_out_scale:'outside scale',
@@ -688,10 +688,14 @@ function getPcsForAnalysis(){
 }
 function togglePc(pc){
   if(state.selectedPcs.has(pc)){
-    state.selectedPcs.delete(pc);
-    const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
-    toRm.forEach(k=>state.selectedPositions.delete(k));
-    if(state.rootPc===pc) state.rootPc=null;
+    if(getCurrentRoot()===pc){
+      state.selectedPcs.delete(pc);
+      const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
+      toRm.forEach(k=>state.selectedPositions.delete(k));
+      state.rootPc=null;
+    } else {
+      state.rootPc=pc;
+    }
   } else {
     state.selectedPcs.set(pc,true);
   }
@@ -900,7 +904,7 @@ function renderChordCards(chords,userPcs){
     const displayName=nameFull;
     const noteChips=r.chordPcs.map(pc=>{const deg=(pc-r.root+12)%12;const col=DEGREE_COLORS[deg];return userSet.has(pc)?`<span class="rc-note in" style="color:${col};border-color:${col}55;background:${col}12">${spell(pc)}</span>`:`<span class="rc-note out">${spell(pc)}</span>`;}).join('');
     const extraNote=r.extra>0?`<span style="font-size:11px;color:var(--muted-2)"> +${r.extra} ${t('lbl_out_chord')}</span>`:'';
-    const link=r.type.id?`<a class="rc-link" href="arpeges-basse.html">${t('lbl_see_acc')}</a>`:'';
+    const link=r.type.id?`<a class="rc-link" href="arpeges-basse.html">${t('lbl_see_arp')}</a>`:'';
     const card=document.createElement('div');
     card.className=`result-card ${exactClass(pct)}`;
     card.innerHTML=`

@@ -587,10 +587,14 @@ function getPcsForAnalysis(){
 }
 function togglePc(pc){
   if(state.selectedPcs.has(pc)){
-    state.selectedPcs.delete(pc);
-    const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
-    toRm.forEach(k=>state.selectedPositions.delete(k));
-    if(state.rootPc===pc) state.rootPc=null;
+    if(getCurrentRoot()===pc){
+      state.selectedPcs.delete(pc);
+      const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
+      toRm.forEach(k=>state.selectedPositions.delete(k));
+      state.rootPc=null;
+    } else {
+      state.rootPc=pc;
+    }
   } else {
     state.selectedPcs.set(pc,true);
   }
