@@ -16,8 +16,8 @@
     --line:#5c1a2e; --wood-a:#4a1a28; --wood-b:#2c0d1a;
     --brass:#bf1828; --brass-dim:#87111b;
     --bone:#f0e0e5; --cream:#ece0e3; --muted:#9d7a85; --muted-2:#6f4a55;
-    --d1:#e8503a; --d2:#f08a3c; --d3:#f2c14e; --d4:#57c08a;
-    --d5:#45a3d9; --d6:#8c7bd6; --d7:#e06aa8;
+    --d1:#ff3333; --d2:#ffaa00; --d3:#8fd400; --d4:#2dc653;
+    --d5:#29b6ff; --d6:#9933ee; --d7:#ff1a88;
     --c-exact:#57c08a; --c-partial:#f2c14e;
     --radius:14px;
   }
@@ -150,10 +150,10 @@
   .root-pill{box-shadow:0 0 0 1.5px currentColor;}
   .deg-legend{display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 2px;flex-wrap:wrap}
   .dl-title{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:none}
-  .dl-items{display:flex;gap:5px;flex-wrap:wrap}
-  .dl-item{display:flex;flex-direction:column;align-items:center;gap:2px}
-  .dl-dot{width:9px;height:9px;border-radius:50%;display:block}
-  .dl-deg{font-family:"Space Mono",monospace;font-size:8px;color:var(--muted-2);white-space:nowrap}
+  .dl-items{display:flex;gap:8px;flex-wrap:wrap}
+  .dl-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .dl-dot{width:13px;height:13px;border-radius:50%;display:block}
+  .dl-deg{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted-2);white-space:nowrap}
   .fretboard.lefty .fb-row{flex-direction:row-reverse}
   .fretboard.lefty .fb-inlays{flex-direction:row-reverse}
   .fretboard.lefty .cell.nut-after::after{right:auto;left:-1px;background:linear-gradient(270deg,#f0e0e5,#c8aab8)}
@@ -554,8 +554,8 @@ const CAD_LITE = [
 
 /* ============================================================ ÉTAT */
 const DEGREE_COLORS = [
-  '#e8503a','#ec6a38','#f08a3c','#f1a843','#f2c14e','#57c08a',
-  '#4eb4b4','#45a3d9','#6e8fd5','#8c7bd6','#c073bf','#e06aa8'
+  '#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653',
+  '#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'
 ];
 const state = {
   selectedPcs: new Map(),        // piano : pc → true
