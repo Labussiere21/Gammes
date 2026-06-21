@@ -989,6 +989,10 @@ const SCALE_DESC = {
   todi:       'Raga très expressif avec deux secondes augmentées. Sonorité intense et complexe.',
   kafi:       'Raga proche du mode dorien occidental. Très utilisé dans la musique populaire indienne.',
   kalyan:     'Raga proche du mode lydien occidental. L\'un des ragas du soir les plus populaires.',
+  harmonic_maj:'Majeure avec une 6ème bémol. Donne un caractère plus sombre à la sonorité majeure tout en conservant la tension harmonique de la 7ème majeure. Très prisée en néoclassique.',
+  bebop_dorian:'Gamme dorienne avec une note de passage chromatique entre la 3ème et la 4ème. Crée des lignes bebop fluides et swinguantes sur les accords mineurs 7.',
+  spanish_8:  'Gamme espagnole à 8 tons (aussi appelée Jewish scale). Mélange les couleurs phrygiennes et diminuées — très présente dans la musique flamenco et juive.',
+  oriental:   'Gamme exotique combinant des couleurs mineures et augmentées avec deux secondes augmentées. Sonorité envoûtante utilisée dans les musiques du Moyen-Orient.',
 };
 const SCALE_DESC_EN = {
   major:      'The reference scale of Western music. Seven notes, bright and stable sound. Most pop, rock, and classical melodies rely on it.',
@@ -1063,6 +1067,10 @@ const SCALE_DESC_EN = {
   todi:       'Very expressive raga with two augmented seconds. Intense and complex sound.',
   kafi:       'Raga close to the Western Dorian mode. Widely used in Indian popular music.',
   kalyan:     'Raga close to the Western Lydian mode. One of the most popular evening ragas.',
+  harmonic_maj:'Major scale with a lowered 6th. Adds a darker flavor to the major sound while keeping the tension of the major 7th. Popular in neoclassical and flamenco styles.',
+  bebop_dorian:'Dorian scale with a chromatic passing note between the 3rd and 4th. Creates fluid, swinging bebop lines over minor 7 chords.',
+  spanish_8:  '8-tone Spanish scale (also called Jewish scale). Blends Phrygian and diminished colors — prominent in flamenco and Jewish music.',
+  oriental:   'Exotic scale combining minor and augmented colors with two augmented seconds. Enchanting sound used in Middle Eastern music.',
 };
 
 function pcOf(name){
@@ -1127,7 +1135,10 @@ const SCALE_DEFS = [
   {id:'superlocrian_bb7',label:'Super Locrien 𝄫7',      sub:'Mode VII harm.',  group:2, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,4,6,8,9], label_en:'Super Locrian bb7', sub_en:'Mode VII harm.'},
   {id:'bebop_maj',       label:'Bebop majeure',         sub:'8 notes (♯5)',     group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,4,5,6], iv:[0,2,4,5,7,8,9,11], label_en:'Bebop major', sub_en:'8 notes (#5)'},
   {id:'bebop_dom',       label:'Bebop dominante',       sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'maj', ls:[0,1,2,3,4,5,6,6], iv:[0,2,4,5,7,9,10,11], label_en:'Bebop dominant', sub_en:'8 notes'},
-  {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10], label_en:'Bebop minor', sub_en:'8 notes'},
+  {id:'bebop_min',       label:'Bebop mineure',         sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,3,3,4,5,6], iv:[0,2,3,4,5,7,9,10],  label_en:'Bebop minor',       sub_en:'8 notes'},
+  {id:'harmonic_maj',    label:'Majeure harmonique',    sub:'♭6',              group:2, diat:true,  posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,5,7,8,11],    label_en:'Harmonic major',    sub_en:'♭6'},
+  {id:'bebop_dorian',    label:'Bebop dorienne',        sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:5,  fam:'min', ls:[0,1,2,2,3,4,5,6],iv:[0,2,3,4,5,7,9,10],  label_en:'Bebop Dorian',      sub_en:'8 notes'},
+  {id:'spanish_8',       label:'Espagnole 8 tons',      sub:'8 notes',         group:2, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,1,2,3,4,5,6],iv:[0,1,3,4,5,6,8,10],  label_en:'8-Tone Spanish',    sub_en:'8 notes'},
   // ======= GROUPE 3 : EXOTIQUES =======
   {id:'double_harm',     label:'Double harmonique',     sub:'Byzantine / Tsigane', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11], label_en:'Double harmonic', sub_en:'Byzantine / Gypsy'},
   {id:'hung_min',        label:'Mineure hongroise',     sub:'Gypsy minor',         group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,6,7,8,11], label_en:'Hungarian minor', sub_en:'Gypsy minor'},
@@ -1160,7 +1171,8 @@ const SCALE_DEFS = [
   {id:'bhairav',         label:'Bhairav',               sub:'Raga',                group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,11], label_en:'Bhairav', sub_en:'Raga'},
   {id:'todi',            label:'Todi',                  sub:'Raga',                group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,3,6,7,8,11], label_en:'Todi', sub_en:'Raga'},
   {id:'kafi',            label:'Kafi',                  sub:'Raga indien (≈ Dorien)', group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,2,3,5,7,9,10], label_en:'Kafi', sub_en:'Indian raga (≈ Dorian)'},
-  {id:'kalyan',          label:'Kalyan',                sub:'Raga indien (≈ Lydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11], label_en:'Kalyan', sub_en:'Indian raga (≈ Lydian)'},
+  {id:'kalyan',          label:'Kalyan',                sub:'Raga indien (≈ Lydien)', group:3, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,11],  label_en:'Kalyan',   sub_en:'Indian raga (≈ Lydian)'},
+  {id:'oriental',        label:'Orientale',             sub:'Exotique',        group:3, diat:false, posType:'penta', pos:'min', fam:'min', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,6,9,10],    label_en:'Oriental', sub_en:'Exotic'},
 ];
 
 // Pentatoniques de référence pour les 5 positions (boîtes traditionnelles)
@@ -1866,6 +1878,8 @@ const SCALE_LABELS_FR = {
   rast:'Rast', nikriz:'Nikriz', saba:'Saba', kurd:'Kurd',
   hirajoshi:'Hirajoshi', insen:'Insen', kumoi:'Kumoi', iwato:'Iwato', yo:'Yo',
   bhairav:'Bhairav', todi:'Todi', kafi:'Kafi', kalyan:'Kalyan',
+  harmonic_maj:'Majeure harmonique', bebop_dorian:'Bebop dorienne',
+  spanish_8:'Espagnole 8 tons', oriental:'Orientale',
 };
 
 // Lecture des paramètres URL au chargement
