@@ -891,8 +891,7 @@ function renderChordCards(chords,userPcs){
     const nameShort=spell(r.root)+r.type.short;
     const nameFull=spell(r.root)+' '+_tl;
     const displayName=nameFull;
-    const noteChips=r.chordPcs.map(pc=>
-      `<span class="rc-note ${userSet.has(pc)?'in':'out'}">${spell(pc)}</span>`).join('');
+    const noteChips=r.chordPcs.map(pc=>{const deg=(pc-r.root+12)%12;const col=DEGREE_COLORS[deg];return userSet.has(pc)?`<span class="rc-note in" style="color:${col};border-color:${col}55;background:${col}12">${spell(pc)}</span>`:`<span class="rc-note out">${spell(pc)}</span>`;}).join('');
     const extraNote=r.extra>0?`<span style="font-size:11px;color:var(--muted-2)"> +${r.extra} ${t('lbl_out_chord')}</span>`:'';
     const link=r.type.id?`<a class="rc-link" href="arpeges-basse.html">${t('lbl_see_acc')}</a>`:'';
     const card=document.createElement('div');
@@ -920,8 +919,7 @@ function renderScaleCards(scales,userPcs){
     const _ss=(currentLang()==='en'&&r.def.sub_en!==undefined)?r.def.sub_en:r.def.sub;
     const nameFull=`${rootNote} ${_sl}${_ss?` (${_ss})`:''}`;
     const displayName=nameFull;
-    const noteChips=r.scalePcs.map(pc=>
-      `<span class="rc-note ${userSet.has(pc)?'in':'out'}">${spell(pc)}</span>`).join('');
+    const noteChips=r.scalePcs.map(pc=>{const deg=(pc-r.root+12)%12;const col=DEGREE_COLORS[deg];return userSet.has(pc)?`<span class="rc-note in" style="color:${col};border-color:${col}55;background:${col}12">${spell(pc)}</span>`:`<span class="rc-note out">${spell(pc)}</span>`;}).join('');
     const rootRaw=FLAT_RAW[r.root].toLowerCase();
     const link=`<a class="rc-link" href="gammes.html?root=${rootRaw}&scale=${r.def.id}">${t('lbl_see_fb')}</a>`;
     const card=document.createElement('div');
