@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manche de guitare interactif : toutes les notes | ScalaBass</title>
-<meta name="description" content="Visualise n'importe quelle note sur tout le manche de guitare 6 cordes. Accordages multiples (Standard, Drop D, Open G, DADGAD…), droitier ou gaucher, jusqu'à 24 cases.">
+<meta name="description" content="Visualise n'importe quelle note sur tout le manche de guitare 6 cordes. Accordages multiples (Standard, Drop D, Drop C, Open G…), droitier ou gaucher, jusqu'à 24 cases.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -304,7 +304,9 @@ const TUNINGS=[
   {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb','Bb','Eb']},
   {id:'open_g',    label:'Open G',     notes:['D','G','D','G','B','D']},
   {id:'open_d',    label:'Open D',     notes:['D','A','D','F#','A','D']},
-  {id:'dadgad',    label:'DADGAD',     notes:['D','A','D','G','A','D']},
+  {id:'drop_c',    label:'Drop C',     notes:['C','G','C','F','A','D']},
+  {id:'drop_b',    label:'Drop B',     notes:['B','F#','B','E','G#','C#']},
+  {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','F#','B']},
   {id:'open_e',    label:'Open E',     notes:['E','B','E','G#','B','E']},
 ];
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}

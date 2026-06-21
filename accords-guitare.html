@@ -508,7 +508,7 @@ const state = {
   frets: 12,
   hand: 'right',
   display: 'note',
-  position: 'all',
+  position: 1,
 };
 
 function noteTbl(){ const n=state.notation,a=state.accPref; return n==='fr'?(a==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR):(a==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN); }
@@ -609,7 +609,9 @@ const GUITAR_TUNINGS = {
     {id:'half_down', label:'½ ton ↓',   names:['E♭','A♭','D♭','G♭','B♭','E♭'], pcs:[3,8,1,6,10,3],   midi:[39,44,49,54,58,63]},
     {id:'open_g',    label:'Open G',    names:['D','G','D','G','B','D'],         pcs:[2,7,2,7,11,2],   midi:[38,43,50,55,59,62]},
     {id:'open_d',    label:'Open D',    names:['D','A','D','F♯','A','D'],        pcs:[2,9,2,6,9,2],    midi:[38,45,50,54,57,62]},
-    {id:'dadgad',    label:'DADGAD',    names:['D','A','D','G','A','D'],         pcs:[2,9,2,7,9,2],    midi:[38,45,50,55,57,62]},
+    {id:'drop_c',    label:'Drop C',    names:['C','G','C','F','A','D'],         pcs:[0,7,0,5,9,2],    midi:[36,43,48,53,57,62]},
+    {id:'drop_b',    label:'Drop B',    names:['B','F♯','B','E','G♯','C♯'],     pcs:[11,6,11,4,8,1],  midi:[35,42,47,52,56,61]},
+    {id:'drop_a',    label:'Drop A',    names:['A','E','A','D','F♯','B'],        pcs:[9,4,9,2,6,11],   midi:[33,40,45,50,54,59]},
   ],
   7:[
     {id:'standard7', label:'Standard',  names:['B','E','A','D','G','B','E'],     pcs:[11,4,9,2,7,11,4],midi:[35,40,45,50,55,59,64]},
@@ -631,7 +633,7 @@ const E_SH = {
   sus4:  b=>[b,b+2,b+2,b+2,b,b],
   sus2:  b=>b>0?[b,b+2,b+2,b-1,b,b]:null,
   dim:   b=>[b,b+2,b+3,b+1,null,null],
-  aug:   b=>[b,b+3,b+3,b+2,b+1,null],
+  aug:   b=>[b,b+3,b+2,b+1,b+1,null],
   p5:    b=>[b,b+2,b+2,null,null,null],
 };
 // A-shape barre: root on A string at fret b, low-E muted
@@ -645,7 +647,7 @@ const A_SH = {
   sus4:  b=>b<=9?[null,b,b+2,b+2,b+3,b]:null,
   sus2:  b=>[null,b,b+2,b+2,b,b],
   dim:   b=>[null,b,b+1,b+2,b+1,null],
-  aug:   b=>[null,b,b+3,b+3,b+2,null],
+  aug:   b=>[null,b,b+3,b+2,b+2,b+1],
   p5:    b=>[null,b,b+2,b+2,null,null],
 };
 // D-shape barre: root on D string at fret b
@@ -754,8 +756,13 @@ const SPECIALS = {
   '7_sus4': [[3,3,0,0,1,3]],
   '9_dim':  [[null,0,1,2,1,null]],
   '4_dim':  [[0,1,2,0,null,null]],
-  '9_aug':  [[null,0,3,2,2,1]],
-  '4_aug':  [[0,3,2,1,1,0]],
+  '0_aug':  [[null,3,2,1,1,0]],           // C aug
+  '2_aug':  [[null,null,0,3,3,2]],        // D aug
+  '4_aug':  [[0,3,2,1,1,0]],             // E aug
+  '5_aug':  [[null,null,3,2,2,1]],        // F aug
+  '7_aug':  [[3,2,1,0,0,3]],             // G aug
+  '9_aug':  [[null,0,3,2,2,1]],          // A aug
+  '11_aug': [[null,2,1,0,0,3]],          // B aug
   // Power chords (p5) — open & low positions
   '4_p5':   [[0,2,2,null,null,null]],    // E5
   '9_p5':   [[null,0,2,2,null,null]],    // A5
@@ -1010,7 +1017,7 @@ async function playAllChord(){
   if(btn.classList.contains('playing')) return;
   btn.classList.add('playing'); btn.textContent='■ Stop';
   // Play the currently selected position, not always the first one
-  const idx = state.position==='all' ? 0 : Math.min(parseInt(state.position)-1, _currentVoicings.length-1);
+  const idx = Math.min(parseInt(state.position)-1, _currentVoicings.length-1);
   const _v = _currentVoicings[idx];
   const _minFr = _v ? _v.reduce((m,x)=>x&&x.f>0?Math.min(m,x.f):m, Infinity) : 0;
   try{ await playVoicing(_v, 'chord', isFinite(_minFr)?_minFr:0); }catch(e){}
@@ -1100,7 +1107,7 @@ function renderDiagrams(def){
 
   voicings.forEach((v, idx)=>{
     const posN=idx+1;
-    const isSelected=state.position==='all'?idx===0:String(state.position)===String(posN);
+    const isSelected=String(state.position)===String(posN);
     const card=document.createElement('div');
     card.className='diagram-card'+(isSelected?' highlight':'');
     card.title=`Cliquer pour voir la position ${posN} sur le manche`;
@@ -1225,7 +1232,8 @@ function renderCAGED(){
 /* ============================================================ FRETBOARD */
 function buildPositionButtons(n){
   const c=document.getElementById('fb-position'); if(!c)return;
-  if(state.position!=='all'&&parseInt(state.position)>n) state.position='all';
+  if(!n) return;
+  if(parseInt(state.position)>n||state.position==='all') state.position=1;
   c.innerHTML='';
   const mk=(val,lbl)=>{
     const b=document.createElement('button'); b.textContent=lbl;
@@ -1233,7 +1241,6 @@ function buildPositionButtons(n){
     b.onclick=()=>{ state.position=val; render(); };
     return b;
   };
-  c.appendChild(mk('all','Tout'));
   for(let i=1;i<=n;i++) c.appendChild(mk(i,String(i)));
 }
 
@@ -1269,7 +1276,7 @@ function renderFretboard(def){
   // Position box from selected voicing
   let box=null, highlightSet=null;
   const vOffset=nStr-6;
-  if(state.position!=='all'&&_currentVoicings.length){
+  if(_currentVoicings.length){
     const vIdx=parseInt(state.position)-1;
     const v=_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
     if(v){

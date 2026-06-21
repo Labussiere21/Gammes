@@ -491,6 +491,11 @@
     .site-nav::-webkit-scrollbar{display:none}
     .piano-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   }
+.inst-bar{display:flex;gap:3px;margin-bottom:10px;background:#0e0a07;border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content}
+.inst-btn{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:5px 14px;border-radius:5px;transition:.12s;white-space:nowrap}
+.inst-btn:hover{color:var(--cream)}
+.inst-btn.bass-btn.active{background:var(--brass);color:#160f08;font-weight:700}
+.inst-btn.guit-btn.active{background:#bf1828;color:#fff;font-weight:700}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
@@ -524,6 +529,12 @@
 </head>
 <body>
 <div class="wrap">
+
+  <!-- Instrument toggle -->
+  <div class="inst-bar">
+    <a class="inst-btn bass-btn active" href="gammes.html">Basse</a>
+    <a class="inst-btn guit-btn" href="manche-guitare.html">Guitare</a>
+  </div>
 
   <!-- Tooltip accord -->
   <div class="chord-tooltip" id="chord-tooltip"></div>
