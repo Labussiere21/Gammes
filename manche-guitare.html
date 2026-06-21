@@ -73,10 +73,10 @@
 
   .deg-legend{display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 2px;flex-wrap:wrap}
   .dl-title{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:none}
-  .dl-items{display:flex;gap:5px;flex-wrap:wrap}
-  .dl-item{display:flex;flex-direction:column;align-items:center;gap:2px}
-  .dl-dot{width:9px;height:9px;border-radius:50%;display:block}
-  .dl-deg{font-family:"Space Mono",monospace;font-size:8px;color:var(--muted-2);white-space:nowrap}
+  .dl-items{display:flex;gap:8px;flex-wrap:wrap}
+  .dl-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .dl-dot{width:13px;height:13px;border-radius:50%;display:block}
+  .dl-deg{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted-2);white-space:nowrap}
   .positions-info{margin-top:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
   .pos-chip{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;background:rgba(191,24,40,.12);border:1px solid var(--brass-dim);color:var(--brass);border-radius:8px;padding:6px 14px}
   .pos-detail{font-size:13px;color:var(--muted)}
@@ -311,7 +311,7 @@ function getNotationTable(ap){
 }
 function spellNote(pc,ap){return getNotationTable(ap)[pc];}
 
-const DEGREE_COLORS=['#e8503a','#ec6a38','#f08a3c','#f1a843','#f2c14e','#57c08a','#4eb4b4','#45a3d9','#6e8fd5','#8c7bd6','#c073bf','#e06aa8'];
+const DEGREE_COLORS=['#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653','#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'];
 const state={selectedNotes:new Map(),rootPc:null,accPref:'b',tuning:'standard',frets:12,hand:'right'};
 function getCurrentRoot(){const pcs=[...state.selectedNotes.keys()];if(state.rootPc!==null&&pcs.includes(state.rootPc))return state.rootPc;return pcs[0]??null;}
 function noteColor(pc){const r=getCurrentRoot();if(r===null)return DEGREE_COLORS[0];return DEGREE_COLORS[(pc-r+12)%12];}
