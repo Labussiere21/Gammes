@@ -71,6 +71,12 @@
   .seg button:hover{color:var(--cream)}
   .seg button.on{background:var(--brass);color:#fff;font-weight:700}
 
+  .deg-legend{display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 2px;flex-wrap:wrap}
+  .dl-title{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:none}
+  .dl-items{display:flex;gap:5px;flex-wrap:wrap}
+  .dl-item{display:flex;flex-direction:column;align-items:center;gap:2px}
+  .dl-dot{width:9px;height:9px;border-radius:50%;display:block}
+  .dl-deg{font-family:"Space Mono",monospace;font-size:8px;color:var(--muted-2);white-space:nowrap}
   .positions-info{margin-top:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
   .pos-chip{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;background:rgba(191,24,40,.12);border:1px solid var(--brass-dim);color:var(--brass);border-radius:8px;padding:6px 14px}
   .pos-detail{font-size:13px;color:var(--muted)}
@@ -255,6 +261,7 @@
       </div>
     </div>
     <div class="fb-scroll"><div class="fretboard" id="fretboard"></div></div>
+    <div class="deg-legend" id="deg-legend"></div>
   </section>
 
   <div class="two-col">
@@ -467,6 +474,11 @@ function renderFretboard(strings,frets){
 }
 
 /* INIT */
+(function buildDegLegend(){
+  const DEG_LABELS=['I','♭II','II','♭III','III','IV','♭V','V','♭VI','VI','♭VII','VII'];
+  const items=DEGREE_COLORS.map((col,i)=>`<div class="dl-item"><span class="dl-dot" style="background:${col}"></span><span class="dl-deg">${DEG_LABELS[i]}</span></div>`).join('');
+  document.getElementById('deg-legend').innerHTML=`<span class="dl-title">Degrés</span><div class="dl-items">${items}</div>`;
+})();
 buildPiano();
 document.getElementById('piano').addEventListener('click',e=>{const k=e.target.closest('[data-pc]');if(!k)return;toggleNote(+k.dataset.pc);render();});
 buildTuningButtons();
