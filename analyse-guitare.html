@@ -144,6 +144,8 @@
   .cell.open{width:var(--open-w); border-right:0}
   .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#f0e0e5,#c8aab8); z-index:3; border-radius:1px}
   .dot-sel{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:"Space Mono",monospace; font-weight:700; font-size:12px; position:relative; z-index:4; animation:popIn .15s ease both; cursor:pointer;}
+  .dot-ghost{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; position:relative; z-index:4; cursor:pointer; border:2px solid; opacity:0.28; transition:opacity .12s;}
+  .cell:hover .dot-ghost{opacity:0.55;}
   .fretboard.lefty .fb-row{flex-direction:row-reverse}
   .fretboard.lefty .fb-inlays{flex-direction:row-reverse}
   .fretboard.lefty .cell.nut-after::after{right:auto;left:-1px;background:linear-gradient(270deg,#f0e0e5,#c8aab8)}
@@ -574,8 +576,15 @@ function togglePc(pc){
 }
 function togglePosition(origIdx,fret,pc){
   const key=`${origIdx}-${fret}`;
-  if(state.selectedPositions.has(key)) state.selectedPositions.delete(key);
-  else state.selectedPositions.set(key,{pc,color:nextColor()});
+  if(state.selectedPositions.has(key)){
+    state.selectedPositions.delete(key);
+  } else if(state.selectedPcs.has(pc)){
+    const color=state.selectedPcs.get(pc);
+    state.selectedPositions.set(key,{pc,color});
+    state.selectedPcs.delete(pc);
+  } else {
+    state.selectedPositions.set(key,{pc,color:nextColor()});
+  }
 }
 function clearAll(){ state.selectedPcs.clear(); state.selectedPositions.clear(); render(); }
 function spell(pc){ return spellNote(pc, state.accPref); }
@@ -666,6 +675,12 @@ function renderFretboard(){
         const d=document.createElement('div'); d.className='dot-sel';
         d.style.cssText=`background:${posEntry.color};color:#0d0608;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 3px 8px rgba(0,0,0,.5)`;
         d.textContent=spell(pc); d.title=`${s.n} case ${f} — ${spell(pc)}`;
+        cell.appendChild(d);
+      } else if(state.selectedPcs.has(pc)){
+        const ghostColor=state.selectedPcs.get(pc);
+        const d=document.createElement('div'); d.className='dot-ghost';
+        d.style.cssText=`color:${ghostColor};border-color:${ghostColor}`;
+        d.textContent=spell(pc); d.title=`Placer ${spell(pc)} ici`;
         cell.appendChild(d);
       }
       row.appendChild(cell);
