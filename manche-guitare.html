@@ -145,6 +145,15 @@
     .site-nav::-webkit-scrollbar{display:none}
     .piano-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   }
+  .tuning-sel{
+    appearance:none;-webkit-appearance:none;
+    background:#0a0406 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236f5f4c'/%3E%3C/svg%3E") no-repeat right 10px center;
+    border:1px solid var(--line);border-radius:7px;
+    color:var(--muted);font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    padding:6px 28px 6px 10px;cursor:pointer;transition:.12s;
+  }
+  .tuning-sel:hover{border-color:var(--brass);color:var(--cream);}
+  .tuning-sel:focus{outline:2px solid var(--brass);outline-offset:1px;}
 </style>
 </head>
 <body>
@@ -213,7 +222,7 @@
       <div class="fb-tools">
         <div>
           <div class="ctl-label">Accordage</div>
-          <div class="seg" id="fb-tuning-ctl" role="group"></div>
+          <select id="fb-tuning-ctl" class="tuning-sel"></select>
         </div>
         <div>
           <div class="ctl-label">Cases</div>
@@ -313,7 +322,8 @@ function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(l
 function currentStrings(){const t=TUNINGS.find(t=>t.id===state.tuning)||TUNINGS[0];return t.notes.map(n=>({n,pc:pcOf_n(n)}));}
 function buildTuningButtons(){
   const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';
-  TUNINGS.forEach(t=>{const b=document.createElement('button');b.textContent=t.label;b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});
+  TUNINGS.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.label+' ('+t.notes.join('-')+')';if(t.id===state.tuning)o.selected=true;c.appendChild(o);});
+  c.onchange=()=>{state.tuning=c.value;render();};
 }
 
 /* Piano */
@@ -352,7 +362,7 @@ function render(){
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
-  document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on',(TUNINGS.find(t=>t.id===state.tuning)||TUNINGS[0]).label===b.textContent));
+  document.getElementById('fb-tuning-ctl').value=state.tuning;
   document.querySelectorAll('.ng-cell').forEach(c=>{
     const pc=+c.dataset.pc,nm=spell(pc),al=enha(pc);
     c.querySelector('.ng-name').textContent=pretty(nm);
