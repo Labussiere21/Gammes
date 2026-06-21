@@ -640,7 +640,8 @@ const NOTE_COLORS = [
   '#e06aa8','#60c8a0','#d97040','#7ec8e3','#b887e0','#e87050'
 ];
 const state = {
-  selectedPcs: new Map(), // pc → couleur
+  selectedPcs: new Map(),        // piano : pc → color
+  selectedPositions: new Map(),  // manche : "sIdx-fret" → {pc, color}
   accPref: 'b',
   strings: 4, frets: 12, hand: 'right',
   activeTab: 'chords',
@@ -658,15 +659,26 @@ function spell(pc){ return (state.accPref==='#'?SHARP:FLAT)[pc]; }
 function spellRaw(pc){ return (state.accPref==='#'?['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']:FLAT_RAW)[pc]; }
 const SCALE_MAJ=[0,2,4,5,7,9,11];
 
+function getPcsForAnalysis(){
+  const m=new Map(state.selectedPcs);
+  for(const [,v] of state.selectedPositions) if(!m.has(v.pc)) m.set(v.pc,v.color);
+  return m;
+}
 function nextColor(){
-  const used=new Set(state.selectedPcs.values());
-  return NOTE_COLORS.find(c=>!used.has(c))||NOTE_COLORS[state.selectedPcs.size%NOTE_COLORS.length];
+  const all=getPcsForAnalysis();
+  const used=new Set(all.values());
+  return NOTE_COLORS.find(c=>!used.has(c))||NOTE_COLORS[all.size%NOTE_COLORS.length];
 }
 function togglePc(pc){
   if(state.selectedPcs.has(pc)) state.selectedPcs.delete(pc);
   else state.selectedPcs.set(pc,nextColor());
 }
-function clearAll(){ state.selectedPcs.clear(); render(); }
+function togglePosition(sIdx,fret,pc){
+  const key=`${sIdx}-${fret}`;
+  if(state.selectedPositions.has(key)) state.selectedPositions.delete(key);
+  else state.selectedPositions.set(key,{pc,color:nextColor()});
+}
+function clearAll(){ state.selectedPcs.clear(); state.selectedPositions.clear(); render(); }
 
 /* ============================================================ PIANO */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -704,7 +716,7 @@ const TUNINGS={
 };
 const LP_SIMPLE={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 function noteToPC(n){let pc=LP_SIMPLE[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
-function currentStrings(){return TUNINGS[state.strings][0].notes.map(n=>({n,pc:noteToPC(n)}));}
+function currentStrings(){return TUNINGS[state.strings][0].notes.map((n,i)=>({n,pc:noteToPC(n),sIdx:i}));}
 
 /* ============================================================ MANCHE */
 function renderFretboard(){
@@ -725,12 +737,13 @@ function renderFretboard(){
       cell.className='cell'+(f===0?' open nut-after':'');
       cell.dataset.f=f; cell.dataset.s=s.pc;
       const pc=(s.pc+f)%12;
-      cell.addEventListener('click',()=>{togglePc(pc);render();});
-      const color=state.selectedPcs.get(pc);
-      if(color){
+      cell.addEventListener('click',()=>{togglePosition(s.sIdx,f,pc);render();});
+      const posKey=`${s.sIdx}-${f}`;
+      const posEntry=state.selectedPositions.get(posKey);
+      if(posEntry){
         const d=document.createElement('div'); d.className='dot-sel';
-        d.style.cssText=`background:${color};color:#160f08;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 3px 8px rgba(0,0,0,.5)`;
-        d.textContent=spell(pc); d.title=`${s.n} ${t('lbl_cases')} ${f} — ${spell(pc)} (${t('lbl_deselect')})`;
+        d.style.cssText=`background:${posEntry.color};color:#160f08;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 3px 8px rgba(0,0,0,.5)`;
+        d.textContent=spell(pc); d.title=`${s.n} ${t('lbl_cases')} ${f} — ${spell(pc)}`;
         cell.appendChild(d);
       }
       row.appendChild(cell);
@@ -822,7 +835,7 @@ function analyzeCadences(pcs){
 
 /* ============================================================ AFFICHAGE RÉSULTATS */
 function renderResults(){
-  const pcs=[...state.selectedPcs.keys()];
+  const pcs=[...getPcsForAnalysis().keys()];
   const rz=document.getElementById('results-zone');
   if(pcs.length<2){rz.style.display='none';return;}
   rz.style.display='';
@@ -925,7 +938,7 @@ function emptyHTML(msg){
 
 /* ============================================================ PARTAGE */
 function shareAnalysis(){
-  const pcs=[...state.selectedPcs.keys()];
+  const pcs=[...getPcsForAnalysis().keys()];
   if(!pcs.length) return;
   const noteStr=pcs.map(pc=>spellRaw(pc).toLowerCase()).join(',');
   const url=`${location.origin}${location.pathname}?notes=${noteStr}`;
@@ -953,28 +966,35 @@ function readUrlParams(){
 /* ============================================================ RENDU */
 function renderSelectedNotes(){
   const c=document.getElementById('selected-notes'); c.innerHTML='';
-  if(!state.selectedPcs.size){
+  const _allPcs=getPcsForAnalysis();
+  if(!_allPcs.size){
     c.innerHTML=`<span class="empty-hint">${t('lbl_no_note_hint')}</span>`;
     return;
   }
-  [...state.selectedPcs.entries()].forEach(([pc,color])=>{
+  [..._allPcs.entries()].forEach(([pc,color])=>{
     const pill=document.createElement('button'); pill.className='note-pill';
     pill.style.cssText=`background:${color}22;border:1px solid ${color};color:${color}`;
     pill.innerHTML=`${spell(pc)} <span class="rm">×</span>`;
     pill.title='Clic pour retirer';
-    pill.onclick=()=>{state.selectedPcs.delete(pc);render();};
+    pill.onclick=()=>{
+      state.selectedPcs.delete(pc);
+      const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
+      toRm.forEach(k=>state.selectedPositions.delete(k));
+      render();
+    };
     c.appendChild(pill);
   });
 }
 
 function syncPiano(){
+  const _ap=getPcsForAnalysis();
   document.querySelectorAll('#piano .wkey').forEach(b=>{
-    const pc=+b.dataset.pc, color=state.selectedPcs.get(pc);
+    const pc=+b.dataset.pc, color=_ap.get(pc);
     b.classList.toggle('sel',!!color);
     b.style.background=color?`linear-gradient(180deg,${color},${color}cc)`:'';
   });
   document.querySelectorAll('#piano .bkey').forEach(b=>{
-    const pc=+b.dataset.pc, color=state.selectedPcs.get(pc);
+    const pc=+b.dataset.pc, color=_ap.get(pc);
     b.classList.toggle('sel',!!color);
     b.style.background=color?`linear-gradient(180deg,${color},${color}99)`:'';
     if(b.querySelector('.bname')) b.querySelector('.bname').style.color=color?'#160f08':'';
@@ -1025,7 +1045,7 @@ document.getElementById('accpref').addEventListener('click',e=>{
 });
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
-  state.strings=+b.dataset.str; render();
+  state.strings=+b.dataset.str; state.selectedPositions.clear(); render();
 });
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
