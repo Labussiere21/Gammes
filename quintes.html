@@ -216,6 +216,11 @@ h1 em{font-style:italic; color:var(--brass)}
     .site-nav{order:9;width:100%;overflow-x:auto;overflow-y:hidden;overflow:hidden auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .site-nav::-webkit-scrollbar{display:none}
   }
+.inst-bar{display:flex;gap:3px;margin-bottom:10px;background:#0e0a07;border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content}
+.inst-btn{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:5px 14px;border-radius:5px;transition:.12s;white-space:nowrap}
+.inst-btn:hover{color:var(--cream)}
+.inst-btn.bass-btn.active{background:var(--brass);color:#160f08;font-weight:700}
+.inst-btn.guit-btn.active{background:#bf1828;color:#fff;font-weight:700}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cycle des quintes interactif pour basse | ScalaBass">
@@ -248,6 +253,12 @@ h1 em{font-style:italic; color:var(--brass)}
 </head>
 <body>
 <div class="wrap">
+
+  <!-- Instrument toggle -->
+  <div class="inst-bar">
+    <a class="inst-btn bass-btn active" href="quintes.html">Basse</a>
+    <a class="inst-btn guit-btn" href="manche-guitare.html">Guitare</a>
+  </div>
 
 <header>
   <div class="eyebrow">
