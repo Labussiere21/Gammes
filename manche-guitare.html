@@ -303,10 +303,16 @@ function getNotationTable(ap){
 }
 function spellNote(pc,ap){return getNotationTable(ap)[pc];}
 
-const NOTE_COLORS=['#e8503a','#f08a3c','#f2c14e','#57c08a','#45a3d9','#8c7bd6','#e06aa8','#60c8a0','#d97040','#7ec8e3','#b887e0','#e87050'];
-const state={selectedNotes:new Map(),accPref:'b',tuning:'standard',frets:12,hand:'right'};
-function nextColor(){const u=new Set(state.selectedNotes.values());return NOTE_COLORS.find(c=>!u.has(c))||NOTE_COLORS[state.selectedNotes.size%NOTE_COLORS.length];}
-function toggleNote(pc){if(state.selectedNotes.has(pc))state.selectedNotes.delete(pc);else state.selectedNotes.set(pc,nextColor());}
+const DEGREE_COLORS=['#bf1828','#d94428','#e07428','#c8a828','#7cc828','#28bf70','#28bfb0','#2878d9','#5028d9','#9028c8','#c028a8','#d92860'];
+const state={selectedNotes:new Map(),rootPc:null,accPref:'b',tuning:'standard',frets:12,hand:'right'};
+function getCurrentRoot(){const pcs=[...state.selectedNotes.keys()];if(state.rootPc!==null&&pcs.includes(state.rootPc))return state.rootPc;return pcs[0]??null;}
+function noteColor(pc){const r=getCurrentRoot();if(r===null)return DEGREE_COLORS[0];return DEGREE_COLORS[(pc-r+12)%12];}
+function toggleNote(pc){
+  if(state.selectedNotes.has(pc)){
+    if(getCurrentRoot()===pc){state.selectedNotes.delete(pc);state.rootPc=null;}
+    else{state.rootPc=pc;}
+  } else {state.selectedNotes.set(pc,true);}
+}
 
 const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
@@ -370,8 +376,8 @@ function buildNoteGrid(){
 function render(){
   buildPiano();
   const strings=currentStrings(),frets=state.frets;
-  document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',state.selectedNotes.has(+b.dataset.pc)));
-  document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',state.selectedNotes.has(+b.dataset.pc)));
+  document.querySelectorAll('#piano .wkey').forEach(b=>{const pc=+b.dataset.pc,sel=state.selectedNotes.has(pc),col=sel?noteColor(pc):null;b.classList.toggle('sel',sel);b.style.background=col?`linear-gradient(180deg,${col},${col}cc)`:''});
+  document.querySelectorAll('#piano .bkey').forEach(b=>{const pc=+b.dataset.pc,sel=state.selectedNotes.has(pc),col=sel?noteColor(pc):null;b.classList.toggle('sel',sel);b.style.background=col?`linear-gradient(180deg,${col},${col}99)`:''});
   document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
@@ -380,22 +386,26 @@ function render(){
     const pc=+c.dataset.pc,nm=spell(pc),al=enha(pc);
     c.querySelector('.ng-name').textContent=pretty(nm);
     const nn=c.querySelector('.ng-num');nn.textContent=pretty(al)||'';nn.style.opacity=al?'1':'0';
-    const col=state.selectedNotes.get(pc);
-    c.classList.toggle('active',!!col);
+    const sel=state.selectedNotes.has(pc);
+    const col=sel?noteColor(pc):null;
+    const isRoot=sel&&(pc===getCurrentRoot());
+    c.classList.toggle('active',sel);
     c.style.borderColor=col||'';c.style.background=col?(col+'22'):'';
     c.querySelector('.ng-name').style.color=col||'';
+    c.style.boxShadow=isRoot?`0 0 0 2px ${col},0 0 8px ${col}60`:'';
+    c.title=isRoot?'Fondamentale — clic pour changer':sel?'Clic → fondamentale · reclic pour désélectionner':'';
   });
   const ndN=document.getElementById('nd-name'),ndE=document.getElementById('nd-enha');
   if(state.selectedNotes.size===0){ndN.textContent='—';ndE.textContent='Clique une note';}
-  else if(state.selectedNotes.size===1){const pc=[...state.selectedNotes.keys()][0];ndN.textContent=pretty(spell(pc));ndE.textContent=enha(pc)?`= ${pretty(enha(pc))}`:'';ndN.style.color=state.selectedNotes.get(pc);}
-  else{ndN.innerHTML=[...state.selectedNotes.entries()].map(([pc,c])=>`<span style="color:${c}">${pretty(spell(pc))}</span>`).join(' ');ndE.textContent=state.selectedNotes.size+' notes';ndN.style.color='';}
+  else if(state.selectedNotes.size===1){const pc=[...state.selectedNotes.keys()][0];ndN.textContent=pretty(spell(pc));ndE.textContent=enha(pc)?`= ${pretty(enha(pc))}`:'';ndN.style.color=noteColor(pc);}
+  else{ndN.innerHTML=[...state.selectedNotes.keys()].map(pc=>`<span style="color:${noteColor(pc)}">${pretty(spell(pc))}</span>`).join(' ');ndE.textContent=state.selectedNotes.size+' notes';ndN.style.color='';}
 
   const inf=document.getElementById('positions-info');
   const totalPos=[];
-  state.selectedNotes.forEach((color,pc)=>{strings.forEach(s=>{for(let f=0;f<=frets;f++)if((s.pc+f)%12===pc)totalPos.push({str:s.n,fret:f,pc,color});});});
+  state.selectedNotes.forEach((_,pc)=>{const color=noteColor(pc);strings.forEach(s=>{for(let f=0;f<=frets;f++)if((s.pc+f)%12===pc)totalPos.push({str:s.n,fret:f,pc,color});});});
   if(state.selectedNotes.size===0){inf.innerHTML='<span style="font-size:13px;color:var(--muted)">Sélectionne au moins une note sur le clavier ou la grille.</span>';}
   else{
-    const names=[...state.selectedNotes.entries()].map(([pc,c])=>`<b style="color:${c}">${pretty(spell(pc))}</b>`).join(', ');
+    const names=[...state.selectedNotes.keys()].map(pc=>`<b style="color:${noteColor(pc)}">${pretty(spell(pc))}</b>`).join(', ');
     const pword=totalPos.length>1?'positions':'position';
     inf.innerHTML=`<span class="pos-chip">${totalPos.length} ${pword}</span><span class="pos-detail">${names} sur ${strings.length} cordes jusqu'à la case ${frets}</span>
       <button onclick="state.selectedNotes.clear();render();" style="background:#100506;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;padding:5px 12px;border-radius:7px;cursor:pointer;margin-left:6px">✕ Effacer</button>`;
@@ -430,7 +440,7 @@ function renderFretboard(strings,frets){
     for(let f=0;f<=frets;f++){
       const cell=document.createElement('div');cell.className='cell'+(f===0?' open nut-after':'');
       const pc=(s.pc+f)%12;
-      const color=state.selectedNotes.get(pc);
+      const color=state.selectedNotes.has(pc)?noteColor(pc):null;
       if(color){
         const d=document.createElement('div');d.className='dot';
         d.style.background=color;d.style.color='#160f08';
