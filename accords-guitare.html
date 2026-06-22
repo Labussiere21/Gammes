@@ -1527,6 +1527,19 @@ const SLASH_SPECIALS={
   '4_min_11': [[null,2,2,0,0,0]],           // Em/B
   '2_min_5':  [[1,0,0,2,3,1]],              // Dm/F
   '2_min_9':  [[null,0,0,2,3,1]],           // Dm/A
+  // Dom7 inversions
+  '7_7_11':   [[null,2,0,0,0,1]],           // G7/B
+  '7_7_2':    [[null,null,0,0,0,1]],        // G7/D
+  '7_7_5':    [[1,2,3,0,0,1]],              // G7/F
+  '0_7_4':    [[null,null,2,3,1,0],[0,3,2,3,1,0]], // C7/E
+  '2_7_6':    [[2,0,0,2,1,2]],              // D7/F#
+  '9_7_1':    [[null,4,2,0,2,0]],           // A7/C#
+  '4_7_8':    [[4,2,0,1,0,0]],              // E7/G#
+  // Maj7 inversions
+  '0_maj7_4': [[null,null,2,0,0,0],[0,3,2,0,0,0]], // Cmaj7/E
+  '7_maj7_11':[[null,2,0,0,0,2]],           // Gmaj7/B
+  '9_maj7_1': [[null,4,2,1,2,0]],           // Amaj7/C#
+  '2_maj7_6': [[2,0,0,2,2,2]],              // Dmaj7/F#
 };
 
 function findSlashVoicings(rootPc,intervals,bassPc,chordId=''){
