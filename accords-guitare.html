@@ -532,6 +532,7 @@ h1 em{font-style:italic; color:var(--brass)}
           <div class="seg" id="fb-display">
             <button data-disp="note" class="on">Notes</button>
             <button data-disp="deg">Degrés</button>
+            <button data-disp="fingering">Doigtés</button>
           </div>
         </div>
         <div>
@@ -1957,8 +1958,8 @@ function renderFretboard(def){
   const pcToIv={};
   def.iv.forEach(iv=>{ pcToIv[(state.rootPc+iv)%12]=iv; });
 
-  // Position box from selected voicing
-  let box=null, highlightSet=null;
+  // Position box + fingering from selected voicing
+  let box=null, highlightSet=null, fbFingering=null;
   const vOffset=nStr-6;
   if(_currentVoicings.length){
     const vIdx=parseInt(state.position)-1;
@@ -1966,6 +1967,10 @@ function renderFretboard(def){
     if(v){
       highlightSet=new Set();
       v.forEach((x,s)=>{ if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`); });
+      if(state.display==='fingering'){
+        const dbFg=dbGetFingers(v,state.rootPc,def?def.id:'');
+        fbFingering=dbFg||computeFingering(v);
+      }
       const nonOpen=v.filter(x=>x&&x.f>0);
       if(nonOpen.length){
         const minF=Math.min(...nonOpen.map(x=>x.f));
@@ -2003,7 +2008,12 @@ function renderFretboard(def){
           const d=document.createElement('div');
           d.className='dot'+(iv===0?' root':'');
           d.style.background=IV_COLOR[iv]||'#d9a849';
-          d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
+          if(state.display==='fingering'&&fbFingering){
+            const fn=fbFingering[origIdx];
+            d.textContent=fn>0?String(fn):'';
+          } else {
+            d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
+          }
           cell.appendChild(d);
         }
       }
