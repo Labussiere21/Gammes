@@ -688,14 +688,8 @@ function getPcsForAnalysis(){
 }
 function togglePc(pc){
   if(state.selectedPcs.has(pc)){
-    if(getCurrentRoot()===pc){
-      state.selectedPcs.delete(pc);
-      const toRm=[...state.selectedPositions.entries()].filter(([,v])=>v.pc===pc).map(([k])=>k);
-      toRm.forEach(k=>state.selectedPositions.delete(k));
-      state.rootPc=null;
-    } else {
-      state.rootPc=pc;
-    }
+    // Clic sur une note déjà sélectionnée → change la fondamentale, ne supprime jamais
+    state.rootPc = (state.rootPc===pc) ? null : pc;
   } else {
     state.selectedPcs.set(pc,true);
   }
