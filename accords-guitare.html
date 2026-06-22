@@ -874,6 +874,11 @@ const SPECIALS = {
   '9_add9':   [[null,0,2,4,2,0]],        // Aadd9 (x02420)
   '9_madd9':  [[null,0,2,4,1,0]],        // Amadd9 (x02410)
   '11_add9':  [[null,2,4,4,2,2]],        // Badd9 (x24422)
+  '11_7':     [[null,2,4,2,4,2]],        // B7 (x24242)
+  '11_maj7':  [[null,2,4,3,4,2]],        // Bmaj7 (x24342)
+  '11_m7':    [[null,2,4,2,3,2]],        // Bm7 (x24232)
+  '11_sus2':  [[null,null,4,4,2,2]],     // Bsus2 (xx4422)
+  '11_sus4':  [[null,2,4,4,5,2]],        // Bsus4 (x24452)
   // 6th chords
   '0_6':      [[null,3,2,2,1,0]],        // C6 (x32210)
   '2_6':      [[null,null,0,2,0,2]],     // D6 (xx0202)
@@ -1558,6 +1563,12 @@ const SLASH_SPECIALS={
   '9_maj_7':  [[3,0,2,2,2,0]],              // A/G
   '4_maj_2':  [[null,null,0,1,0,0]],        // E/D
   '5_maj_2':  [[null,null,0,2,1,1]],        // F/D
+  // X/B bass (basse Si)
+  '0_maj_11': [[null,2,2,0,1,0]],           // C/B
+  '9_maj_11': [[null,2,2,2,2,0]],           // A/B
+  '2_maj_11': [[null,2,0,2,3,2]],           // D/B
+  '5_maj_11': [[null,2,3,2,1,1]],           // F/B
+  '2_min_11': [[null,2,0,2,3,1]],           // Dm/B
 };
 
 function findSlashVoicings(rootPc,intervals,bassPc,chordId=''){
