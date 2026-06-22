@@ -1260,32 +1260,21 @@ async function playVoicing(voicing, mode='chord', minFret=0){
   const inst = await initAudio(); if(!inst) return;
   if(_audioCtx.state==='suspended') await _audioCtx.resume();
 
-  // DB MIDI: real per-position octaves (primary source)
-  let notes = null;
-  const def = currentChordDef();
-  if(def && !def.bassIv && mode==='chord'){
-    notes = dbGetMidi(voicing, state.rootPc, def.id);
+  // Calcul MIDI depuis l'accordage réel, corde par corde, grave → aigu
+  const openMidi = currentTuning().midi;
+  const nStr = Math.min(voicing.length, openMidi.length);
+  const notes = [];
+  for(let s=0; s<nStr; s++){
+    const v = voicing[s]; if(v===null) continue;
+    const m = Math.max(28, Math.min(96, openMidi[s] + (v.f||0)));
+    notes.push(m);
   }
 
-  // Fallback: compute from string tuning
-  if(!notes){
-    const openMidi = currentTuning().midi;
-    const nStr = Math.min(voicing.length, openMidi.length);
-    const seen = new Set();
-    notes = [];
-    for(let s=0;s<nStr;s++){
-      const v=voicing[s]; if(v===null) continue;
-      let m = openMidi[s]+(v.f||0);
-      m = Math.max(40, Math.min(84, m));
-      if(seen.has(m)) continue;
-      seen.add(m); notes.push(m);
-    }
-  }
-
-  const delay = mode==='chord' ? 0.055 : 0.20;
-  const duration = mode==='chord' ? 1.5 : 0.8;
-  // Gain légèrement décroissant corde→corde (basse plus forte, aigus plus doux = grain naturel)
-  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*delay, {duration, gain: 2.8 - i*0.15}));
+  if(!notes.length) return;
+  const delay    = mode==='chord' ? 0.030 : 0.20;
+  const duration = mode==='chord' ? 1.6   : 0.9;
+  // Basse plus forte, aigus plus doux — grain naturel de gratte
+  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime + i*delay, {duration, gain: 3.2 - i*0.22}));
 }
 
 let _currentVoicings = [];
