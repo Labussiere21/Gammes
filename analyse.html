@@ -703,7 +703,12 @@ function togglePc(pc){
 function togglePosition(sIdx,fret,pc){
   const key=`${sIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
-    state.selectedPositions.delete(key);
+    if(getCurrentRoot()===pc){
+      state.selectedPositions.delete(key);
+      state.rootPc=null;
+    } else {
+      state.rootPc=pc;
+    }
   } else if(state.selectedPcs.has(pc)){
     state.selectedPositions.set(key,{pc});
     state.selectedPcs.delete(pc);
