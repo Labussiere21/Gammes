@@ -458,15 +458,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .capo-intro{color:var(--muted);font-size:13px;max-width:70ch;margin:0 0 18px;font-style:italic;}
 .capo-shape-tag{font-family:"Space Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#b08060;background:rgba(176,128,96,.15);border:1px solid rgba(176,128,96,.3);padding:2px 6px;border-radius:4px;}
 
-/* ===== SLASH ===== */
-.slash-section{margin-top:30px;background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px clamp(14px,2.4vw,24px);box-shadow:0 24px 60px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03);}
-.slash-intro{color:var(--muted);font-size:13px;max-width:70ch;margin:0 0 14px;font-style:italic;}
-.bass-picker{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;}
-.bass-btn{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);padding:5px 10px;border-radius:7px;cursor:pointer;transition:.12s;min-width:44px;text-align:center;}
-.bass-btn:hover{border-color:var(--cherry-dim);color:var(--cream);}
-.bass-btn.on{background:var(--cherry);border-color:var(--cherry);color:#fff;}
-.bass-btn.chord-tone{border-color:var(--brass-dim);}
-.slash-no-voicing{color:var(--muted);font-size:13px;font-style:italic;padding:12px 0;}</style>
+</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <script src="chords-db.js"></script>
 </head>
@@ -594,21 +586,6 @@ h1 em{font-style:italic; color:var(--brass)}
     <div class="diagrams-grid" id="capo-grid"></div>
   </section>
 
-  <!-- Slash chords -->
-  <section class="slash-section" id="slash-section" style="display:none">
-    <div class="diagrams-head">
-      <h2>Accords slash — <span id="slash-chord-name"></span></h2>
-      <div class="mode-seg" id="slash-mode-seg">
-        <button data-mode="degree" class="on">Degrés</button>
-        <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigtés</button>
-      </div>
-    </div>
-    <p class="slash-intro">Sélectionne la note de basse. Les boutons dorés indiquent les notes appartenant à l'accord (renversements).</p>
-    <div class="bass-picker" id="bass-picker"></div>
-    <div class="diagrams-grid" id="slash-grid"></div>
-  </section>
-
   <!-- Manche -->
   <section class="fb-section">
     <div class="fb-head">
@@ -677,8 +654,6 @@ const state = {
   position: 1,
   diagramMode: 'degree',
   capoMode: 'degree',
-  slashMode: 'degree',
-  slashBass: null,
 };
 
 function noteTbl(){ const n=state.notation,a=state.accPref; return n==='fr'?(a==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR):(a==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN); }
@@ -1943,224 +1918,6 @@ function renderCapo(){
   });
 }
 
-/* ============================================================ SLASH */
-// Hardcoded best voicings for common slash chords (inversions)
-// Key: rootPc + '_' + chordId + '_' + bassPc
-const SLASH_SPECIALS={
-  '7_maj_11': [[null,2,0,0,0,3]],           // G/B
-  '7_maj_2':  [[null,null,0,0,0,3]],        // G/D
-  '0_maj_4':  [[null,null,2,0,1,0],[0,3,2,0,1,0]], // C/E
-  '0_maj_7':  [[3,3,2,0,1,0]],              // C/G
-  '2_maj_6':  [[2,0,0,2,3,2]],              // D/F#
-  '2_maj_9':  [[null,0,0,2,3,2]],           // D/A
-  '9_maj_1':  [[null,4,2,2,2,0]],           // A/C#
-  '9_maj_4':  [[0,0,2,2,2,0]],              // A/E
-  '4_maj_8':  [[4,2,2,1,0,0]],              // E/G#
-  '4_maj_11': [[null,2,2,1,0,0]],           // E/B
-  '5_maj_9':  [[null,0,3,2,1,1]],           // F/A
-  '5_maj_0':  [[null,3,3,2,1,1]],           // F/C
-  '9_min_0':  [[null,3,2,2,1,0]],           // Am/C
-  '9_min_4':  [[0,0,2,2,1,0]],              // Am/E
-  '4_min_7':  [[3,2,2,0,0,0]],              // Em/G
-  '4_min_11': [[null,2,2,0,0,0]],           // Em/B
-  '2_min_5':  [[1,0,0,2,3,1]],              // Dm/F
-  '2_min_9':  [[null,0,0,2,3,1]],           // Dm/A
-  // Dom7 inversions
-  '7_7_11':   [[null,2,0,0,0,1]],           // G7/B
-  '7_7_2':    [[null,null,0,0,0,1]],        // G7/D
-  '7_7_5':    [[1,2,3,0,0,1]],              // G7/F
-  '0_7_4':    [[null,null,2,3,1,0],[0,3,2,3,1,0]], // C7/E
-  '2_7_6':    [[2,0,0,2,1,2]],              // D7/F#
-  '9_7_1':    [[null,4,2,0,2,0]],           // A7/C#
-  '4_7_8':    [[4,2,0,1,0,0]],              // E7/G#
-  // Maj7 inversions
-  '0_maj7_4': [[null,null,2,0,0,0],[0,3,2,0,0,0]], // Cmaj7/E
-  '7_maj7_11':[[null,2,0,0,0,2]],           // Gmaj7/B
-  '9_maj7_1': [[null,4,2,1,2,0]],           // Amaj7/C#
-  '2_maj7_6': [[2,0,0,2,2,2]],              // Dmaj7/F#
-  // Min7 inversions (1st, 2nd, 3rd)
-  '4_m7_7':   [[3,2,0,0,0,0]],              // Em7/G
-  '4_m7_11':  [[null,2,2,0,3,0]],           // Em7/B
-  '4_m7_2':   [[null,null,0,0,0,0]],        // Em7/D
-  '9_m7_0':   [[null,3,2,0,1,0]],           // Am7/C
-  '9_m7_4':   [[0,0,2,0,1,0]],              // Am7/E
-  '9_m7_7':   [[3,0,2,0,1,0]],              // Am7/G
-  '2_m7_5':   [[1,0,0,2,1,1]],              // Dm7/F
-  '2_m7_9':   [[null,0,0,2,1,1]],           // Dm7/A
-  '2_m7_0':   [[null,3,0,0,1,1]],           // Dm7/C
-  // Non-chord-tone bass (basse hors-accord)
-  '7_maj_0':  [[null,3,0,0,0,3]],           // G/C
-  '7_maj_9':  [[null,0,0,0,0,3]],           // G/A
-  '0_maj_2':  [[null,null,0,0,1,0]],        // C/D
-  '2_maj_0':  [[null,3,0,2,3,2]],           // D/C
-  '9_maj_7':  [[3,0,2,2,2,0]],              // A/G
-  '4_maj_2':  [[null,null,0,1,0,0]],        // E/D
-  '5_maj_2':  [[null,null,0,2,1,1]],        // F/D
-  // X/B bass (basse Si)
-  '0_maj_11': [[null,2,2,0,1,0]],           // C/B
-  '9_maj_11': [[null,2,2,2,2,0]],           // A/B
-  '2_maj_11': [[null,2,0,2,3,2]],           // D/B
-  '5_maj_11': [[null,2,3,2,1,1]],           // F/B
-  '2_min_11': [[null,2,0,2,3,1]],           // Dm/B
-};
-
-function findSlashVoicings(rootPc,intervals,bassPc,chordId=''){
-  const bassIv=(bassPc-rootPc+12)%12;
-  // Check hardcoded specials first
-  const specKey=`${rootPc}_${chordId}_${bassPc}`;
-  if(SLASH_SPECIALS[specKey]){
-    const ivByPc={};intervals.forEach(iv=>{ivByPc[(rootPc+iv)%12]=iv;});
-    return SLASH_SPECIALS[specKey].map(fa=>fa.map((f,s)=>{
-      if(f===null)return null;
-      const pc=(OPEN_PCS[s]+f)%12;
-      return{f,pc,iv:ivByPc[pc]??null};
-    }));
-  }
-  // Chord-tone bass → use existing algo
-  if(intervals.includes(bassIv)) return findVoicings(rootPc,intervals,bassIv,null);
-  // Non-chord bass search
-  const chordPcs=new Set(intervals.map(i=>(rootPc+i)%12));
-  const ivByPc={};intervals.forEach(iv=>{ivByPc[(rootPc+iv)%12]=iv;});
-  const results=[],seen=new Set();
-  for(let bStr=0;bStr<=2&&results.length<4;bStr++){
-    for(let bFret=0;bFret<=9&&results.length<4;bFret++){
-      if((OPEN_PCS[bStr]+bFret)%12!==bassPc)continue;
-      const lo=Math.max(0,bFret-1),hi=bFret+4;
-      const upStrs=[];for(let s=bStr+1;s<6;s++)upStrs.push(s);
-      const opts=upStrs.map(s=>{
-        const list=[];
-        for(let f=lo;f<=Math.min(hi,18);f++){
-          const pc=(OPEN_PCS[s]+f)%12;
-          if(chordPcs.has(pc))list.push({f,pc,iv:ivByPc[pc]});
-        }
-        return list;
-      });
-      (function bt(i,combo,pcs,fLo,fHi){
-        if(results.length>=4)return;
-        if(i===upStrs.length){
-          if(pcs.size<Math.min(2,intervals.length))return;
-          const full=Array(6).fill(null);
-          full[bStr]={f:bFret,pc:bassPc,iv:null};
-          upStrs.forEach((s,idx)=>{if(combo[idx])full[s]=combo[idx];});
-          const k=full.map(x=>x===null?'x':x.f).join(',');
-          if(!seen.has(k)){seen.add(k);results.push([...full]);}
-          return;
-        }
-        bt(i+1,[...combo,null],pcs,fLo,fHi);
-        for(const o of opts[i]){
-          let nLo=fLo<0?o.f:(o.f>0?Math.min(fLo,o.f):fLo);
-          let nHi=fHi<0?o.f:(o.f>0?Math.max(fHi,o.f):fHi);
-          if(o.f>0&&(nHi-nLo>4||Math.abs(o.f-bFret)>4))continue;
-          const np=new Set(pcs);np.add(o.pc);
-          bt(i+1,[...combo,o],np,nLo,nHi);
-        }
-      })(0,[],new Set(),-1,-1);
-    }
-  }
-  return results;
-}
-
-function renderSlash(){
-  const section=document.getElementById('slash-section');
-  const def=currentChordDef();
-  if(!def){section.style.display='none';return;}
-  section.style.display='';
-  const r=state.rootPc;
-  document.getElementById('slash-chord-name').textContent=spellPc(r)+(def.sym?' '+def.sym:'');
-  // Build bass picker
-  const picker=document.getElementById('bass-picker');picker.innerHTML='';
-  for(let i=1;i<=11;i++){
-    const bassPc=(r+i)%12;
-    const isChordTone=def.iv.includes(i);
-    const btn=document.createElement('button');
-    btn.className='bass-btn'+(isChordTone?' chord-tone':'')+(state.slashBass===bassPc?' on':'');
-    btn.textContent=spellPc(bassPc);
-    btn.title=isChordTone?'Note de l\'accord (renversement)':'Basse non-accord (slash)';
-    btn.onclick=()=>{
-      state.slashBass=state.slashBass===bassPc?null:bassPc;
-      renderSlash();
-    };
-    picker.appendChild(btn);
-  }
-  // Grid
-  const grid=document.getElementById('slash-grid');grid.innerHTML='';
-  if(state.slashBass===null){
-    grid.innerHTML='<div class="slash-no-voicing">Sélectionne une note de basse ci-dessus.</div>';
-    return;
-  }
-  const bassPc=state.slashBass;
-  const voicings=findSlashVoicings(r,def.iv,bassPc,def.id);
-  if(!voicings.length){
-    grid.innerHTML='<div class="slash-no-voicing">Aucune position jouable trouvée pour cette combinaison.</div>';
-    return;
-  }
-  const bassIv=(bassPc-r+12)%12;
-  const isChordTone=def.iv.includes(bassIv);
-  const slashName=spellPc(r)+(def.sym||'')+'/'+spellPc(bassPc);
-  voicings.forEach((v,idx)=>{
-    const card=document.createElement('div');card.className='diagram-card';
-    const pos=document.createElement('div');pos.className='diagram-pos';
-    pos.textContent=`${slashName} — pos. ${idx+1}`;
-    card.appendChild(pos);
-    // Normalise voicing array to {f,pc,iv} objects
-    const norm=v.map(x=>{
-      if(!x)return null;
-      if(typeof x.iv==='undefined')return{...x,iv:0};
-      return x;
-    });
-    const fg=computeFingering(norm);
-    const svgWrap=document.createElement('div');
-    svgWrap.innerHTML=makeSVGSlash(norm,fg,state.slashMode,bassPc);
-    card.appendChild(svgWrap);
-    const minFr=norm.filter(x=>x&&x.f>0).length?Math.min(...norm.filter(x=>x&&x.f>0).map(x=>x.f)):0;
-    const tabStr=norm.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
-    const tab=document.createElement('div');tab.className='diagram-fingers';tab.textContent=tabStr;card.appendChild(tab);
-    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML='▶ Écouter';
-    let _pl=false;
-    pb.onclick=async(e)=>{e.stopPropagation();if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
-      try{await playVoicing(norm,'chord',minFr);}catch(e){}
-      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
-    };
-    card.appendChild(pb);grid.appendChild(card);
-  });
-}
-
-// SVG pour slash : basse non-accord en couleur neutre
-function makeSVGSlash(voicing,fingering,mode,bassPc){
-  if(!mode)mode=state.slashMode;
-  const S=22,F=22,PL=16,PT=28,PB=8,nFrets=5;
-  const W=PL*2+5*S,H=PT+nFrets*F+PB;
-  const frets=voicing.map(x=>x?x.f:-1);
-  const playedNonOpen=frets.filter(f=>f>0);
-  const minFP=playedNonOpen.length?Math.min(...playedNonOpen):1;
-  const startFret=minFP<=2?0:minFP-1;
-  const showNut=startFret===0;
-  let svg=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="chord-svg">`;
-  for(let s=0;s<6;s++){const x=PL+s*S;const sw=Math.max(0.7,1.5-s*0.15);svg+=`<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+nFrets*F}" stroke="#6f5f4c" stroke-width="${sw}"/>`;}
-  for(let f=0;f<=nFrets;f++){const y=PT+f*F;if(showNut&&f===0){svg+=`<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#ece1cd" stroke-width="4" stroke-linecap="round"/>`;}else{svg+=`<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#4a1525" stroke-width="0.9"/>`;}}
-  if(!showNut)svg+=`<text x="${PL-4}" y="${PT+F*.75}" font-family="Space Mono,monospace" font-size="8" fill="#9d8a72" text-anchor="end">${startFret+1}</text>`;
-  const INLAYS=[3,5,7,9,12,15,17,19];
-  for(const af of INLAYS){const rel=af-startFret;if(rel>=1&&rel<=nFrets){const cy=PT+(rel-0.5)*F;if(af===12){svg+=`<circle cx="${PL+1.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;svg+=`<circle cx="${PL+3.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;}else{svg+=`<circle cx="${PL+2.5*S}" cy="${cy}" r="2" fill="#4a1525" opacity=".7"/>`;}}}
-  const NOTE_NAMES_SVG=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  for(let s=0;s<6;s++){
-    const x=PL+s*S,v=voicing[s];
-    if(v===null){svg+=`<line x1="${x-4}" y1="${PT-18}" x2="${x+4}" y2="${PT-10}" stroke="#e8503a" stroke-width="1.5"/>`;svg+=`<line x1="${x+4}" y1="${PT-18}" x2="${x-4}" y2="${PT-10}" stroke="#e8503a" stroke-width="1.5"/>`;}
-    else if(v.f===0){svg+=`<circle cx="${x}" cy="${PT-13}" r="5" fill="none" stroke="#9d8a72" stroke-width="1.3"/>`;}
-    else{
-      const rel=v.f-startFret,cy=PT+(rel-0.5)*F;
-      const isBass=(v.pc===bassPc&&s<=2);
-      const col=isBass?'#b08060':(IV_COLOR[v.iv]||'#d9a849');
-      svg+=`<circle cx="${x}" cy="${cy}" r="9" fill="${col}"/>`;
-      let lbl,fs;
-      if(mode==='fingering'){const fg=fingering?fingering[s]:null;lbl=fg===0?'0':fg===null?'?':String(fg);fs=9;}
-      else if(mode==='note'){lbl=NOTE_NAMES_SVG[v.pc];fs=lbl.length>2?7:8;}
-      else{lbl=isBass?'/':(IV_LABEL[v.iv]||'?');fs=lbl.length>2?7:8;}
-      svg+=`<text x="${x}" y="${cy+fs/2+1}" font-family="Space Mono,monospace" font-size="${fs}" fill="#160f08" text-anchor="middle" font-weight="700">${lbl}</text>`;
-    }
-  }
-  svg+='</svg>';return svg;
-}
-
 /* ============================================================ FRETBOARD */
 function buildPositionButtons(n){
   const c=document.getElementById('fb-position'); if(!c)return;
@@ -2327,7 +2084,6 @@ function render(){
   renderDiagrams(def);
   renderCAGED();
   renderCapo();
-  renderSlash();
   buildPositionButtons(_currentVoicings.length);
   renderFretboard(def);
 }
@@ -2362,12 +2118,6 @@ document.getElementById('capo-mode-seg').addEventListener('click',e=>{
   state.capoMode=b.dataset.mode;
   document.querySelectorAll('#capo-mode-seg button').forEach(x=>x.classList.toggle('on',x===b));
   renderCapo();
-});
-document.getElementById('slash-mode-seg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  state.slashMode=b.dataset.mode;
-  document.querySelectorAll('#slash-mode-seg button').forEach(x=>x.classList.toggle('on',x===b));
-  renderSlash();
 });
 
 // Restore preferences
