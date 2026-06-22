@@ -216,15 +216,11 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 .mode-seg button.on{background:rgba(196,16,44,.18); color:var(--cherry);}
 .mode-seg button:hover:not(.on){background:rgba(255,255,255,.04);}
-.tuning-sel{
-  appearance:none; -webkit-appearance:none;
-  background:#0e0a07 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236f5f4c'/%3E%3C/svg%3E") no-repeat right 10px center;
-  border:1px solid var(--line); border-radius:7px;
-  color:var(--muted); font-family:"Space Mono",monospace; font-size:11px; font-weight:700;
-  padding:6px 28px 6px 10px; cursor:pointer; transition:.12s;
-}
-.tuning-sel:hover{border-color:var(--cherry-dim); color:var(--cream);}
-.tuning-sel:focus{outline:2px solid var(--cherry-dim); outline-offset:1px;}
+.pos-nav{ display:flex; align-items:center; gap:6px; }
+.pos-nav button{ width:32px; height:32px; border-radius:7px; border:1px solid var(--line); background:transparent; color:var(--cream); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.12s; }
+.pos-nav button:hover:not(:disabled){ border-color:var(--cherry-dim); color:var(--cherry); }
+.pos-nav button:disabled{ opacity:.28; cursor:default; }
+.pos-counter{ font-family:"Space Mono",monospace; font-size:11px; font-weight:700; color:var(--muted); min-width:52px; text-align:center; }
 .diagrams-head h2{
   font-family:"Space Mono",monospace; font-weight:700; font-size:12px;
   letter-spacing:.22em; text-transform:uppercase; color:var(--muted-2); margin:0;
@@ -545,10 +541,6 @@ h1 em{font-style:italic; color:var(--brass)}
             <button data-str="6" class="on">6</button>
             <button data-str="7">7</button>
           </div>
-        </div>
-        <div>
-          <div class="ctl-label">Accordage</div>
-          <select id="fb-tuning-ctl" class="tuning-sel"></select>
         </div>
         <div>
           <div class="ctl-label">Cases</div>
@@ -1073,7 +1065,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
     if (showNut && f === 0) {
       if(capoPos>0){svg+=`<rect x="${PL-4}" y="${y-4}" width="${5*S+8}" height="8" rx="3" fill="#b08060" stroke="#7a5840" stroke-width="1.2"/>`;}
       else{svg+=`<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#ece1cd" stroke-width="4" stroke-linecap="round"/>`;}
-      if(capoPos>0){svg+=`<text x="${PL+2.5*S}" y="${PT-16}" font-family="Space Mono,monospace" font-size="8" fill="#b08060" text-anchor="middle" font-weight="700">CAPO ${capoPos}</text>`;}
+      if(capoPos>0){svg+=`<text x="${PL+2.5*S}" y="${PT-14}" font-family="Space Mono,monospace" font-size="9" fill="#ece1cd" text-anchor="middle" font-weight="700" letter-spacing="1">CAPO ${capoPos}</text>`;}
     } else {
       svg += `<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#4a1525" stroke-width="0.9"/>`;
     }
@@ -1852,16 +1844,23 @@ function makeSVGSlash(voicing,fingering,mode,bassPc){
 /* ============================================================ FRETBOARD */
 function buildPositionButtons(n){
   const c=document.getElementById('fb-position'); if(!c)return;
-  if(!n) return;
-  if(parseInt(state.position)>n||state.position==='all') state.position=1;
   c.innerHTML='';
-  const mk=(val,lbl)=>{
-    const b=document.createElement('button'); b.textContent=lbl;
-    b.className=String(state.position)===String(val)?'on':'';
-    b.onclick=()=>{ state.position=val; render(); };
-    return b;
-  };
-  for(let i=1;i<=n;i++) c.appendChild(mk(i,String(i)));
+  if(!n)return;
+  if(parseInt(state.position)>n||state.position==='all') state.position=1;
+  const pos=parseInt(state.position)||1;
+
+  const wrap=document.createElement('div'); wrap.className='pos-nav';
+
+  const prev=document.createElement('button'); prev.textContent='←'; prev.disabled=pos<=1;
+  prev.onclick=()=>{ state.position=Math.max(1,pos-1); render(); };
+
+  const ctr=document.createElement('span'); ctr.className='pos-counter'; ctr.textContent=`${pos} / ${n}`;
+
+  const next=document.createElement('button'); next.textContent='→'; next.disabled=pos>=n;
+  next.onclick=()=>{ state.position=Math.min(n,pos+1); render(); };
+
+  wrap.appendChild(prev); wrap.appendChild(ctr); wrap.appendChild(next);
+  c.appendChild(wrap);
 }
 
 function buildTuningButtons(){
@@ -1987,7 +1986,6 @@ function render(){
   renderCapo();
   renderSlash();
   buildPositionButtons(_currentVoicings.length);
-  buildTuningButtons();
   renderFretboard(def);
 }
 
