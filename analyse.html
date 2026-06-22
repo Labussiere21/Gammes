@@ -712,6 +712,7 @@ function togglePosition(sIdx,fret,pc){
   } else if(state.selectedPcs.has(pc)){
     state.selectedPositions.set(key,{pc});
     state.selectedPcs.delete(pc);
+    if(getCurrentRoot()!==pc) state.rootPc=pc;
   } else {
     state.selectedPositions.set(key,{pc});
   }
