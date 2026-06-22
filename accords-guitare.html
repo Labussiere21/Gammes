@@ -274,6 +274,64 @@ h1 em{font-style:italic; color:var(--brass)}
   border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:16px;
 }
 
+/* ===== CHORD INFO PANEL ===== */
+.chord-info-wrap{
+  margin-top:20px;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line); border-radius:var(--radius);
+  padding:20px clamp(14px,2.4vw,24px);
+}
+.cinfo-tabs{
+  display:flex; gap:4px; margin-bottom:18px;
+  border-bottom:1px solid var(--line); padding-bottom:0;
+}
+.cinfo-tab{
+  font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  background:none; border:none; border-bottom:2px solid transparent;
+  color:var(--muted); cursor:pointer; padding:6px 14px 10px;
+  margin-bottom:-1px; transition:.12s;
+}
+.cinfo-tab.on{ color:var(--cream); border-bottom-color:var(--cherry); }
+.cinfo-tab:hover:not(.on){ color:var(--muted-2); }
+
+/* Stack (Résumé tab) */
+.chord-stack{ display:flex; flex-direction:column; gap:6px; }
+.stack-row{
+  display:flex; align-items:stretch; gap:10px; min-height:44px;
+}
+.stack-cat{
+  font-family:"Space Mono",monospace; font-size:9px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+  width:72px; flex-shrink:0; display:flex; align-items:center;
+  justify-content:flex-end; padding-right:10px;
+  border-right:1px solid var(--line);
+}
+.stack-blocks{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding-left:4px; }
+.stack-block{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:8px; padding:6px 12px; min-width:48px;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.stack-block .sbn{
+  font-size:18px; font-weight:700; line-height:1; color:#1a1008;
+  font-family:"Space Mono",monospace;
+}
+.stack-block .sbi{
+  font-size:9px; font-weight:700; letter-spacing:.08em; color:rgba(0,0,0,.55);
+  margin-top:2px; text-transform:uppercase;
+}
+.stack-empty{
+  font-size:12px; color:var(--muted); font-style:italic;
+  display:flex; align-items:center; padding-left:4px;
+}
+
+/* Description tab */
+.chord-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); }
+.chord-desc-text p{ margin:0 0 12px; }
+.chord-desc-text p:last-child{ margin-bottom:0; }
+.chord-desc-text strong{ color:var(--cream); font-weight:600; }
+
 /* ===== LEGEND ===== */
 .legend{
   margin-top:24px; display:flex; flex-wrap:wrap; gap:8px 16px;
@@ -465,6 +523,16 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="group-tabs" id="group-tabs"></div>
       <div class="chord-btns" id="chord-btns"></div>
     </div>
+  </section>
+
+  <!-- Chord Info Panel -->
+  <section class="chord-info-wrap" id="chord-info-wrap" style="display:none">
+    <div class="cinfo-tabs">
+      <button class="cinfo-tab on" data-cinfotab="schema">Résumé</button>
+      <button class="cinfo-tab" data-cinfotab="desc">Description</button>
+    </div>
+    <div id="cinfo-schema"><div class="chord-stack" id="chord-stack"></div></div>
+    <div id="cinfo-desc" style="display:none"><div class="chord-desc-text" id="chord-desc-text"></div></div>
   </section>
 
   <!-- Diagrams -->
@@ -1281,6 +1349,112 @@ function buildChordBtns(){
   });
 }
 
+/* ============================================================ CHORD INFO */
+const CHORD_DESC = {
+  maj: `<p>L'accord <strong>majeur</strong> est le pilier de toute harmonie tonale. Sa tierce majeure lui confère une couleur lumineuse et stable, souvent associée à la résolution ou à la victoire.</p><p>Construit sur une fondamentale, une tierce majeure (4 demi-tons) et une quinte juste (7 demi-tons), il forme le degré I ou IV dans la gamme majeure. On le retrouve aussi au degré V des gammes mineures harmonique et mélodique.</p><p>Sur la guitare, les formes ouvertes E, A, G, C et D offrent des sonorités riches grâce aux cordes à vide résonantes.</p>`,
+  min: `<p>L'accord <strong>mineur</strong> se distingue du majeur par sa tierce abaissée d'un demi-ton. Cette nuance crée une tension émotionnelle caractéristique, souvent décrite comme mélancolique ou introspective.</p><p>Il constitue les degrés II, III et VI dans la gamme majeure, et le degré I dans le mode mineur naturel. La quinte reste juste, ce qui lui assure une belle stabilité malgré la couleur sombre de la tierce.</p><p>Les formes Em et Am sont parmi les premiers accords appris à la guitare, et leur mobilité sur le manche permet de couvrir l'ensemble des tonalités mineures.</p>`,
+  '7': `<p>L'accord de <strong>dominante septième</strong> crée une tension forte qui appelle une résolution vers l'accord majeur situé une quinte en dessous. Cette propriété en fait l'accord de tension par excellence dans la musique tonale et le blues.</p><p>La coexistence de la tierce majeure et de la septième mineure génère un triton — l'intervalle le plus dissonant — entre ces deux notes. C'est cette friction qui donne à l'accord toute son énergie directionnelle.</p><p>Dans le blues, il est utilisé sur les trois degrés principaux (I, IV, V), brisant la règle classique de la résolution pour créer une esthétique volontairement tendue.</p>`,
+  maj7: `<p>L'accord <strong>majeur septième</strong> associe la luminosité de la triade majeure à la douceur enveloppante de la septième majeure. Il évoque un sentiment de sérénité, d'élégance ou de nostalgie poétique.</p><p>C'est l'accord du degré I (et IV) dans la gamme majeure. Contrairement au V7 qui demande à se résoudre, le maj7 est conclusif et peut s'étirer à l'infini sans créer de tension.</p><p>Très utilisé en jazz, en bossa nova et dans la musique pop sophistiquée, il s'enrichit facilement de la neuvième pour former des voicings complexes et colorés.</p>`,
+  m7: `<p>L'accord <strong>mineur septième</strong> est l'un des accords les plus polyvalents de la guitare. Sa couleur douce et légèrement voilée le rend indispensable au jazz, à la soul et à la funk.</p><p>Il représente les degrés II, III et VI dans la gamme majeure. Sa construction — fondamentale, tierce mineure, quinte juste, septième mineure — forme la base des progressions II–V–I en mineur.</p><p>Le Am7 en position ouverte est un grand classique acoustique, tandis que la forme barre permet de transporter cette couleur sur l'ensemble du manche.</p>`,
+  mmaj7: `<p>L'accord <strong>mineur majeur septième</strong> combine la tierce mineure et la septième majeure, créant une tension interne très particulière, à la fois sombre et brillante.</p><p>On le trouve naturellement au degré I de la gamme mineure harmonique. Sa résolution habituelle est vers le m7 (en abaissant la septième), formant ainsi une descente chromatique expressive à la basse.</p><p>Popularisé dans les films d'Alfred Hitchcock par Bernard Herrmann, il est synonyme de mystère et de suspense en musique cinématographique.</p>`,
+  dim: `<p>L'accord <strong>diminué</strong> empile deux tierces mineures, créant une instabilité symétrique. Sa quinte diminuée — un triton — lui donne une tension sans direction évidente, à mi-chemin entre plusieurs résolutions possibles.</p><p>Il apparaît naturellement au degré VII de la gamme majeure et au degré II de la gamme mineure. En harmonisation, il précède souvent l'accord de tonique pour renforcer la résolution.</p><p>Sa structure symétrique (les 4 formes de l'accord sont identiques à 3 demi-tons d'intervalle) simplifie la navigation sur le manche mais complexifie son utilisation harmonique.</p>`,
+  dim7: `<p>L'accord de <strong>septième diminuée</strong> empile trois tierces mineures successives, divisant l'octave en quatre parties égales. Cette symétrie parfaite lui confère une ambiguïté tonale unique : il peut se résoudre vers quatre toniques différentes.</p><p>Très utilisé en musique romantique, classique tardive et jazz, il sert souvent de substitut au V7b9 (en omettant la fondamentale). Sa fonction principale reste la tension maximale avant résolution.</p><p>Sur le manche, seulement 3 formes distinctes couvrent les 12 tonalités, ce qui en fait un accord étonnamment compact à maîtriser malgré sa complexité harmonique.</p>`,
+  aug: `<p>L'accord <strong>augmenté</strong> remplace la quinte juste par une quinte augmentée, créant une tension symétrique entre les tierces majeures empilées. Chaque note de l'accord peut être perçue comme fondamentale.</p><p>On le trouve au degré III dans la gamme mineure harmonique, et il est souvent utilisé comme substitut du V pour enrichir les progressions. Sa résolution naturelle est vers un accord majeur dont la fondamentale est un demi-ton au-dessus d'une de ses notes.</p><p>Sa symétrie parfaite (3 formes seulement pour les 12 tonalités) en fait un accord économique sur le manche, souvent exploité dans les passages chromatiques.</p>`,
+  sus2: `<p>L'accord <strong>sus2</strong> suspend la tierce et la remplace par la seconde majeure, créant une ouverture sonore sans la définition majeur/mineur. Cette neutralité est son atout principal.</p><p>Très prisé dans le rock et la pop modernes, il laisse l'oreille en légère attente sans créer de tension réelle. Il peut fonctionner indépendamment ou comme passage vers l'accord majeur ou mineur correspondant.</p><p>Sur la guitare acoustique, ses formes souvent ouvertes (Dsus2, Asus2) produisent des sonorités aériennes, particulièrement adaptées aux arpèges et aux fingerpickings.</p>`,
+  sus4: `<p>L'accord <strong>sus4</strong> remplace la tierce par la quarte juste, créant une tension ascendante qui cherche naturellement à se résoudre vers la tierce — majeure ou mineure selon le contexte.</p><p>Très courant dans le rock classique (The Who, Led Zeppelin) et la musique folk, il crée du mouvement sans changer de fondamentale. La progression sus4 → majeur est l'une des plus simples et des plus efficaces.</p><p>Le Dsus4 et le Asus4 en position ouverte sont des incontournables, souvent utilisés comme ornements transitoires dans les progressions d'accords.</p>`,
+  '7sus4': `<p>L'accord <strong>7sus4</strong> combine la suspension de quarte avec la septième mineure de dominante. Il reporte la résolution attendue tout en maintenant la tension fonctionnelle du V7.</p><p>Très utilisé dans la musique jazz-fusion, la soul et la funk, il peut précéder un accord de dominante classique ou se résoudre directement sur l'accord cible. Herbie Hancock en a fait un pilier de son langage harmonique.</p><p>Sa sonorité modale et ouverte lui permet aussi de fonctionner de manière statique, sans résolution obligatoire, dans les contextes moins tonaux.</p>`,
+  p5: `<p>L'accord de <strong>quinte</strong> (power chord) réduit l'harmonie à sa plus simple expression : fondamentale et quinte juste, sans tierce. Cette absence de tierce le rend neutre entre majeur et mineur.</p><p>Inventé pour le rock électrique amplifié, il évite la distorsion des tierces sur les guitares saturées. Son énergie brute et son côté "vide" sont précisément ce qui lui donne sa puissance dans le metal et le punk.</p><p>Techniquement, il se joue souvent sur deux ou trois cordes avec un seul doigt (barre partielle), ce qui permet de le déplacer instantanément sur tout le manche.</p>`,
+  add9: `<p>L'accord <strong>add9</strong> ajoute la neuvième (= seconde à l'octave supérieure) à la triade majeure <em>sans</em> septième. Le résultat est une couleur lumineuse et étendue sans la complexité d'un accord de neuvième complet.</p><p>Très populaire dans la pop, le rock et la musique acoustique des années 80-90, il offre plus de richesse que le simple accord majeur tout en restant accessible. Les formes Gadd9 et Dadd9 sont des classiques absolus.</p><p>Sa construction — sans septième — évite la tension fonctionnelle du maj9, ce qui le rend particulièrement adapté aux textures harmoniques statiques et colorées.</p>`,
+  madd9: `<p>L'accord <strong>mineur add9</strong> enrichit la triade mineure d'une neuvième sans passer par la septième. Il conserve la mélancolie du mineur tout en ajoutant une dimension lumineuse et aérée.</p><p>On le retrouve dans la musique de film, le rock alternatif et le post-rock, où il crée une atmosphère émotionnellement ambiguë, entre mélancolie et espoir.</p><p>Les voicings ouverts sur la guitare acoustique, utilisant des cordes à vide comme la 2e ou la 1e corde, sont particulièrement évocateurs dans ce contexte.</p>`,
+  '6': `<p>L'accord de <strong>sixte</strong> ajoute la sixte majeure à la triade majeure. Sa sonorité douce et lumineuse, sans la tension d'une septième, lui confère un caractère détendu et légèrement rétro.</p><p>Très utilisé dans le jazz des années 30-50, le swing et la bossa nova, il peut également remplacer l'accord majeur dans des contextes où l'on veut éviter la neutralité de la triade nue.</p><p>La sixte majeure est enharmoniquement la septième mineure d'un accord mineur situé une tierce mineure en dessous, ce qui crée des possibilités d'échange intéressantes entre parallèles majeur/mineur.</p>`,
+  m6: `<p>L'accord <strong>mineur sixte</strong> associe la tierce mineure à la sixte majeure, créant une combinaison à première vue paradoxale qui sonne pourtant très naturelle et expressive.</p><p>Fréquent en jazz et en musique brésilienne, il peut fonctionner comme accord mineur alternatif (degré I ou II) ou dans des lignes de basse descendantes chromatiques où il précède l'accord de dominante.</p><p>La sixte majeure dans un contexte mineur crée une couleur douce-amère très particulière, souvent associée à la nostalgie ou à la rêverie.</p>`,
+  '69': `<p>L'accord <strong>6/9</strong> ajoute simultanément la sixte et la neuvième à la triade majeure, sans septième. Son ambiance ouverte, lumineuse et légèrement suspendue en fait un favori du jazz et de la funk.</p><p>Prince, Stevie Wonder et les pianistes jazz en ont fait un élément signature. Il peut remplacer l'accord majeur dans presque tous les contextes, ajoutant de la couleur sans créer de tension directionnelle.</p><p>Sa structure sans septième évite tout conflit harmonique, ce qui le rend extraordinairement versatile et agréable à l'oreille dans une grande variété de styles.</p>`,
+  m69: `<p>L'accord <strong>mineur 6/9</strong> combine la couleur sombre du mineur avec les extensions lumineuses de la sixte et de la neuvième. Le résultat est une richesse harmonique nuancée, entre ombre et lumière.</p><p>Très utilisé dans le jazz moderne et la musique de film, il offre une alternative raffinée à l'accord mineur septième quand on veut plus de couleur sans la tension de la septième.</p><p>Les voicings en drop-2 ou drop-3 sont courants au jazz guitar pour étaler ses notes de manière idiomatique sur le manche.</p>`,
+  maj9: `<p>L'accord <strong>majeur neuvième</strong> enrichit le maj7 d'une neuvième majeure, ajoutant une dimension étendue et lumineuse. C'est l'accord du degré I (et IV) dans les harmonisations jazz sophistiquées.</p><p>Sa sonorité enveloppante et légèrement impressionniste le rend incontournable dans le jazz, la soul et le R&B. Chick Corea et Herbie Hancock l'utilisent abondamment dans leurs voicings de piano — et les guitaristes jazz l'adaptent en drop voicings.</p><p>Sur la guitare, les voicings les plus efficaces omettent souvent la quinte pour laisser résonner la fondamentale, la tierce, la septième et la neuvième ensemble.</p>`,
+  m9: `<p>L'accord <strong>mineur neuvième</strong> ajoute la neuvième au m7, créant une texture riche et douce associée au jazz moderne, à la soul et au R&B contemporain.</p><p>C'est l'accord des degrés II et III dans les progressions jazz avancées. Sa neuvième, toujours majeure par défaut, apporte une note de fraîcheur dans la couleur sombre du mineur.</p><p>Les guitaristes jazz utilisent souvent des voicings sans quinte pour concentrer les couleurs les plus expressives : fondamentale, tierce mineure, septième mineure et neuvième.</p>`,
+  '9': `<p>L'accord de <strong>neuvième de dominante</strong> enrichit le V7 d'une neuvième majeure. Cette extension adoucit légèrement la tension de la dominante tout en enrichissant sa couleur.</p><p>Très utilisé dans le jazz, le blues avancé et la funk, il peut remplacer le V7 simple dans presque tous les contextes tonaux. Jimi Hendrix en a fait un usage célèbre dans son style funk-rock.</p><p>Sa résolution vers le I suit les mêmes règles que le V7, mais avec une richesse supplémentaire qui récompense l'oreille à l'arrivée sur la tonique.</p>`,
+  '7b9': `<p>L'accord <strong>7b9</strong> ajoute une neuvième bémol (= seconde mineure à l'octave) au V7, intensifiant considérablement la tension de dominante. C'est l'accord du mouvement ii°7–V7b9–I en mineur.</p><p>Sa neuvième bémol forme une dissonance de demi-ton avec la fondamentale, créant une attraction puissante vers la résolution. Il est au cœur du vocabulaire bebop et du jazz traditionnel en tonalité mineure.</p><p>La progression V7b9 → Im est l'une des plus expressives de la musique tonale, avec une tension aussi forte qu'inévitable dans sa résolution.</p>`,
+  '7s9': `<p>L'accord <strong>7#9</strong> (ou "accord Hendrix") place une neuvième augmentée — enharmoniquement identique à la tierce mineure — au-dessus d'un accord de dominante majeur. Cette coexistence tierce majeure/tierce mineure est explosive.</p><p>Il combine en un seul accord les couleurs majeure et mineure, créant une tension ambiguë unique. Jimi Hendrix l'a rendu célèbre dans "Purple Haze" (accord de E7#9), mais on le retrouve dans tout le blues avancé et la funk.</p><p>Sur la guitare, sa forme barre compacte est immédiatement reconnaissable et transportable sur tout le manche pour les changements rapides.</p>`,
+  '7s11': `<p>L'accord <strong>7#11</strong> (lydien-mixolydien) associe la tension de dominante à la quarte augmentée du mode lydien. La coexistence du triton naturel (#11) et de la septième mineure crée une double dissonance sophistiquée.</p><p>C'est l'accord emblématique du mode lydien-mixolydien, très utilisé dans le jazz modal et la musique de film. Il peut fonctionner comme dominante non-résolue dans les contextes modaux où la résolution n'est pas obligatoire.</p><p>Thelonious Monk et Bill Evans l'ont popularisé; les guitaristes jazz l'utilisent souvent dans des voicings quartal pour maximiser l'ambiguïté tonale.</p>`,
+  m7b5: `<p>L'accord <strong>mineur 7b5</strong> (ou demi-diminué) combine quinte diminuée et septième mineure. C'est l'accord du degré II dans la gamme mineure harmonique, jouant un rôle capital dans la cadence ii°7–V7–Im.</p><p>Sa quinte diminuée crée une tension qu'atténue la septième mineure, le rendant moins instable que le diminué simple. Il peut aussi fonctionner comme accord de substitution dans de nombreux contextes jazz.</p><p>Sur la guitare, il partage souvent sa forme avec les voicings du m6, à différentes positions du manche, ce qui facilite leur mémorisation et leur utilisation conjointe.</p>`,
+  '11': `<p>L'accord de <strong>onzième</strong> ajoute la quarte juste aux extensions du 9, mais sa coexistence avec la tierce majeure crée une dissonance de demi-ton. En pratique, on omet souvent la tierce pour éviter ce frottement.</p><p>Dans le jazz, cet accord est surtout utilisé au degré II (IIm11) où la tierce mineure évite le conflit. Le V11 peut fonctionner avec une tierce omise dans des voicings quartal ouverts.</p><p>Miles Davis a exploré ce type de voicing dans ses périodes modale et fusion, créant des textures harmoniques moins définies et plus flottantes.</p>`,
+  m11: `<p>L'accord <strong>mineur onzième</strong> empile la quarte juste sur le m9, créant une harmonie dense et enveloppante. Contrairement au 11 majeur, la quinte mineure et la quarte coexistent sans friction ici.</p><p>C'est l'accord phare du jazz modal et du néo-soul. Sans conflit entre la tierce mineure et la onzième, tous ses intervalles peuvent résonner simultanément. D'Miles Davis à Kendrick Lamar, il traverse les styles.</p><p>Les voicings quartal — empilant les quartes sur le manche — sont particulièrement adaptatés à cet accord, lui donnant une couleur ouverte et contemporaine.</p>`,
+  maj11: `<p>L'accord <strong>majeur onzième</strong> combine le richesse du maj9 avec la quarte juste. La tierce majeure et la onzième forment un demi-ton de tension qui demande un voicing soigné pour sonner équilibré.</p><p>En pratique jazz, on omet souvent la tierce (ou la quinte) pour éviter cette friction. Quand c'est géré correctement, il produit une sonorité ouverte et lumineuse, proche du mode lydien sans le #11.</p><p>On le retrouve dans les ballades jazz et la musique contemporaine, où sa richesse harmonique peut s'épanouir dans un tempo lent et des voicings espacés.</p>`,
+  '13': `<p>L'accord de <strong>treizième de dominante</strong> ajoute la sixte (= 13e) aux extensions du V9. Il représente l'accord de dominante le plus complet possible, accumulant pratiquement toutes les notes de la gamme majeure.</p><p>En jazz, on joue rarement toutes ses notes simultanément : on sélectionne les plus expressives — généralement la tierce, la septième et la treizième — pour un voicing lisible sur la guitare.</p><p>Sa résolution vers le I est particulièrement riche quand la treizième (sixte) descend vers la quinte de l'accord de tonique, créant une ligne de voix douce et satisfaisante.</p>`,
+  m13: `<p>L'accord <strong>mineur treizième</strong> ajoute la sixte majeure au m11, créant l'accord mineur le plus étendu possible. Sa sixte majeure dans un contexte mineur lui donne sa couleur caractéristique, douce-amère.</p><p>Très présent dans le jazz contemporain, la soul et le R&B haut de gamme, il exprime une complexité émotionnelle qui va au-delà du simple mineur. On le compare parfois au son de certaines gammes mélobiques mineures harmonisées.</p><p>Sur la guitare, les voicings pratiques choisissent soigneusement 4-5 notes parmi ses 7 composants pour garder une sonorité jouable et expressive.</p>`,
+  maj13: `<p>L'accord <strong>majeur treizième</strong> est l'extension maximale du maj7, combinant neuvième, onzième et treizième (sixte). Il représente une harmonisation presque complète de la gamme majeure sur un seul accord.</p><p>Dans la pratique jazz, on sélectionne les intervalles les plus significatifs pour des voicings idiomatiques sur la guitare. La treizième et la neuvième sont les extensions les plus souvent gardées avec la tierce et la septième.</p><p>Sa couleur lyrique et complexe en fait l'accord de résolution ultime dans les ballades jazz, souvent placé sur le I de la dernière mesure d'un standard.</p>`,
+  aug7: `<p>L'accord <strong>augmenté septième</strong> (7#5) combine la quinte augmentée du triton augmenté avec la septième mineure de dominante. Sa double tension — quinte augmentée ET triton — en fait un accord extrêmement instable.</p><p>Il appartient à la gamme par tons entiers, ce qui lui donne des possibilités de substitution symétriques similaires au diminué. On le trouve souvent dans les progressions V→I où l'on cherche une couleur plus chromatique qu'une dominante simple.</p><p>Dans le blues et le jazz traditionnel, il annonce souvent la résolution vers un accord mineur, sa quinte augmentée descendant naturellement vers la quinte juste de la tonique.</p>`,
+  '7b5': `<p>L'accord <strong>7b5</strong> (dominante quinte diminuée) remplace la quinte juste par une quinte diminuée, ajoutant un deuxième triton à la tension déjà présente dans le V7. Le résultat est une dissonance maximale.</p><p>Il peut être substitué par le V7 d'une tonique à la distance d'un triton (substitution de tritone), ce qui ouvre des possibilités de réharmonisation riches dans le jazz. Cette symétrie est l'une des propriétés les plus exploitées en jazz avancé.</p><p>Ses voicings sur la guitare sont compacts et mobiles, utilisant les 4 cordes médianes pour concentrer les intervalles les plus expressifs dans une zone restreinte du manche.</p>`,
+  '7alt': `<p>L'accord <strong>altéré</strong> (7alt) accumule plusieurs altérations sur la dominante : b9, #9, b5 (#11) et/ou #5 (b13). Il représente la tension de dominante la plus extrême possible, issue de la gamme altérée.</p><p>En jazz bebop et post-bop, il précède souvent la résolution sur Im, avec une descente chromatique dense et dramatique. Sa relation avec la gamme altérée (7e mode de la mineure mélodique) est fondamentale dans l'improvisation avancée.</p><p>Sur la guitare, les voicings alt utilisent typiquement les 4 cordes aiguës, omettant fondamentale et quinte pour ne garder que les tensions les plus expressives.</p>`,
+};
+
+function slotOf(iv, ivSet) {
+  if (iv===0) return 'root';
+  if (iv===2) return (ivSet.has(3)||ivSet.has(4)||ivSet.has(5)) ? 'ext' : 'third';
+  if (iv===3) return ivSet.has(4) ? 'ext' : 'third';
+  if (iv===4) return 'third';
+  if (iv===5) return (ivSet.has(3)||ivSet.has(4)) ? 'ext' : 'third';
+  if (iv===6) return ivSet.has(7) ? 'ext' : 'fifth';
+  if (iv===7||iv===8) return 'fifth';
+  if (iv===9||iv===10||iv===11) return 'seventh';
+  return 'ext';
+}
+
+function renderChordInfo(def) {
+  const wrap = document.getElementById('chord-info-wrap');
+  if (!def) { wrap.style.display='none'; return; }
+  wrap.style.display='';
+
+  const ivSet = new Set(def.iv);
+  const slots = { root:[], third:[], fifth:[], seventh:[], ext:[] };
+  def.iv.forEach(iv => {
+    const s = slotOf(iv, ivSet);
+    slots[s].push(iv);
+  });
+
+  const rowDefs = [
+    { key:'ext',     label:'Extensions' },
+    { key:'seventh', label:'7e / 6e' },
+    { key:'fifth',   label:'Quinte' },
+    { key:'third',   label:'Tierce' },
+    { key:'root',    label:'Fond.' },
+  ];
+
+  const stack = document.getElementById('chord-stack');
+  stack.innerHTML = '';
+  rowDefs.forEach(({key, label}) => {
+    const ivs = slots[key];
+    if (!ivs.length) return;
+    const row = document.createElement('div'); row.className='stack-row';
+    const cat = document.createElement('div'); cat.className='stack-cat'; cat.textContent=label;
+    const blocks = document.createElement('div'); blocks.className='stack-blocks';
+    ivs.forEach(iv => {
+      const col = IV_COLOR[iv] || '#d9a849';
+      const noteName = spellPc((state.rootPc + iv) % 12);
+      const blk = document.createElement('div');
+      blk.className = 'stack-block';
+      blk.style.background = col;
+      blk.innerHTML = `<span class="sbn">${noteName}</span><span class="sbi">${IV_LABEL[iv]||'?'}</span>`;
+      blocks.appendChild(blk);
+    });
+    row.appendChild(cat); row.appendChild(blocks);
+    stack.appendChild(row);
+  });
+
+  const descEl = document.getElementById('chord-desc-text');
+  const raw = CHORD_DESC[def.id] || `<p>Pas de description disponible pour cet accord.</p>`;
+  descEl.innerHTML = raw;
+}
+
+// Chord info tab switching
+document.addEventListener('click', e => {
+  const tab = e.target.closest('.cinfo-tab'); if (!tab) return;
+  const which = tab.dataset.cinfotab;
+  document.querySelectorAll('.cinfo-tab').forEach(t => t.classList.toggle('on', t===tab));
+  document.getElementById('cinfo-schema').style.display = which==='schema' ? '' : 'none';
+  document.getElementById('cinfo-desc').style.display = which==='desc' ? '' : 'none';
+});
+
 function renderFormula(def){
   const bar=document.getElementById('formula-bar'); bar.innerHTML='';
   if(!def) return;
@@ -2060,6 +2234,7 @@ function render(){
     def?`Positions — ${rootName}${def.sym||''}` : 'Positions sur le manche';
 
   renderFormula(def);
+  renderChordInfo(def);
   renderDiagrams(def);
   renderCAGED();
   renderCapo();
