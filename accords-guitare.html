@@ -1666,7 +1666,7 @@ function renderDiagrams(def){
     const svgWrap=document.createElement('div');svgWrap.innerHTML=makeSVG(v,fg);
     card.appendChild(svgWrap);
 
-    const tabStr=v.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
+    const tabStr=v.map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
     const tab=document.createElement('div');tab.className='diagram-fingers';tab.textContent=tabStr;
     card.appendChild(tab);
 
@@ -1764,7 +1764,7 @@ function renderCAGED(){
     svgWrap.innerHTML=makeSVG(voicing, fg);
     card.appendChild(svgWrap);
 
-    const tabStr=voicing.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
+    const tabStr=voicing.map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
     const tab=document.createElement('div');
     tab.className='diagram-fingers';
     tab.textContent=tabStr;
@@ -1886,7 +1886,7 @@ function renderCapo(){
     const svgWrap=document.createElement('div');
     svgWrap.innerHTML=makeSVG(voicing,fg,state.capoMode,capo);
     card.appendChild(svgWrap);
-    const tabStr=fa.slice().reverse().map(x=>x===null?'x':x===0?'0':String(x)).join('-');
+    const tabStr=fa.map(x=>x===null?'x':x===0?'0':String(x)).join('-');
     const tab=document.createElement('div');tab.className='diagram-fingers';
     tab.textContent=tabStr;card.appendChild(tab);
     const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML='▶ Écouter';
