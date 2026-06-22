@@ -1506,8 +1506,41 @@ function renderCapo(){
 }
 
 /* ============================================================ SLASH */
-function findSlashVoicings(rootPc,intervals,bassPc){
+// Hardcoded best voicings for common slash chords (inversions)
+// Key: rootPc + '_' + chordId + '_' + bassPc
+const SLASH_SPECIALS={
+  '7_maj_11': [[null,2,0,0,0,3]],           // G/B
+  '7_maj_2':  [[null,null,0,0,0,3]],        // G/D
+  '0_maj_4':  [[null,null,2,0,1,0],[0,3,2,0,1,0]], // C/E
+  '0_maj_7':  [[3,3,2,0,1,0]],              // C/G
+  '2_maj_6':  [[2,0,0,2,3,2]],              // D/F#
+  '2_maj_9':  [[null,0,0,2,3,2]],           // D/A
+  '9_maj_1':  [[null,4,2,2,2,0]],           // A/C#
+  '9_maj_4':  [[0,0,2,2,2,0]],              // A/E
+  '4_maj_8':  [[4,2,2,1,0,0]],              // E/G#
+  '4_maj_11': [[null,2,2,1,0,0]],           // E/B
+  '5_maj_9':  [[null,0,3,2,1,1]],           // F/A
+  '5_maj_0':  [[null,3,3,2,1,1]],           // F/C
+  '9_min_0':  [[null,3,2,2,1,0]],           // Am/C
+  '9_min_4':  [[0,0,2,2,1,0]],              // Am/E
+  '4_min_7':  [[3,2,2,0,0,0]],              // Em/G
+  '4_min_11': [[null,2,2,0,0,0]],           // Em/B
+  '2_min_5':  [[1,0,0,2,3,1]],              // Dm/F
+  '2_min_9':  [[null,0,0,2,3,1]],           // Dm/A
+};
+
+function findSlashVoicings(rootPc,intervals,bassPc,chordId=''){
   const bassIv=(bassPc-rootPc+12)%12;
+  // Check hardcoded specials first
+  const specKey=`${rootPc}_${chordId}_${bassPc}`;
+  if(SLASH_SPECIALS[specKey]){
+    const ivByPc={};intervals.forEach(iv=>{ivByPc[(rootPc+iv)%12]=iv;});
+    return SLASH_SPECIALS[specKey].map(fa=>fa.map((f,s)=>{
+      if(f===null)return null;
+      const pc=(OPEN_PCS[s]+f)%12;
+      return{f,pc,iv:ivByPc[pc]??null};
+    }));
+  }
   // Chord-tone bass → use existing algo
   if(intervals.includes(bassIv)) return findVoicings(rootPc,intervals,bassIv,null);
   // Non-chord bass search
@@ -1581,7 +1614,7 @@ function renderSlash(){
     return;
   }
   const bassPc=state.slashBass;
-  const voicings=findSlashVoicings(r,def.iv,bassPc);
+  const voicings=findSlashVoicings(r,def.iv,bassPc,def.id);
   if(!voicings.length){
     grid.innerHTML='<div class="slash-no-voicing">Aucune position jouable trouvée pour cette combinaison.</div>';
     return;
