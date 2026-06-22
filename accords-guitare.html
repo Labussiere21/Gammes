@@ -1550,6 +1550,14 @@ const SLASH_SPECIALS={
   '2_m7_5':   [[1,0,0,2,1,1]],              // Dm7/F
   '2_m7_9':   [[null,0,0,2,1,1]],           // Dm7/A
   '2_m7_0':   [[null,3,0,0,1,1]],           // Dm7/C
+  // Non-chord-tone bass (basse hors-accord)
+  '7_maj_0':  [[null,3,0,0,0,3]],           // G/C
+  '7_maj_9':  [[null,0,0,0,0,3]],           // G/A
+  '0_maj_2':  [[null,null,0,0,1,0]],        // C/D
+  '2_maj_0':  [[null,3,0,2,3,2]],           // D/C
+  '9_maj_7':  [[3,0,2,2,2,0]],              // A/G
+  '4_maj_2':  [[null,null,0,1,0,0]],        // E/D
+  '5_maj_2':  [[null,null,0,2,1,1]],        // F/D
 };
 
 function findSlashVoicings(rootPc,intervals,bassPc,chordId=''){
