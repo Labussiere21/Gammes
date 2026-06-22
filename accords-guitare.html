@@ -295,36 +295,48 @@ h1 em{font-style:italic; color:var(--brass)}
 .cinfo-tab.on{ color:var(--cream); border-bottom-color:var(--cherry); }
 .cinfo-tab:hover:not(.on){ color:var(--muted-2); }
 
-/* Stack (Résumé tab) */
-.chord-stack{ display:flex; flex-direction:column; gap:6px; }
-.stack-row{
-  display:flex; align-items:stretch; gap:10px; min-height:44px;
-}
+/* Résumé : deux colonnes */
+.cinfo-layout{ display:flex; gap:24px; align-items:flex-start; }
+.cinfo-left{ flex:1; min-width:0; }
+.cinfo-right{ flex-shrink:0; }
+
+/* Stack gauche */
+.chord-stack{ display:flex; flex-direction:column; gap:5px; }
+.stack-row{ display:flex; align-items:stretch; gap:8px; min-height:40px; }
 .stack-cat{
   font-family:"Space Mono",monospace; font-size:9px; font-weight:700;
   letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
-  width:72px; flex-shrink:0; display:flex; align-items:center;
+  width:68px; flex-shrink:0; display:flex; align-items:center;
   justify-content:flex-end; padding-right:10px;
   border-right:1px solid var(--line);
 }
-.stack-blocks{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding-left:4px; }
+.stack-blocks{ display:flex; flex-wrap:wrap; gap:5px; align-items:center; padding-left:4px; }
 .stack-block{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  border-radius:8px; padding:6px 12px; min-width:48px;
-  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  border-radius:8px; padding:5px 11px; min-width:46px;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);
 }
 .stack-block .sbn{
-  font-size:18px; font-weight:700; line-height:1; color:#1a1008;
+  font-size:17px; font-weight:700; line-height:1; color:#0e0406;
   font-family:"Space Mono",monospace;
 }
 .stack-block .sbi{
-  font-size:9px; font-weight:700; letter-spacing:.08em; color:rgba(0,0,0,.55);
+  font-size:9px; font-weight:700; letter-spacing:.06em; color:rgba(0,0,0,.45);
   margin-top:2px; text-transform:uppercase;
 }
-.stack-empty{
-  font-size:12px; color:var(--muted); font-style:italic;
-  display:flex; align-items:center; padding-left:4px;
+
+/* Grille droite */
+.iv-grid{ display:flex; flex-direction:column; gap:2px; }
+.iv-grid-row{ display:flex; gap:2px; justify-content:flex-end; }
+.iv-cell{
+  font-family:"Space Mono",monospace; font-size:9px; font-weight:700;
+  width:36px; height:22px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted-2); letter-spacing:.03em; transition:.1s;
 }
+.iv-cell.active{ color:#0c0306; box-shadow:0 1px 6px rgba(0,0,0,.55); }
+.iv-cell.void{ visibility:hidden; pointer-events:none; }
+.iv-grid-sep{ height:1px; background:var(--line); margin:4px 0; }
 
 /* Description tab */
 .chord-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); }
@@ -531,7 +543,12 @@ h1 em{font-style:italic; color:var(--brass)}
       <button class="cinfo-tab on" data-cinfotab="schema">Résumé</button>
       <button class="cinfo-tab" data-cinfotab="desc">Description</button>
     </div>
-    <div id="cinfo-schema"><div class="chord-stack" id="chord-stack"></div></div>
+    <div id="cinfo-schema">
+      <div class="cinfo-layout">
+        <div class="cinfo-left"><div class="chord-stack" id="chord-stack"></div></div>
+        <div class="cinfo-right"><div class="iv-grid" id="iv-grid"></div></div>
+      </div>
+    </div>
     <div id="cinfo-desc" style="display:none"><div class="chord-desc-text" id="chord-desc-text"></div></div>
   </section>
 
@@ -1388,6 +1405,44 @@ const CHORD_DESC = {
   '7alt': `<p>L'accord <strong>altéré</strong> (7alt) accumule plusieurs altérations sur la dominante : b9, #9, b5 (#11) et/ou #5 (b13). Il représente la tension de dominante la plus extrême possible, issue de la gamme altérée.</p><p>En jazz bebop et post-bop, il précède souvent la résolution sur Im, avec une descente chromatique dense et dramatique. Sa relation avec la gamme altérée (7e mode de la mineure mélodique) est fondamentale dans l'improvisation avancée.</p><p>Sur la guitare, les voicings alt utilisent typiquement les 4 cordes aiguës, omettant fondamentale et quinte pour ne garder que les tensions les plus expressives.</p>`,
 };
 
+// Grille d'intervalles chromatiques (top = extensions, bottom = triades)
+// null = séparateur, undefined dans une row = cellule vide (void)
+const IV_GRID_ROWS = [
+  [{iv:8,label:'b13'},{iv:9,label:'13'}],
+  [{iv:5,label:'11'},{iv:6,label:'#11'}],
+  [{iv:1,label:'b9'},{iv:2,label:'9'},{iv:3,label:'#9'}],
+  null,
+  [{iv:8,label:'b6'},{iv:9,label:'°7'},{iv:10,label:'b7'},{iv:11,label:'Δ7'}],
+  [{iv:6,label:'b5'},{iv:7,label:'5'},{iv:8,label:'#5'}],
+  [{iv:2,label:'sus2'},{iv:3,label:'m3'},{iv:4,label:'3'},{iv:5,label:'sus4'}],
+  [{iv:0,label:'1'}],
+];
+
+function renderIvGrid(def) {
+  const grid = document.getElementById('iv-grid');
+  grid.innerHTML = '';
+  const ivSet = def ? new Set(def.iv) : new Set();
+  IV_GRID_ROWS.forEach(row => {
+    if (row === null) {
+      const sep = document.createElement('div'); sep.className='iv-grid-sep';
+      grid.appendChild(sep); return;
+    }
+    const rowEl = document.createElement('div'); rowEl.className='iv-grid-row';
+    row.forEach(cell => {
+      const el = document.createElement('div');
+      if (!cell) { el.className='iv-cell void'; }
+      else {
+        const on = ivSet.has(cell.iv);
+        el.className = 'iv-cell' + (on ? ' active' : '');
+        el.textContent = cell.label;
+        if (on) el.style.background = IV_COLOR[cell.iv] || '#d9a849';
+      }
+      rowEl.appendChild(el);
+    });
+    grid.appendChild(rowEl);
+  });
+}
+
 function slotOf(iv, ivSet) {
   if (iv===0) return 'root';
   if (iv===2) return (ivSet.has(3)||ivSet.has(4)||ivSet.has(5)) ? 'ext' : 'third';
@@ -1440,6 +1495,8 @@ function renderChordInfo(def) {
     row.appendChild(cat); row.appendChild(blocks);
     stack.appendChild(row);
   });
+
+  renderIvGrid(def);
 
   const descEl = document.getElementById('chord-desc-text');
   const raw = CHORD_DESC[def.id] || `<p>Pas de description disponible pour cet accord.</p>`;
