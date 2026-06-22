@@ -475,7 +475,7 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="mode-seg" id="diagram-mode-seg">
         <button data-mode="degree" class="on">Degrés</button>
         <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigté</button>
+        <button data-mode="fingering">Doigtés</button>
       </div>
       <button class="play-btn" id="play-all-btn" onclick="playAllChord()">▶ Jouer l'accord</button>
     </div>
@@ -501,7 +501,7 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="mode-seg" id="capo-mode-seg">
         <button data-mode="degree" class="on">Degrés</button>
         <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigté</button>
+        <button data-mode="fingering">Doigtés</button>
       </div>
     </div>
     <p class="capo-intro">Même accord, positions alternatives avec capodastro. La forme indiquée est celle des doigts au-dessus du capo.</p>
@@ -515,7 +515,7 @@ h1 em{font-style:italic; color:var(--brass)}
       <div class="mode-seg" id="slash-mode-seg">
         <button data-mode="degree" class="on">Degrés</button>
         <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigté</button>
+        <button data-mode="fingering">Doigtés</button>
       </div>
     </div>
     <p class="slash-intro">Sélectionne la note de basse. Les boutons dorés indiquent les notes appartenant à l'accord (renversements).</p>
@@ -1144,24 +1144,15 @@ async function playVoicing(voicing, mode='chord', minFret=0){
   if(_audioCtx.state==='suspended') await _audioCtx.resume();
   const openMidi = currentTuning().midi;
   const nStr = Math.min(voicing.length, openMidi.length);
-  const rawNotes = [];
+  // Build notes in string order (low E → high e) = natural strum direction
+  const notes = [];
   for(let s=0;s<nStr;s++){
-    const v = voicing[s];
-    if(v===null) continue;
-    rawNotes.push(openMidi[s] + (v.f||0));
+    const v=voicing[s]; if(v===null) continue;
+    notes.push(openMidi[s]+(v.f||0));
   }
-  // Shift higher neck positions up an octave so they sound distinctly different
-  // Positions at case ≥5 get +12, ≥12 get +24; capped to keep notes ≤ MIDI 84 (C6)
-  let boost = minFret >= 12 ? 24 : minFret >= 5 ? 12 : 0;
-  if(boost > 0 && Math.max(...rawNotes) + boost > 84) boost -= 12;
-  if(boost > 0 && Math.max(...rawNotes) + boost > 84) boost = 0;
-  const notes = rawNotes.map(n => n + boost);
-  notes.sort((a,b)=>a-b);
-  if(mode==='chord'){
-    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.05, {duration:2.0,gain:2.5}));
-  } else {
-    notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*0.20, {duration:0.8,gain:2.5}));
-  }
+  const delay = mode==='chord' ? 0.035 : 0.20;
+  const duration = mode==='chord' ? 2.2 : 0.8;
+  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*delay, {duration, gain:2.5}));
 }
 
 let _currentVoicings = [];
