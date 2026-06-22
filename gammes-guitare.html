@@ -238,9 +238,10 @@
   .rn{font-family:"Space Mono", monospace; font-weight:700; font-size:15px}
   .chord-sym{font-weight:700; cursor:pointer; border-bottom:1px solid var(--brass-dim); transition:.12s}
   .chord-sym:hover{color:var(--brass)}
-  .chord-sym::after{content:' ♪'; font-size:9px; opacity:0; vertical-align:middle; transition:.12s}
-  .chord-sym:hover::after{opacity:.55}
+  .chord-sym::after{content:' ♪'; font-size:9px; opacity:0.3; vertical-align:middle; transition:.12s}
+  .chord-sym:hover::after{opacity:.9}
   .chord-sym.playing{color:var(--brass); border-bottom-color:var(--brass)}
+  .chord-click-hint{font-size:11px;color:var(--muted);margin:6px 0 10px;opacity:.7;letter-spacing:.02em}
   .chord-notes{font-family:"Space Mono", monospace; font-size:12px; color:var(--muted)}
   .interval{color:var(--muted); font-size:13px}
   .swatch{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 0 1px rgba(0,0,0,.4)}
@@ -622,6 +623,7 @@
 
     <section class="card">
       <h2 data-i18n="lbl_diat_title">Degrés &amp; accords diatoniques</h2>
+      <p class="chord-click-hint" id="chord-click-hint">♪ Clique sur un accord pour l'écouter</p>
       <table>
         <thead id="degrees-head"></thead>
         <tbody id="degrees-body"></tbody>
@@ -1490,6 +1492,7 @@ function render(){
   // Titre de la section selon le type de gamme
   const sectionH2=document.querySelector('#degrees-head')?.closest('section')?.querySelector('h2');
   if(sectionH2) sectionH2.textContent = def.diat ? t('lbl_diat_title') : t('lbl_nd_title');
+  const _hint=document.getElementById('chord-click-hint'); if(_hint) _hint.style.display=def.diat?'':'none';
 
   if(def.diat){
     head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_iv')}</th><th>${t('lbl_th_accord')}</th><th>${t('lbl_th_notes')}</th></tr>`;

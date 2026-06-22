@@ -260,6 +260,7 @@
   .footer-ml-btn:hover{color:var(--cream)}
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}</style>
+<script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Analyseur de notes et accords pour basse | ScalaBass">
 <meta property="og:description" content="Clique des notes sur le manche ou le piano et découvre l'accord, la gamme et les cadences correspondantes. Partage ton analyse par URL.">
@@ -736,14 +737,36 @@ function buildPiano(){
 }
 
 /* ============================================================ ACCORDAGES */
+/* ===== MODULE AUDIO ===== */
+let _sfInst=null,_audioCtx=null,_audioLoading=false;
+const _NOTE_MAP_A={'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11};
+function _noteToMidi(n,base){const c=n.replace('♯','#').replace('♭','b');return base+(_NOTE_MAP_A[c]??0);}
+async function initAudio(){
+  if(_sfInst)return _sfInst; if(_audioLoading)return null; _audioLoading=true;
+  try{
+    _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    _sfInst=await Soundfont.instrument(_audioCtx,'electric_bass_finger',{
+      soundfont:'MusyngKite',nameToUrl:(n,sf,fmt)=>`https://gleitz.github.io/midi-js-soundfonts/${sf}/${n}-${fmt}.js`,format:'mp3',gain:3.5,
+    });
+    return _sfInst;
+  }catch(e){console.warn('Audio:',e);_audioLoading=false;return null;}
+}
+function playFretNote(midi){
+  (async()=>{
+    const inst=await initAudio(); if(!inst)return;
+    if(_audioCtx.state==='suspended')await _audioCtx.resume();
+    inst.play(midi,_audioCtx.currentTime,{duration:1.5,gain:3});
+  })();
+}
+
 const TUNINGS={
-  4:[{id:'standard',notes:['E','A','D','G']}],
-  5:[{id:'standard5',notes:['B','E','A','D','G']}],
-  6:[{id:'standard6',notes:['B','E','A','D','G','C']}],
+  4:[{id:'standard',notes:['E','A','D','G'],midi:[28,33,38,43]}],
+  5:[{id:'standard5',notes:['B','E','A','D','G'],midi:[23,28,33,38,43]}],
+  6:[{id:'standard6',notes:['B','E','A','D','G','C'],midi:[23,28,33,38,43,48]}],
 };
 const LP_SIMPLE={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 function noteToPC(n){let pc=LP_SIMPLE[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
-function currentStrings(){return TUNINGS[state.strings][0].notes.map((n,i)=>({n,pc:noteToPC(n),sIdx:i}));}
+function currentStrings(){const t=TUNINGS[state.strings][0];return t.notes.map((n,i)=>({n,pc:noteToPC(n),sIdx:i,midiBase:t.midi[i]}));}
 
 /* ============================================================ MANCHE */
 function renderFretboard(){
@@ -764,7 +787,7 @@ function renderFretboard(){
       cell.className='cell'+(f===0?' open nut-after':'');
       cell.dataset.f=f; cell.dataset.s=s.pc;
       const pc=(s.pc+f)%12;
-      cell.addEventListener('click',()=>{togglePosition(s.sIdx,f,pc);render();});
+      cell.addEventListener('click',()=>{togglePosition(s.sIdx,f,pc);playFretNote(s.midiBase+f);render();});
       const posKey=`${s.sIdx}-${f}`;
       const posEntry=state.selectedPositions.get(posKey);
       if(posEntry){
