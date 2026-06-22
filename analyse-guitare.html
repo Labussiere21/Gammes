@@ -597,9 +597,6 @@ function togglePosition(origIdx,fret,pc){
   const key=`${origIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
     state.selectedPositions.delete(key);
-  } else if(state.selectedPcs.has(pc)){
-    state.selectedPositions.set(key,{pc});
-    state.selectedPcs.delete(pc);
   } else {
     state.selectedPositions.set(key,{pc});
   }
