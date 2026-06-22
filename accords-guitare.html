@@ -338,8 +338,6 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 @keyframes fbpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
 .dot.root{box-shadow:0 0 0 3px rgba(255,255,255,.85),0 3px 8px rgba(0,0,0,.6)}
-.dot.ghost{opacity:.13; box-shadow:none; filter:saturate(.15) brightness(.5); transform:scale(.75)}
-.dot.ghost.root{box-shadow:none}
 .fb-inlays{display:flex; margin-top:6px}
 .fb-inlays .spacer{width:var(--label-w); flex:none}
 .fb-inlays .ic{width:var(--fret-w); flex:none; display:flex; flex-direction:column; align-items:center; gap:4px}
@@ -1923,11 +1921,15 @@ function renderFretboard(def){
       const iv=pcToIv[pc];
       if(iv!==undefined){
         const isHL=highlightSet?highlightSet.has(`${origIdx}:${f}`):true;
-        const d=document.createElement('div');
-        d.className='dot'+(iv===0?' root':'')+(highlightSet&&!isHL?' ghost':'');
-        d.style.background=IV_COLOR[iv]||'#d9a849';
-        d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
-        cell.appendChild(d);
+        // Oolimo filter: when a position is selected, only render its notes; rest invisible
+        // The pcToIv algorithm still validates every chord tone — just the display is filtered
+        if(isHL){
+          const d=document.createElement('div');
+          d.className='dot'+(iv===0?' root':'');
+          d.style.background=IV_COLOR[iv]||'#d9a849';
+          d.textContent=state.display==='note'?spellPc(pc):(IV_LABEL[iv]||'?');
+          cell.appendChild(d);
+        }
       }
       row.appendChild(cell);
     }
