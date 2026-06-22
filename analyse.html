@@ -698,8 +698,14 @@ function togglePc(pc){
 function togglePosition(sIdx,fret,pc){
   const key=`${sIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
-    // Dot solide → re-clic change la fondamentale (jamais supprimer)
-    state.rootPc=(state.rootPc===pc)?null:pc;
+    if(state.rootPc===pc){
+      // Fondamentale → supprime
+      state.selectedPositions.delete(key);
+      state.rootPc=null;
+    } else {
+      // Note ordinaire → devient fondamentale
+      state.rootPc=pc;
+    }
   } else if(state.selectedPcs.has(pc)){
     // Dot fantôme → déplace la note du piano vers cette position
     state.selectedPcs.delete(pc);
