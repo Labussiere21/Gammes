@@ -397,6 +397,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .bass-btn.chord-tone{border-color:var(--brass-dim);}
 .slash-no-voicing{color:var(--muted);font-size:13px;font-style:italic;padding:12px 0;}</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
+<script src="chords-db.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -682,6 +683,54 @@ function currentChordDef(){
 /* ============================================================ VOICING SYSTEM */
 const OPEN_PCS = [4, 9, 2, 7, 11, 4]; // E A D G B e (standard 6-string for voicing system)
 const OPEN_MIDI = [40, 45, 50, 55, 59, 64];
+
+/* ============================================================ CHORDS-DB LOOKUP
+   GUITAR_CHORDS_DB loaded from chords-db.js (Tombatossals dataset)
+   Provides: real MIDI per position, fingering, barres                          */
+const PC_TO_DBKEY = ['C','Csharp','D','Eb','E','F','Fsharp','G','Ab','A','Bb','B'];
+const ID_TO_SUFFIX = {
+  maj:'major', min:'minor', '7':'7', maj7:'maj7', m7:'m7', mmaj7:'mmaj7',
+  sus2:'sus2', sus4:'sus4', '7sus4':'7sus4', aug:'aug', dim:'dim', dim7:'dim7',
+  p5:'5', add9:'add9', madd9:'madd9', '6':'6', m6:'m6', '69':'69', m69:'m69',
+};
+
+function dbGetPositions(rootPc, chordId) {
+  if(typeof GUITAR_CHORDS_DB==='undefined') return [];
+  const suffix = ID_TO_SUFFIX[chordId]; if(!suffix) return [];
+  const key = PC_TO_DBKEY[rootPc%12]; if(!key) return [];
+  const list = GUITAR_CHORDS_DB.chords[key]; if(!list) return [];
+  const entry = list.find(c => c.suffix === suffix);
+  return entry ? entry.positions : [];
+}
+
+// DB frets: -1=muted, 0=open, N>0 → actual fret = baseFret + N - 1
+function dbPosToFa(pos) {
+  return pos.frets.map(f => f===-1 ? null : f===0 ? 0 : pos.baseFret+f-1);
+}
+
+function dbFaKey(fa) { return fa.map(f => f===null?'x':f).join(','); }
+
+// Match a voicing to a DB position; return midi array or null
+function dbGetMidi(voicing, rootPc, chordId) {
+  const positions = dbGetPositions(rootPc, chordId); if(!positions.length) return null;
+  const fa = voicing.map(x => x===null?null:x.f);
+  const faKey = dbFaKey(fa);
+  for(const pos of positions) {
+    if(dbFaKey(dbPosToFa(pos))===faKey) return pos.midi;
+  }
+  return null;
+}
+
+// Match a voicing to a DB position; return fingers array or null
+function dbGetFingers(voicing, rootPc, chordId) {
+  const positions = dbGetPositions(rootPc, chordId); if(!positions.length) return null;
+  const fa = voicing.map(x => x===null?null:x.f);
+  const faKey = dbFaKey(fa);
+  for(const pos of positions) {
+    if(dbFaKey(dbPosToFa(pos))===faKey) return pos.fingers;
+  }
+  return null;
+}
 
 const GUITAR_TUNINGS = {
   6:[
@@ -1140,18 +1189,29 @@ async function initAudio(){
 async function playVoicing(voicing, mode='chord', minFret=0){
   const inst = await initAudio(); if(!inst) return;
   if(_audioCtx.state==='suspended') await _audioCtx.resume();
-  const openMidi = currentTuning().midi;
-  const nStr = Math.min(voicing.length, openMidi.length);
-  // String order low→high (natural strum), deduplicate same MIDI pitch, clamp to guitar range 40–84
-  const seen = new Set();
-  const notes = [];
-  for(let s=0;s<nStr;s++){
-    const v=voicing[s]; if(v===null) continue;
-    let m = openMidi[s]+(v.f||0);
-    m = Math.max(40, Math.min(84, m));   // clamp E2–C6
-    if(seen.has(m)) continue;            // skip octave/pitch duplicate
-    seen.add(m); notes.push(m);
+
+  // DB MIDI: real per-position octaves (primary source)
+  let notes = null;
+  const def = currentChordDef();
+  if(def && !def.bassIv && mode==='chord'){
+    notes = dbGetMidi(voicing, state.rootPc, def.id);
   }
+
+  // Fallback: compute from string tuning
+  if(!notes){
+    const openMidi = currentTuning().midi;
+    const nStr = Math.min(voicing.length, openMidi.length);
+    const seen = new Set();
+    notes = [];
+    for(let s=0;s<nStr;s++){
+      const v=voicing[s]; if(v===null) continue;
+      let m = openMidi[s]+(v.f||0);
+      m = Math.max(40, Math.min(84, m));
+      if(seen.has(m)) continue;
+      seen.add(m); notes.push(m);
+    }
+  }
+
   const delay = mode==='chord' ? 0.035 : 0.20;
   const duration = mode==='chord' ? 2.2 : 0.8;
   notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*delay, {duration, gain:2.5}));
@@ -1255,10 +1315,10 @@ function faVariants(fa) {
   return res;
 }
 
-// Collect voicings from SPECIALS + all 5 CAGED shape templates + window fills
+// Collect voicings from DB + SPECIALS + all 5 CAGED shape templates + window fills
 function findAllVoicings(rootPc, intervals, ct) {
   const seen = new Set();
-  const specials=[], e_sh=[], a_sh=[], g_sh=[], c_sh=[], d_sh=[], fills=[];
+  const db_pos=[], specials=[], e_sh=[], a_sh=[], g_sh=[], c_sh=[], d_sh=[], fills=[];
   const mkKey=fa=>fa.map(x=>x===null?'x':x).join(',');
   const mkVKey=v=>v.map(x=>x===null?'x':x.f).join(',');
 
@@ -1272,6 +1332,9 @@ function findAllVoicings(rootPc, intervals, ct) {
     const k=mkVKey(v);if(seen.has(k))return;seen.add(k);
     bucket.push(v);
   }
+
+  // DB positions: real MIDI + fingers, authoritative voicings
+  dbGetPositions(rootPc,ct).forEach(pos=>addFa(dbPosToFa(pos),db_pos));
 
   (SPECIALS[`${rootPc}_${ct}`]||[]).forEach(fa=>faVariants(fa).forEach(v=>addFa(v,specials)));
 
@@ -1299,12 +1362,12 @@ function findAllVoicings(rootPc, intervals, ct) {
     const[wMin,wMax]=cw.winFn(rootPc);
     addV(findVoicingInWindow(rootPc,intervals,wMin,wMax),fills);
   }
-  return{specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills};
+  return{db_pos,specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills};
 }
 
 // Categorize all voicings into À connaître / Positions ouvertes / Positions mobiles
 function categorizeVoicings(rootPc, intervals, ct) {
-  const{specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills}=findAllVoicings(rootPc,intervals,ct);
+  const{db_pos,specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills}=findAllVoicings(rootPc,intervals,ct);
   const mustKnow=[],open=[],moveable=[];
   const mkSet=new Set();
   const hasOpen=v=>v.some(x=>x&&x.f===0);
@@ -1313,16 +1376,22 @@ function categorizeVoicings(rootPc, intervals, ct) {
   const addMK=v=>{if(mkSet.has(v))return;mkSet.add(v);mustKnow.push(v);};
   const put=v=>{if(mkSet.has(v))return;if(hasOpen(v))open.push(v);else moveable.push(v);};
 
-  if(specials.length)addMK(specials[0]);
-  specials.slice(1).forEach(put);
+  // DB positions → À connaître (authoritative, up to 4)
+  db_pos.forEach(v=>{if(mustKnow.length<4)addMK(v);else put(v);});
 
-  const addFirst=(arr,minP)=>{
-    for(const v of arr){if(mustKnow.length>=4)break;if(!mkSet.has(v)&&!hasOpen(v)&&nPlayed(v)>=minP){addMK(v);return;}}
-  };
-  addFirst(e_sh,5);addFirst(a_sh,4);addFirst(g_sh,4);
-  if(mustKnow.length<4)addFirst(c_sh,4);
-  if(mustKnow.length<4)addFirst(d_sh,3);
+  // If DB didn't fill 4 slots, supplement with computed positions
+  if(mustKnow.length<4){
+    if(specials.length)addMK(specials[0]);
+    const addFirst=(arr,minP)=>{
+      for(const v of arr){if(mustKnow.length>=4)break;if(!mkSet.has(v)&&!hasOpen(v)&&nPlayed(v)>=minP){addMK(v);return;}}
+    };
+    addFirst(e_sh,5);addFirst(a_sh,4);addFirst(g_sh,4);
+    if(mustKnow.length<4)addFirst(c_sh,4);
+    if(mustKnow.length<4)addFirst(d_sh,3);
+  }
 
+  // Remaining computed voicings → open or moveable (extra positions)
+  specials.forEach(put);
   e_sh.forEach(put);a_sh.forEach(put);g_sh.forEach(put);
   c_sh.forEach(put);d_sh.forEach(put);fills.forEach(put);
   moveable.sort((a,b)=>loFret(a)-loFret(b));
@@ -1371,7 +1440,9 @@ function renderDiagrams(def){
     posLabel.textContent=minFr>0?`Case ${minFr}`:'Position ouverte';
     card.appendChild(posLabel);
 
-    const fg=computeFingering(v);
+    // Use DB fingers in fingering mode (real doigtés), computed otherwise
+    const dbFg = dbGetFingers(v, state.rootPc, isInversion ? '' : (def&&def.id||''));
+    const fg = (state.diagramMode==='fingering' && dbFg) ? dbFg : computeFingering(v);
     const svgWrap=document.createElement('div');svgWrap.innerHTML=makeSVG(v,fg);
     card.appendChild(svgWrap);
 
