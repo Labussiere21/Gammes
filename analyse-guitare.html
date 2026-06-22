@@ -13,9 +13,9 @@
 <style>
   :root{
     --bg:#0d0608; --bg-2:#130a0d; --panel:#1b0c13; --panel-2:#1f0e16;
-    --line:#5c1a2e; --wood-a:#4a1a28; --wood-b:#2c0d1a;
+    --line:#5c1a2e; --wood-a:#5a3f26; --wood-b:#3a2415;
     --brass:#bf1828; --brass-dim:#87111b;
-    --bone:#f0e0e5; --cream:#ece0e3; --muted:#9d7a85; --muted-2:#6f4a55;
+    --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
     --d1:#ff3333; --d2:#ffaa00; --d3:#8fd400; --d4:#2dc653;
     --d5:#29b6ff; --d6:#9933ee; --d7:#ff1a88;
     --c-exact:#57c08a; --c-partial:#f2c14e;
@@ -134,7 +134,7 @@
   .fb-head{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:12px}
   .fb-scroll{overflow-x:auto; padding-bottom:6px}
   .fretboard{--fret-w:60px; --open-w:44px; --label-w:28px; min-width:max-content}
-  .fb-strings{background:linear-gradient(180deg,#3a1a28,#200d18); border:1px solid #0d0208; border-radius:5px; overflow:hidden; box-shadow:inset 0 2px 14px rgba(0,0,0,.45),0 8px 20px -12px #000;}
+  .fb-strings{background:linear-gradient(180deg,var(--wood-a),var(--wood-b)); border:1px solid #120c07; border-radius:5px; overflow:hidden; box-shadow:inset 0 2px 14px rgba(0,0,0,.55),0 8px 20px -12px #000;}
   .fb-row{display:flex; align-items:center; height:44px; position:relative}
   .fb-row+.fb-row{border-top:1px solid rgba(0,0,0,.18)}
   .fb-row::after{content:""; position:absolute; left:var(--label-w); right:0; top:50%; height:var(--str-h,2px); transform:translateY(-50%); background:linear-gradient(180deg,rgba(255,255,255,.5),var(--brass-dim) 45%,rgba(0,0,0,.4)); z-index:1; pointer-events:none;}

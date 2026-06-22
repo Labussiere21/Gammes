@@ -236,8 +236,11 @@
   .deg-num{font-family:"Space Mono", monospace; font-weight:700; width:30px}
   .tt-note{font-weight:700; font-size:15px}
   .rn{font-family:"Space Mono", monospace; font-weight:700; font-size:15px}
-  .chord-sym{font-weight:700; cursor:help; border-bottom:1px dashed var(--brass-dim); transition:.12s}
+  .chord-sym{font-weight:700; cursor:pointer; border-bottom:1px solid var(--brass-dim); transition:.12s}
   .chord-sym:hover{color:var(--brass)}
+  .chord-sym::after{content:' ♪'; font-size:9px; opacity:0; vertical-align:middle; transition:.12s}
+  .chord-sym:hover::after{opacity:.55}
+  .chord-sym.playing{color:var(--brass); border-bottom-color:var(--brass)}
   .chord-notes{font-family:"Space Mono", monospace; font-size:12px; color:var(--muted)}
   .interval{color:var(--muted); font-size:13px}
   .swatch{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 0 1px rgba(0,0,0,.4)}
@@ -1634,6 +1637,19 @@ function render(){
   });
   document.addEventListener('mousemove',e=>{ if(active) position(e); });
   document.addEventListener('mouseout',e=>{ if(!e.relatedTarget?.closest('.chord-sym')) hide(); });
+  document.addEventListener('click',e=>{
+    const t=e.target.closest('.chord-sym'); if(!t) return;
+    const notes=[t.dataset.n0,t.dataset.n1,t.dataset.n2].filter(Boolean);
+    (async()=>{
+      const inst=await initAudio(); if(!inst) return;
+      if(_audioCtx.state==='suspended') await _audioCtx.resume();
+      notes.forEach((n,i)=>{
+        const midi=noteToMidi(n,3);
+        inst.play(midi,_audioCtx.currentTime+i*0.055,{duration:1.6,gain:3});
+      });
+    })();
+    t.classList.add('playing'); setTimeout(()=>t.classList.remove('playing'),900);
+  });
 })();
 
 /* --- Manche de guitare --- */
