@@ -745,7 +745,7 @@ async function initAudio(){
   if(_sfInst)return _sfInst; if(_audioLoading)return null; _audioLoading=true;
   try{
     _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    _sfInst=await Soundfont.instrument(_audioCtx,'electric_bass_finger',{
+    _sfInst=await Soundfont.instrument(_audioCtx,'electric_bass_pick',{
       soundfont:'MusyngKite',nameToUrl:(n,sf,fmt)=>`https://gleitz.github.io/midi-js-soundfonts/${sf}/${n}-${fmt}.js`,format:'mp3',gain:3.5,
     });
     return _sfInst;
