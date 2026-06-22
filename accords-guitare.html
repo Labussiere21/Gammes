@@ -1212,9 +1212,10 @@ async function playVoicing(voicing, mode='chord', minFret=0){
     }
   }
 
-  const delay = mode==='chord' ? 0.035 : 0.20;
-  const duration = mode==='chord' ? 2.2 : 0.8;
-  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*delay, {duration, gain:2.5}));
+  const delay = mode==='chord' ? 0.055 : 0.20;
+  const duration = mode==='chord' ? 1.5 : 0.8;
+  // Gain légèrement décroissant corde→corde (basse plus forte, aigus plus doux = grain naturel)
+  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime+i*delay, {duration, gain: 2.8 - i*0.15}));
 }
 
 let _currentVoicings = [];
