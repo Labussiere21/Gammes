@@ -271,6 +271,12 @@ h1 em{font-style:italic; color:var(--brass)}
   color:var(--muted); font-size:14px; padding:20px 0;
   font-style:italic;
 }
+.voicing-subsection{ margin-bottom:28px; }
+.voicing-sublabel{
+  font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2);
+  border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:16px;
+}
 
 /* ===== LEGEND ===== */
 .legend{
@@ -477,7 +483,7 @@ h1 em{font-style:italic; color:var(--brass)}
       </div>
       <button class="play-btn" id="play-all-btn" onclick="playAllChord()">▶ Jouer l'accord</button>
     </div>
-    <div class="diagrams-grid" id="diagrams-grid">
+    <div class="diagrams-container" id="diagrams-container">
       <div class="no-voicings">Sélectionne un accord ci-dessus…</div>
     </div>
     <div class="legend" id="iv-legend"></div>
@@ -1252,48 +1258,163 @@ function renderFormula(def){
   });
 }
 
+// Fret-array variants: mute lowest played string, highest, or both outer strings
+function faVariants(fa) {
+  if (!fa) return [];
+  const lo = fa.findIndex(x => x !== null);
+  if (lo < 0) return [fa];
+  const hi = 5 - [...fa].reverse().findIndex(x => x !== null);
+  const mut = (...idxs) => { const v=[...fa]; idxs.forEach(i=>v[i]=null); return v; };
+  const res = [fa, mut(lo)];
+  if (lo < hi) { res.push(mut(hi)); if (lo+1 < hi) res.push(mut(lo,hi)); }
+  return res;
+}
+
+// Collect voicings from SPECIALS + all 5 CAGED shape templates + window fills
+function findAllVoicings(rootPc, intervals, ct) {
+  const seen = new Set();
+  const specials=[], e_sh=[], a_sh=[], g_sh=[], c_sh=[], d_sh=[], fills=[];
+  const mkKey=fa=>fa.map(x=>x===null?'x':x).join(',');
+  const mkVKey=v=>v.map(x=>x===null?'x':x.f).join(',');
+
+  function addFa(fa,bucket){
+    if(!fa||!faValid(fa,rootPc,intervals))return;
+    const k=mkKey(fa);if(seen.has(k))return;seen.add(k);
+    bucket.push(arrToVoicing(fa,rootPc,intervals));
+  }
+  function addV(v,bucket){
+    if(!v)return;
+    const k=mkVKey(v);if(seen.has(k))return;seen.add(k);
+    bucket.push(v);
+  }
+
+  (SPECIALS[`${rootPc}_${ct}`]||[]).forEach(fa=>faVariants(fa).forEach(v=>addFa(v,specials)));
+
+  if(TMPL_TYPES.has(ct)){
+    const eb=eB(rootPc),ab=aB(rootPc),db=dB(rootPc);
+    const inRange=fa=>{const fs=fa.filter(x=>x!==null);return fs.length&&Math.max(...fs)<=15;};
+    const doShape=(SH,base,bucket)=>{
+      if(!SH[ct])return;
+      const fa=SH[ct](base);
+      if(fa)faVariants(fa).forEach(v=>addFa(v,bucket));
+      if(base<=3){const fa2=SH[ct](base+12);if(fa2&&inRange(fa2))faVariants(fa2).forEach(v=>addFa(v,bucket));}
+    };
+    doShape(E_SH,eb,e_sh);
+    doShape(A_SH,ab,a_sh);
+    if(G_SH[ct]){const rr=eb<3?eb+12:eb;const fa=G_SH[ct](rr);if(fa)faVariants(fa).forEach(v=>addFa(v,g_sh));}
+    if(C_SH[ct]){
+      const bb=ab<3?ab+12:ab;
+      const fa=C_SH[ct](bb);if(fa)faVariants(fa).forEach(v=>addFa(v,c_sh));
+      if(bb<=3){const fa2=C_SH[ct](bb+12);if(fa2&&inRange(fa2))faVariants(fa2).forEach(v=>addFa(v,c_sh));}
+    }
+    doShape(D_SH,db,d_sh);
+  }
+
+  for(const cw of CAGED_WINDOWS){
+    const[wMin,wMax]=cw.winFn(rootPc);
+    addV(findVoicingInWindow(rootPc,intervals,wMin,wMax),fills);
+  }
+  return{specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills};
+}
+
+// Categorize all voicings into À connaître / Positions ouvertes / Positions mobiles
+function categorizeVoicings(rootPc, intervals, ct) {
+  const{specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills}=findAllVoicings(rootPc,intervals,ct);
+  const mustKnow=[],open=[],moveable=[];
+  const mkSet=new Set();
+  const hasOpen=v=>v.some(x=>x&&x.f===0);
+  const nPlayed=v=>v.filter(x=>x!==null).length;
+  const loFret=v=>{const fs=v.filter(x=>x&&x.f>0).map(x=>x.f);return fs.length?Math.min(...fs):0;};
+  const addMK=v=>{if(mkSet.has(v))return;mkSet.add(v);mustKnow.push(v);};
+  const put=v=>{if(mkSet.has(v))return;if(hasOpen(v))open.push(v);else moveable.push(v);};
+
+  if(specials.length)addMK(specials[0]);
+  specials.slice(1).forEach(put);
+
+  const addFirst=(arr,minP)=>{
+    for(const v of arr){if(mustKnow.length>=4)break;if(!mkSet.has(v)&&!hasOpen(v)&&nPlayed(v)>=minP){addMK(v);return;}}
+  };
+  addFirst(e_sh,5);addFirst(a_sh,4);addFirst(g_sh,4);
+  if(mustKnow.length<4)addFirst(c_sh,4);
+  if(mustKnow.length<4)addFirst(d_sh,3);
+
+  e_sh.forEach(put);a_sh.forEach(put);g_sh.forEach(put);
+  c_sh.forEach(put);d_sh.forEach(put);fills.forEach(put);
+  moveable.sort((a,b)=>loFret(a)-loFret(b));
+  return{mustKnow,open,moveable};
+}
+
 function renderDiagrams(def){
-  const grid=document.getElementById('diagrams-grid'); grid.innerHTML='';
-  if(!def){ grid.innerHTML='<div class="no-voicings">Aucun accord sélectionné.</div>'; return; }
+  const container=document.getElementById('diagrams-container');
+  container.innerHTML='';
+  if(!def){container.innerHTML='<div class="no-voicings">Aucun accord sélectionné.</div>';return;}
 
-  const voicings=findVoicings(state.rootPc, def.iv, def.bassIv, def.id);
-  _currentVoicings=voicings;
+  const isInversion=def.bassIv!=null&&def.bassIv!==0;
+  let allVoicings,sections;
+  if(isInversion){
+    allVoicings=findVoicings(state.rootPc,def.iv,def.bassIv,def.id);
+    sections=[{label:null,voicings:allVoicings}];
+  }else{
+    const{mustKnow,open,moveable}=categorizeVoicings(state.rootPc,def.iv,def.id||'');
+    allVoicings=[...mustKnow,...open,...moveable];
+    sections=[
+      {label:'À connaître',voicings:mustKnow},
+      {label:'Positions ouvertes',voicings:open},
+      {label:'Positions mobiles',voicings:moveable},
+    ];
+  }
 
-  if(!voicings.length){ grid.innerHTML='<div class="no-voicings">Aucune position trouvée pour cet accord (tessiture trop complexe).</div>'; return; }
+  _currentVoicings=allVoicings;
+  buildPositionButtons(allVoicings.length);
 
-  voicings.forEach((v, idx)=>{
-    const posN=idx+1;
+  if(!allVoicings.length){
+    container.innerHTML='<div class="no-voicings">Aucune position trouvée pour cet accord (tessiture trop complexe).</div>';
+    return;
+  }
+
+  function makeCard(v,globalIdx){
+    const posN=globalIdx+1;
     const isSelected=String(state.position)===String(posN);
     const card=document.createElement('div');
     card.className='diagram-card'+(isSelected?' highlight':'');
     card.title=`Cliquer pour voir la position ${posN} sur le manche`;
-    card.onclick=()=>{ state.position=posN; render(); };
+    card.onclick=()=>{state.position=posN;render();};
 
-    const posLabel=document.createElement('div'); posLabel.className='diagram-pos';
     const played=v.filter(x=>x);
     const minFr=played.filter(x=>x&&x.f>0).length?Math.min(...played.filter(x=>x&&x.f>0).map(x=>x.f)):0;
-    posLabel.textContent=`Position ${posN}${minFr>2?' (case '+minFr+')':''}`;
+    const posLabel=document.createElement('div');posLabel.className='diagram-pos';
+    posLabel.textContent=minFr>0?`Case ${minFr}`:'Position ouverte';
     card.appendChild(posLabel);
 
     const fg=computeFingering(v);
-    const svgWrap=document.createElement('div'); svgWrap.innerHTML=makeSVG(v, fg);
+    const svgWrap=document.createElement('div');svgWrap.innerHTML=makeSVG(v,fg);
     card.appendChild(svgWrap);
 
     const tabStr=v.slice().reverse().map(x=>x===null?'x':x.f===0?'0':String(x.f)).join('-');
-    const tab=document.createElement('div'); tab.className='diagram-fingers';
-    tab.textContent=tabStr;
+    const tab=document.createElement('div');tab.className='diagram-fingers';tab.textContent=tabStr;
     card.appendChild(tab);
 
-    const pb=document.createElement('button'); pb.className='diagram-play'; pb.innerHTML='▶ Écouter';
+    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML='▶ Écouter';
     let _pl=false;
     pb.onclick=async(e)=>{
       e.stopPropagation();
-      if(_pl)return; _pl=true; pb.classList.add('playing'); pb.textContent='■';
-      try{ await playVoicing(v,'chord',minFr); }catch(e){}
-      setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML='▶ Écouter'; },2200);
+      if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
+      try{await playVoicing(v,'chord',minFr);}catch(e){}
+      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
     };
     card.appendChild(pb);
-    grid.appendChild(card);
+    return card;
+  }
+
+  let offset=0;
+  sections.forEach(({label,voicings})=>{
+    if(!voicings.length){offset+=voicings.length;return;}
+    const sec=document.createElement('div');sec.className='voicing-subsection';
+    if(label){const lbl=document.createElement('div');lbl.className='voicing-sublabel';lbl.textContent=label;sec.appendChild(lbl);}
+    const grid=document.createElement('div');grid.className='diagrams-grid';
+    voicings.forEach((v,i)=>grid.appendChild(makeCard(v,offset+i)));
+    sec.appendChild(grid);container.appendChild(sec);
+    offset+=voicings.length;
   });
 }
 
