@@ -596,7 +596,8 @@ function togglePc(pc){
 function togglePosition(origIdx,fret,pc){
   const key=`${origIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
-    state.selectedPositions.delete(key);
+    // Note déjà présente → change la fondamentale (jamais supprimer)
+    state.rootPc=(state.rootPc===pc)?null:pc;
   } else {
     state.selectedPositions.set(key,{pc});
   }
