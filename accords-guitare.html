@@ -1204,9 +1204,9 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
   for (let f = 0; f <= nFrets; f++) {
     const y = PT + f * F;
     if (showNut && f === 0) {
-      if(capoPos>0){svg+=`<rect x="${PL-6}" y="${y-5}" width="${5*S+12}" height="10" rx="4" fill="#b08060" stroke="#7a5840" stroke-width="1.5"/>`;}
+      if(capoPos>0){svg+=`<rect x="${PL-6}" y="${y-6}" width="${5*S+12}" height="12" rx="4" fill="#b08060" stroke="#7a5840" stroke-width="1.5"/>`;}
       else{svg+=`<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#ece1cd" stroke-width="5" stroke-linecap="round"/>`;}
-      if(capoPos>0){svg+=`<text x="${PL+2.5*S}" y="${PT-20}" font-family="Space Mono,monospace" font-size="11" fill="#ece1cd" text-anchor="middle" font-weight="700" letter-spacing="1">CAPO ${capoPos}</text>`;}
+      if(capoPos>0){svg+=`<text x="${PL+2.5*S}" y="${PT}" font-family="Space Mono,monospace" font-size="9" fill="#1a0e08" text-anchor="middle" font-weight="700" dominant-baseline="middle" letter-spacing="1">CAPO ${capoPos}</text>`;}
     } else {
       svg += `<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
@@ -1256,7 +1256,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
         lbl = IV_LABEL[v.iv] || '?';
         fs = lbl.length > 2 ? 9 : 10;
       }
-      svg += `<text x="${x}" y="${cy+fs/2+1}" font-family="Space Mono,monospace" font-size="${fs}" fill="#160f08" text-anchor="middle" font-weight="700">${lbl}</text>`;
+      svg += `<text x="${x}" y="${cy}" font-family="Space Mono,monospace" font-size="${fs}" fill="#160f08" text-anchor="middle" font-weight="700" dominant-baseline="central">${lbl}</text>`;
     }
   }
   svg += '</svg>';
@@ -2213,13 +2213,17 @@ function renderFretboard(def){
 
   // Position box + fingering from selected voicing
   let box=null, highlightSet=null, fbFingering=null;
+  const mutedStrings=new Set();
   const vOffset=nStr-6;
   if(_currentVoicings.length){
     const vIdx=parseInt(state.position)-1;
     const v=_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
     if(v){
       highlightSet=new Set();
-      v.forEach((x,s)=>{ if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`); });
+      v.forEach((x,s)=>{
+        if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`);
+        else mutedStrings.add(s+vOffset);
+      });
       if(state.display==='fingering'){
         const dbFg=dbGetFingers(v,state.rootPc,def?def.id:'');
         fbFingering=dbFg||computeFingering(v);
@@ -2245,7 +2249,12 @@ function renderFretboard(def){
     const row=document.createElement('div'); row.className='fb-row';
     row.style.setProperty('--str-h',th+'px');
     const lab=document.createElement('div'); lab.className='str-label';
-    lab.textContent=dispNames[di]; row.appendChild(lab);
+    if(mutedStrings.has(origIdx)){
+      lab.innerHTML=`<span style="display:block;font-size:9px;color:var(--muted-2)">${dispNames[di]}</span><span style="display:block;color:#e8503a;font-size:13px;line-height:1;font-weight:700">×</span>`;
+    } else {
+      lab.textContent=dispNames[di];
+    }
+    row.appendChild(lab);
 
     for(let f=0;f<=fCount;f++){
       const inBox=box&&f>=box.start&&f<=box.end;
