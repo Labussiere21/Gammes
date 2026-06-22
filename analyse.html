@@ -697,9 +697,15 @@ function togglePc(pc){
 function togglePosition(sIdx,fret,pc){
   const key=`${sIdx}-${fret}`;
   if(state.selectedPositions.has(key)){
-    // Note déjà présente → change la fondamentale (jamais supprimer)
+    // Dot solide → re-clic change la fondamentale (jamais supprimer)
     state.rootPc=(state.rootPc===pc)?null:pc;
+  } else if(state.selectedPcs.has(pc)){
+    // Dot fantôme → déplace la note du piano vers cette position
+    state.selectedPcs.delete(pc);
+    state.selectedPositions.set(key,{pc});
+    state.rootPc=pc;
   } else {
+    // Case vide → ajoute directement la note sur le manche
     state.selectedPositions.set(key,{pc});
   }
 }
