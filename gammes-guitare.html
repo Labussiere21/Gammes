@@ -750,7 +750,7 @@ const _TR={
     lbl_no_acc:'aucune altération',lbl_sharp_s:'{n} dièse(s)',lbl_flat_s:'{n} bémol(s)',
     lbl_relative:'Sa relative mineure est',lbl_relative_maj:'Sa relative majeure est',
     lbl_part_of:'Elle fait partie des gammes',lbl_maj_sound:'majeures (sonorité lumineuse)',lbl_min_sound:'mineures (sonorité plus sombre)',
-    lbl_alterations:'altérations',lbl_diat_title:'Degrés & accords diatoniques',lbl_nd_title:'Degrés & intervalles',
+    lbl_alterations:'altérations',lbl_diat_title:'Degrés & accords diatoniques',lbl_harm_title:'Degrés & accords harmonisés',lbl_nd_title:'Degrés & intervalles',
     grp_0:'Modes diatoniques',grp_1:'Pentatoniques, blues & symétriques',grp_2:'Modes jazz',grp_3:'Gammes exotiques',
     lbl_accordage:'Accordage',lbl_gamme_label:'Gamme',
     lbl_alteration:'Altération',lbl_famille:'Famille',
@@ -788,7 +788,7 @@ const _TR={
     lbl_no_acc:'no accidentals',lbl_sharp_s:'{n} sharp(s)',lbl_flat_s:'{n} flat(s)',
     lbl_relative:'Its relative minor is',lbl_relative_maj:'Its relative major is',
     lbl_part_of:'It belongs to the',lbl_maj_sound:'major scales (bright sound)',lbl_min_sound:'minor scales (darker sound)',
-    lbl_alterations:'accidentals',lbl_diat_title:'Degrees & diatonic chords',lbl_nd_title:'Degrees & intervals',
+    lbl_alterations:'accidentals',lbl_diat_title:'Degrees & diatonic chords',lbl_harm_title:'Degrees & harmonized chords',lbl_nd_title:'Degrees & intervals',
     grp_0:'Diatonic modes',grp_1:'Pentatonic, blues & symmetric',grp_2:'Jazz modes',grp_3:'Exotic scales',
     lbl_accordage:'Tuning',lbl_gamme_label:'Scale',
     lbl_alteration:'Accidental',lbl_famille:'Family',
@@ -1209,24 +1209,28 @@ function buildScale(root, ls, iv){
 }
 
 function triadOf(notes, i){
-  const root = notes[i];
-  const third = notes[(i+2)%7];
-  const fifth = notes[(i+4)%7];
+  const n=notes.length;
+  const root=notes[i];
+  const third=notes[(i+2)%n];
+  const fifth=notes[(i+4)%n];
   const r=pcOf(root), t=pcOf(third), f=pcOf(fifth);
   const i3=((t-r+12)%12), i5=((f-r+12)%12);
-  let quality, suffix, roman, dim=false, aug=false;
-  if(i3===4&&i5===7){quality='Majeur'; suffix='';}
-  else if(i3===3&&i5===7){quality='mineur'; suffix='m';}
-  else if(i3===3&&i5===6){quality='diminué'; suffix='dim'; dim=true;}
-  else if(i3===4&&i5===8){quality='augmenté'; suffix='aug'; aug=true;}
-  else {quality='—'; suffix='?';}
-  let R = ['I','II','III','IV','V','VI','VII'][i];
-  if(suffix==='m'||dim) R = R.toLowerCase();
-  if(dim) R += '°'; if(aug) R += '+';
-  // Formule en degrés relatifs à la fondamentale de l'accord
-  const f3 = DEG_SHORT[i3], f5 = DEG_SHORT[i5];
-  const formula = `1 – ${f3} – ${f5}`;
-  return {symbol:root+suffix, quality, roman:R, notes:[root,third,fifth], intervals:[i3,i5], formula};
+  let quality,suffix,dim=false,aug=false;
+  if     (i3===4&&i5===7) {quality='Majeur';   suffix='';}
+  else if(i3===3&&i5===7) {quality='mineur';   suffix='m';}
+  else if(i3===3&&i5===6) {quality='diminué';  suffix='dim';  dim=true;}
+  else if(i3===4&&i5===8) {quality='augmenté'; suffix='aug';  aug=true;}
+  else if(i3===2&&i5===7) {quality='sus2';     suffix='sus2';}
+  else if(i3===5&&i5===7) {quality='sus4';     suffix='sus4';}
+  else if(i3===5&&i5===10){quality='7sus4';    suffix='7sus4';}
+  else if(i3===4&&i5===9) {quality='6';        suffix='6';}
+  else if(i3===3&&i5===9) {quality='m6';       suffix='m6';}
+  else {quality=`1·${DEG_SHORT[i3]}·${DEG_SHORT[i5]}`; suffix=`(${DEG_SHORT[i3]}.${DEG_SHORT[i5]})`;}
+  let R=['I','II','III','IV','V','VI','VII'][i]||(i+1)+'';
+  if(suffix==='m'||suffix==='m6'||dim) R=R.toLowerCase();
+  if(dim) R+='°'; if(aug) R+='+';
+  const f3=DEG_SHORT[i3],f5=DEG_SHORT[i5];
+  return {symbol:root+suffix, quality, roman:R, notes:[root,third,fifth], intervals:[i3,i5], formula:`1 – ${f3} – ${f5}`};
 }
 
 /* ============================================================
@@ -1491,50 +1495,34 @@ function render(){
   const tb=document.getElementById('degrees-body'); tb.innerHTML='';
   // Titre de la section selon le type de gamme
   const sectionH2=document.querySelector('#degrees-head')?.closest('section')?.querySelector('h2');
-  if(sectionH2) sectionH2.textContent = def.diat ? t('lbl_diat_title') : t('lbl_nd_title');
-  const _hint=document.getElementById('chord-click-hint'); if(_hint) _hint.style.display=def.diat?'':'none';
+  if(sectionH2) sectionH2.textContent = def.diat ? t('lbl_diat_title') : t('lbl_harm_title');
+  const _hint=document.getElementById('chord-click-hint'); if(_hint) _hint.style.display='';
 
-  if(def.diat){
-    head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_iv')}</th><th>${t('lbl_th_accord')}</th><th>${t('lbl_th_notes')}</th></tr>`;
-    notes.forEach((n,i)=>{
-      const semis=(pcOf(n)-rootPc+12)%12;
-      const tri=triadOf(notes,i);
-      const tr=document.createElement('tr');
-      const csym=document.createElement('span');
-      csym.className='chord-sym';
-      csym.textContent=pretty(tri.symbol);
-      Object.assign(csym.dataset,{
-        sym:tri.symbol, quality:tri.quality, formula:tri.formula,
-        n0:tri.notes[0], n1:tri.notes[1], n2:tri.notes[2],
-        i0:'0', i1:String(tri.intervals[0]), i2:String(tri.intervals[1]),
-        c0:DEG_COLORS[i], c1:DEG_COLORS[(i+2)%7], c2:DEG_COLORS[(i+4)%7]
-      });
-      tr.innerHTML=`
-        <td class="deg-num" style="color:${DEG_COLORS[i]}">${i+1}</td>
-        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i]}"></span>${pretty(n)}</td>
-        <td class="interval">${ivName(semis)}</td>
-        <td><span class="rn">${tri.roman}</span> &nbsp;</td>
-        <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
-      tr.querySelector('td:nth-child(4)').appendChild(csym);
-      tb.appendChild(tr);
+  // Tableau accords harmonisés pour toutes les gammes
+  const _n=notes.length;
+  head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_iv')}</th><th>${t('lbl_th_accord')}</th><th>${t('lbl_th_notes')}</th></tr>`;
+  notes.forEach((n,i)=>{
+    const semis=(pcOf(n)-rootPc+12)%12;
+    const tri=triadOf(notes,i);
+    const tr=document.createElement('tr');
+    const csym=document.createElement('span');
+    csym.className='chord-sym';
+    csym.textContent=pretty(tri.symbol);
+    Object.assign(csym.dataset,{
+      sym:tri.symbol, quality:tri.quality, formula:tri.formula,
+      n0:tri.notes[0], n1:tri.notes[1], n2:tri.notes[2],
+      i0:'0', i1:String(tri.intervals[0]), i2:String(tri.intervals[1]),
+      c0:DEG_COLORS[i%DEG_COLORS.length], c1:DEG_COLORS[(i+2)%_n%DEG_COLORS.length], c2:DEG_COLORS[(i+4)%_n%DEG_COLORS.length]
     });
-  } else {
-    // Noms d'intervalles détaillés pour gammes non-diatoniques
-    const IV_FULL=(currentLang()==='en')
-      ? {0:'Unison',1:'Min. 2nd',2:'Maj. 2nd',3:'Min. 3rd',4:'Maj. 3rd',5:'Perfect 4th',6:'Tritone',7:'Perfect 5th',8:'Aug. 5th',9:'Maj. 6th',10:'Min. 7th',11:'Maj. 7th'}
-      : {0:'Unisson',1:'2nde min.',2:'2nde maj.',3:'3ce min.',4:'3ce maj.',5:'4te juste',6:'Triton',7:'5te juste',8:'5te aug.',9:'6te maj.',10:'7ème min.',11:'7ème maj.'};
-    head.innerHTML=`<tr><th>${t('lbl_th_deg')}</th><th>${t('lbl_th_note')}</th><th>${t('lbl_th_semis')}</th><th>${t('lbl_th_iv')}</th></tr>`;
-    notes.forEach((n,i)=>{
-      const semis=(pcOf(n)-rootPc+12)%12;
-      const tr=document.createElement('tr');
-      tr.innerHTML=`
-        <td class="deg-num" style="color:${DEG_COLORS[i%DEG_COLORS.length]}">${i+1}</td>
-        <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i%DEG_COLORS.length]}"></span>${pretty(n)}</td>
-        <td class="interval" style="color:var(--muted)">${semis}</td>
-        <td class="interval">${IV_FULL[semis]||ivName(semis)||''}</td>`;
-      tb.appendChild(tr);
-    });
-  }
+    tr.innerHTML=`
+      <td class="deg-num" style="color:${DEG_COLORS[i%DEG_COLORS.length]}">${i+1}</td>
+      <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i%DEG_COLORS.length]}"></span>${pretty(n)}</td>
+      <td class="interval">${ivName(semis)}</td>
+      <td><span class="rn">${tri.roman}</span> &nbsp;</td>
+      <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
+    tr.querySelector('td:nth-child(4)').appendChild(csym);
+    tb.appendChild(tr);
+  });
 
   // Boutons de position : 4 ou 5 selon la gamme
   buildPositionButtons(def.posType==='sym' ? (def.npos||5) : 5);
