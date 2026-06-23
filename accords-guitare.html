@@ -400,6 +400,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
 .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
 .cell.in-box{background:rgba(191,24,40,.14); box-shadow:inset -1px 0 0 rgba(255,255,255,.04),inset 0 0 0 100px rgba(191,24,40,.08)}
+.cell.capo-bar{border-left:5px solid #f0b429; z-index:4}
 .dot{
   width:32px; height:32px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -421,6 +422,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .fretboard.lefty .str-label{order:1}
 .diagram-card{cursor:pointer; transition:border-color .15s, background .15s}
 .diagram-card:hover{border-color:var(--cherry-dim)}
+.diagram-card.selected{border-color:#fff; box-shadow:0 0 0 1px #fff4}
 
 /* ===== CAGED ===== */
 .caged-section{
@@ -1366,6 +1368,7 @@ async function playVoicing(voicing, mode='chord'){
 
 let _currentVoicings = [];
 let _fretboardVoicing = null;
+let _fretboardCapo = null;
 async function playAllChord(){
   if(!_currentVoicings.length) return;
   const btn = document.getElementById('play-all-btn');
@@ -1727,6 +1730,7 @@ function renderDiagrams(def){
 
   _currentVoicings=allVoicings;
   _fretboardVoicing=null;
+  _fretboardCapo=null;
   buildPositionButtons(allVoicings.length);
 
   if(!allVoicings.length){
@@ -1868,7 +1872,7 @@ function renderCAGED(){
       setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML=t('lbl_ecouter'); },2200);
     };
     card.appendChild(pb);
-    card.onclick=(e)=>{if(e.target===pb)return;_fretboardVoicing=voicing;renderFretboard(currentChordDef());};
+    card.onclick=(e)=>{if(e.target===pb)return;document.querySelectorAll('#caged-grid .diagram-card,#capo-grid .diagram-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');_fretboardVoicing=voicing;_fretboardCapo=null;renderFretboard(currentChordDef());};
     grid.appendChild(card);
   });
 }
@@ -1992,7 +1996,7 @@ function renderCapo(){
       setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML=t('lbl_ecouter');},2200);
     };
     card.appendChild(pb);
-    card.onclick=(e)=>{if(e.target===pb)return;_fretboardVoicing=audioV;renderFretboard(currentChordDef());};
+    card.onclick=(e)=>{if(e.target===pb)return;document.querySelectorAll('#caged-grid .diagram-card,#capo-grid .diagram-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');_fretboardVoicing=audioV;_fretboardCapo=capo;renderFretboard(currentChordDef());};
     grid.appendChild(card);
   });
 }
@@ -2096,7 +2100,7 @@ function renderFretboard(def){
     for(let f=0;f<=fCount;f++){
       const inBox=box&&f>=box.start&&f<=box.end;
       const cell=document.createElement('div');
-      cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
+      cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'')+(_fretboardCapo!==null&&f===_fretboardCapo?' capo-bar':'');
       const pc=(sPc+f)%12;
       const iv=pcToIv[pc];
       if(iv!==undefined){
@@ -2249,6 +2253,14 @@ document.getElementById('fb-hand').addEventListener('click',e=>{
   render();
 });
 
+// Lecture des paramètres URL (depuis analyse-guitare)
+(()=>{
+  const p=new URLSearchParams(location.search);
+  const rootStr=p.get('root');
+  const chordStr=p.get('chord');
+  if(rootStr!==null){const v=parseInt(rootStr);if(!isNaN(v)&&v>=0&&v<12)state.rootPc=v;}
+  if(chordStr){for(const g of CHORD_GROUPS){const c=g.chords.find(x=>x.id===chordStr);if(c){state.chordGroup=g.id;state.chordId=chordStr;break;}}}
+})();
 render();
 </script>
 

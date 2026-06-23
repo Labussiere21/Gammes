@@ -1156,6 +1156,13 @@ document.getElementById('accpref').addEventListener('click',e=>{
   state.accPref=b.dataset.acc; buildPiano(); render();
 });
 initNotationLang();
+(()=>{
+  const p=new URLSearchParams(location.search);
+  const rootStr=p.get('root');
+  const arpStr=p.get('arp');
+  if(rootStr!==null){const v=parseInt(rootStr);if(!isNaN(v)&&v>=0&&v<12)state.rootPc=v;}
+  if(arpStr&&ALL_ARPS.find(a=>a.id===arpStr))state.arpId=arpStr;
+})();
 render();
 updateI18n();
 </script>
