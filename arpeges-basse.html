@@ -385,6 +385,7 @@
 .stack-block .sbn{ font-size:20px; font-weight:700; line-height:1; font-family:"Space Mono",monospace; }
 .stack-block .sbi{ font-size:10px; font-weight:700; letter-spacing:.06em; margin-top:3px; text-transform:uppercase; opacity:.6; }
 .iv-grid{ display:grid; grid-template-columns:repeat(4, 44px); gap:3px; }
+#arp-iv-grid{ grid-template-columns:repeat(3, 44px); }
 .iv-cell{
   font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
   height:27px; border-radius:6px;
@@ -878,11 +879,11 @@ const ARP_IV_COLOR = {
   10:'#dd33cc', 11:'#ff1a88'
 };
 const ARP_GRID_DEF = [
-  [null, {iv:9,label:'6/13'}, {iv:10,label:'♭7'}, {iv:11,label:'7'}],
+  [{iv:9,label:'6'}, {iv:10,label:'♭7'}, {iv:11,label:'7'}],
   'sep',
-  [null,  {iv:6,label:'♭5'},  {iv:7,label:'5'},   {iv:8,label:'♯5'}],
-  [{iv:2,label:'sus2'},{iv:3,label:'m3'},{iv:4,label:'3'},{iv:5,label:'sus4'}],
-  [null,  null,               {iv:0,label:'1'},    null],
+  [{iv:6,label:'♭5'}, {iv:7,label:'5'},  {iv:8,label:'♯5'}],
+  [{iv:2,label:'sus2'},{iv:3,label:'m3'}, {iv:4,label:'3'}],
+  [{iv:5,label:'sus4'},{iv:0,label:'1'},  null],
 ];
 const ARPEGE_DESC = {
   'maj':      '<p>L\'arpège <strong>majeur</strong> parcourt les notes de la triade majeure (fondamentale, tierce majeure, quinte). Pilier du jeu de basse, on le retrouve sur les degrés I et IV de toute progression tonale, du blues au jazz en passant par le rock et la funk. Ses positions s\'apprennent via les boîtes CAGED.</p>',
