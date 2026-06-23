@@ -1217,7 +1217,20 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
       svg += `<line x1="${x-5}" y1="${PT-24}" x2="${x+5}" y2="${PT-14}" stroke="#e8503a" stroke-width="1.8"/>`;
       svg += `<line x1="${x+5}" y1="${PT-24}" x2="${x-5}" y2="${PT-14}" stroke="#e8503a" stroke-width="1.8"/>`;
     } else if (v.f === 0) {
-      svg += `<circle cx="${x}" cy="${PT-17}" r="6" fill="none" stroke="#9d8a72" stroke-width="1.5"/>`;
+      const col0 = IV_COLOR[v.iv] || '#d9a849';
+      const tc0  = isDarkColor(col0) ? '#ece1cd' : '#0c0306';
+      let lbl0, fs0;
+      if (mode === 'fingering') {
+        lbl0 = '0'; fs0 = 8;
+      } else if (mode === 'note') {
+        lbl0 = NOTE_NAMES_SVG[v.pc];
+        fs0 = lbl0 && lbl0.length > 2 ? 7 : 8;
+      } else {
+        lbl0 = IV_LABEL[v.iv] || '?';
+        fs0 = lbl0 && lbl0.length > 2 ? 7 : 8;
+      }
+      svg += `<circle cx="${x}" cy="${PT-17}" r="8" fill="${col0}"/>`;
+      svg += `<text x="${x}" y="${PT-17}" font-family="Space Mono,monospace" font-size="${fs0}" fill="${tc0}" text-anchor="middle" font-weight="700" dominant-baseline="central">${lbl0}</text>`;
     } else {
       const rel = v.f - startFret;
       const cy = PT + (rel - 0.5) * F;
