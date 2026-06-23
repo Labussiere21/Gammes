@@ -547,6 +547,7 @@ const _TR={
     lbl_chart_grid:'Grille',lbl_measures:'mesure',lbl_measures_pl:'mesures',
     lbl_gammes_imp_label:'Gammes pour improviser :',lbl_select_cad:'Sélectionne une cadence pour la visualiser.',
     lbl_genre_label:'Genre',lbl_prev:'← Préc.',lbl_next:'Suiv. →',
+    doc_title:'Cadences de basse — ScalaBass',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -580,6 +581,7 @@ const _TR={
     lbl_chart_grid:'Chart',lbl_measures:'bar',lbl_measures_pl:'bars',
     lbl_gammes_imp_label:'Scales for soloing:',lbl_select_cad:'Select a cadence to visualize it.',
     lbl_genre_label:'Genre',lbl_prev:'← Prev.',lbl_next:'Next →',
+    doc_title:'Bass Cadences — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -1305,6 +1307,7 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCadencesGrid();renderResult();}

@@ -471,6 +471,7 @@ const _TR={
     lbl_on_word:'sur',lbl_chords_recognized:'accords reconnus',lbl_no_note_hint:'Aucune note — clique sur le piano ou le manche',
     lbl_copy_link:'Copie ce lien :',lbl_deselect:'clic pour désélect.',
     lbl_link_copied:'✓ Lien copié !',
+    doc_title:'Analyse musicale basse — ScalaBass',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -509,6 +510,7 @@ const _TR={
     lbl_on_word:'of',lbl_chords_recognized:'chords recognized',lbl_no_note_hint:'No note — click on the piano or fretboard',
     lbl_copy_link:'Copy this link:',lbl_deselect:'click to deselect',
     lbl_link_copied:'✓ Link copied!',
+    doc_title:'Bass Music Analysis — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -1090,10 +1092,11 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){
-  
+
   // rafraîchir les noms de notes du piano (notation FR/EN/ES)
   if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
   renderSelectedNotes();

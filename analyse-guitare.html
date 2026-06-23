@@ -426,6 +426,7 @@ const _TR={
     lbl_tab_acc:'Accords',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
     lbl_link_copied:'✓ Lien copié !',
     lbl_droitier:'🤜 Droitier',lbl_gaucher:'Gaucher 🤛',
+    doc_title:'Analyse musicale guitare — ScalaBass',
   },
   en:{
     lbl_ana_lede:'Enter any notes on the piano or fretboard — instantly detects matching chords, scales and cadences. Build your voicings note by note.',
@@ -439,6 +440,7 @@ const _TR={
     lbl_tab_acc:'Chords',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
     lbl_link_copied:'✓ Link copied!',
     lbl_droitier:'🤜 Right-handed',lbl_gaucher:'Left-handed 🤛',
+    doc_title:'Guitar Music Analysis — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -995,6 +997,7 @@ function updateI18n(){
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.innerHTML=v;});
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){

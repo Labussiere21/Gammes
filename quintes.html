@@ -412,6 +412,7 @@ const _TR={
     lbl_tonalite:'Tonalité',lbl_hint_click:'Clique sur une tonalité dans le cercle',
     lbl_tab_chords:'Accords',lbl_word_maj:'majeur',lbl_word_min:'mineur',lbl_degre:'degré',
     lbl_in_key:'En',lbl_relative_paren:'(relative)',
+    doc_title:'Cercle des quintes (basse) — ScalaBass',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -444,6 +445,7 @@ const _TR={
     lbl_tonalite:'Key',lbl_hint_click:'Click a key in the circle',
     lbl_tab_chords:'Chords',lbl_word_maj:'major',lbl_word_min:'minor',lbl_degre:'degree',
     lbl_in_key:'In',lbl_relative_paren:'(relative)',
+    doc_title:'Circle of Fifths (bass) — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -669,6 +671,7 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){

@@ -17,8 +17,9 @@
     --line:#5c1a2e; --wood-a:#4a3320; --wood-b:#2c1d12;
     --brass:#bf1828; --brass-dim:#87111b;
     --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
-    --c-root:#e8503a;
-    --c-iv:#45a3d9;
+    --c-root:#ff3333;
+    --c-iv:#29b6ff;
+    --c-iv-bg:rgba(41,182,255,.08);
     --radius:14px;
   }
   *{box-sizing:border-box}
@@ -188,8 +189,8 @@
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:6px; padding:18px 10px; border-radius:12px; border:2px solid; min-height:100px;
   }
-  .iv-note-box.root-box{border-color:var(--c-root); background:rgba(232,80,58,.08)}
-  .iv-note-box.iv-box{border-color:var(--c-iv); background:rgba(69,163,217,.08)}
+  .iv-note-box.root-box{border-color:var(--c-root); background:rgba(255,51,51,.08)}
+  .iv-note-box.iv-box{border-color:var(--c-iv); background:var(--c-iv-bg)}
   .iv-note-box.none-box{border-color:var(--line); background:#0f0a07; opacity:.5}
   .iv-note-box .role{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase}
   .iv-note-box.root-box .role{color:var(--c-root)}
@@ -213,7 +214,7 @@
   }
   .recap-table tbody td{padding:8px 8px; border-bottom:1px solid rgba(58,44,30,.45); vertical-align:middle}
   .recap-table tbody tr:last-child td{border-bottom:0}
-  .recap-table tbody tr.active-row td{background:rgba(69,163,217,.08)}
+  .recap-table tbody tr.active-row td{background:var(--c-iv-bg)}
   .recap-table tbody tr.active-row .rc-sym{color:var(--c-iv)}
   .rc-sym{font-family:"Space Mono",monospace; font-weight:700; min-width:36px; display:inline-block}
   .rc-name{color:var(--muted)}
@@ -543,6 +544,7 @@ const _TR={
     lbl_fondamentale:'Fondamentale',lbl_alteration:'Altération',lbl_gamme_opt:'Gamme (optionnel)',lbl_iv_label:'Intervalle',
     lbl_recap:'Récapitulatif des intervalles',lbl_th_symbole:'Symbole',lbl_th_nom:'Nom',lbl_th_tons:'Tons',lbl_accordage:'Accordage',
     lbl_iv_title:'Intervalle',lbl_sur_manche:'Sur le manche',
+    doc_title:'Intervalles Guitare — ScalaBass',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -562,6 +564,7 @@ const _TR={
     lbl_fondamentale:'Root',lbl_alteration:'Accidental',lbl_gamme_opt:'Scale (optional)',lbl_iv_label:'Interval',
     lbl_recap:'Interval summary',lbl_th_symbole:'Symbol',lbl_th_nom:'Name',lbl_th_tons:'Tones',lbl_accordage:'Tuning',
     lbl_iv_title:'Interval',lbl_sur_manche:'On the fretboard',
+    doc_title:'Guitar Intervals — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -675,6 +678,7 @@ const SCALES = [
   {id:'mix',   label:'Mixolydien',     label_en:'Mixolydian',   semis:[2,4,5,7,9,10]},
 ];
 
+const DEGREE_COLORS=['#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653','#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'];
 /* ============================================================ ÉTAT */
 const state = {
   rootPc: 9,
@@ -830,6 +834,7 @@ function updateI18n(){
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   if(typeof t==='function')document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+  if(typeof t==='function')document.title=t('doc_title');
   buildTuningButtons();
 }
 

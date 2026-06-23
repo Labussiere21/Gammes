@@ -649,6 +649,7 @@ const _TR={
     lbl_alteration:'Altération',lbl_accordage:'Accordage',lbl_arpege:'Arpège',
     lbl_arp_lede:'Choisis une tonique et un arpège : structure, notes, intervalles, et toutes les positions sur le manche de ta basse.',
     lbl_open_fret:'à vide',
+    doc_title:'Arpèges de basse — ScalaBass',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -680,6 +681,7 @@ const _TR={
     lbl_alteration:'Accidental',lbl_accordage:'Tuning',lbl_arpege:'Arpeggio',
     lbl_arp_lede:'Pick a root note and an arpeggio: structure, notes, intervals, and every shape across your bass fretboard.',
     lbl_open_fret:'open',
+    doc_title:'Bass Arpeggios — ScalaBass',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -1231,6 +1233,7 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){
