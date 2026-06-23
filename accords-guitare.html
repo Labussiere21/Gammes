@@ -560,6 +560,10 @@ h1 em{font-style:italic; color:var(--brass)}
         <button data-mode="note" data-i18n="lbl_note_btn">Notes</button>
         <button data-mode="fingering" data-i18n="lbl_dgt_btn">Doigtés</button>
       </div>
+      <div class="mode-seg" id="diag-hand-seg">
+        <button data-dhand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+        <button data-dhand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
+      </div>
       <button class="play-btn" id="play-all-btn" onclick="playAllChord()" data-i18n="lbl_jouer">▶ Jouer l'accord</button>
     </div>
     <div class="diagrams-container" id="diagrams-container">
@@ -1214,6 +1218,10 @@ function ivName(iv){ return (currentLang()==='en'?IV_NAME_EN:IV_NAME_FR)[iv]||''
 
 function makeSVG(voicing, fingering, mode, capoPos=0) {
   if (!mode) mode = state.diagramMode;
+  if (state.hand === 'left') {
+    voicing = [...voicing].reverse();
+    if (fingering) fingering = [...fingering].reverse();
+  }
   const S = 28; // string spacing
   const F = 28; // fret spacing
   const PL = 20; const PT = 38; const PB = 10;
@@ -1253,9 +1261,9 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
       svg += `<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
   }
-  // Fret number
+  // Fret number (right side to avoid overlapping dots)
   if (!showNut) {
-    svg += `<text x="${PL-5}" y="${PT+F*.75}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end">${startFret+1}</text>`;
+    svg += `<text x="${PL+5*S+10}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${startFret+1}</text>`;
   }
   // Inlay dots
   const INLAYS = [3,5,7,9,12,15,17,19];
@@ -1357,6 +1365,7 @@ async function playVoicing(voicing, mode='chord'){
 }
 
 let _currentVoicings = [];
+let _fretboardVoicing = null;
 async function playAllChord(){
   if(!_currentVoicings.length) return;
   const btn = document.getElementById('play-all-btn');
@@ -1717,6 +1726,7 @@ function renderDiagrams(def){
   }
 
   _currentVoicings=allVoicings;
+  _fretboardVoicing=null;
   buildPositionButtons(allVoicings.length);
 
   if(!allVoicings.length){
@@ -1858,6 +1868,7 @@ function renderCAGED(){
       setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML=t('lbl_ecouter'); },2200);
     };
     card.appendChild(pb);
+    card.onclick=(e)=>{if(e.target===pb)return;_fretboardVoicing=voicing;renderFretboard(currentChordDef());};
     grid.appendChild(card);
   });
 }
@@ -1981,6 +1992,7 @@ function renderCapo(){
       setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML=t('lbl_ecouter');},2200);
     };
     card.appendChild(pb);
+    card.onclick=(e)=>{if(e.target===pb)return;_fretboardVoicing=audioV;renderFretboard(currentChordDef());};
     grid.appendChild(card);
   });
 }
@@ -2042,7 +2054,7 @@ function renderFretboard(def){
   const vOffset=nStr-6;
   if(_currentVoicings.length){
     const vIdx=parseInt(state.position)-1;
-    const v=_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
+    const v=_fretboardVoicing||_currentVoicings[Math.min(vIdx,_currentVoicings.length-1)];
     if(v){
       highlightSet=new Set();
       v.forEach((x,s)=>{
@@ -2222,11 +2234,19 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
   document.querySelectorAll('#fb-frets-ctl button').forEach(x=>x.classList.toggle('on',x===b));
   renderFretboard(currentChordDef());
 });
+document.getElementById('diag-hand-seg').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-dhand]'); if(!b)return;
+  state.hand=b.dataset.dhand;
+  document.querySelectorAll('#diag-hand-seg button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('#fb-hand button').forEach(x=>x.classList.toggle('on',x.dataset.hand===state.hand));
+  render();
+});
 document.getElementById('fb-hand').addEventListener('click',e=>{
   const b=e.target.closest('button[data-hand]'); if(!b)return;
   state.hand=b.dataset.hand;
   document.querySelectorAll('#fb-hand button').forEach(x=>x.classList.toggle('on',x===b));
-  renderFretboard(currentChordDef());
+  document.querySelectorAll('#diag-hand-seg button').forEach(x=>x.classList.toggle('on',x.dataset.dhand===state.hand));
+  render();
 });
 
 render();

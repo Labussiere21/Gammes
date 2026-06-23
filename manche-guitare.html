@@ -305,7 +305,7 @@ const _TR={
     lbl_sur:'sur', lbl_cordes:'cordes', lbl_jusqua:'jusqu\'à la case',
     lbl_oct:'ème oct.',
     lbl_lede:'Clique sur une note pour voir toutes ses positions sur le manche — mémorise la géographie de ta guitare.',
-    doc_title:'Manche de guitare interactif : toutes les notes | ScalaBass',
+    doc_title:'Manche Guitare — ScalaBass',
   },
   en:{
     lbl_note_show:'Note to display', lbl_alt:'Accidentals',
@@ -325,8 +325,17 @@ const _TR={
 };
 function t(k){return(_TR[currentLang()]||_TR.fr)[k]||k;}
 function updateI18n(){
+  const lang=currentLang();
+  const NAV={
+    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles-guitare.html':'Intervalles','cadences.html':'Cadences','analyse-guitare.html':'Analyse'},
+    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles-guitare.html':'Intervals','cadences.html':'Cadences','analyse-guitare.html':'Analyse'},
+  };
+  const nm=NAV[lang]||NAV.fr;
+  document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
   document.title=t('doc_title');
+  const h1=document.querySelector('h1');
+  if(h1) h1.innerHTML=lang==='en'?'The <em>fretboard</em>':'Le <em>manche</em>';
   const lede=document.getElementById('lede-txt');if(lede)lede.textContent=t('lbl_lede');
   const thead=document.querySelector('#pos-tbody')?.closest('table')?.querySelector('thead tr');
   if(thead)thead.innerHTML=`<th>${t('th_corde')}</th><th>${t('th_case')}</th><th>${t('th_note')}</th><th>${t('th_octave')}</th>`;
