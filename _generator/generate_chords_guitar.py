@@ -173,7 +173,7 @@ CHORD_DESC_FR = {
     "m13": "L'accord mineur treizième ajoute la sixte majeure au m11, créant l'accord mineur le plus étendu possible. Sa sixte dans un contexte mineur lui donne sa couleur douce-amère caractéristique. Très présent en jazz contemporain et R&B haut de gamme, ses voicings pratiques sélectionnent 4-5 notes parmi ses 7 composants.",
     "maj13": "L'accord majeur treizième est l'extension maximale du maj7, combinant neuvième, onzième et treizième. Dans la pratique jazz, on sélectionne les intervalles significatifs pour des voicings idiomatiques. Sa couleur lyrique et complexe en fait l'accord de résolution ultime dans les ballades jazz, souvent placé sur le I final.",
     "13s11": "L'accord 13♯11 est la forme la plus complète du mode lydien-mixolydien. Sa richesse spectrale exceptionnelle et sa couleur flottante en font un favori du jazz moderne. Herbie Hancock et les guitaristes post-bop l'utilisent comme accord de couleur statique autant que comme dominante fonctionnelle. Les voicings drop-2 ou quartal en capturent l'essence.",
-    "13b9": "L'accord 13♭9 combine la sixte majeure (treizième) et la neuvième bémol sur une dominante, créant une tension maximale dans deux directions simultanément. C'est l'accord de dominante le plus chargé du vocabulaire bebop. Sa résolution vers l'accord mineur ou majeur crée des mouvements chromatiques très expressifs.",
+    "13b9": "L'accord {root} 13♭9 combine une treizième de dominante et une neuvième bémol, produisant une couleur sombre et intensément tendue. Ses notes {notes} sont au cœur du vocabulaire bebop pour créer une tension extrême avant résolution, notamment dans les cadences ii-V-I en mineur.",
     # Altérés
     "7alt": "L'accord altéré (7alt) accumule plusieurs altérations sur la dominante : ♭9, ♯9, ♭5 et/ou ♯5. Il représente la tension de dominante la plus extrême, issue de la gamme altérée (7e mode de la mineure mélodique). Sur la guitare, les voicings alt utilisent les 4 cordes aiguës en omettant fondamentale et quinte.",
     "7b9b5": "L'accord 7♭9♭5 double la tension du V7 avec une quinte diminuée et une neuvième bémol. Sa double altération crée une dissonance extrême très appréciée dans le bebop et le jazz avancé. Il peut être utilisé comme substitut du V7alt sur les résolutions ii-V-I en mineur.",
@@ -235,7 +235,7 @@ CHORD_DESC_EN = {
     "m13": "The minor 13th chord adds the major sixth to the m11, creating the most extended minor chord possible. Its sixth in a minor context gives it its bittersweet characteristic color. Very present in contemporary jazz and high-end R&B, practical voicings select 4–5 notes from its 7 components.",
     "maj13": "The major 13th chord is the maximum extension of the maj7, combining ninth, eleventh, and thirteenth. In jazz practice, you select the significant intervals for idiomatic voicings. Its lyrical, complex color makes it the ultimate resolution chord in jazz ballads, often placed on the final I chord.",
     "13s11": "The 13♯11 chord is the most complete form of the Lydian Mixolydian mode. Its exceptional spectral richness and floating color make it a favorite in modern jazz. Herbie Hancock and post-bop guitarists use it as both a color chord and a functional dominant. Drop-2 or quartal voicings capture its essence.",
-    "13b9": "The 13♭9 chord combines the major sixth (thirteenth) and the flat ninth on a dominant, creating maximum tension in two simultaneous directions. It is the most loaded dominant chord in the bebop vocabulary. Its resolution to major or minor creates very expressive chromatic voice movements.",
+    "13b9": "The {root} 13♭9 chord combines a dominant 13th with a flat ninth, producing a dark, intense sound. Its notes {notes} are favored in jazz to create a striking and unresolved feeling, especially in minor ii-V-I cadences.",
     # Altered
     "7alt": "The altered chord (7alt) accumulates several alterations on the dominant: ♭9, ♯9, ♭5 and/or ♯5. It represents the most extreme dominant tension, derived from the altered scale (7th mode of melodic minor). On guitar, alt voicings use the top 4 strings, omitting root and fifth to keep only the most expressive tensions.",
     "7b9b5": "The 7♭9♭5 chord doubles the V7 tension with a diminished fifth and a flat ninth. Its double alteration creates extreme dissonance appreciated in bebop and advanced jazz. It can be used as a substitute for V7alt in ii-V-I minor resolutions.",
@@ -352,6 +352,12 @@ def _gen_page(tpl, chord, group, root, cslug, lang, out_root, pages_list,
     notes_secondary = chord_notes(root["pc"], chord["iv"], 'en' if lang == 'fr' else 'fr')
     notes_wr        = chord_notes_with_roles(root["pc"], chord["iv"], lang)
     notes_str       = " – ".join(notes_primary)
+
+    # Substitution des placeholders {root} et {notes} dans les descriptions
+    _sep = " et " if lang == 'fr' else " and "
+    _nj = (", ".join(notes_primary[:-1]) + _sep + notes_primary[-1]) if len(notes_primary) > 1 else (notes_primary[0] if notes_primary else "")
+    _rd = root_fr_name if lang == 'fr' else root_en_name
+    desc = desc.replace("{notes}", _nj).replace("{root}", _rd)
 
     root_display_fr = root_fr_name
     root_display_en = root_en_name
