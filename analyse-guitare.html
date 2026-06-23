@@ -840,7 +840,7 @@ function renderChordCards(chords,userPcs){
     const nameFull=spell(r.root)+' '+_tl;
     const noteChips=r.chordPcs.map(pc=>{const deg=(pc-r.root+12)%12;const col=DEGREE_COLORS[deg];return userSet.has(pc)?`<span class="rc-note in" style="color:${col};border-color:${col}55;background:${col}12">${spell(pc)}</span>`:`<span class="rc-note out">${spell(pc)}</span>`;}).join('');
     const extraNote=r.extra>0?`<span style="font-size:11px;color:var(--muted-2)"> +${r.extra} ${t('lbl_out_chord')}</span>`:'';
-    const link=`<a class="rc-link" href="accords-guitare.html">${t('lbl_see_acc')}</a>`;
+    const link=`<a class="rc-link" href="accords-guitare.html?root=${r.root}&chord=${r.type.id}">${t('lbl_see_acc')}</a>`;
     const card=document.createElement('div');
     card.className=`result-card ${exactClass(pct)}`;
     card.innerHTML=`
