@@ -1040,13 +1040,16 @@ function faValid(fa, rootPc, intervals) {
   const cPcs = new Set(intervals.map(i=>(rootPc+i)%12));
   const rpc = rootPc%12;
   let hasRoot=false, count=0; const played=new Set();
+  const fretted=[];
   for (let s=0;s<6;s++) {
     const f=fa[s]; if (f===null) continue; count++;
     const pc=(OPEN_PCS[s]+f)%12;
     if (!cPcs.has(pc)) return false;
     if (pc===rpc) hasRoot=true;
     played.add(pc);
+    if (f>0) fretted.push(f);
   }
+  if (fretted.length>=2 && Math.max(...fretted)-Math.min(...fretted)>4) return false;
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
@@ -1256,7 +1259,7 @@ async function initAudio(){
   }catch(e){_audioLoading=false;return null;}
 }
 
-async function playVoicing(voicing, mode='chord', minFret=0){
+async function playVoicing(voicing, mode='chord'){
   const inst = await initAudio(); if(!inst) return;
   if(_audioCtx.state==='suspended') await _audioCtx.resume();
 
@@ -1271,10 +1274,10 @@ async function playVoicing(voicing, mode='chord', minFret=0){
   }
 
   if(!notes.length) return;
-  const delay    = mode==='chord' ? 0.030 : 0.20;
-  const duration = mode==='chord' ? 1.6   : 0.9;
-  // Basse plus forte, aigus plus doux — grain naturel de gratte
-  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime + i*delay, {duration, gain: 3.2 - i*0.22}));
+  // Strumming grave → aigu : 35ms entre chaque corde (style médiator)
+  const STRUM = mode==='chord' ? 0.035 : 0.20;
+  const duration = mode==='chord' ? 1.6 : 0.9;
+  notes.forEach((m,i) => inst.play(m, _audioCtx.currentTime + i*STRUM, {duration, gain: 3.2 - i*0.22}));
 }
 
 let _currentVoicings = [];
@@ -1286,8 +1289,7 @@ async function playAllChord(){
   // Play the currently selected position, not always the first one
   const idx = Math.min(parseInt(state.position)-1, _currentVoicings.length-1);
   const _v = _currentVoicings[idx];
-  const _minFr = _v ? _v.reduce((m,x)=>x&&x.f>0?Math.min(m,x.f):m, Infinity) : 0;
-  try{ await playVoicing(_v, 'chord', isFinite(_minFr)?_minFr:0); }catch(e){}
+  try{ await playVoicing(_v, 'chord'); }catch(e){}
   setTimeout(()=>{ btn.classList.remove('playing'); btn.textContent='▶ Jouer l\'accord'; }, 2400);
 }
 
@@ -1660,9 +1662,9 @@ function renderDiagrams(def){
     posLabel.textContent=minFr>0?`Case ${minFr}`:'Position ouverte';
     card.appendChild(posLabel);
 
-    // Use DB fingers in fingering mode (real doigtés), computed otherwise
+    // DB fingers en priorité, fallback sur calcul théorique
     const dbFg = dbGetFingers(v, state.rootPc, isInversion ? '' : (def&&def.id||''));
-    const fg = (state.diagramMode==='fingering' && dbFg) ? dbFg : computeFingering(v);
+    const fg = dbFg || computeFingering(v);
     const svgWrap=document.createElement('div');svgWrap.innerHTML=makeSVG(v,fg);
     card.appendChild(svgWrap);
 
@@ -1675,7 +1677,7 @@ function renderDiagrams(def){
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
-      try{await playVoicing(v,'chord',minFr);}catch(e){}
+      try{await playVoicing(v,'chord');}catch(e){}
       setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
     };
     card.appendChild(pb);
@@ -1776,7 +1778,7 @@ function renderCAGED(){
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return; _pl=true; pb.classList.add('playing'); pb.textContent='■';
-      try{ await playVoicing(voicing,'chord',minFret); }catch(e){}
+      try{ await playVoicing(voicing,'chord'); }catch(e){}
       setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML='▶ Écouter'; },2200);
     };
     card.appendChild(pb);
@@ -1899,7 +1901,7 @@ function renderCapo(){
       return{f:absFret,pc,iv:ivByPc[pc]??0};
     });
     pb.onclick=async(e)=>{e.stopPropagation();if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
-      try{await playVoicing(audioV,'chord',capo);}catch(e){}
+      try{await playVoicing(audioV,'chord');}catch(e){}
       setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
     };
     card.appendChild(pb);
