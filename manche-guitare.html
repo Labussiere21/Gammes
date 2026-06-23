@@ -214,7 +214,7 @@
   <section class="controls">
     <div class="ctl-row">
       <div>
-        <div class="ctl-label" id="lbl-note-show">Note à afficher</div>
+        <div class="ctl-label" id="lbl-note-show" data-i18n="lbl_note_show">Note à afficher</div>
         <div class="note-selector">
           <div class="piano-wrap">
             <div class="piano" id="piano"></div>
@@ -227,10 +227,10 @@
         </div>
       </div>
       <div>
-        <div class="ctl-label">Altération</div>
+        <div class="ctl-label" data-i18n="lbl_alt">Altération</div>
         <div class="seg" id="accpref" role="group">
-          <button data-acc="b" class="on">♭ bémols</button>
-          <button data-acc="#">♯ dièses</button>
+          <button data-acc="b" class="on" data-i18n="lbl_bemols">♭ bémols</button>
+          <button data-acc="#" data-i18n="lbl_dieses">♯ dièses</button>
         </div>
       </div>
     </div>
@@ -239,14 +239,14 @@
 
   <section class="card fb-card">
     <div class="fb-head">
-      <h2>Sur le manche</h2>
+      <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          <div class="ctl-label">Accordage</div>
+          <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <select id="fb-tuning-ctl" class="tuning-sel"></select>
         </div>
         <div>
-          <div class="ctl-label">Cases</div>
+          <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
           <div class="seg" id="fb-frets-ctl" role="group">
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
@@ -254,10 +254,10 @@
           </div>
         </div>
         <div>
-          <div class="ctl-label">Main</div>
+          <div class="ctl-label" data-i18n="lbl_main">Main</div>
           <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on">🤜 Droitier</button>
-            <button data-hand="left">Gaucher 🤛</button>
+            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
       </div>
@@ -268,14 +268,14 @@
 
   <div class="two-col">
     <section class="card" style="margin-top:0">
-      <h2>Toutes les positions</h2>
+      <h2 data-i18n="lbl_toutes_pos">Toutes les positions</h2>
       <table>
-        <thead><tr><th>Corde</th><th>Case</th><th>Note</th><th>Octave</th></tr></thead>
+        <thead><tr><th data-i18n="th_corde">Corde</th><th data-i18n="th_case">Case</th><th data-i18n="th_note">Note</th><th data-i18n="th_octave">Octave</th></tr></thead>
         <tbody id="pos-tbody"></tbody>
       </table>
     </section>
     <section class="card" style="margin-top:0">
-      <h2>Sélection rapide</h2>
+      <h2 data-i18n="lbl_sel_rapide">Sélection rapide</h2>
       <div class="note-grid" id="note-grid"></div>
     </section>
   </div>
@@ -290,6 +290,47 @@ const EN_TO_FR={
 };
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
+
+const _TR={
+  fr:{
+    lbl_note_show:'Note à afficher', lbl_alt:'Altération',
+    lbl_bemols:'♭ bémols', lbl_dieses:'♯ dièses',
+    lbl_sur_manche:'Sur le manche', lbl_accordage:'Accordage',
+    lbl_cases:'Cases', lbl_main:'Main',
+    lbl_droitier:'🤜 Droitier', lbl_gaucher:'Gaucher 🤛',
+    lbl_toutes_pos:'Toutes les positions', lbl_sel_rapide:'Sélection rapide',
+    th_corde:'Corde', th_case:'Case', th_note:'Note', th_octave:'Octave',
+    lbl_a_vide:'à vide', lbl_effacer:'✕ Effacer',
+    lbl_position:'position', lbl_positions:'positions',
+    lbl_sur:'sur', lbl_cordes:'cordes', lbl_jusqua:'jusqu\'à la case',
+    lbl_oct:'ème oct.',
+    lbl_lede:'Clique sur une note pour voir toutes ses positions sur le manche — mémorise la géographie de ta guitare.',
+    doc_title:'Manche de guitare interactif : toutes les notes | ScalaBass',
+  },
+  en:{
+    lbl_note_show:'Note to display', lbl_alt:'Accidentals',
+    lbl_bemols:'♭ flats', lbl_dieses:'♯ sharps',
+    lbl_sur_manche:'On the fretboard', lbl_accordage:'Tuning',
+    lbl_cases:'Frets', lbl_main:'Hand',
+    lbl_droitier:'🤜 Right-handed', lbl_gaucher:'Left-handed 🤛',
+    lbl_toutes_pos:'All positions', lbl_sel_rapide:'Quick select',
+    th_corde:'String', th_case:'Fret', th_note:'Note', th_octave:'Octave',
+    lbl_a_vide:'open', lbl_effacer:'✕ Clear',
+    lbl_position:'position', lbl_positions:'positions',
+    lbl_sur:'on', lbl_cordes:'strings', lbl_jusqua:'up to fret',
+    lbl_oct:'th oct.',
+    lbl_lede:'Click a note to see all its positions on the fretboard — learn the geography of your guitar.',
+    doc_title:'Interactive Guitar Fretboard: all the notes | ScalaBass',
+  },
+};
+function t(k){return(_TR[currentLang()]||_TR.fr)[k]||k;}
+function updateI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+  document.title=t('doc_title');
+  const lede=document.getElementById('lede-txt');if(lede)lede.textContent=t('lbl_lede');
+  const thead=document.querySelector('#pos-tbody')?.closest('table')?.querySelector('thead tr');
+  if(thead)thead.innerHTML=`<th>${t('th_corde')}</th><th>${t('th_case')}</th><th>${t('th_note')}</th><th>${t('th_octave')}</th>`;
+}
 function prettyNote(noteEN){
   const clean=noteEN.replace(/♯/g,'#').replace(/♭/g,'b');
   if(currentNotation()==='fr'){
@@ -383,6 +424,7 @@ function buildNoteGrid(){
 }
 
 function render(){
+  updateI18n();
   buildPiano();
   const strings=currentStrings(),frets=state.frets;
   document.querySelectorAll('#piano .wkey').forEach(b=>{const pc=+b.dataset.pc,sel=state.selectedNotes.has(pc),col=sel?noteColor(pc):null;b.classList.toggle('sel',sel);b.style.background=col?`linear-gradient(180deg,${col},${col}cc)`:''});
@@ -415,9 +457,9 @@ function render(){
   if(state.selectedNotes.size===0){inf.innerHTML='<span style="font-size:13px;color:var(--muted)">Sélectionne au moins une note sur le clavier ou la grille.</span>';}
   else{
     const names=[...state.selectedNotes.keys()].map(pc=>`<b style="color:${noteColor(pc)}">${pretty(spell(pc))}</b>`).join(', ');
-    const pword=totalPos.length>1?'positions':'position';
-    inf.innerHTML=`<span class="pos-chip">${totalPos.length} ${pword}</span><span class="pos-detail">${names} sur ${strings.length} cordes jusqu'à la case ${frets}</span>
-      <button onclick="state.selectedNotes.clear();render();" style="background:#100506;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;padding:5px 12px;border-radius:7px;cursor:pointer;margin-left:6px">✕ Effacer</button>`;
+    const pword=totalPos.length>1?t('lbl_positions'):t('lbl_position');
+    inf.innerHTML=`<span class="pos-chip">${totalPos.length} ${pword}</span><span class="pos-detail">${names} ${t('lbl_sur')} ${strings.length} ${t('lbl_cordes')} ${t('lbl_jusqua')} ${frets}</span>
+      <button onclick="state.selectedNotes.clear();render();" style="background:#100506;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;padding:5px 12px;border-radius:7px;cursor:pointer;margin-left:6px">${t('lbl_effacer')}</button>`;
   }
 
   renderFretboard(strings,frets);
@@ -430,7 +472,7 @@ function render(){
     const midi=base+p.fret;
     const octave=Math.floor(midi/12)-1;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="tc-str">${pretty(prettyNote(p.str))}</td><td class="tc-case">${p.fret===0?'à vide':p.fret}</td><td><span style="font-weight:700;color:${p.color}">${pretty(spell(p.pc))}</span></td><td class="tc-oct">${octave>=0?octave+'ème oct.':''}</td>`;
+    tr.innerHTML=`<td class="tc-str">${pretty(prettyNote(p.str))}</td><td class="tc-case">${p.fret===0?t('lbl_a_vide'):p.fret}</td><td><span style="font-weight:700;color:${p.color}">${pretty(spell(p.pc))}</span></td><td class="tc-oct">${octave>=0?octave+t('lbl_oct'):''}</td>`;
     tb.appendChild(tr);
   });
 }

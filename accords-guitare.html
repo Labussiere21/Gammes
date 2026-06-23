@@ -493,6 +493,11 @@ h1 em{font-style:italic; color:var(--brass)}
           <button data-acc="b" class="on">♭</button>
           <button data-acc="#">♯</button>
         </div>
+        <div class="htool-divider"></div>
+        <div class="htool-seg" id="lang-seg">
+          <button data-lang="fr" class="on">FR</button>
+          <button data-lang="en">EN</button>
+        </div>
       </div>
     </div>
     <h1>Ac<em>cords</em></h1>
@@ -504,11 +509,11 @@ h1 em{font-style:italic; color:var(--brass)}
     <div class="ctl-row">
       <!-- Piano -->
       <div>
-        <div class="ctl-label">Tonique</div>
+        <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div class="root-display">
-            <span class="rd-label">Note</span>
+            <span class="rd-label" data-i18n="lbl_note_rd">Note</span>
             <span class="rd-name" id="rd-name">C</span>
           </div>
         </div>
@@ -534,8 +539,8 @@ h1 em{font-style:italic; color:var(--brass)}
   <!-- Chord Info Panel -->
   <section class="chord-info-wrap" id="chord-info-wrap" style="display:none">
     <div class="cinfo-tabs">
-      <button class="cinfo-tab on" data-cinfotab="schema">Résumé</button>
-      <button class="cinfo-tab" data-cinfotab="desc">Description</button>
+      <button class="cinfo-tab on" data-cinfotab="schema" data-i18n="lbl_resume">Résumé</button>
+      <button class="cinfo-tab" data-cinfotab="desc" data-i18n="lbl_desc">Description</button>
     </div>
     <div id="cinfo-schema">
       <div class="cinfo-layout">
@@ -551,14 +556,14 @@ h1 em{font-style:italic; color:var(--brass)}
     <div class="diagrams-head">
       <h2 id="diagrams-title">Positions sur le manche</h2>
       <div class="mode-seg" id="diagram-mode-seg">
-        <button data-mode="degree" class="on">Degrés</button>
-        <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigtés</button>
+        <button data-mode="degree" class="on" data-i18n="lbl_deg_btn">Degrés</button>
+        <button data-mode="note" data-i18n="lbl_note_btn">Notes</button>
+        <button data-mode="fingering" data-i18n="lbl_dgt_btn">Doigtés</button>
       </div>
-      <button class="play-btn" id="play-all-btn" onclick="playAllChord()">▶ Jouer l'accord</button>
+      <button class="play-btn" id="play-all-btn" onclick="playAllChord()" data-i18n="lbl_jouer">▶ Jouer l'accord</button>
     </div>
     <div class="diagrams-container" id="diagrams-container">
-      <div class="no-voicings">Sélectionne un accord ci-dessus…</div>
+      <div class="no-voicings" data-i18n="lbl_select">Sélectionne un accord ci-dessus…</div>
     </div>
     <div class="legend" id="iv-legend"></div>
   </section>
@@ -566,48 +571,48 @@ h1 em{font-style:italic; color:var(--brass)}
   <!-- CAGED -->
   <section class="caged-section" id="caged-section" style="display:none">
     <div class="diagrams-head">
-      <h2>Système CAGED — <span id="caged-chord-name"></span></h2>
+      <h2><span data-i18n="lbl_caged_titre">Système CAGED</span> — <span id="caged-chord-name"></span></h2>
     </div>
-    <p class="caged-intro">Les 5 positions du système CAGED permettent de jouer le même accord dans différentes zones du manche. Positions triées par case croissante.</p>
+    <p class="caged-intro" data-i18n="lbl_caged_intro">Les 5 positions du système CAGED permettent de jouer le même accord dans différentes zones du manche. Positions triées par case croissante.</p>
     <div class="diagrams-grid" id="caged-grid"></div>
   </section>
 
   <!-- Capo -->
   <section class="capo-section" id="capo-section" style="display:none">
     <div class="diagrams-head">
-      <h2>Avec capo — <span id="capo-chord-name"></span></h2>
+      <h2><span data-i18n="lbl_capo_titre">Avec capo</span> — <span id="capo-chord-name"></span></h2>
       <div class="mode-seg" id="capo-mode-seg">
-        <button data-mode="degree" class="on">Degrés</button>
-        <button data-mode="note">Notes</button>
-        <button data-mode="fingering">Doigtés</button>
+        <button data-mode="degree" class="on" data-i18n="lbl_deg_btn">Degrés</button>
+        <button data-mode="note" data-i18n="lbl_note_btn">Notes</button>
+        <button data-mode="fingering" data-i18n="lbl_dgt_btn">Doigtés</button>
       </div>
     </div>
-    <p class="capo-intro">Même accord, positions alternatives avec capodastro. La forme indiquée est celle des doigts au-dessus du capo.</p>
+    <p class="capo-intro" data-i18n="lbl_capo_intro">Même accord, positions alternatives avec capodastro. La forme indiquée est celle des doigts au-dessus du capo.</p>
     <div class="diagrams-grid" id="capo-grid"></div>
   </section>
 
   <!-- Manche -->
   <section class="fb-section">
     <div class="fb-head">
-      <h2>Sur le manche</h2>
+      <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          <div class="ctl-label">Afficher</div>
+          <div class="ctl-label" data-i18n="lbl_afficher">Afficher</div>
           <div class="seg" id="fb-display">
-            <button data-disp="note" class="on">Notes</button>
-            <button data-disp="deg">Degrés</button>
-            <button data-disp="fingering">Doigtés</button>
+            <button data-disp="note" class="on" data-i18n="lbl_note_btn">Notes</button>
+            <button data-disp="deg" data-i18n="lbl_deg_btn">Degrés</button>
+            <button data-disp="fingering" data-i18n="lbl_dgt_btn">Doigtés</button>
           </div>
         </div>
         <div>
-          <div class="ctl-label">Cordes</div>
+          <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
           <div class="seg" id="fb-strings-ctl">
             <button data-str="6" class="on">6</button>
             <button data-str="7">7</button>
           </div>
         </div>
         <div>
-          <div class="ctl-label">Cases</div>
+          <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
           <div class="seg" id="fb-frets-ctl">
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
@@ -615,15 +620,15 @@ h1 em{font-style:italic; color:var(--brass)}
           </div>
         </div>
         <div>
-          <div class="ctl-label">Main</div>
+          <div class="ctl-label" data-i18n="lbl_main">Main</div>
           <div class="seg" id="fb-hand">
-            <button data-hand="right" class="on">🤜 Droitier</button>
-            <button data-hand="left">Gaucher 🤛</button>
+            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
+            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         <div style="flex-basis:100%;height:0"></div>
         <div>
-          <div class="ctl-label">Position</div>
+          <div class="ctl-label" data-i18n="lbl_position">Position</div>
           <div class="seg" id="fb-position"></div>
         </div>
       </div>
@@ -646,6 +651,7 @@ const state = {
   chordGroup: 'triades',
   chordId: 'maj',
   notation: 'en',
+  lang: localStorage.getItem('sblang')||'fr',
   strings: 6,
   tuning: 'standard',
   frets: 12,
@@ -656,6 +662,58 @@ const state = {
   capoMode: 'degree',
 };
 
+function currentLang(){ return state.lang; }
+
+const _TR = {
+  fr:{
+    lbl_tonique:'Tonique', lbl_afficher:'Afficher', lbl_cordes:'Cordes',
+    lbl_cases:'Cases', lbl_main:'Main', lbl_position:'Position',
+    lbl_droitier:'🤜 Droitier', lbl_gaucher:'Gaucher 🤛',
+    lbl_note_btn:'Notes', lbl_deg_btn:'Degrés', lbl_dgt_btn:'Doigtés',
+    lbl_jouer:"▶ Jouer l'accord", lbl_stop:'■ Stop',
+    lbl_positions:'Positions sur le manche', lbl_sur_manche:'Sur le manche',
+    lbl_resume:'Résumé', lbl_desc:'Description',
+    lbl_caged_titre:'Système CAGED', lbl_capo_titre:'Avec capo',
+    lbl_caged_intro:"Les 5 positions du système CAGED permettent de jouer le même accord dans différentes zones du manche. Positions triées par case croissante.",
+    lbl_capo_intro:'Même accord, positions alternatives avec capodastro. La forme indiquée est celle des doigts au-dessus du capo.',
+    lbl_lede:"Sélectionne une tonique et un type d'accord : diagrammes de toutes les positions sur le manche de guitare 6 cordes.",
+    lbl_select:'Sélectionne un accord ci-dessus…',
+    lbl_no_voicings:'Aucune position trouvée pour cet accord (tessiture trop complexe).',
+    lbl_a_connaitre:'À connaître', lbl_pos_ouvertes:'Positions ouvertes', lbl_pos_mobiles:'Positions mobiles',
+    lbl_no_caged:'Aucune position CAGED trouvée.', lbl_no_desc:'Pas de description disponible pour cet accord.',
+    lbl_forme:'Forme', lbl_pos_ouverte:'Position ouverte', lbl_case:'Case', lbl_ecouter:'▶ Écouter',
+    row_fond:'Fond.', row_tierce:'Tierce', row_quinte:'Quinte', row_sept:'7e / 6e', row_ext:'Extensions',
+    lbl_note_rd:'Note',
+  },
+  en:{
+    lbl_tonique:'Root', lbl_afficher:'Display', lbl_cordes:'Strings',
+    lbl_cases:'Frets', lbl_main:'Hand', lbl_position:'Position',
+    lbl_droitier:'🤜 Right-handed', lbl_gaucher:'Left-handed 🤛',
+    lbl_note_btn:'Notes', lbl_deg_btn:'Degrees', lbl_dgt_btn:'Fingering',
+    lbl_jouer:'▶ Play chord', lbl_stop:'■ Stop',
+    lbl_positions:'Fretboard positions', lbl_sur_manche:'On the fretboard',
+    lbl_resume:'Summary', lbl_desc:'Description',
+    lbl_caged_titre:'CAGED system', lbl_capo_titre:'With capo',
+    lbl_caged_intro:'The 5 CAGED positions let you play the same chord in different areas of the fretboard. Sorted by ascending fret.',
+    lbl_capo_intro:'Same chord, alternative capo positions. The shape shown is for the fingers above the capo.',
+    lbl_lede:'Select a root note and chord type: diagrams of all positions on the 6-string guitar fretboard.',
+    lbl_select:'Select a chord above…',
+    lbl_no_voicings:'No position found for this chord.',
+    lbl_a_connaitre:'Must know', lbl_pos_ouvertes:'Open positions', lbl_pos_mobiles:'Movable positions',
+    lbl_no_caged:'No CAGED position found.', lbl_no_desc:'No description available for this chord.',
+    lbl_forme:'Shape', lbl_pos_ouverte:'Open position', lbl_case:'Fret', lbl_ecouter:'▶ Listen',
+    row_fond:'Root', row_tierce:'Third', row_quinte:'Fifth', row_sept:'7th / 6th', row_ext:'Extensions',
+    lbl_note_rd:'Note',
+  },
+};
+function t(k){ return (_TR[currentLang()]||_TR.fr)[k]||k; }
+
+function updateI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n); });
+  document.title = currentLang()==='en' ? 'Guitar Chords — ScalaBass' : 'Accords Guitare — ScalaBass';
+  document.querySelector('.lede').textContent = t('lbl_lede');
+}
+
 function noteTbl(){ const n=state.notation,a=state.accPref; return n==='fr'?(a==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR):(a==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN); }
 function spellPc(pc){ return noteTbl()[pc]; }
 
@@ -663,78 +721,78 @@ const ENHA={b:{1:'C♯',3:'D♯',6:'F♯',8:'G♯',10:'A♯'},'#':{1:'D♭',3:'E
 
 /* ============================================================ CHORD DEFS */
 const CHORD_GROUPS = [
-  { id:'triades', label:'Triades', chords:[
-    { id:'maj',    sym:'',      label:'Majeur',          iv:[0,4,7] },
-    { id:'min',    sym:'m',     label:'Mineur',          iv:[0,3,7] },
-    { id:'aug',    sym:'+',     label:'Augmenté',        iv:[0,4,8] },
-    { id:'dim',    sym:'°',     label:'Diminué',         iv:[0,3,6] },
-    { id:'sus2',   sym:'sus2',  label:'Sus2',            iv:[0,2,7] },
-    { id:'sus4',   sym:'sus4',  label:'Sus4',            iv:[0,5,7] },
-    { id:'p5',     sym:'5',     label:'Power 5',         iv:[0,7] },
+  { id:'triades', label:'Triades', label_en:'Triads', chords:[
+    { id:'maj',    sym:'',      label:'Majeur',          label_en:'Major',         iv:[0,4,7] },
+    { id:'min',    sym:'m',     label:'Mineur',          label_en:'Minor',         iv:[0,3,7] },
+    { id:'aug',    sym:'+',     label:'Augmenté',        label_en:'Augmented',     iv:[0,4,8] },
+    { id:'dim',    sym:'°',     label:'Diminué',         label_en:'Diminished',    iv:[0,3,6] },
+    { id:'sus2',   sym:'sus2',  label:'Sus2',            label_en:'Sus2',          iv:[0,2,7] },
+    { id:'sus4',   sym:'sus4',  label:'Sus4',            label_en:'Sus4',          iv:[0,5,7] },
+    { id:'p5',     sym:'5',     label:'Power 5',         label_en:'Power 5',       iv:[0,7] },
   ]},
-  { id:'sixtes', label:'Sixtes & add', chords:[
-    { id:'add9',   sym:'add9',  label:'Add9',            iv:[0,2,4,7] },
-    { id:'madd9',  sym:'madd9', label:'Min add9',        iv:[0,2,3,7] },
-    { id:'6',      sym:'6',     label:'Majeur 6',        iv:[0,4,7,9] },
-    { id:'m6',     sym:'m6',    label:'Mineur 6',        iv:[0,3,7,9] },
-    { id:'69',     sym:'6/9',   label:'Six-neuf',        iv:[0,2,4,7,9] },
-    { id:'m69',    sym:'m6/9',  label:'Min 6/9',         iv:[0,2,3,7,9] },
+  { id:'sixtes', label:'Sixtes & add', label_en:'Sixths & add', chords:[
+    { id:'add9',   sym:'add9',  label:'Add9',            label_en:'Add9',          iv:[0,2,4,7] },
+    { id:'madd9',  sym:'madd9', label:'Min add9',        label_en:'Min add9',      iv:[0,2,3,7] },
+    { id:'6',      sym:'6',     label:'Majeur 6',        label_en:'Major 6',       iv:[0,4,7,9] },
+    { id:'m6',     sym:'m6',    label:'Mineur 6',        label_en:'Minor 6',       iv:[0,3,7,9] },
+    { id:'69',     sym:'6/9',   label:'Six-neuf',        label_en:'Six-nine',      iv:[0,2,4,7,9] },
+    { id:'m69',    sym:'m6/9',  label:'Min 6/9',         label_en:'Min 6/9',       iv:[0,2,3,7,9] },
   ]},
-  { id:'sept', label:'7èmes', chords:[
-    { id:'maj7',   sym:'Δ7',   label:'Majeur 7',        iv:[0,4,7,11] },
-    { id:'m7',     sym:'m7',   label:'Mineur 7',        iv:[0,3,7,10] },
-    { id:'7',      sym:'7',    label:'Dominante 7',     iv:[0,4,7,10] },
-    { id:'m7b5',   sym:'ø7',   label:'Demi-dim. ø7',   iv:[0,3,6,10] },
-    { id:'dim7',   sym:'°7',   label:'Diminué 7',       iv:[0,3,6,9] },
-    { id:'mmaj7',  sym:'mΔ7',  label:'Mineur Maj7',     iv:[0,3,7,11] },
-    { id:'augmaj7',sym:'+Δ7',  label:'Aug. Maj7',       iv:[0,4,8,11] },
-    { id:'aug7',   sym:'7+',   label:'Augmenté 7',      iv:[0,4,8,10] },
-    { id:'7sus4',  sym:'7sus4',label:'7 Sus4',          iv:[0,5,7,10] },
-    { id:'7sus2',  sym:'7sus2',label:'7 Sus2',          iv:[0,2,7,10] },
-    { id:'7b5',    sym:'7♭5',  label:'7 ♭5',            iv:[0,4,6,10] },
-    { id:'m7s5',   sym:'m7♯5', label:'Mineur 7 ♯5',     iv:[0,3,8,10] },
+  { id:'sept', label:'7èmes', label_en:'7ths', chords:[
+    { id:'maj7',   sym:'Δ7',   label:'Majeur 7',        label_en:'Major 7',       iv:[0,4,7,11] },
+    { id:'m7',     sym:'m7',   label:'Mineur 7',        label_en:'Minor 7',       iv:[0,3,7,10] },
+    { id:'7',      sym:'7',    label:'Dominante 7',     label_en:'Dom 7',         iv:[0,4,7,10] },
+    { id:'m7b5',   sym:'ø7',   label:'Demi-dim. ø7',   label_en:'Half-dim. ø7',  iv:[0,3,6,10] },
+    { id:'dim7',   sym:'°7',   label:'Diminué 7',       label_en:'Dim 7',         iv:[0,3,6,9] },
+    { id:'mmaj7',  sym:'mΔ7',  label:'Mineur Maj7',     label_en:'Minor Maj7',    iv:[0,3,7,11] },
+    { id:'augmaj7',sym:'+Δ7',  label:'Aug. Maj7',       label_en:'Aug. Maj7',     iv:[0,4,8,11] },
+    { id:'aug7',   sym:'7+',   label:'Augmenté 7',      label_en:'Aug 7',         iv:[0,4,8,10] },
+    { id:'7sus4',  sym:'7sus4',label:'7 Sus4',          label_en:'7 Sus4',        iv:[0,5,7,10] },
+    { id:'7sus2',  sym:'7sus2',label:'7 Sus2',          label_en:'7 Sus2',        iv:[0,2,7,10] },
+    { id:'7b5',    sym:'7♭5',  label:'7 ♭5',            label_en:'7 ♭5',          iv:[0,4,6,10] },
+    { id:'m7s5',   sym:'m7♯5', label:'Mineur 7 ♯5',     label_en:'Minor 7 ♯5',   iv:[0,3,8,10] },
   ]},
-  { id:'neuf', label:'9èmes', chords:[
-    { id:'maj9',   sym:'Δ9',   label:'Majeur 9',        iv:[0,4,7,11,2] },
-    { id:'m9',     sym:'m9',   label:'Mineur 9',        iv:[0,3,7,10,2] },
-    { id:'9',      sym:'9',    label:'Dominante 9',     iv:[0,4,7,10,2] },
-    { id:'7b9',    sym:'7♭9',  label:'7 ♭9',            iv:[0,4,7,10,1] },
-    { id:'7s9',    sym:'7♯9',  label:'7 ♯9',            iv:[0,4,7,10,3] },
-    { id:'m9maj7', sym:'m9Δ7', label:'Min9 Maj7',       iv:[0,3,7,11,2] },
-    { id:'9s11',   sym:'9♯11', label:'9 ♯11',           iv:[0,4,7,10,2,6] },
-    { id:'maj9s11',sym:'Δ9♯11',label:'Maj9 ♯11',        iv:[0,4,7,11,2,6] },
+  { id:'neuf', label:'9èmes', label_en:'9ths', chords:[
+    { id:'maj9',   sym:'Δ9',   label:'Majeur 9',        label_en:'Major 9',       iv:[0,4,7,11,2] },
+    { id:'m9',     sym:'m9',   label:'Mineur 9',        label_en:'Minor 9',       iv:[0,3,7,10,2] },
+    { id:'9',      sym:'9',    label:'Dominante 9',     label_en:'Dom 9',         iv:[0,4,7,10,2] },
+    { id:'7b9',    sym:'7♭9',  label:'7 ♭9',            label_en:'7 ♭9',          iv:[0,4,7,10,1] },
+    { id:'7s9',    sym:'7♯9',  label:'7 ♯9',            label_en:'7 ♯9',          iv:[0,4,7,10,3] },
+    { id:'m9maj7', sym:'m9Δ7', label:'Min9 Maj7',       label_en:'Min9 Maj7',     iv:[0,3,7,11,2] },
+    { id:'9s11',   sym:'9♯11', label:'9 ♯11',           label_en:'9 ♯11',         iv:[0,4,7,10,2,6] },
+    { id:'maj9s11',sym:'Δ9♯11',label:'Maj9 ♯11',        label_en:'Maj9 ♯11',      iv:[0,4,7,11,2,6] },
   ]},
-  { id:'onze', label:'11èmes', chords:[
-    { id:'11',     sym:'11',    label:'Dominante 11',   iv:[0,7,10,2,5] },
-    { id:'m11',    sym:'m11',   label:'Mineur 11',      iv:[0,3,7,10,2,5] },
-    { id:'maj11',  sym:'Δ11',   label:'Majeur 11',      iv:[0,4,7,11,2,5] },
-    { id:'7s11',   sym:'7♯11',  label:'7 ♯11 Lydien',  iv:[0,4,7,10,6] },
-    { id:'maj7s11',sym:'Δ7♯11', label:'Maj7 ♯11',       iv:[0,4,7,11,6] },
+  { id:'onze', label:'11èmes', label_en:'11ths', chords:[
+    { id:'11',     sym:'11',    label:'Dominante 11',   label_en:'Dom 11',        iv:[0,7,10,2,5] },
+    { id:'m11',    sym:'m11',   label:'Mineur 11',      label_en:'Minor 11',      iv:[0,3,7,10,2,5] },
+    { id:'maj11',  sym:'Δ11',   label:'Majeur 11',      label_en:'Major 11',      iv:[0,4,7,11,2,5] },
+    { id:'7s11',   sym:'7♯11',  label:'7 ♯11 Lydien',  label_en:'7 ♯11',         iv:[0,4,7,10,6] },
+    { id:'maj7s11',sym:'Δ7♯11', label:'Maj7 ♯11',       label_en:'Maj7 ♯11',      iv:[0,4,7,11,6] },
   ]},
-  { id:'treize', label:'13èmes', chords:[
-    { id:'13',     sym:'13',   label:'Dominante 13',    iv:[0,4,7,10,2,9] },
-    { id:'m13',    sym:'m13',  label:'Mineur 13',       iv:[0,3,7,10,2,9] },
-    { id:'maj13',  sym:'Δ13',  label:'Majeur 13',       iv:[0,4,7,11,2,9] },
-    { id:'13s11',  sym:'13♯11',label:'13 ♯11',          iv:[0,4,7,10,6,9] },
-    { id:'13b9',   sym:'13♭9', label:'13 ♭9',           iv:[0,4,7,10,1,9] },
+  { id:'treize', label:'13èmes', label_en:'13ths', chords:[
+    { id:'13',     sym:'13',   label:'Dominante 13',    label_en:'Dom 13',        iv:[0,4,7,10,2,9] },
+    { id:'m13',    sym:'m13',  label:'Mineur 13',       label_en:'Minor 13',      iv:[0,3,7,10,2,9] },
+    { id:'maj13',  sym:'Δ13',  label:'Majeur 13',       label_en:'Major 13',      iv:[0,4,7,11,2,9] },
+    { id:'13s11',  sym:'13♯11',label:'13 ♯11',          label_en:'13 ♯11',        iv:[0,4,7,10,6,9] },
+    { id:'13b9',   sym:'13♭9', label:'13 ♭9',           label_en:'13 ♭9',         iv:[0,4,7,10,1,9] },
   ]},
-  { id:'alt', label:'Altérés', chords:[
-    { id:'7alt',   sym:'7alt',  label:'7 altéré (♭9♯5)', iv:[0,4,8,10,1] },
-    { id:'7b9b5',  sym:'7♭9♭5',label:'7 ♭9♭5',           iv:[0,4,6,10,1] },
-    { id:'7s9b5',  sym:'7♯9♭5',label:'7 ♯9♭5',           iv:[0,4,6,10,3] },
-    { id:'7b9s5',  sym:'7♭9♯5',label:'7 ♭9♯5',           iv:[0,4,8,10,1] },
-    { id:'7s9s5',  sym:'7♯9♯5',label:'7 ♯9♯5',           iv:[0,4,8,10,3] },
-    { id:'13b5',   sym:'13♭5', label:'13 ♭5',            iv:[0,4,6,10,9] },
+  { id:'alt', label:'Altérés', label_en:'Altered', chords:[
+    { id:'7alt',   sym:'7alt',  label:'7 altéré (♭9♯5)', label_en:'7 altered (♭9♯5)', iv:[0,4,8,10,1] },
+    { id:'7b9b5',  sym:'7♭9♭5',label:'7 ♭9♭5',           label_en:'7 ♭9♭5',       iv:[0,4,6,10,1] },
+    { id:'7s9b5',  sym:'7♯9♭5',label:'7 ♯9♭5',           label_en:'7 ♯9♭5',       iv:[0,4,6,10,3] },
+    { id:'7b9s5',  sym:'7♭9♯5',label:'7 ♭9♯5',           label_en:'7 ♭9♯5',       iv:[0,4,8,10,1] },
+    { id:'7s9s5',  sym:'7♯9♯5',label:'7 ♯9♯5',           label_en:'7 ♯9♯5',       iv:[0,4,8,10,3] },
+    { id:'13b5',   sym:'13♭5', label:'13 ♭5',            label_en:'13 ♭5',         iv:[0,4,6,10,9] },
   ]},
-  { id:'inv', label:'Renversements', chords:[
-    { id:'maj_1',  sym:'/3',    label:'Maj 1er renv. (/3)',  iv:[0,4,7],     bassIv:4 },
-    { id:'maj_2',  sym:'/5',    label:'Maj 2e renv. (/5)',   iv:[0,4,7],     bassIv:7 },
-    { id:'min_1',  sym:'m/♭3',  label:'Min 1er renv. (/♭3)',iv:[0,3,7],     bassIv:3 },
-    { id:'min_2',  sym:'m/5',   label:'Min 2e renv. (/5)',   iv:[0,3,7],     bassIv:7 },
-    { id:'dom7_1', sym:'7/3',   label:'Dom7 1er renv.',      iv:[0,4,7,10],  bassIv:4 },
-    { id:'dom7_2', sym:'7/5',   label:'Dom7 2e renv.',       iv:[0,4,7,10],  bassIv:7 },
-    { id:'dom7_3', sym:'7/♭7',  label:'Dom7 3e renv.',       iv:[0,4,7,10],  bassIv:10 },
-    { id:'maj7_1', sym:'Δ7/3',  label:'Maj7 1er renv.',      iv:[0,4,7,11],  bassIv:4 },
+  { id:'inv', label:'Renversements', label_en:'Inversions', chords:[
+    { id:'maj_1',  sym:'/3',    label:'Maj 1er renv. (/3)',  label_en:'Maj 1st inv. (/3)',  iv:[0,4,7],    bassIv:4 },
+    { id:'maj_2',  sym:'/5',    label:'Maj 2e renv. (/5)',   label_en:'Maj 2nd inv. (/5)',  iv:[0,4,7],    bassIv:7 },
+    { id:'min_1',  sym:'m/♭3',  label:'Min 1er renv. (/♭3)',label_en:'Min 1st inv. (/♭3)', iv:[0,3,7],    bassIv:3 },
+    { id:'min_2',  sym:'m/5',   label:'Min 2e renv. (/5)',   label_en:'Min 2nd inv. (/5)',  iv:[0,3,7],    bassIv:7 },
+    { id:'dom7_1', sym:'7/3',   label:'Dom7 1er renv.',      label_en:'Dom7 1st inv.',      iv:[0,4,7,10], bassIv:4 },
+    { id:'dom7_2', sym:'7/5',   label:'Dom7 2e renv.',       label_en:'Dom7 2nd inv.',      iv:[0,4,7,10], bassIv:7 },
+    { id:'dom7_3', sym:'7/♭7',  label:'Dom7 3e renv.',       label_en:'Dom7 3rd inv.',      iv:[0,4,7,10], bassIv:10 },
+    { id:'maj7_1', sym:'Δ7/3',  label:'Maj7 1er renv.',      label_en:'Maj7 1st inv.',      iv:[0,4,7,11], bassIv:4 },
   ]},
 ];
 
@@ -1148,6 +1206,11 @@ const IV_NAME_FR = {
   0:'Fond.', 1:'♭9e', 2:'9e', 3:'3ce min.', 4:'3ce maj.', 5:'4te/11e',
   6:'♯11e', 7:'5te', 8:'5te aug.', 9:'6te/13e', 10:'7e min.', 11:'7e maj.'
 };
+const IV_NAME_EN = {
+  0:'Root', 1:'♭9th', 2:'9th', 3:'min 3rd', 4:'maj 3rd', 5:'4th/11th',
+  6:'♯11th', 7:'5th', 8:'aug 5th', 9:'6th/13th', 10:'min 7th', 11:'maj 7th'
+};
+function ivName(iv){ return (currentLang()==='en'?IV_NAME_EN:IV_NAME_FR)[iv]||''; }
 
 function makeSVG(voicing, fingering, mode, capoPos=0) {
   if (!mode) mode = state.diagramMode;
@@ -1298,12 +1361,12 @@ async function playAllChord(){
   if(!_currentVoicings.length) return;
   const btn = document.getElementById('play-all-btn');
   if(btn.classList.contains('playing')) return;
-  btn.classList.add('playing'); btn.textContent='■ Stop';
+  btn.classList.add('playing'); btn.textContent=t('lbl_stop');
   // Play the currently selected position, not always the first one
   const idx = Math.min(parseInt(state.position)-1, _currentVoicings.length-1);
   const _v = _currentVoicings[idx];
   try{ await playVoicing(_v, 'chord'); }catch(e){}
-  setTimeout(()=>{ btn.classList.remove('playing'); btn.textContent='▶ Jouer l\'accord'; }, 2400);
+  setTimeout(()=>{ btn.classList.remove('playing'); btn.textContent=t('lbl_jouer'); }, 2400);
 }
 
 /* ============================================================ PIANO */
@@ -1336,7 +1399,7 @@ function buildGroupTabs(){
   const c=document.getElementById('group-tabs'); c.innerHTML='';
   CHORD_GROUPS.forEach(g=>{
     const b=document.createElement('button'); b.className='group-tab'+(g.id===state.chordGroup?' on':'');
-    b.textContent=g.label; b.dataset.group=g.id;
+    b.textContent=currentLang()==='en'?g.label_en:g.label; b.dataset.group=g.id;
     b.onclick=()=>{ state.chordGroup=g.id; state.chordId=CHORD_GROUPS.find(x=>x.id===g.id).chords[0].id; render(); };
     c.appendChild(b);
   });
@@ -1348,7 +1411,7 @@ function buildChordBtns(){
   if(!g) return;
   g.chords.forEach(cd=>{
     const b=document.createElement('button'); b.className='chord-btn'+(cd.id===state.chordId?' on':'');
-    b.innerHTML=`${cd.label}<span style="opacity:.5;margin-left:6px;font-size:10px">${cd.sym||'—'}</span>`;
+    b.innerHTML=`${currentLang()==='en'?cd.label_en:cd.label}<span style="opacity:.5;margin-left:6px;font-size:10px">${cd.sym||'—'}</span>`;
     b.onclick=()=>{ state.chordId=cd.id; render(); };
     c.appendChild(b);
   });
@@ -1469,11 +1532,11 @@ function renderChordInfo(def) {
   });
 
   const rowDefs = [
-    { key:'ext',     label:'Extensions' },
-    { key:'seventh', label:'7e / 6e' },
-    { key:'fifth',   label:'Quinte' },
-    { key:'third',   label:'Tierce' },
-    { key:'root',    label:'Fond.' },
+    { key:'ext',     label:t('row_ext') },
+    { key:'seventh', label:t('row_sept') },
+    { key:'fifth',   label:t('row_quinte') },
+    { key:'third',   label:t('row_tierce') },
+    { key:'root',    label:t('row_fond') },
   ];
 
   const stack = document.getElementById('chord-stack');
@@ -1501,7 +1564,7 @@ function renderChordInfo(def) {
   renderIvGrid(def);
 
   const descEl = document.getElementById('chord-desc-text');
-  const raw = CHORD_DESC[def.id] || `<p>Pas de description disponible pour cet accord.</p>`;
+  const raw = CHORD_DESC[def.id] || `<p>${t('lbl_no_desc')}</p>`;
   descEl.innerHTML = raw;
 }
 
@@ -1533,7 +1596,7 @@ function renderFormula(def){
     const li=document.createElement('div'); li.className='legend-item';
     const dot=document.createElement('div'); dot.className='leg-dot'; dot.style.background=IV_COLOR[iv]||'#d9a849';
     li.appendChild(dot);
-    li.appendChild(document.createTextNode((IV_LABEL[iv]||'?')+' = '+(IV_NAME_FR[iv]||'')));
+    li.appendChild(document.createTextNode((IV_LABEL[iv]||'?')+' = '+ivName(iv)));
     leg.appendChild(li);
   });
 }
@@ -1636,7 +1699,7 @@ function categorizeVoicings(rootPc, intervals, ct) {
 function renderDiagrams(def){
   const container=document.getElementById('diagrams-container');
   container.innerHTML='';
-  if(!def){container.innerHTML='<div class="no-voicings">Aucun accord sélectionné.</div>';return;}
+  if(!def){container.innerHTML=`<div class="no-voicings">${t('lbl_select')}</div>`;return;}
 
   const isInversion=def.bassIv!=null&&def.bassIv!==0;
   let allVoicings,sections;
@@ -1647,9 +1710,9 @@ function renderDiagrams(def){
     const{mustKnow,open,moveable}=categorizeVoicings(state.rootPc,def.iv,def.id||'');
     allVoicings=[...mustKnow,...open,...moveable];
     sections=[
-      {label:'À connaître',voicings:mustKnow},
-      {label:'Positions ouvertes',voicings:open},
-      {label:'Positions mobiles',voicings:moveable},
+      {label:t('lbl_a_connaitre'),voicings:mustKnow},
+      {label:t('lbl_pos_ouvertes'),voicings:open},
+      {label:t('lbl_pos_mobiles'),voicings:moveable},
     ];
   }
 
@@ -1657,7 +1720,7 @@ function renderDiagrams(def){
   buildPositionButtons(allVoicings.length);
 
   if(!allVoicings.length){
-    container.innerHTML='<div class="no-voicings">Aucune position trouvée pour cet accord (tessiture trop complexe).</div>';
+    container.innerHTML=`<div class="no-voicings">${t('lbl_no_voicings')}</div>`;
     return;
   }
 
@@ -1672,7 +1735,7 @@ function renderDiagrams(def){
     const played=v.filter(x=>x);
     const minFr=played.filter(x=>x&&x.f>0).length?Math.min(...played.filter(x=>x&&x.f>0).map(x=>x.f)):0;
     const posLabel=document.createElement('div');posLabel.className='diagram-pos';
-    posLabel.textContent=minFr>0?`Case ${minFr}`:'Position ouverte';
+    posLabel.textContent=minFr>0?`${t('lbl_case')} ${minFr}`:t('lbl_pos_ouverte');
     card.appendChild(posLabel);
 
     // DB fingers en priorité, fallback sur calcul théorique
@@ -1685,13 +1748,13 @@ function renderDiagrams(def){
     const tab=document.createElement('div');tab.className='diagram-fingers';tab.textContent=tabStr;
     card.appendChild(tab);
 
-    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML='▶ Écouter';
+    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML=t('lbl_ecouter');
     let _pl=false;
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
       try{await playVoicing(v,'chord');}catch(e){}
-      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
+      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML=t('lbl_ecouter');},2200);
     };
     card.appendChild(pb);
     return card;
@@ -1756,7 +1819,7 @@ function renderCAGED(){
   }).filter(Boolean).sort((a,b)=>a.minFret-b.minFret);
 
   if(!cards.length){
-    grid.innerHTML='<div class="no-voicings">Aucune position CAGED trouvée.</div>';
+    grid.innerHTML=`<div class="no-voicings">${t('lbl_no_caged')}</div>`;
     return;
   }
 
@@ -1766,12 +1829,12 @@ function renderCAGED(){
 
     const shapeEl=document.createElement('div');
     shapeEl.className='caged-shape-label';
-    shapeEl.textContent='Forme '+shape;
+    shapeEl.textContent=t('lbl_forme')+' '+shape;
     card.appendChild(shapeEl);
 
     const posEl=document.createElement('div');
     posEl.className='diagram-pos';
-    posEl.textContent=minFret>0?'Case '+minFret:'Position ouverte';
+    posEl.textContent=minFret>0?`${t('lbl_case')} ${minFret}`:t('lbl_pos_ouverte');
     card.appendChild(posEl);
 
     const fg=computeFingering(voicing);
@@ -1786,13 +1849,13 @@ function renderCAGED(){
     card.appendChild(tab);
 
     const pb=document.createElement('button');
-    pb.className='diagram-play'; pb.innerHTML='▶ Écouter';
+    pb.className='diagram-play'; pb.innerHTML=t('lbl_ecouter');
     let _pl=false;
     pb.onclick=async(e)=>{
       e.stopPropagation();
       if(_pl)return; _pl=true; pb.classList.add('playing'); pb.textContent='■';
       try{ await playVoicing(voicing,'chord'); }catch(e){}
-      setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML='▶ Écouter'; },2200);
+      setTimeout(()=>{ _pl=false; pb.classList.remove('playing'); pb.innerHTML=t('lbl_ecouter'); },2200);
     };
     card.appendChild(pb);
     grid.appendChild(card);
@@ -1895,7 +1958,7 @@ function renderCapo(){
     const card=document.createElement('div');
     card.className='diagram-card';
     const pos=document.createElement('div');pos.className='diagram-pos';
-    pos.innerHTML=`Capo ${capo} &nbsp;<span class="capo-shape-tag">Forme ${shape}</span>`;
+    pos.innerHTML=`Capo ${capo} &nbsp;<span class="capo-shape-tag">${t('lbl_forme')} ${shape}</span>`;
     card.appendChild(pos);
     const fg=computeFingering(voicing);
     const svgWrap=document.createElement('div');
@@ -1904,7 +1967,7 @@ function renderCapo(){
     const tabStr=fa.map(x=>x===null?'x':x===0?'0':String(x)).join('-');
     const tab=document.createElement('div');tab.className='diagram-fingers';
     tab.textContent=tabStr;card.appendChild(tab);
-    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML='▶ Écouter';
+    const pb=document.createElement('button');pb.className='diagram-play';pb.innerHTML=t('lbl_ecouter');
     let _pl=false;
     const audioV=fa.map((f,s)=>{
       if(f===null)return null;
@@ -1915,7 +1978,7 @@ function renderCapo(){
     });
     pb.onclick=async(e)=>{e.stopPropagation();if(_pl)return;_pl=true;pb.classList.add('playing');pb.textContent='■';
       try{await playVoicing(audioV,'chord');}catch(e){}
-      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML='▶ Écouter';},2200);
+      setTimeout(()=>{_pl=false;pb.classList.remove('playing');pb.innerHTML=t('lbl_ecouter');},2200);
     };
     card.appendChild(pb);
     grid.appendChild(card);
@@ -2070,6 +2133,7 @@ function renderFretboard(def){
 
 /* ============================================================ RENDER */
 function render(){
+  updateI18n();
   buildPiano();
   buildGroupTabs();
   buildChordBtns();
@@ -2079,9 +2143,9 @@ function render(){
 
   document.getElementById('rd-name').textContent=rootName;
   document.getElementById('badge-root').textContent=rootName;
-  document.getElementById('badge-sym').textContent=def?def.label:'—';
+  document.getElementById('badge-sym').textContent=def?(currentLang()==='en'?def.label_en:def.label):'—';
   document.getElementById('diagrams-title').textContent=
-    def?`Positions — ${rootName}${def.sym||''}` : 'Positions sur le manche';
+    def?`Positions — ${rootName}${def.sym||''}` : t('lbl_positions');
 
   renderFormula(def);
   renderChordInfo(def);
@@ -2124,8 +2188,18 @@ document.getElementById('capo-mode-seg').addEventListener('click',e=>{
   renderCapo();
 });
 
+document.getElementById('lang-seg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.lang=b.dataset.lang;
+  localStorage.setItem('sblang',state.lang);
+  document.querySelectorAll('#lang-seg button').forEach(x=>x.classList.toggle('on',x===b));
+  render();
+});
+
 // Restore preferences
 const _n=localStorage.getItem('sbnot'); if(_n){state.notation=_n;document.querySelectorAll('#notation-seg button').forEach(b=>b.classList.toggle('on',b.dataset.notation===_n));}
+// Restore lang
+const _l=localStorage.getItem('sblang'); if(_l){state.lang=_l;document.querySelectorAll('#lang-seg button').forEach(b=>b.classList.toggle('on',b.dataset.lang===_l));}
 
 // Fretboard controls
 document.getElementById('fb-display').addEventListener('click',e=>{
