@@ -400,7 +400,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
 .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
 .cell.in-box{background:rgba(191,24,40,.14); box-shadow:inset -1px 0 0 rgba(255,255,255,.04),inset 0 0 0 100px rgba(191,24,40,.08)}
-.cell.capo-bar{border-left:5px solid #f0b429; z-index:4}
+.cell.capo-bar::before{content:"";position:absolute;left:-4px;top:-2px;bottom:-2px;width:7px;background:linear-gradient(90deg,#f0b429,#c8941a);z-index:4;border-radius:2px}
 .dot{
   width:32px; height:32px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -2073,7 +2073,7 @@ function renderFretboard(def){
       if(nonOpen.length){
         const minF=Math.min(...nonOpen.map(x=>x.f));
         const maxF=Math.max(...nonOpen.map(x=>x.f));
-        box={start:Math.max(0,minF-1),end:maxF+1};
+        box={start:_fretboardCapo!==null?minF:Math.max(0,minF-1),end:maxF+1};
       } else { box={start:0,end:3}; }
     }
   }
