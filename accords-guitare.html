@@ -400,7 +400,8 @@ h1 em{font-style:italic; color:var(--brass)}
 .cell.open{width:var(--open-w); border-right:0; box-shadow:none}
 .cell.nut-after::after{content:""; position:absolute; right:-1px; top:-1px; bottom:-1px; width:5px; background:linear-gradient(90deg,#efe6d3,#c8bb9c); z-index:3; border-radius:1px}
 .cell.in-box{background:rgba(191,24,40,.14); box-shadow:inset -1px 0 0 rgba(255,255,255,.04),inset 0 0 0 100px rgba(191,24,40,.08)}
-.cell.capo-bar::before{content:"";position:absolute;left:-4px;top:-2px;bottom:-2px;width:7px;background:linear-gradient(90deg,#f0b429,#c8941a);z-index:4;border-radius:2px}
+.cell.capo-bar{box-shadow:inset 5px 0 0 #f0b429}
+.cell.in-box.capo-bar{box-shadow:inset 5px 0 0 #f0b429,inset -1px 0 0 rgba(255,255,255,.04),inset 0 0 0 100px rgba(191,24,40,.08)}
 .dot{
   width:32px; height:32px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -2257,9 +2258,13 @@ document.getElementById('fb-hand').addEventListener('click',e=>{
 (()=>{
   const p=new URLSearchParams(location.search);
   const rootStr=p.get('root');
-  const chordStr=p.get('chord');
+  let chordStr=p.get('chord');
   if(rootStr!==null){const v=parseInt(rootStr);if(!isNaN(v)&&v>=0&&v<12)state.rootPc=v;}
-  if(chordStr){for(const g of CHORD_GROUPS){const c=g.chords.find(x=>x.id===chordStr);if(c){state.chordGroup=g.id;state.chordId=chordStr;break;}}}
+  if(chordStr){
+    const ID_MAP={'dom7':'7','min7':'m7','minmaj7':'mmaj7','halfdim':'m7b5','dom7sus4':'7sus4','dom7b5':'7b5','dom7s5':'aug7','maj6':'6','min6':'m6'};
+    if(ID_MAP[chordStr])chordStr=ID_MAP[chordStr];
+    for(const g of CHORD_GROUPS){const c=g.chords.find(x=>x.id===chordStr);if(c){state.chordGroup=g.id;state.chordId=chordStr;break;}}
+  }
 })();
 render();
 </script>
