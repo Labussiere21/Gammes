@@ -981,12 +981,25 @@ function findVoicingInWindow(rootPc, intervals, winMin, winMax){
     return list;
   });
   const patterns=[[0,1,2,3,4,5],[1,2,3,4,5],[2,3,4,5],[0,1,2,3,4],[1,2,3,4]];
+  // Extended chords (9/11/13...) need rich voicings; a flat barre or a
+  // voicing covering too few distinct chord tones is musically wrong.
+  const isExtended=intervals.length>=5;
+  const minDistinct=isExtended?Math.min(intervals.length-1,4):minReq;
   for(const ap of patterns){
     let result=null;
     (function en(idx,combo,mnF,mxF,pcs,hasR){
       if(result)return;
       if(idx===ap.length){
-        if(!hasR||pcs.size<minReq)return;
+        if(!hasR||pcs.size<minDistinct)return;
+        // Reject flat barres for extended chords — a voicing where most
+        // strings sit on a single fret never voices the extensions properly.
+        if(isExtended){
+          const played=combo.map(o=>o.f);
+          const cnt={}; let topF=0;
+          played.forEach(f=>{cnt[f]=(cnt[f]||0)+1; if(cnt[f]>topF)topF=cnt[f];});
+          // 4+ strings on the same fret = flat barre → reject
+          if(topF>=4)return;
+        }
         const full=Array(6).fill(null);
         ap.forEach((si,ci)=>{full[si]=combo[ci];});
         result=full.map((x,s)=>x===null?null:{f:x.f,pc:x.pc,iv:ivByPc[x.pc]});
@@ -1713,9 +1726,15 @@ function findAllVoicings(rootPc, intervals, ct) {
     doShape(D_SH,db,d_sh);
   }
 
-  for(const cw of CAGED_WINDOWS){
-    const[wMin,wMax]=cw.winFn(rootPc);
-    addV(findVoicingInWindow(rootPc,intervals,wMin,wMax),fills);
+  // Window fills are an algorithmic fallback. For extended chords (9/11/13…)
+  // they tend to produce flat barres / wrong voicings, so only use them when
+  // the authoritative DB provided nothing.
+  const isExtended=intervals.length>=5;
+  if(!(isExtended&&db_pos.length)){
+    for(const cw of CAGED_WINDOWS){
+      const[wMin,wMax]=cw.winFn(rootPc);
+      addV(findVoicingInWindow(rootPc,intervals,wMin,wMax),fills);
+    }
   }
   return{db_pos,specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills};
 }
@@ -1854,6 +1873,15 @@ function renderCAGED(){
     D:Object.fromEntries(Object.keys(D_SH).map(k=>[k,b=>D_SH[k](b)])),
   };
 
+  // Extended chords (9/11/13…) have no CAGED shape template; their correct
+  // voicings live in the DB. Pull them and assign each to the shape whose
+  // window best contains it (sorted by lowest fret below).
+  const isExtended=ivs.length>=5;
+  const dbVoicings=isExtended
+    ? dbGetPositions(r,ct).map(p=>arrToVoicing(dbPosToFa(p),r,ivs)).filter(v=>faValid(v.map(x=>x===null?null:x.f),r,ivs))
+    : [];
+  const usedDb=new Set();
+
   const cards=CAGED_WINDOWS.map(cw=>{
     const [wMin,wMax]=cw.winFn(r);
     let voicing=null;
@@ -1868,8 +1896,15 @@ function renderCAGED(){
       const fa=tmplFn(anchor);
       if(fa) voicing=arrToVoicing(fa,r,ivs);
     }
+    // Extended chords: pick a DB voicing sitting inside this shape's window
+    if(!voicing && isExtended && dbVoicings.length){
+      const key=v=>v.map(x=>x===null?'x':x.f).join('-');
+      const inWin=v=>{const fs=v.filter(x=>x&&x.f>0).map(x=>x.f);return fs.length&&Math.min(...fs)>=wMin&&Math.max(...fs)<=wMax&&!usedDb.has(key(v));};
+      const pick=dbVoicings.find(inWin);
+      if(pick){usedDb.add(key(pick));voicing=pick;}
+    }
     // Windowed fallback for any chord type without a template
-    if(!voicing) voicing=findVoicingInWindow(r,ivs,wMin,wMax);
+    if(!voicing && !isExtended) voicing=findVoicingInWindow(r,ivs,wMin,wMax);
     if(!voicing) return null;
 
     const played=voicing.filter(x=>x&&x.f>0).map(x=>x.f);
