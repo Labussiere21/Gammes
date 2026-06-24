@@ -1138,7 +1138,7 @@ function computeFingering(voicing) {
   });
 }
 
-function faValid(fa, rootPc, intervals) {
+function faValid(fa, rootPc, intervals, ct) {
   const cPcs = new Set(intervals.map(i=>(rootPc+i)%12));
   const rpc = rootPc%12;
   let hasRoot=false, count=0; const played=new Set();
@@ -1152,6 +1152,10 @@ function faValid(fa, rootPc, intervals) {
     if (f>0) fretted.push(f);
   }
   if (fretted.length>=2 && Math.max(...fretted)-Math.min(...fretted)>4) return false;
+  // 13th chords (m13/13/maj13 — id contains '13') must voice the 13th (iv=9).
+  // Without it the voicing is really a 9th chord, not a 13th. This does NOT
+  // apply to 6th chords (id '6','m6','69','m69') where iv=9 is the 6th.
+  if (ct && ct.includes('13') && !played.has((rpc+9)%12)) return false;
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
@@ -1167,7 +1171,7 @@ function findVoicings(rootPc, intervals, bassIv, chordId) {
 
   function tryFa(fa) {
     if (!fa || results.length>=6) return;
-    if (!faValid(fa, rootPc, intervals)) return;
+    if (!faValid(fa, rootPc, intervals, chordId)) return;
     const key = fa.map(x=>x===null?'x':x).join(',');
     if (seen.has(key)) return;
     seen.add(key);
@@ -1691,7 +1695,7 @@ function findAllVoicings(rootPc, intervals, ct) {
   const mkVKey=v=>v.map(x=>x===null?'x':x.f).join(',');
 
   function addFa(fa,bucket){
-    if(!fa||!faValid(fa,rootPc,intervals))return;
+    if(!fa||!faValid(fa,rootPc,intervals,ct))return;
     const k=mkKey(fa);if(seen.has(k))return;seen.add(k);
     bucket.push(arrToVoicing(fa,rootPc,intervals));
   }
@@ -1878,7 +1882,7 @@ function renderCAGED(){
   // window best contains it (sorted by lowest fret below).
   const isExtended=ivs.length>=5;
   const dbVoicings=isExtended
-    ? dbGetPositions(r,ct).map(p=>arrToVoicing(dbPosToFa(p),r,ivs)).filter(v=>faValid(v.map(x=>x===null?null:x.f),r,ivs))
+    ? dbGetPositions(r,ct).map(p=>arrToVoicing(dbPosToFa(p),r,ivs)).filter(v=>faValid(v.map(x=>x===null?null:x.f),r,ivs,ct))
     : [];
   const usedDb=new Set();
 
