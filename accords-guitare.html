@@ -337,6 +337,8 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 .iv-cell.active{ box-shadow:0 2px 8px rgba(0,0,0,.6); }
 .iv-cell.void{ visibility:hidden; pointer-events:none; }
+.iv-cell-dual{ flex-direction:column; gap:1px; }
+.iv-sub{ font-size:8px; font-weight:400; opacity:.7; letter-spacing:0; }
 .iv-grid-sep{ height:1px; background:var(--line); margin:3px 0; }
 
 /* Description tab */
@@ -770,7 +772,7 @@ const CHORD_GROUPS = [
     { id:'maj9s11',sym:'Δ9♯11',label:'Maj9 ♯11',        label_en:'Maj9 ♯11',      iv:[0,4,7,11,2,6] },
   ]},
   { id:'onze', label:'11èmes', label_en:'11ths', chords:[
-    { id:'11',     sym:'11',    label:'Dominante 11',   label_en:'Dom 11',        iv:[0,7,10,2,5] },
+    { id:'11',     sym:'11',    label:'Dominante 11',   label_en:'Dom 11',        iv:[0,4,7,10,2,5] },
     { id:'m11',    sym:'m11',   label:'Mineur 11',      label_en:'Minor 11',      iv:[0,3,7,10,2,5] },
     { id:'maj11',  sym:'Δ11',   label:'Majeur 11',      label_en:'Major 11',      iv:[0,4,7,11,2,5] },
     { id:'7s11',   sym:'7♯11',  label:'7 ♯11 Lydien',  label_en:'7 ♯11',         iv:[0,4,7,10,6] },
@@ -1479,7 +1481,7 @@ const IV_GRID_DEF = [
   [null,         null,              {iv:5,label:'11',cond:s=>s.has(3)||s.has(4)},  {iv:6, label:'#11'}],
   [null,         {iv:1,label:'b9'},{iv:2,label:'9',cond:s=>s.has(3)||s.has(4)},   {iv:3, label:'#9'}],
   'sep',
-  [{iv:8,label:'b6'},{iv:9,label:'°7'},{iv:10,label:'b7'},{iv:11,label:'Δ7'}],
+  [{iv:8,label:'b6'},{iv:9,label:'6',sublabel:'dim7'},{iv:10,label:'b7'},{iv:11,label:'Δ7'}],
   [null,         {iv:6,label:'b5'},{iv:7, label:'5'},  {iv:8, label:'#5'}],
   [{iv:2,label:'sus2',cond:s=>!s.has(3)&&!s.has(4)},{iv:3,label:'m3'},{iv:4,label:'3'},{iv:5,label:'sus4',cond:s=>!s.has(3)&&!s.has(4)}],
   [null,         null,              {iv:0,label:'1'},   null],  // Root sous '3'
@@ -1507,8 +1509,12 @@ function renderIvGrid(def) {
         el.className = 'iv-cell void';
       } else {
         const on = ivSet.has(cell.iv) && (!cell.cond || cell.cond(ivSet));
-        el.className = 'iv-cell' + (on ? ' active' : '');
-        el.textContent = cell.label;
+        el.className = 'iv-cell' + (on ? ' active' : '') + (cell.sublabel ? ' iv-cell-dual' : '');
+        if (cell.sublabel) {
+          el.innerHTML = `<span>${cell.label}</span><span class="iv-sub">${cell.sublabel}</span>`;
+        } else {
+          el.textContent = cell.label;
+        }
         if (on) {
           const col = IV_COLOR[cell.iv] || '#d9a849';
           el.style.background = col;
