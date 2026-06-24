@@ -999,11 +999,7 @@ function findVoicingInWindow(rootPc, intervals, winMin, winMax){
         en(idx+1,[...combo,opt],nMn,nMx,np,hasR||opt.pc===rootPC);
       }
     })(0,[],-1,-1,new Set(),false);
-    if(result){
-      const fa=result.map(x=>x===null?null:x.f);
-      if(faValid(fa,rootPc,intervals))return result;
-      result=null;
-    }
+    if(result)return result;
   }
   return null;
 }
