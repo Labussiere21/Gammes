@@ -2093,9 +2093,8 @@ function renderFretboard(def){
 
   fb.classList.toggle('lefty',state.hand==='left');
 
-  // Map pc → interval (for color/label)
+  // Rempli dynamiquement depuis le voicing sélectionné
   const pcToIv={};
-  def.iv.forEach(iv=>{ pcToIv[(state.rootPc+iv)%12]=iv; });
 
   // Position box + fingering from selected voicing
   let box=null, highlightSet=null, fbFingering=null;
@@ -2107,8 +2106,10 @@ function renderFretboard(def){
     if(v){
       highlightSet=new Set();
       v.forEach((x,s)=>{
-        if(x!==null) highlightSet.add(`${s+vOffset}:${x.f}`);
-        else mutedStrings.add(s+vOffset);
+        if(x!==null){
+          highlightSet.add(`${s+vOffset}:${x.f}`);
+          pcToIv[x.pc]=x.iv;
+        } else { mutedStrings.add(s+vOffset); }
       });
       if(state.display==='fingering'){
         const dbFg=dbGetFingers(v,state.rootPc,def?def.id:'');
@@ -2121,6 +2122,9 @@ function renderFretboard(def){
         box={start:_fretboardCapo!==null?minF:Math.max(0,minF-1),end:maxF+1};
       } else { box={start:0,end:3}; }
     }
+  } else {
+    // Fallback théorique si aucun voicing disponible
+    def.iv.forEach(iv=>{ pcToIv[(state.rootPc+iv)%12]=iv; });
   }
   const fCount=box?Math.min(24,Math.max(state.frets,box.end)):state.frets;
 
