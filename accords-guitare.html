@@ -913,6 +913,8 @@ const E_SH = {
   m9:    b=>[b,b+2,b+4,b,b,b],
   // m11: root-11-root-m3-b7-root (ex. Em11: 0-0-2-0-3-0)
   m11:   b=>[b,b,b+2,b,b+3,b],
+  // 13 (dominante): root-b7-3-13 (ex. C13 root 8e case : 8-x-8-9-10-x)
+  '13':  b=>[b,null,b,b+1,b+2,null],
 };
 // A-shape barre: root on A string at fret b, low-E muted
 const A_SH = {
@@ -931,6 +933,8 @@ const A_SH = {
   m9:    b=>[null,b,b+2,b,b+1,b+2],
   // m11: root-11-b7-m3-5 (ex. Am11: x-0-0-0-1-0 → Cm11: x-3-3-3-4-3)
   m11:   b=>[null,b,b,b,b+1,b],
+  // 13 (dominante): root-3-b7-13 (ex. C13 root 3e case : x-3-2-3-x-5)
+  '13':  b=>b>=1?[null,b,b-1,b,null,b+2]:null,
 };
 // D-shape barre: root on D string at fret b
 const D_SH = {
@@ -1159,7 +1163,7 @@ function faValid(fa, rootPc, intervals, ct) {
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
-const TMPL_TYPES = new Set(['maj','min','7','maj7','m7','mmaj7','sus2','sus4','dim','aug','p5','m9','m11']);
+const TMPL_TYPES = new Set(['maj','min','7','maj7','m7','mmaj7','sus2','sus4','dim','aug','p5','m9','m11','13']);
 const _voiceCache = {};
 
 function findVoicings(rootPc, intervals, bassIv, chordId) {
