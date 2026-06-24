@@ -1142,24 +1142,47 @@ function computeFingering(voicing) {
   });
 }
 
-function faValid(fa, rootPc, intervals, ct) {
+function faValid(fa, rootPc, intervals) {
   const cPcs = new Set(intervals.map(i=>(rootPc+i)%12));
   const rpc = rootPc%12;
   let hasRoot=false, count=0; const played=new Set();
   const fretted=[];
+
   for (let s=0;s<6;s++) {
     const f=fa[s]; if (f===null) continue; count++;
     const pc=(OPEN_PCS[s]+f)%12;
     if (!cPcs.has(pc)) return false;
     if (pc===rpc) hasRoot=true;
     played.add(pc);
-    if (f>0) fretted.push(f);
+    if (f>0) fretted.push({string:s, fret:f});
   }
-  if (fretted.length>=2 && Math.max(...fretted)-Math.min(...fretted)>4) return false;
-  // 13th chords (m13/13/maj13 — id contains '13') must voice the 13th (iv=9).
-  // Without it the voicing is really a 9th chord, not a 13th. This does NOT
-  // apply to 6th chords (id '6','m6','69','m69') where iv=9 is the 6th.
-  if (ct && ct.includes('13') && !played.has((rpc+9)%12)) return false;
+
+  if (fretted.length>=2) {
+    const fretValues=fretted.map(x=>x.fret);
+    const maxF=Math.max(...fretValues);
+    const minF=Math.min(...fretValues);
+    if (maxF-minF>4) return false;
+    // Rejette les barrés plats artificiels
+    if (maxF===minF && intervals.length>3 && played.size<intervals.length) {
+      if (fretted.length>=4) return false;
+    }
+  }
+
+  // --- SÉCURITÉ ENRICHISSEMENTS (STRICT OOLIMO) ---
+  // Si l'accord a une 13e (intervalle 9), elle DOIT être jouée
+  if (intervals.includes(9)) {
+    const pc13=(rootPc+9)%12;
+    if (!played.has(pc13)) return false;
+  }
+  // Si l'accord a une 11e (intervalle 5 ou 6), elle DOIT être jouée
+  if (intervals.includes(5) && !played.has((rootPc+5)%12)) return false;
+  if (intervals.includes(6) && !played.has((rootPc+6)%12)) return false;
+  // Si l'accord a une 9e (intervalle 1, 2 ou 3) et est un accord complexe (>4 notes)
+  if ((intervals.includes(2)||intervals.includes(1)||intervals.includes(3)) && intervals.length>4) {
+    const hasExt=played.has((rootPc+1)%12)||played.has((rootPc+2)%12)||played.has((rootPc+3)%12);
+    if (!hasExt) return false;
+  }
+
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
