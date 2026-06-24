@@ -1130,27 +1130,15 @@ function faValid(fa, rootPc, intervals) {
   const rpc = rootPc%12;
   let hasRoot=false, count=0; const played=new Set();
   const fretted=[];
-
   for (let s=0;s<6;s++) {
     const f=fa[s]; if (f===null) continue; count++;
     const pc=(OPEN_PCS[s]+f)%12;
     if (!cPcs.has(pc)) return false;
     if (pc===rpc) hasRoot=true;
     played.add(pc);
-    if (f>0) fretted.push({string:s, fret:f});
+    if (f>0) fretted.push(f);
   }
-
-  if (fretted.length>=2) {
-    const fretValues=fretted.map(x=>x.fret);
-    const maxF=Math.max(...fretValues);
-    const minF=Math.min(...fretValues);
-    if (maxF-minF>4) return false;
-    // Rejette les barré plats artificiels pour les accords complexes
-    if (maxF===minF && intervals.length>3 && played.size<intervals.length) {
-      if (fretted.length>=4) return false;
-    }
-  }
-
+  if (fretted.length>=2 && Math.max(...fretted)-Math.min(...fretted)>4) return false;
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
 
