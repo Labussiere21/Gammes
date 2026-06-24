@@ -1149,24 +1149,10 @@ function faValid(fa, rootPc, intervals) {
     const maxF=Math.max(...fretValues);
     const minF=Math.min(...fretValues);
     if (maxF-minF>4) return false;
-    // Rejette les barrés plats artificiels
+    // Rejette les barré plats artificiels pour les accords complexes
     if (maxF===minF && intervals.length>3 && played.size<intervals.length) {
       if (fretted.length>=4) return false;
     }
-  }
-
-  // Si l'accord a une 13e (intervalle 9), elle DOIT être jouée
-  if (intervals.includes(9)) {
-    const pc13=(rootPc+9)%12;
-    if (!played.has(pc13)) return false;
-  }
-  // Si l'accord a une 11e (intervalle 5 ou 6), elle DOIT être jouée
-  if (intervals.includes(5) && !played.has((rootPc+5)%12)) return false;
-  if (intervals.includes(6) && !played.has((rootPc+6)%12)) return false;
-  // Si l'accord a une 9e sans être une 11e ou 13e, on s'assure d'avoir au moins une extension
-  if ((intervals.includes(2)||intervals.includes(1)||intervals.includes(3)) && intervals.length>4) {
-    const hasExt=played.has((rootPc+1)%12)||played.has((rootPc+2)%12)||played.has((rootPc+3)%12);
-    if (!hasExt) return false;
   }
 
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
