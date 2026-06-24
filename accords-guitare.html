@@ -1476,12 +1476,12 @@ const CHORD_DESC = {
 // Colonnes : [b-altéré, naturel-grave, naturel-aigu, #-altéré/maj]
 const IV_GRID_DEF = [
   [null,         null,              {iv:8,label:'b13'}, {iv:9, label:'13'}],
-  [null,         null,              {iv:5,label:'11'},  {iv:6, label:'#11'}],
-  [null,         {iv:1,label:'b9'},{iv:2,label:'9'},   {iv:3, label:'#9'}],
+  [null,         null,              {iv:5,label:'11',cond:s=>s.has(3)||s.has(4)},  {iv:6, label:'#11'}],
+  [null,         {iv:1,label:'b9'},{iv:2,label:'9',cond:s=>s.has(3)||s.has(4)},   {iv:3, label:'#9'}],
   'sep',
   [{iv:8,label:'b6'},{iv:9,label:'°7'},{iv:10,label:'b7'},{iv:11,label:'Δ7'}],
   [null,         {iv:6,label:'b5'},{iv:7, label:'5'},  {iv:8, label:'#5'}],
-  [{iv:2,label:'sus2'},{iv:3,label:'m3'},{iv:4,label:'3'},{iv:5,label:'sus4'}],
+  [{iv:2,label:'sus2',cond:s=>!s.has(3)&&!s.has(4)},{iv:3,label:'m3'},{iv:4,label:'3'},{iv:5,label:'sus4',cond:s=>!s.has(3)&&!s.has(4)}],
   [null,         null,              {iv:0,label:'1'},   null],  // Root sous '3'
 ];
 
@@ -1506,7 +1506,7 @@ function renderIvGrid(def) {
       if (!cell) {
         el.className = 'iv-cell void';
       } else {
-        const on = ivSet.has(cell.iv);
+        const on = ivSet.has(cell.iv) && (!cell.cond || cell.cond(ivSet));
         el.className = 'iv-cell' + (on ? ' active' : '');
         el.textContent = cell.label;
         if (on) {
