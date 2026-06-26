@@ -874,7 +874,13 @@ function isDarkColorArp(hex){
 
 const ARP_IV_NAME_FR={0:'Fond.',1:'♭9e',2:'9e',3:'3ce min.',4:'3ce maj.',5:'4te/11e',6:'♭5/♯11e',7:'5te',8:'5te aug.',9:'6te',10:'7e min.',11:'7e maj.'};
 const ARP_IV_NAME_EN={0:'Root',1:'♭9th',2:'9th',3:'min 3rd',4:'maj 3rd',5:'4th/11th',6:'♭5/♯11th',7:'5th',8:'aug 5th',9:'6th',10:'min 7th',11:'maj 7th'};
-function arpIvName(iv){return(currentLang()==='en'?ARP_IV_NAME_EN:ARP_IV_NAME_FR)[iv]||'';}
+function arpIvName(iv,ivSet){
+  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
+    if(iv===2) return currentLang()==='en'?'2nd':'2ce';
+    if(iv===5) return currentLang()==='en'?'4th':'4te';
+  }
+  return(currentLang()==='en'?ARP_IV_NAME_EN:ARP_IV_NAME_FR)[iv]||'';
+}
 
 function arpSlotOf(iv,ivSet){
   if(iv===0) return 'root';
@@ -903,7 +909,7 @@ function renderArpInfo(arpDef){
   const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
   rowDefs.forEach(({key,label})=>{
     const ivs=slots[key]; if(!ivs.length)return;
-    const catLabel=label??ivs.map(iv=>arpIvName(iv)).join(' / ');
+    const catLabel=label??ivs.map(iv=>arpIvName(iv,ivSet)).join(' / ');
     const row=document.createElement('div'); row.className='stack-row';
     const cat=document.createElement('div'); cat.className='stack-cat'; cat.textContent=catLabel;
     const blks=document.createElement('div'); blks.className='stack-blocks';
