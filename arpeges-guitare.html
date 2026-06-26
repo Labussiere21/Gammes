@@ -115,9 +115,9 @@
   .bkey:active{transform:translateY(2px)}
   .bkey.sel{background:linear-gradient(180deg,var(--brass),#9c7520 60%,#7a5d18);
     box-shadow:2px 4px 8px rgba(0,0,0,.6),0 0 10px rgba(217,168,73,.35);}
-  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:var(--cream)}
+  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:#fff}
   .bkey.sel .bname{color:#160f08}
-  .bkey .balt{font-size:10px; color:var(--muted-2)}
+  .bkey .balt{font-size:10px; color:rgba(255,255,255,.55)}
   .bkey.sel .balt{color:rgba(22,15,8,.6)}
 
   /* Segments */
@@ -422,13 +422,6 @@
         <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
-          <div>
-            <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
-            <div class="seg" id="accpref" role="group">
-              <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
-              <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -1061,7 +1054,6 @@ function render(){
   if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
   if(typeof buildArpGroups==='function') buildArpGroups();
   // Synchro visuels
-  document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
@@ -1150,10 +1142,6 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
 document.getElementById('fb-hand').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   state.hand=b.dataset.hand; render();
-});
-document.getElementById('accpref').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  state.accPref=b.dataset.acc; buildPiano(); render();
 });
 initNotationLang();
 (()=>{

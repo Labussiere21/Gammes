@@ -121,7 +121,7 @@
     position:absolute; top:7px; width:30px; height:72px; z-index:3;
     background:linear-gradient(180deg,#2a2018,#0c0805);
     border:1px solid #000; border-radius:0 0 5px 5px; cursor:pointer;
-    color:var(--cream); font-size:10px; font-weight:600;
+    color:#fff; font-size:10px; font-weight:600;
     display:flex; align-items:flex-end; justify-content:center; padding-bottom:7px; line-height:1;
     box-shadow:0 4px 6px rgba(0,0,0,.5);
     transition:background .12s, transform .04s;
@@ -314,12 +314,12 @@
   /* nom principal de la touche noire (gros) */
   .bkey .bname{
     font-family:"Space Mono",monospace; font-weight:700; font-size:11px;
-    color:var(--cream); white-space:nowrap;
+    color:#fff; white-space:nowrap;
   }
   .bkey.sel .bname{color:#fff}
   /* nom alternatif (petit, discret) */
   .bkey .balt{
-    font-size:9px; color:var(--muted-2); white-space:nowrap; line-height:1;
+    font-size:9px; color:rgba(255,255,255,.55); white-space:nowrap; line-height:1;
   }
   .bkey.sel .balt{color:rgba(255,255,255,.6)}
 
@@ -581,13 +581,7 @@
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div style="display:flex;flex-direction:column;gap:12px">
-            <div>
-              <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
-              <div class="seg" id="accpref" role="group" aria-label="Préférence d'altération">
-                <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
-                <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
-              </div>
-            </div>
+
             <div>
               <div class="ctl-label" data-i18n="lbl_famille">Famille</div>
               <div class="seg" id="scale-family" role="group">
@@ -1416,7 +1410,6 @@ function render(){
   // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN)
   buildPiano();
   // synchro états visuels des segments
-  document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on', b.dataset.acc===state.accPref));
   document.querySelectorAll('#scale-family button').forEach(b=>b.classList.toggle('on', b.dataset.fam===state.family));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on', b.dataset.disp===state.display));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on', +b.dataset.frets===state.frets));
@@ -1976,10 +1969,6 @@ bindSeg('fb-frets-ctl','frets', v=>+v);
 document.getElementById('fb-hand').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.hand=b.dataset.hand; render();
-});
-document.getElementById('accpref').addEventListener('click', e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  state.accPref=b.dataset.acc; buildPiano(); render();
 });
 initNotationLang();
 render();

@@ -131,9 +131,9 @@ h1 em{font-style:italic; color:var(--brass)}
 .bkey:hover{background:linear-gradient(180deg,#2e1020,#0e0408)}
 .bkey:active{transform:translateY(2px)}
 .bkey.sel{background:linear-gradient(180deg,var(--brass),#8e0c1a 60%,#6e091a);}
-.bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:12px; color:var(--cream)}
+.bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:12px; color:#fff}
 .bkey.sel .bname{color:#fff}
-.bkey .balt{font-size:10px; color:var(--muted-2)}
+.bkey .balt{font-size:10px; color:rgba(255,255,255,.55)}
 .bkey.sel .balt{color:rgba(255,255,255,.6)}
 
 /* Root display */
@@ -493,11 +493,7 @@ h1 em{font-style:italic; color:var(--brass)}
           <button data-notation="en" class="on" style="min-width:60px">A B C</button>
           <button data-notation="fr" style="min-width:60px">Do Ré</button>
         </div>
-        <div class="htool-divider"></div>
-        <div class="htool-seg" id="acc-seg">
-          <button data-acc="b" class="on">♭</button>
-          <button data-acc="#">♯</button>
-        </div>
+
         <div class="htool-divider"></div>
         <div class="htool-seg" id="lang-seg">
           <button data-lang="fr" class="on">FR</button>
@@ -550,7 +546,6 @@ h1 em{font-style:italic; color:var(--brass)}
     <div id="cinfo-schema">
       <div class="cinfo-layout">
         <div class="cinfo-left"><div class="chord-stack" id="chord-stack"></div></div>
-        <div class="cinfo-right"><div class="iv-grid" id="iv-grid"></div></div>
       </div>
     </div>
     <div id="cinfo-desc" style="display:none"><div class="chord-desc-text" id="chord-desc-text"></div></div>
@@ -1634,9 +1629,9 @@ function renderChordInfo(def) {
 
   const rowDefs = [
     { key:'ext',     label:t('row_ext') },
-    { key:'seventh', label:t('row_sept') },
-    { key:'fifth',   label:t('row_quinte') },
-    { key:'third',   label:t('row_tierce') },
+    { key:'seventh', label:null },
+    { key:'fifth',   label:null },
+    { key:'third',   label:null },
     { key:'root',    label:t('row_fond') },
   ];
 
@@ -1645,8 +1640,9 @@ function renderChordInfo(def) {
   rowDefs.forEach(({key, label}) => {
     const ivs = slots[key];
     if (!ivs.length) return;
+    const catLabel = label ?? ivs.map(iv => ivName(iv)).join(' / ');
     const row = document.createElement('div'); row.className='stack-row';
-    const cat = document.createElement('div'); cat.className='stack-cat'; cat.textContent=label;
+    const cat = document.createElement('div'); cat.className='stack-cat'; cat.textContent=catLabel;
     const blocks = document.createElement('div'); blocks.className='stack-blocks';
     ivs.forEach(iv => {
       const col = IV_COLOR[iv] || '#d9a849';
@@ -1661,8 +1657,6 @@ function renderChordInfo(def) {
     row.appendChild(cat); row.appendChild(blocks);
     stack.appendChild(row);
   });
-
-  renderIvGrid(def);
 
   const descEl = document.getElementById('chord-desc-text');
   const raw = CHORD_DESC[def.id] || `<p>${t('lbl_no_desc')}</p>`;
@@ -2298,12 +2292,6 @@ document.getElementById('notation-seg').addEventListener('click',e=>{
   state.notation=b.dataset.notation;
   localStorage.setItem('sbnot',state.notation);
   document.querySelectorAll('#notation-seg button').forEach(x=>x.classList.toggle('on',x===b));
-  render();
-});
-document.getElementById('acc-seg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  state.accPref=b.dataset.acc;
-  document.querySelectorAll('#acc-seg button').forEach(x=>x.classList.toggle('on',x===b));
   render();
 });
 document.getElementById('diagram-mode-seg').addEventListener('click',e=>{
