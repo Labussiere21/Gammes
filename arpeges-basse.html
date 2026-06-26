@@ -836,8 +836,8 @@ function buildArp(rootName, iv){
 /* ============================================================ RÉSUMÉ ARPÈGE */
 const ARP_IV_LABEL = {0:'R',1:'♭9',2:'9',3:'♭3',4:'3',5:'4/11',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7'};
 const ARP_IV_COLOR = {
-  0:'#ff3333', 1:'#ff7a1a', 2:'#ffaa00', 3:'#ffe000', 4:'#8fd400',
-  5:'#2dc653', 6:'#00ccaa', 7:'#29b6ff', 8:'#3355ff', 9:'#9933ee',
+  0:'#ff3333', 1:'#ff7a1a', 2:'#ffaa00', 3:'#2dc653', 4:'#8fd400',
+  5:'#00ccaa', 6:'#ffe000', 7:'#29b6ff', 8:'#3355ff', 9:'#9933ee',
   10:'#dd33cc', 11:'#ff1a88'
 };
 const ARP_GRID_DEF = [
@@ -881,6 +881,13 @@ function arpIvName(iv,ivSet){
   }
   return(currentLang()==='en'?ARP_IV_NAME_EN:ARP_IV_NAME_FR)[iv]||'';
 }
+function arpIvLabel(iv,ivSet){
+  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
+    if(iv===2) return '2';
+    if(iv===5) return '4';
+  }
+  return ARP_IV_LABEL[iv]||'?';
+}
 
 function arpSlotOf(iv,ivSet){
   if(iv===0) return 'root';
@@ -917,7 +924,7 @@ function renderArpInfo(arpDef){
       const tc=isDarkColorArp(col)?'#ece1cd':'#0c0306';
       const noteName=spellByInterval(state.rootPc,iv);
       const blk=document.createElement('div'); blk.className='stack-block'; blk.style.background=col;
-      blk.innerHTML=`<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${ARP_IV_LABEL[iv]||'?'}</span>`;
+      blk.innerHTML=`<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${arpIvLabel(iv,ivSet)}</span>`;
       blks.appendChild(blk);
     });
     row.appendChild(cat); row.appendChild(blks); stack.appendChild(row);
