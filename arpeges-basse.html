@@ -354,19 +354,6 @@
   padding:16px clamp(14px,2.4vw,24px);
   box-shadow:0 24px 60px -40px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03);
 }
-.cinfo-tabs{display:flex; border-bottom:1px solid var(--line); margin-bottom:16px; gap:4px}
-.cinfo-tab{
-  font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
-  letter-spacing:.14em; text-transform:uppercase;
-  background:none; border:none; border-bottom:2px solid transparent;
-  color:var(--muted); cursor:pointer; padding:6px 14px 10px;
-  margin-bottom:-1px; transition:.12s;
-}
-.cinfo-tab.on{ color:var(--cream); border-bottom-color:var(--brass); }
-.cinfo-tab:hover:not(.on){ color:var(--muted-2); }
-.cinfo-layout{ display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
-.cinfo-left{ flex:1; min-width:180px; }
-.cinfo-right{ flex-shrink:0; }
 .chord-stack{ display:flex; flex-direction:column; gap:5px; }
 .stack-row{ display:flex; align-items:stretch; gap:8px; min-height:40px; }
 .stack-cat{
@@ -384,18 +371,7 @@
 }
 .stack-block .sbn{ font-size:20px; font-weight:700; line-height:1; font-family:"Space Mono",monospace; }
 .stack-block .sbi{ font-size:10px; font-weight:700; letter-spacing:.06em; margin-top:3px; text-transform:uppercase; opacity:.6; }
-.iv-grid{ display:grid; grid-template-columns:repeat(4, 44px); gap:3px; }
-#arp-iv-grid{ grid-template-columns:repeat(3, 44px); }
-.iv-cell{
-  font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
-  height:27px; border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--muted-2); letter-spacing:.03em; transition:.1s;
-}
-.iv-cell.active{ box-shadow:0 2px 8px rgba(0,0,0,.6); }
-.iv-cell.void{ visibility:hidden; pointer-events:none; }
-.iv-grid-sep{ height:1px; background:var(--line); margin:3px 0; grid-column:1/-1; }
-.arp-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); }
+.arp-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
 .arp-desc-text p{ margin:0 0 12px; }
 .arp-desc-text p:last-child{ margin-bottom:0; }
 .arp-desc-text strong{ color:var(--cream); font-weight:600; }</style>
@@ -485,17 +461,8 @@
 
   <!-- Panel Résumé / Description -->
   <section class="arp-info-wrap" id="arp-info-wrap" style="display:none">
-    <div class="cinfo-tabs">
-      <button class="cinfo-tab on" data-cinfotab="schema">Résumé</button>
-      <button class="cinfo-tab" data-cinfotab="desc">Description</button>
-    </div>
-    <div id="arp-cinfo-schema">
-      <div class="cinfo-layout">
-        <div class="cinfo-left"><div class="chord-stack" id="arp-chord-stack"></div></div>
-        <div class="cinfo-right"><div class="iv-grid" id="arp-iv-grid"></div></div>
-      </div>
-    </div>
-    <div id="arp-cinfo-desc" style="display:none"><div class="arp-desc-text" id="arp-desc-text"></div></div>
+    <div class="chord-stack" id="arp-chord-stack"></div>
+    <div class="arp-desc-text" id="arp-desc-text"></div>
   </section>
 
   <!-- Résultats -->
@@ -905,26 +872,9 @@ function isDarkColorArp(hex){
   return(0.299*r+0.587*g+0.114*b)/255<0.5;
 }
 
-function renderArpIvGrid(arpDef){
-  const grid=document.getElementById('arp-iv-grid'); grid.innerHTML='';
-  const ivSet=arpDef?new Set(arpDef.iv):new Set();
-  ARP_GRID_DEF.forEach(row=>{
-    if(row==='sep'){
-      const sep=document.createElement('div'); sep.className='iv-grid-sep'; grid.appendChild(sep); return;
-    }
-    row.forEach(cell=>{
-      const el=document.createElement('div');
-      if(!cell){el.className='iv-cell void';}
-      else{
-        const on=ivSet.has(cell.iv);
-        el.className='iv-cell'+(on?' active':'');
-        el.textContent=cell.label;
-        if(on){const col=ARP_IV_COLOR[cell.iv]||'#d9a849';el.style.background=col;el.style.color=isDarkColorArp(col)?'#ece1cd':'#0c0306';}
-      }
-      grid.appendChild(el);
-    });
-  });
-}
+const ARP_IV_NAME_FR={0:'Fond.',1:'♭9e',2:'9e',3:'3ce min.',4:'3ce maj.',5:'4te/11e',6:'♭5/♯11e',7:'5te',8:'5te aug.',9:'6te',10:'7e min.',11:'7e maj.'};
+const ARP_IV_NAME_EN={0:'Root',1:'♭9th',2:'9th',3:'min 3rd',4:'maj 3rd',5:'4th/11th',6:'♭5/♯11th',7:'5th',8:'aug 5th',9:'6th',10:'min 7th',11:'maj 7th'};
+function arpIvName(iv){return(currentLang()==='en'?ARP_IV_NAME_EN:ARP_IV_NAME_FR)[iv]||'';}
 
 function arpSlotOf(iv,ivSet){
   if(iv===0) return 'root';
@@ -943,18 +893,19 @@ function renderArpInfo(arpDef){
   const slots={root:[],third:[],fifth:[],seventh:[],ext:[]};
   arpDef.iv.forEach(iv=>{slots[arpSlotOf(iv,ivSet)].push(iv);});
   const rowDefs=[
-    {key:'ext',     label:'Ext.'},
-    {key:'seventh', label:'7e / 6e'},
-    {key:'fifth',   label:'Quinte'},
-    {key:'third',   label:'Tierce'},
-    {key:'root',    label:'Fond.'},
+    {key:'ext',     label:null},
+    {key:'seventh', label:null},
+    {key:'fifth',   label:null},
+    {key:'third',   label:null},
+    {key:'root',    label:null},
   ];
   const stack=document.getElementById('arp-chord-stack'); stack.innerHTML='';
   const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
   rowDefs.forEach(({key,label})=>{
     const ivs=slots[key]; if(!ivs.length)return;
+    const catLabel=label??ivs.map(iv=>arpIvName(iv)).join(' / ');
     const row=document.createElement('div'); row.className='stack-row';
-    const cat=document.createElement('div'); cat.className='stack-cat'; cat.textContent=label;
+    const cat=document.createElement('div'); cat.className='stack-cat'; cat.textContent=catLabel;
     const blks=document.createElement('div'); blks.className='stack-blocks';
     ivs.forEach(iv=>{
       const col=ARP_IV_COLOR[iv]||'#d9a849';
@@ -966,17 +917,9 @@ function renderArpInfo(arpDef){
     });
     row.appendChild(cat); row.appendChild(blks); stack.appendChild(row);
   });
-  renderArpIvGrid(arpDef);
   document.getElementById('arp-desc-text').innerHTML=ARPEGE_DESC[arpDef.id]||'<p>Description bientôt disponible.</p>';
 }
 
-document.addEventListener('click',e=>{
-  const tab=e.target.closest('.cinfo-tab'); if(!tab) return;
-  const which=tab.dataset.cinfotab;
-  document.querySelectorAll('.cinfo-tab').forEach(t=>t.classList.toggle('on',t===tab));
-  document.getElementById('arp-cinfo-schema').style.display=which==='schema'?'':'none';
-  document.getElementById('arp-cinfo-desc').style.display=which==='desc'?'':'none';
-});
 
 /* ============================================================ ÉTAT */
 const state={
