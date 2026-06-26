@@ -281,24 +281,6 @@ h1 em{font-style:italic; color:var(--brass)}
   border:1px solid var(--line); border-radius:var(--radius);
   padding:20px clamp(14px,2.4vw,24px);
 }
-.cinfo-tabs{
-  display:flex; gap:4px; margin-bottom:18px;
-  border-bottom:1px solid var(--line); padding-bottom:0;
-}
-.cinfo-tab{
-  font-family:"Space Mono",monospace; font-size:10px; font-weight:700;
-  letter-spacing:.14em; text-transform:uppercase;
-  background:none; border:none; border-bottom:2px solid transparent;
-  color:var(--muted); cursor:pointer; padding:6px 14px 10px;
-  margin-bottom:-1px; transition:.12s;
-}
-.cinfo-tab.on{ color:var(--cream); border-bottom-color:var(--cherry); }
-.cinfo-tab:hover:not(.on){ color:var(--muted-2); }
-
-/* Résumé : deux colonnes */
-.cinfo-layout{ display:flex; gap:24px; align-items:flex-start; }
-.cinfo-left{ flex:1; min-width:0; }
-.cinfo-right{ flex-shrink:0; }
 
 /* Stack gauche */
 .chord-stack{ display:flex; flex-direction:column; gap:5px; }
@@ -341,8 +323,7 @@ h1 em{font-style:italic; color:var(--brass)}
 .iv-sub{ font-size:8px; font-weight:400; opacity:.7; letter-spacing:0; }
 .iv-grid-sep{ height:1px; background:var(--line); margin:3px 0; }
 
-/* Description tab */
-.chord-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); }
+.chord-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
 .chord-desc-text p{ margin:0 0 12px; }
 .chord-desc-text p:last-child{ margin-bottom:0; }
 .chord-desc-text strong{ color:var(--cream); font-weight:600; }
@@ -539,16 +520,8 @@ h1 em{font-style:italic; color:var(--brass)}
 
   <!-- Chord Info Panel -->
   <section class="chord-info-wrap" id="chord-info-wrap" style="display:none">
-    <div class="cinfo-tabs">
-      <button class="cinfo-tab on" data-cinfotab="schema" data-i18n="lbl_resume">Résumé</button>
-      <button class="cinfo-tab" data-cinfotab="desc" data-i18n="lbl_desc">Description</button>
-    </div>
-    <div id="cinfo-schema">
-      <div class="cinfo-layout">
-        <div class="cinfo-left"><div class="chord-stack" id="chord-stack"></div></div>
-      </div>
-    </div>
-    <div id="cinfo-desc" style="display:none"><div class="chord-desc-text" id="chord-desc-text"></div></div>
+    <div class="chord-stack" id="chord-stack"></div>
+    <div class="chord-desc-text" id="chord-desc-text"></div>
   </section>
 
   <!-- Diagrams -->
@@ -720,6 +693,22 @@ function updateI18n(){
 
 function noteTbl(){ const n=state.notation,a=state.accPref; return n==='fr'?(a==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR):(a==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN); }
 function spellPc(pc){ return noteTbl()[pc]; }
+function spellByInterval(rootPc,iv){
+  const LSTEP=[0,1,1,2,2,3,4,4,4,5,6,6];
+  const LN=['C','D','E','F','G','A','B'];
+  const LPC=[0,2,4,5,7,9,11];
+  const FLAT_EN=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  const rIdx=LN.indexOf(FLAT_EN[rootPc][0]);
+  const tIdx=(rIdx+LSTEP[iv])%7;
+  const tPc=(rootPc+iv)%12;
+  let d=tPc-LPC[tIdx]; if(d>6)d-=12; if(d<-6)d+=12;
+  const acc=d===1?'♯':d===-1?'♭':d===2?'𝄪':d===-2?'𝄫':'';
+  if(state.notation==='fr'){
+    const FR=['Do','Ré','Mi','Fa','Sol','La','Si'];
+    return FR[tIdx]+acc;
+  }
+  return LN[tIdx]+acc;
+}
 
 const ENHA={b:{1:'C♯',3:'D♯',6:'F♯',8:'G♯',10:'A♯'},'#':{1:'D♭',3:'E♭',6:'G♭',8:'A♭',10:'B♭'}};
 
@@ -1287,6 +1276,13 @@ function ivName(iv,ivSet){
   }
   return (currentLang()==='en'?IV_NAME_EN:IV_NAME_FR)[iv]||'';
 }
+function ivLabel(iv,ivSet){
+  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
+    if(iv===2) return '2';
+    if(iv===5) return '4';
+  }
+  return IV_LABEL[iv]||'?';
+}
 
 function makeSVG(voicing, fingering, mode, capoPos=0) {
   if (!mode) mode = state.diagramMode;
@@ -1653,11 +1649,11 @@ function renderChordInfo(def) {
     ivs.forEach(iv => {
       const col = IV_COLOR[iv] || '#d9a849';
       const tc = isDarkColor(col) ? '#ece1cd' : '#0c0306';
-      const noteName = spellPc((state.rootPc + iv) % 12);
+      const noteName = spellByInterval(state.rootPc, iv);
       const blk = document.createElement('div');
       blk.className = 'stack-block';
       blk.style.background = col;
-      blk.innerHTML = `<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${IV_LABEL[iv]||'?'}</span>`;
+      blk.innerHTML = `<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${ivLabel(iv,ivSet)}</span>`;
       blocks.appendChild(blk);
     });
     row.appendChild(cat); row.appendChild(blocks);
@@ -1669,14 +1665,6 @@ function renderChordInfo(def) {
   descEl.innerHTML = raw;
 }
 
-// Chord info tab switching
-document.addEventListener('click', e => {
-  const tab = e.target.closest('.cinfo-tab'); if (!tab) return;
-  const which = tab.dataset.cinfotab;
-  document.querySelectorAll('.cinfo-tab').forEach(t => t.classList.toggle('on', t===tab));
-  document.getElementById('cinfo-schema').style.display = which==='schema' ? '' : 'none';
-  document.getElementById('cinfo-desc').style.display = which==='desc' ? '' : 'none';
-});
 
 function renderFormula(def){
   const bar=document.getElementById('formula-bar'); bar.innerHTML='';

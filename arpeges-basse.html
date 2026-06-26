@@ -906,7 +906,6 @@ function renderArpInfo(arpDef){
     {key:'root',    label:null},
   ];
   const stack=document.getElementById('arp-chord-stack'); stack.innerHTML='';
-  const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
   rowDefs.forEach(({key,label})=>{
     const ivs=slots[key]; if(!ivs.length)return;
     const catLabel=label??ivs.map(iv=>arpIvName(iv,ivSet)).join(' / ');
@@ -916,7 +915,7 @@ function renderArpInfo(arpDef){
     ivs.forEach(iv=>{
       const col=ARP_IV_COLOR[iv]||'#d9a849';
       const tc=isDarkColorArp(col)?'#ece1cd':'#0c0306';
-      const noteName=pretty(SPELL[(state.rootPc+iv)%12]);
+      const noteName=spellByInterval(state.rootPc,iv);
       const blk=document.createElement('div'); blk.className='stack-block'; blk.style.background=col;
       blk.innerHTML=`<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${ARP_IV_LABEL[iv]||'?'}</span>`;
       blks.appendChild(blk);
@@ -935,6 +934,18 @@ const state={
 const SHARP_SPELL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_SPELL= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
 function rootName(){return(state.accPref==='#'?SHARP_SPELL:FLAT_SPELL)[state.rootPc];}
+function spellByInterval(rootPc,iv){
+  const LSTEP=[0,1,1,2,2,3,4,4,4,5,6,6];
+  const LN=['C','D','E','F','G','A','B'];
+  const LPC=[0,2,4,5,7,9,11];
+  const rootLtr=FLAT_SPELL[rootPc][0];
+  const rIdx=LN.indexOf(rootLtr);
+  const tIdx=(rIdx+LSTEP[iv])%7;
+  const tPc=(rootPc+iv)%12;
+  let d=tPc-LPC[tIdx]; if(d>6)d-=12; if(d<-6)d+=12;
+  const acc=d===1?'#':d===-1?'b':d===2?'##':d===-2?'bb':'';
+  return pretty(LN[tIdx]+acc);
+}
 
 /* ============================================================ PIANO */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
