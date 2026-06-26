@@ -1280,7 +1280,13 @@ const IV_NAME_EN = {
   0:'Root', 1:'♭9th', 2:'9th', 3:'min 3rd', 4:'maj 3rd', 5:'4th/11th',
   6:'♯11th', 7:'5th', 8:'aug 5th', 9:'6th/13th', 10:'min 7th', 11:'maj 7th'
 };
-function ivName(iv){ return (currentLang()==='en'?IV_NAME_EN:IV_NAME_FR)[iv]||''; }
+function ivName(iv,ivSet){
+  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
+    if(iv===2) return currentLang()==='en'?'2nd':'2ce';
+    if(iv===5) return currentLang()==='en'?'4th':'4te';
+  }
+  return (currentLang()==='en'?IV_NAME_EN:IV_NAME_FR)[iv]||'';
+}
 
 function makeSVG(voicing, fingering, mode, capoPos=0) {
   if (!mode) mode = state.diagramMode;
@@ -1640,7 +1646,7 @@ function renderChordInfo(def) {
   rowDefs.forEach(({key, label}) => {
     const ivs = slots[key];
     if (!ivs.length) return;
-    const catLabel = label ?? ivs.map(iv => ivName(iv)).join(' / ');
+    const catLabel = label ?? ivs.map(iv => ivName(iv, ivSet)).join(' / ');
     const row = document.createElement('div'); row.className='stack-row';
     const cat = document.createElement('div'); cat.className='stack-cat'; cat.textContent=catLabel;
     const blocks = document.createElement('div'); blocks.className='stack-blocks';
