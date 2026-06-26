@@ -85,9 +85,9 @@
   .bkey:hover{background:linear-gradient(180deg,#2e2010,#100b06)}
   .bkey:active{transform:translateY(2px)}
   .bkey.sel{background:linear-gradient(180deg,var(--brass),#9c7520 60%,#7a5d18); box-shadow:2px 4px 8px rgba(0,0,0,.6),0 0 10px rgba(217,168,73,.35);}
-  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:var(--cream)}
+  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:#fff}
   .bkey.sel .bname{color:#160f08}
-  .bkey .balt{font-size:10px; color:var(--muted-2)}
+  .bkey .balt{font-size:10px; color:rgba(255,255,255,.55)}
   .bkey.sel .balt{color:rgba(22,15,8,.6)}
 
   /* Segments */
@@ -398,13 +398,7 @@
         <div class="piano-wrap">
           <div class="piano" id="piano"></div>
           <div style="display:flex;flex-direction:column;gap:12px">
-            <div>
-              <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
-              <div class="seg" id="accpref" role="group">
-                <button data-acc="b" class="on" data-i18n="lbl_flat">♭ bémols</button>
-                <button data-acc="#" data-i18n="lbl_sharp">♯ dièses</button>
-              </div>
-            </div>
+
             <div>
               <div class="ctl-label" data-i18n="lbl_main">Main</div>
               <div class="seg" id="fb-hand" role="group">
@@ -1280,7 +1274,6 @@ function renderFretboard(chords){
 function syncUI(){
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
-  document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
@@ -1314,7 +1307,6 @@ function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCaden
 
 /* ==================== INIT ==================== */
 buildPiano();buildGenreTabs();buildCadencesGrid();
-document.getElementById('accpref').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.accPref=b.dataset.acc;buildPiano();render();});
 document.getElementById('fb-hand').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.frets=+b.dataset.frets;render();});
 document.getElementById('fb-display').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.display=b.dataset.disp;render();});

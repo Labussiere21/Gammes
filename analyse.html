@@ -122,9 +122,9 @@
   .bkey:hover{background:linear-gradient(180deg,#2e2010,#100b06)}
   .bkey:active{transform:translateY(2px)}
   .bkey.sel{box-shadow:2px 4px 8px rgba(0,0,0,.6);}
-  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:var(--cream)}
+  .bkey .bname{font-family:"Space Mono",monospace; font-weight:700; font-size:13px; color:#fff}
   .bkey.sel .bname{color:#160f08}
-  .bkey .balt{font-size:10px; color:var(--muted-2)}
+  .bkey .balt{font-size:10px; color:rgba(255,255,255,.55)}
   .bkey.sel .balt{color:rgba(22,15,8,.6)}
 
   /* Manche */
@@ -335,16 +335,6 @@
       <div class="selected-notes" id="selected-notes">
         <span class="empty-hint" data-i18n="lbl_no_note_hint">Aucune note — clique sur le piano ou le manche</span>
       </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-      <div>
-        <div class="ctl-label" data-i18n="lbl_alteration">Altération</div>
-        <div class="seg" id="accpref">
-          <button data-acc="b" class="on">♭</button>
-          <button data-acc="#">♯</button>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -1073,7 +1063,6 @@ function syncPiano(){
     b.style.background=color?`linear-gradient(180deg,${color},${color}99)`:'';
     if(b.querySelector('.bname')) b.querySelector('.bname').style.color=color?'#160f08':'';
   });
-  document.querySelectorAll('#accpref button').forEach(b=>b.classList.toggle('on',b.dataset.acc===state.accPref));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
@@ -1123,10 +1112,6 @@ document.getElementById('piano').addEventListener('click',e=>{
 });
 readUrlParams();
 
-document.getElementById('accpref').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  state.accPref=b.dataset.acc; buildPiano(); render();
-});
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   state.strings=+b.dataset.str; state.selectedPositions.clear(); render();
