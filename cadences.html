@@ -725,7 +725,7 @@ const SCALE_LINKS={
   dim:'gammes.html?scale=dim',
 };
 
-/* ===================== 107 CADENCES ===================== */
+/* ===================== 192 CADENCES ===================== */
 const CADENCES=[
 // TONAL
 {genre:'Fondamentales',label:'V – I',desc:'Cadence parfaite',desc_en:'Perfect cadence',mode:'major',scales:['major','penta_maj'],degrees:[{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
@@ -929,6 +929,42 @@ const CADENCES=[
 {genre:'Flamenco',label:'♭II – i',desc:'Résolution phrygienne',desc_en:'Phrygian resolution',mode:'minor',scales:['phrygian'],degrees:[{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'m'}]},
 // SOUL/R&B (addition)
 {genre:'Soul/R&B',label:'Imaj7 – iii7 – vi7 – IVmaj7',desc:'Soul doux',desc_en:'Soft soul',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'m7'},{d:4,acc:0,q:'maj7'}]},
+// JAZZ (suite)
+{genre:'Jazz',label:'Imaj7 – ♭III7 – ♭VImaj7 – ♭II7',desc:'Turnaround de Tadd Dameron',desc_en:'Tadd Dameron Turnaround',mode:'major',scales:['major','melodic'],degrees:[{d:1,acc:0,q:'maj7'},{d:3,acc:-1,q:'7'},{d:6,acc:-1,q:'maj7'},{d:2,acc:-1,q:'7'}]},
+{genre:'Jazz',label:'iii7 – VI7 – ii7 – ♭II7 – Imaj7',desc:'Substitution tritonique sur la dominante',desc_en:'Tritone substitution on dominant',mode:'major',scales:['major','lydian'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7'},{d:2,acc:0,q:'m7'},{d:2,acc:-1,q:'7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Jazz',label:'iii7 – VI7♭9 – ii7 – V7♭9',desc:'Turnaround avec 9ème mineure',desc_en:'Turnaround with minor 9th',mode:'major',scales:['major','harmonic'],degrees:[{d:3,acc:0,q:'m7'},{d:6,acc:0,q:'7b9'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7b9'}]},
+{genre:'Jazz',label:'Imaj7 – ♯Idim7 – ii7 – ♯IIdim7 – iii7',desc:'Marche harmonique diminuée ascendante',desc_en:'Ascending diminished harmonic walk',mode:'major',scales:['major','dim'],degrees:[{d:1,acc:0,q:'maj7'},{d:1,acc:1,q:'dim7'},{d:2,acc:0,q:'m7'},{d:2,acc:1,q:'dim7'},{d:3,acc:0,q:'m7'}]},
+// POP/ROCK (suite)
+{genre:'Pop/Rock',label:'I – III7 – IV – iv',desc:'Progression "Creep" (emprunt mineur)',desc_en:'"Creep" progression (minor borrowing)',mode:'major',scales:['major','harmonic'],degrees:[{d:1,acc:0,q:''},{d:3,acc:0,q:'7'},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'}]},
+{genre:'Pop/Rock',label:'I – ♭VII – ♭VI – ♭VII',desc:'Cadence héroïque (Mario, Zelda)',desc_en:'Heroic cadence (Mario, Zelda)',mode:'major',scales:['mixolydian','minor'],degrees:[{d:1,acc:0,q:''},{d:7,acc:-1,q:''},{d:6,acc:-1,q:''},{d:7,acc:-1,q:''}]},
+{genre:'Pop/Rock',label:'I – V – ♭VII – IV',desc:'Pop Mixolydienne (Wonderwall)',desc_en:'Mixolydian Pop (Wonderwall)',mode:'major',scales:['mixolydian','penta_maj'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:7,acc:-1,q:''},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – V – vi – III7 – IV',desc:'Pop avec dominante secondaire (Bowie/Beatles)',desc_en:'Pop with secondary dominant (Bowie/Beatles style)',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:5,acc:0,q:''},{d:6,acc:0,q:'m'},{d:3,acc:0,q:'7'},{d:4,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I – ♭III – IV – I',desc:'Rock classique / riff d\'arène',desc_en:'Classic Rock / Arena Riff',mode:'major',scales:['penta_maj','mixolydian'],degrees:[{d:1,acc:0,q:''},{d:3,acc:-1,q:''},{d:4,acc:0,q:''},{d:1,acc:0,q:''}]},
+{genre:'Pop/Rock',label:'I5 – ♭III5 – IV5 – ♭VI5',desc:'Progression Grunge / Stoner',desc_en:'Grunge / Stoner Progression',mode:'minor',scales:['penta_min','blues_min'],degrees:[{d:1,acc:0,q:'5'},{d:3,acc:-1,q:'5'},{d:4,acc:0,q:'5'},{d:6,acc:-1,q:'5'}]},
+// SOUL/R&B (suite)
+{genre:'Soul/R&B',label:'IVmaj7 – iii7 – ii7 – Imaj7',desc:'Descente Soul classique',desc_en:'Classic Soul descent',mode:'major',scales:['major','penta_maj'],degrees:[{d:4,acc:0,q:'maj7'},{d:3,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:1,acc:0,q:'maj7'}]},
+{genre:'Soul/R&B',label:'Imaj7 – vi7 – ii7 – ♭IImaj7',desc:'Turnaround soul neo-jazz',desc_en:'Neo-jazz soul turnaround',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:2,acc:-1,q:'maj7'}]},
+{genre:'Soul/R&B',label:'Imaj7 – IVmaj7 – vi7 – V7',desc:'Soul douce (Smooth R&B)',desc_en:'Smooth Soul/R&B',mode:'major',scales:['major','penta_maj'],degrees:[{d:1,acc:0,q:'maj7'},{d:4,acc:0,q:'maj7'},{d:6,acc:0,q:'m7'},{d:5,acc:0,q:'7'}]},
+{genre:'Soul/R&B',label:'ii7 – Imaj7 – viiø7 – III7 – vi7',desc:'Soul complexe (ii-V-i vers mineur relatif)',desc_en:'Complex Soul (ii-V-i to relative minor)',mode:'major',scales:['major','harmonic'],degrees:[{d:2,acc:0,q:'m7'},{d:1,acc:0,q:'maj7'},{d:7,acc:0,q:'m7b5'},{d:3,acc:0,q:'7'},{d:6,acc:0,q:'m7'}]},
+// BLUES (suite)
+{genre:'Blues',label:'I7 – IV7 – I7 – vi7 – ii7 – V7',desc:'Turnaround Jazz-Blues',desc_en:'Jazz-Blues turnaround',mode:'major',scales:['blues_maj','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:1,acc:0,q:'7'},{d:6,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:5,acc:0,q:'7'}],chart:[[1,'7',2],[4,'7',2],[1,'7',2],[6,'m7',2],[2,'m7',1],[5,'7',1],[1,'7',1],[5,'7',1]]},
+{genre:'Blues',label:'I7 – IV7 – ♭VII7 – I7',desc:'Blues rock sudiste / Jam band',desc_en:'Southern Rock Blues / Jam band',mode:'major',scales:['mixolydian','blues_maj'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:7,acc:-1,q:'7'},{d:1,acc:0,q:'7'}]},
+// GOSPEL (suite)
+{genre:'Gospel',label:'I – I7 – IV – iv',desc:'Hymne classique avec dominante secondaire',desc_en:'Classic hymn with secondary dominant',mode:'major',scales:['major','mixolydian'],degrees:[{d:1,acc:0,q:''},{d:1,acc:0,q:'7'},{d:4,acc:0,q:''},{d:4,acc:0,q:'m'}]},
+// BOSSA NOVA (suite)
+{genre:'Bossa Nova',label:'Imaj7 – ♭IImaj7',desc:'Vamp Phrygien Majeur',desc_en:'Major Phrygian Vamp',mode:'major',scales:['major','phrygian'],degrees:[{d:1,acc:0,q:'maj7'},{d:2,acc:-1,q:'maj7'}]},
+// FUNK (suite)
+{genre:'Funk',label:'im7 – ii7 – im7',desc:'Groove mineur ascendant',desc_en:'Ascending minor groove',mode:'minor',scales:['dorian','penta_min'],degrees:[{d:1,acc:0,q:'m7'},{d:2,acc:0,q:'m7'},{d:1,acc:0,q:'m7'}]},
+{genre:'Funk',label:'I7 – IV7 – ♯IVdim7 – V7',desc:'Groove funk avec approche chromatique',desc_en:'Funk groove with chromatic approach',mode:'major',scales:['major','mixolydian'],degrees:[{d:1,acc:0,q:'7'},{d:4,acc:0,q:'7'},{d:4,acc:1,q:'dim7'},{d:5,acc:0,q:'7'}]},
+// CLASSIQUE
+{genre:'Classique',label:'I – IV – vii° – iii – vi – ii – V – I',desc:'Cycle des quintes diatonique complet',desc_en:'Full diatonic circle of fifths',mode:'major',scales:['major'],degrees:[{d:1,acc:0,q:''},{d:4,acc:0,q:''},{d:7,acc:0,q:'dim'},{d:3,acc:0,q:'m'},{d:6,acc:0,q:'m'},{d:2,acc:0,q:'m'},{d:5,acc:0,q:''},{d:1,acc:0,q:''}]},
+// FLAMENCO (suite)
+{genre:'Flamenco',label:'iv – ♭III – ♭II – V7♭9',desc:'Cadence andalouse tendue',desc_en:'Tense Andalusian cadence',mode:'minor',scales:['phrygian','harmonic'],degrees:[{d:4,acc:0,q:'m'},{d:3,acc:-1,q:''},{d:2,acc:-1,q:''},{d:5,acc:0,q:'7b9'}]},
+// MÉTAL (suite)
+{genre:'Métal',label:'I5 – ♭V5 – IV5 – ♭II5',desc:'Riff triton & phrygien (Power chords)',desc_en:'Tritone & Phrygian riff (Power chords)',mode:'minor',scales:['phrygian','dim'],degrees:[{d:1,acc:0,q:'5'},{d:5,acc:-1,q:'5'},{d:4,acc:0,q:'5'},{d:2,acc:-1,q:'5'}]},
+{genre:'Métal',label:'i – ♭II5 – ♭III5 – ♭II5',desc:'Locrien / Phrygien écrasant',desc_en:'Crushing Locrian / Phrygian',mode:'minor',scales:['phrygian','locrian'],degrees:[{d:1,acc:0,q:'m'},{d:2,acc:-1,q:'5'},{d:3,acc:-1,q:'5'},{d:2,acc:-1,q:'5'}]},
+// ÉLECTRONIQUE (suite)
+{genre:'Électronique',label:'iv – i – ♭VI – V7',desc:'Dark Synthwave',desc_en:'Dark Synthwave',mode:'minor',scales:['minor','penta_min'],degrees:[{d:4,acc:0,q:'m'},{d:1,acc:0,q:'m'},{d:6,acc:-1,q:''},{d:5,acc:0,q:'7'}]},
 ];
 CADENCES.forEach((c,i)=>c.id='cad_'+i);
 
