@@ -976,9 +976,21 @@ const CHORD_INTERVALS={
   'maj7':[0,4,7,11],'m7b5':[0,3,6,10],'dim':[0,3,6],'dim7':[0,3,6,9],
   '5':[0,7],        '7b9':[0,4,7,10,1],
   'sus4':[0,5,7],   'sus2':[0,2,7],  'aug':[0,4,8],
-  'maj9':[0,4,7,11,2],'m9':[0,3,7,10,2],'9':[0,4,7,10,2],
+  /* 9èmes — 14 = 9e au-dessus de l'octave */
+  'maj9':[0,4,7,11,14],'m9':[0,3,7,10,14],'9':[0,4,7,10,14],
+  /* 11èmes */
+  '11':[0,4,7,10,14,17],'m11':[0,3,7,10,14,17],'maj7#11':[0,4,7,11,18],
+  /* 13èmes */
+  '13':[0,4,7,10,14,21],'m13':[0,3,7,10,14,17,21],'maj13':[0,4,7,11,14,21],
 };
-const CHORD_LABEL={'':'','m':'m','7':'7','m7':'m7','maj7':'maj7','m7b5':'m7♭5','dim':'°','dim7':'°7','5':'5','7b9':'7♭9','sus4':'sus4','sus2':'sus2','aug':'+','maj9':'maj9','m9':'m9','9':'9'};
+const CHORD_LABEL={
+  '':'','m':'m','7':'7','m7':'m7','maj7':'maj7','m7b5':'m7♭5',
+  'dim':'°','dim7':'°7','5':'5','7b9':'7♭9',
+  'sus4':'sus4','sus2':'sus2','aug':'+',
+  'maj9':'maj9','m9':'m9','9':'9',
+  '11':'11','m11':'m11','maj7#11':'maj7♯11',
+  '13':'13','m13':'m13','maj13':'maj13',
+};
 const DEG_ROMAN=['','I','II','III','IV','V','VI','VII'];
 const DEG_ROMAN_MIN=['','i','ii','iii','iv','v','vi','vii'];
 const FLAT_SPELL=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
@@ -1246,7 +1258,7 @@ function renderResult(){
   document.getElementById('btn-next').disabled=state.chordIdx===chords.length-1;
   document.getElementById('chord-counter').textContent=`${state.chordIdx+1} / ${chords.length}`;
   // Info accord + bouton play
-  const DEG_NAMES={0:'1',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',1:'♭9'};
+  const DEG_NAMES={0:'1',1:'♭9',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
   const ivsStr=(CHORD_INTERVALS[cur.quality]||[]).map(i=>DEG_NAMES[i]||i).join(' – ');
   document.getElementById('chord-info').innerHTML=`
     <div><div class="ci-name" style="color:${cur.col}">${cur.name}</div><div class="ci-formula">${ivsStr}</div></div>
@@ -1270,7 +1282,7 @@ function renderFretboard(chords){
   cur.pcs.forEach((pc,i)=>pcMap[pc]={col:CHORD_COLORS[i]||cur.col,isRoot:i===0,note:spell(pc),ivIdx:i});
   let display=strings.slice().reverse();if(state.hand==='left')display=strings.slice();
   const thickness={E:3.4,A:2.7,D:2,G:1.3};
-  const DEG_NAMES_SHORT={0:'1',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',1:'♭9'};
+  const DEG_NAMES_SHORT={0:'1',1:'♭9',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
   const ivArr=CHORD_INTERVALS[cur.quality]||[0];
   const strDiv=document.createElement('div');strDiv.className='fb-strings';
   display.forEach(s=>{

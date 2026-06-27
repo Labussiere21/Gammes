@@ -769,8 +769,8 @@ const INT_NAMES={0:'Fondamentale',1:'2nde mineure',2:'2nde Majeure',3:'3ce mineu
 const INT_NAMES_EN={0:'Root',1:'Minor 2nd',2:'Major 2nd',3:'Minor 3rd',4:'Major 3rd',5:'Perfect 4th',6:'Tritone / ♭5',7:'Perfect 5th',8:'Augmented 5th',9:'Major 6th / 𝄫7',10:'Minor 7th',11:'Major 7th'};
 function intName(i){ return (currentLang()==='en'?INT_NAMES_EN:INT_NAMES)[i]; }
 const DEG_LABEL={0:'1',1:'♭2',2:'2',3:'♭3',4:'3',5:'4',6:'♭5',7:'5',8:'♯5/♭6',9:'6/𝄫7',10:'♭7',11:'7'};
-const DEG_SHORT_RAW={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
-const DEG_COLORS=['#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653','#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'];
+const DEG_SHORT_RAW={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7',14:'9',17:'11',18:'#11',21:'13'};
+const DEG_COLORS={0:'#ff3333',1:'#ff7a1a',2:'#ffaa00',3:'#ffe000',4:'#8fd400',5:'#2dc653',6:'#00ccaa',7:'#29b6ff',8:'#3355ff',9:'#9933ee',10:'#dd33cc',11:'#ff1a88',14:'#ffaa00',17:'#2dc653',18:'#00ccaa',21:'#9933ee'};
 
 const ROLES={
   0:'Fondamentale',4:'Tierce Majeure',3:'Tierce mineure',7:'Quinte juste',8:'Quinte augmentée',
@@ -785,19 +785,25 @@ function roleName(i){ return (currentLang()==='en'?ROLES_EN:ROLES)[i]; }
 // Arpèges : iv = intervalles relatifs à la fondamentale
 const GROUPS = [
   {label:'Tierce Majeure', label_en:'Major third', arps:[
-    {id:'maj',    label:'Majeur',         label_en:'Major',       sub:'',     iv:[0,4,7],        sym:'',      posType:'maj'},
-    {id:'maj7',   label:'Majeur 7',       label_en:'Major 7',     sub:'Δ7',   iv:[0,4,7,11],     sym:'maj7',  posType:'maj'},
-    {id:'maj9',   label:'Majeur 9',       label_en:'Major 9',     sub:'Δ9',   iv:[0,4,7,11,2],   sym:'maj9',  posType:'maj'},
-    {id:'dom7',   label:'Dominant 7',     label_en:'Dominant 7',  sub:'7',    iv:[0,4,7,10],     sym:'7',     posType:'maj'},
-    {id:'9',      label:'Dominant 9',     label_en:'Dominant 9',  sub:'9',    iv:[0,4,7,10,2],   sym:'9',     posType:'maj'},
-    {id:'maj6',   label:'Majeur 6',       label_en:'Major 6',     sub:'6',    iv:[0,4,7,9],      sym:'6',     posType:'maj'},
+    {id:'maj',      label:'Majeur',         label_en:'Major',         sub:'',     iv:[0,4,7],           sym:'',       posType:'maj'},
+    {id:'maj7',     label:'Majeur 7',       label_en:'Major 7',       sub:'Δ7',   iv:[0,4,7,11],        sym:'maj7',   posType:'maj'},
+    {id:'maj9',     label:'Majeur 9',       label_en:'Major 9',       sub:'Δ9',   iv:[0,4,7,11,14],     sym:'maj9',   posType:'maj'},
+    {id:'maj7#11',  label:'Maj7♯11',        label_en:'Maj7♯11',       sub:'Δ7♯11',iv:[0,4,7,11,18],     sym:'maj7♯11',posType:'maj'},
+    {id:'maj13',    label:'Majeur 13',      label_en:'Major 13',      sub:'Δ13',  iv:[0,4,7,11,14,21],  sym:'maj13',  posType:'maj'},
+    {id:'dom7',     label:'Dominant 7',     label_en:'Dominant 7',    sub:'7',    iv:[0,4,7,10],        sym:'7',      posType:'maj'},
+    {id:'9',        label:'Dominant 9',     label_en:'Dominant 9',    sub:'9',    iv:[0,4,7,10,14],     sym:'9',      posType:'maj'},
+    {id:'11',       label:'Dominant 11',    label_en:'Dominant 11',   sub:'11',   iv:[0,4,7,10,14,17],  sym:'11',     posType:'maj'},
+    {id:'13',       label:'Dominant 13',    label_en:'Dominant 13',   sub:'13',   iv:[0,4,7,10,14,21],  sym:'13',     posType:'maj'},
+    {id:'maj6',     label:'Majeur 6',       label_en:'Major 6',       sub:'6',    iv:[0,4,7,9],         sym:'6',      posType:'maj'},
   ]},
   {label:'Tierce mineure', label_en:'Minor third', arps:[
-    {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],        sym:'m',     posType:'min'},
-    {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],     sym:'m7',    posType:'min'},
-    {id:'m9',     label:'Mineur 9',       label_en:'Minor 9',     sub:'m9',   iv:[0,3,7,10,2],   sym:'m9',    posType:'min'},
-    {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],      sym:'m6',    posType:'min'},
-    {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],     sym:'mMaj7', posType:'min'},
+    {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],              sym:'m',     posType:'min'},
+    {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],           sym:'m7',    posType:'min'},
+    {id:'m9',     label:'Mineur 9',       label_en:'Minor 9',     sub:'m9',   iv:[0,3,7,10,14],        sym:'m9',    posType:'min'},
+    {id:'m11',    label:'Mineur 11',      label_en:'Minor 11',    sub:'m11',  iv:[0,3,7,10,14,17],     sym:'m11',   posType:'min'},
+    {id:'m13',    label:'Mineur 13',      label_en:'Minor 13',    sub:'m13',  iv:[0,3,7,10,14,17,21],  sym:'m13',   posType:'min'},
+    {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],            sym:'m6',    posType:'min'},
+    {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],           sym:'mMaj7', posType:'min'},
   ]},
   {label:'Sans tierce', label_en:'No third', arps:[
     {id:'p5',      label:'Power 5',        label_en:'Power 5',     sub:'5',    iv:[0,7],          sym:'5',     posType:'maj'},
@@ -838,11 +844,12 @@ function buildArp(rootName, iv){
 }
 
 /* ============================================================ RÉSUMÉ ARPÈGE */
-const ARP_IV_LABEL = {0:'R',1:'♭9',2:'9',3:'♭3',4:'3',5:'4/11',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7'};
+const ARP_IV_LABEL = {0:'R',1:'♭9',2:'9',3:'♭3',4:'3',5:'4/11',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
 const ARP_IV_COLOR = {
   0:'#ff3333', 1:'#ff7a1a', 2:'#ffaa00', 3:'#2dc653', 4:'#8fd400',
   5:'#00ccaa', 6:'#ffe000', 7:'#29b6ff', 8:'#3355ff', 9:'#9933ee',
-  10:'#dd33cc', 11:'#ff1a88'
+  10:'#dd33cc', 11:'#ff1a88',
+  14:'#ffaa00', 17:'#2dc653', 18:'#00ccaa', 21:'#9933ee'
 };
 const ARP_GRID_DEF = [
   [{iv:9,label:'6'}, {iv:10,label:'♭7'}, {iv:11,label:'7'}],
@@ -871,8 +878,14 @@ const ARPEGE_DESC = {
   'dim7':     '<p>L\'arpège <strong>diminué 7</strong> divise l\'octave en 4 parties égales. Sa symétrie parfaite lui permet de se résoudre vers 4 toniques différentes — 3 formes couvrent les 12 toniques. Très utilisé en jazz et musique classique pour des passages chromatiques et dramatiques.</p>',
   'dom7b5':   '<p>L\'arpège <strong>7♭5</strong> combine tierce majeure, quinte diminuée et septième mineure. Sa quinte bémol crée un second triton, intensifiant la tension de dominante. Interchangeable avec le V7 d\'une tonique à distance de triton (substitution), c\'est un outil clé de la réharmonisation jazz.</p>',
   'maj9':     '<p>L\'arpège <strong>majeur 9</strong> étend la triade majeure avec la septième majeure et la neuvième. Sa couleur lumineuse et ouverte est au cœur du jazz contemporain, de la bossa nova et de la pop sophistiquée. Sur la basse, la neuvième ajoute de la fluidité mélodique aux lignes de walking bass sur les degrés I et IV.</p>',
+  'maj7#11':  '<p>L\'arpège <strong>maj7♯11</strong> est issu de la gamme lydienne. Sa quarte augmentée (♯11) remplace la quarte juste, apportant une couleur brillante et moderne sans dissonance agressive. Très utilisé en jazz fusion et bossa nova sur le degré I ou IV lydien.</p>',
+  'maj13':    '<p>L\'arpège <strong>majeur 13</strong> empile neuvième, onzième et treizième sur l\'accord maj7, offrant une richesse harmonique maximale. Sur la basse, on sélectionne généralement 3 à 4 des notes disponibles pour construire une ligne cohérente. Très présent en jazz avancé et fusion.</p>',
   'm9':       '<p>L\'arpège <strong>mineur 9</strong> enrichit la triade mineure d\'une septième mineure et d\'une neuvième, créant une palette sonore douce et mélancolique. Incontournable en jazz, soul et R&B, il offre de nombreuses possibilités pour des lignes de basse expressives et des ornements mélodiques.</p>',
+  'm11':      '<p>L\'arpège <strong>mineur 11</strong> ajoute l\'onzième juste au min9, créant une couleur suspendue et enveloppante caractéristique du jazz modal et de la soul contemporaine. Sa quarte résonne parfaitement avec la septième mineure pour des progressions de basse profondes et évocatrices.</p>',
+  'm13':      '<p>L\'arpège <strong>mineur 13</strong> est l\'accord mineur le plus riche qui soit, avec ses 7 notes. Il encapsule toute la gamme dorienne. À la basse, il ouvre un vaste vocabulaire de lignes mélodiques. Très utilisé en jazz fusion, il est associé aux modes mineur et dorien.</p>',
   '9':        '<p>L\'arpège de <strong>dominante 9</strong> cumule le triton de la dominante 7 et la neuvième, décuplant la tension harmonique. Sa résolution vers la tonique est encore plus forte qu\'avec la simple 7. C\'est l\'arpège de référence pour les lignes de basse blues et funk sophistiquées, sur le degré V.</p>',
+  '11':       '<p>L\'arpège de <strong>dominante 11</strong> est l\'accord de suspension par excellence en jazz. Sa quarte juste crée une tension caractéristique résolue en retirant la tierce. Sur la basse, la sixième et septième corde (ou les positions centrales) permettent de faire sonner toute la richesse de cet accord de manière idiomatique.</p>',
+  '13':       '<p>L\'arpège de <strong>dominante 13</strong> est l\'accord de dominante le plus complet du jazz. Sa treizième (sixte) ajoutée à la dominante 9 crée une tension maximale qui réclame sa résolution. C\'est l\'accord de V7 "de luxe" du bebop, indispensable dans les cadences ii – V7(13) – I.</p>',
 };
 
 function isDarkColorArp(hex){
@@ -880,8 +893,8 @@ function isDarkColorArp(hex){
   return(0.299*r+0.587*g+0.114*b)/255<0.5;
 }
 
-const ARP_IV_NAME_FR={0:'Fond.',1:'♭9e',2:'9e',3:'3ce min.',4:'3ce maj.',5:'4te/11e',6:'♭5/♯11e',7:'5te',8:'5te aug.',9:'6te',10:'7e min.',11:'7e maj.'};
-const ARP_IV_NAME_EN={0:'Root',1:'♭9th',2:'9th',3:'min 3rd',4:'maj 3rd',5:'4th/11th',6:'♭5/♯11th',7:'5th',8:'aug 5th',9:'6th',10:'min 7th',11:'maj 7th'};
+const ARP_IV_NAME_FR={0:'Fond.',1:'♭9e',2:'9e',3:'3ce min.',4:'3ce maj.',5:'4te/11e',6:'♭5/♯11e',7:'5te',8:'5te aug.',9:'6te',10:'7e min.',11:'7e maj.',14:'9e',17:'11e',18:'11e aug.',21:'13e'};
+const ARP_IV_NAME_EN={0:'Root',1:'♭9th',2:'9th',3:'min 3rd',4:'maj 3rd',5:'4th/11th',6:'♭5/♯11th',7:'5th',8:'aug 5th',9:'6th',10:'min 7th',11:'maj 7th',14:'9th',17:'11th',18:'aug 11th',21:'13th'};
 function arpIvName(iv,ivSet){
   if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
     if(iv===2) return currentLang()==='en'?'2nd':'2ce';
@@ -898,11 +911,14 @@ function arpIvLabel(iv,ivSet){
 }
 
 function arpSlotOf(iv,ivSet){
+  const hasThird=ivSet.has(3)||ivSet.has(4);
   if(iv===0) return 'root';
-  if(iv===2) return (ivSet.has(3)||ivSet.has(4))?'ext':'third';
+  if(iv===2||iv===14) return hasThird?'ext':'third';   // 2nd / 9e
   if(iv===3||iv===4) return 'third';
-  if(iv===5) return (ivSet.has(3)||ivSet.has(4))?'ext':'third';
+  if(iv===5||iv===17) return hasThird?'ext':'third';   // 4te / 11e
+  if(iv===18) return 'ext';                            // ♯11e
   if(iv===6||iv===7||iv===8) return 'fifth';
+  if(iv===21) return 'ext';                            // 13e
   return 'seventh';
 }
 
@@ -1089,16 +1105,24 @@ function computeBoxes(arpPcs, rootPc, posType, strings){
   }
 }
 
-function renderFretboard(arpPcs, rootPc, posType, strings){
+function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.classList.toggle('lefty', state.hand==='left');
   const lowPc=strings[0].pc;
-  // Map pc -> {deg, color}
+  // Map pc -> {deg, color} — utilise ivs (intervalles bruts) quand disponibles pour les labels étendus
   const pcMap={};
-  arpPcs.forEach((pc,i)=>{
-    const semi=(pc-rootPc+12)%12;
-    pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:i===0};
-  });
+  if(ivs){
+    ivs.forEach((iv,i)=>{
+      const pc=(rootPc+iv)%12;
+      const semi=iv%12;
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[iv]??DEG_SHORT_RAW[semi]??'?', color:DEG_COLORS[semi], root:i===0};
+    });
+  } else {
+    arpPcs.forEach((pc,i)=>{
+      const semi=(pc-rootPc+12)%12;
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:i===0};
+    });
+  }
 
   // Boîtes et position
   let box=null;
@@ -1274,7 +1298,7 @@ function render(){
 
   // Manche
   const strings=currentStrings();
-  renderFretboard(arpPcs,rootPc,arpDef.posType,strings);
+  renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv);
   renderArpInfo(arpDef);
 }
 

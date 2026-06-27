@@ -728,8 +728,8 @@ const INT_NAMES={0:'Fondamentale',1:'2nde mineure',2:'2nde Majeure',3:'3ce mineu
 const INT_NAMES_EN={0:'Root',1:'Minor 2nd',2:'Major 2nd',3:'Minor 3rd',4:'Major 3rd',5:'Perfect 4th',6:'Tritone / ♭5',7:'Perfect 5th',8:'Augmented 5th',9:'Major 6th / 𝄫7',10:'Minor 7th',11:'Major 7th'};
 function intName(i){ return (currentLang()==='en'?INT_NAMES_EN:INT_NAMES)[i]; }
 const DEG_LABEL={0:'1',1:'♭2',2:'2',3:'♭3',4:'3',5:'4',6:'♭5',7:'5',8:'♯5/♭6',9:'6/𝄫7',10:'♭7',11:'7'};
-const DEG_SHORT_RAW={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
-const DEG_COLORS=['#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653','#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'];
+const DEG_SHORT_RAW={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7',14:'9',17:'11',18:'#11',21:'13'};
+const DEG_COLORS={0:'#ff3333',1:'#ff7a1a',2:'#ffaa00',3:'#ffe000',4:'#8fd400',5:'#2dc653',6:'#00ccaa',7:'#29b6ff',8:'#3355ff',9:'#9933ee',10:'#dd33cc',11:'#ff1a88',14:'#ffaa00',17:'#2dc653',18:'#00ccaa',21:'#9933ee'};
 
 const ROLES={
   0:'Fondamentale',4:'Tierce Majeure',3:'Tierce mineure',7:'Quinte juste',8:'Quinte augmentée',
@@ -744,19 +744,25 @@ function roleName(i){ return (currentLang()==='en'?ROLES_EN:ROLES)[i]; }
 // Arpèges : iv = intervalles relatifs à la fondamentale
 const GROUPS = [
   {label:'Tierce Majeure', label_en:'Major third', arps:[
-    {id:'maj',    label:'Majeur',         label_en:'Major',       sub:'',     iv:[0,4,7],        sym:'',      posType:'maj'},
-    {id:'maj7',   label:'Majeur 7',       label_en:'Major 7',     sub:'Δ7',   iv:[0,4,7,11],     sym:'maj7',  posType:'maj'},
-    {id:'maj9',   label:'Majeur 9',       label_en:'Major 9',     sub:'Δ9',   iv:[0,4,7,11,2],   sym:'maj9',  posType:'maj'},
-    {id:'dom7',   label:'Dominant 7',     label_en:'Dominant 7',  sub:'7',    iv:[0,4,7,10],     sym:'7',     posType:'maj'},
-    {id:'9',      label:'Dominant 9',     label_en:'Dominant 9',  sub:'9',    iv:[0,4,7,10,2],   sym:'9',     posType:'maj'},
-    {id:'maj6',   label:'Majeur 6',       label_en:'Major 6',     sub:'6',    iv:[0,4,7,9],      sym:'6',     posType:'maj'},
+    {id:'maj',      label:'Majeur',         label_en:'Major',         sub:'',      iv:[0,4,7],           sym:'',       posType:'maj'},
+    {id:'maj7',     label:'Majeur 7',       label_en:'Major 7',       sub:'Δ7',    iv:[0,4,7,11],        sym:'maj7',   posType:'maj'},
+    {id:'maj9',     label:'Majeur 9',       label_en:'Major 9',       sub:'Δ9',    iv:[0,4,7,11,14],     sym:'maj9',   posType:'maj'},
+    {id:'maj7#11',  label:'Maj7♯11',        label_en:'Maj7♯11',       sub:'Δ7♯11', iv:[0,4,7,11,18],     sym:'maj7♯11',posType:'maj'},
+    {id:'maj13',    label:'Majeur 13',      label_en:'Major 13',      sub:'Δ13',   iv:[0,4,7,11,14,21],  sym:'maj13',  posType:'maj'},
+    {id:'dom7',     label:'Dominant 7',     label_en:'Dominant 7',    sub:'7',     iv:[0,4,7,10],        sym:'7',      posType:'maj'},
+    {id:'9',        label:'Dominant 9',     label_en:'Dominant 9',    sub:'9',     iv:[0,4,7,10,14],     sym:'9',      posType:'maj'},
+    {id:'11',       label:'Dominant 11',    label_en:'Dominant 11',   sub:'11',    iv:[0,4,7,10,14,17],  sym:'11',     posType:'maj'},
+    {id:'13',       label:'Dominant 13',    label_en:'Dominant 13',   sub:'13',    iv:[0,4,7,10,14,21],  sym:'13',     posType:'maj'},
+    {id:'maj6',     label:'Majeur 6',       label_en:'Major 6',       sub:'6',     iv:[0,4,7,9],         sym:'6',      posType:'maj'},
   ]},
   {label:'Tierce mineure', label_en:'Minor third', arps:[
-    {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],        sym:'m',     posType:'min'},
-    {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],     sym:'m7',    posType:'min'},
-    {id:'m9',     label:'Mineur 9',       label_en:'Minor 9',     sub:'m9',   iv:[0,3,7,10,2],   sym:'m9',    posType:'min'},
-    {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],      sym:'m6',    posType:'min'},
-    {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],     sym:'mMaj7', posType:'min'},
+    {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],              sym:'m',     posType:'min'},
+    {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],           sym:'m7',    posType:'min'},
+    {id:'m9',     label:'Mineur 9',       label_en:'Minor 9',     sub:'m9',   iv:[0,3,7,10,14],        sym:'m9',    posType:'min'},
+    {id:'m11',    label:'Mineur 11',      label_en:'Minor 11',    sub:'m11',  iv:[0,3,7,10,14,17],     sym:'m11',   posType:'min'},
+    {id:'m13',    label:'Mineur 13',      label_en:'Minor 13',    sub:'m13',  iv:[0,3,7,10,14,17,21],  sym:'m13',   posType:'min'},
+    {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],            sym:'m6',    posType:'min'},
+    {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],           sym:'mMaj7', posType:'min'},
   ]},
   {label:'Sans tierce', label_en:'No third', arps:[
     {id:'sus2',   label:'Sus2',           label_en:'Sus2',        sub:'sus2', iv:[0,2,7],        sym:'sus2',  posType:'maj'},
@@ -938,16 +944,24 @@ function computeBoxes(arpPcs, rootPc, posType, strings){
   }
 }
 
-function renderFretboard(arpPcs, rootPc, posType, strings){
+function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.classList.toggle('lefty', state.hand==='left');
   const lowPc=strings[0].pc;
-  // Map pc -> {deg, color}
+  // Map pc -> {deg, color} — utilise ivs (intervalles bruts) pour les labels étendus
   const pcMap={};
-  arpPcs.forEach((pc,i)=>{
-    const semi=(pc-rootPc+12)%12;
-    pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:i===0};
-  });
+  if(ivs){
+    ivs.forEach((iv,i)=>{
+      const pc=(rootPc+iv)%12;
+      const semi=iv%12;
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[iv]??DEG_SHORT_RAW[semi]??'?', color:DEG_COLORS[semi], root:i===0};
+    });
+  } else {
+    arpPcs.forEach((pc,i)=>{
+      const semi=(pc-rootPc+12)%12;
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:i===0};
+    });
+  }
 
   // Boîtes et position
   let box=null;
@@ -1120,7 +1134,7 @@ function render(){
 
   // Manche
   const strings=currentStrings();
-  renderFretboard(arpPcs,rootPc,arpDef.posType,strings);
+  renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv);
 }
 
 /* ============================================================ INIT */
