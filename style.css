@@ -1,4 +1,4 @@
-/* ================================================================
+﻿/* ================================================================
  * style.css — ScalaBass / ScalaGuitare — Styles communs
  *
  * MIGRATION : ajouter dans chaque <head> (avant <style> page) :
@@ -36,7 +36,7 @@ header{margin-bottom:30px}
   font-family:"Space Mono",monospace;
   font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--brass);
   display:flex; align-items:center; gap:12px;
-  height:72px; flex-wrap:nowrap;
+  height:90px; flex-wrap:nowrap;
 }
 .site-name{
   font-weight:700; letter-spacing:.18em; color:var(--brass);
