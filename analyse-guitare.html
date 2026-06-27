@@ -339,6 +339,10 @@
     <div class="fb-head">
       <div class="ctl-label" data-i18n="lbl_manche_label">Manche</div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="seg" id="fb-strings-ctl" role="group" style="margin-right:4px">
+          <button data-str="6" class="on">6</button>
+          <button data-str="7">7</button>
+        </div>
         <select id="fb-tuning-ctl" class="tuning-sel"></select>
         <div class="seg" id="fb-frets-ctl">
           <button data-frets="12" class="on">12</button>
@@ -560,7 +564,7 @@ const state = {
   selectedPositions: new Map(),  // manche : "origIdx-fret" → {pc}
   rootPc: null,
   accPref: 'b',
-  tuning: 'standard', frets: 12, hand: 'right',
+  strings: 6, tuning: 'standard', frets: 12, hand: 'right',
   activeTab: 'chords',
 };
 const SHARP=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
@@ -638,22 +642,29 @@ function playFretNote(midi){
 }
 
 /* ============================================================ ACCORDAGES GUITARE */
-const GUITAR_TUNINGS = [
-  {id:'standard',  label:'Standard',    labelNotes:'E A D G B E', notes:['E','A','D','G','B','E'], midi:[40,45,50,55,59,64]},
-  {id:'drop-d',    label:'Drop D',      labelNotes:'D A D G B E', notes:['D','A','D','G','B','E'], midi:[38,45,50,55,59,64]},
-  {id:'half-down', label:'½ ton bas',   labelNotes:'Eb Ab Db Gb Bb Eb', notes:['Eb','Ab','Db','Gb','Bb','Eb'], midi:[39,44,49,54,58,63]},
-  {id:'open-g',    label:'Open G',      labelNotes:'D G D G B D', notes:['D','G','D','G','B','D'], midi:[38,43,50,55,59,62]},
-  {id:'open-d',    label:'Open D',      labelNotes:'D A D F# A D', notes:['D','A','D','F#','A','D'], midi:[38,45,50,54,57,62]},
-  {id:'open-e',    label:'Open E',      labelNotes:'E B E G# B E', notes:['E','B','E','G#','B','E'], midi:[40,47,52,56,59,64]},
-  {id:'drop-c',    label:'Drop C',      labelNotes:'C G C F A D', notes:['C','G','C','F','A','D'], midi:[36,43,48,53,57,62]},
-  {id:'drop-b',    label:'Drop B',      labelNotes:'B F# B E G# C#', notes:['B','F#','B','E','G#','C#'], midi:[35,42,47,52,56,61]},
-  {id:'drop-a',    label:'Drop A',      labelNotes:'A E A D F# B', notes:['A','E','A','D','F#','B'], midi:[33,40,45,50,54,59]},
-];
+const GUITAR_TUNINGS = {
+  6:[
+    {id:'standard',  label:'Standard',    labelNotes:'E A D G B E', notes:['E','A','D','G','B','E'], midi:[40,45,50,55,59,64]},
+    {id:'drop-d',    label:'Drop D',      labelNotes:'D A D G B E', notes:['D','A','D','G','B','E'], midi:[38,45,50,55,59,64]},
+    {id:'half-down', label:'½ ton bas',   labelNotes:'Eb Ab Db Gb Bb Eb', notes:['Eb','Ab','Db','Gb','Bb','Eb'], midi:[39,44,49,54,58,63]},
+    {id:'open-g',    label:'Open G',      labelNotes:'D G D G B D', notes:['D','G','D','G','B','D'], midi:[38,43,50,55,59,62]},
+    {id:'open-d',    label:'Open D',      labelNotes:'D A D F# A D', notes:['D','A','D','F#','A','D'], midi:[38,45,50,54,57,62]},
+    {id:'open-e',    label:'Open E',      labelNotes:'E B E G# B E', notes:['E','B','E','G#','B','E'], midi:[40,47,52,56,59,64]},
+    {id:'drop-c',    label:'Drop C',      labelNotes:'C G C F A D', notes:['C','G','C','F','A','D'], midi:[36,43,48,53,57,62]},
+    {id:'drop-b',    label:'Drop B',      labelNotes:'B F# B E G# C#', notes:['B','F#','B','E','G#','C#'], midi:[35,42,47,52,56,61]},
+    {id:'drop-a',    label:'Drop A',      labelNotes:'A E A D F# B', notes:['A','E','A','D','F#','B'], midi:[33,40,45,50,54,59]},
+  ],
+  7:[
+    {id:'standard7', label:'Standard 7',  labelNotes:'B E A D G B E', notes:['B','E','A','D','G','B','E'], midi:[35,40,45,50,55,59,64]},
+  ],
+};
 
 function buildTuningSelect(){
   const sel=document.getElementById('fb-tuning-ctl');
   sel.innerHTML='';
-  GUITAR_TUNINGS.forEach(t=>{
+  const tuns=GUITAR_TUNINGS[state.strings]||GUITAR_TUNINGS[6];
+  if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;
+  tuns.forEach(t=>{
     const opt=document.createElement('option');
     opt.value=t.id; opt.textContent=`${t.label} — ${t.labelNotes}`;
     if(t.id===state.tuning) opt.selected=true;
@@ -664,7 +675,8 @@ function buildTuningSelect(){
 const LP_SIMPLE={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 function noteToPC(n){let pc=LP_SIMPLE[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
 function currentStrings(){
-  const tun=GUITAR_TUNINGS.find(t=>t.id===state.tuning)||GUITAR_TUNINGS[0];
+  const tuns=GUITAR_TUNINGS[state.strings]||GUITAR_TUNINGS[6];
+  const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];
   return tun.notes.map((n,i)=>({n,pc:noteToPC(n),origIdx:i,midiBase:tun.midi[i]}));
 }
 
@@ -995,6 +1007,7 @@ function syncPiano(){
   });
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
+  document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
 }
 
 function updateI18n(){
@@ -1045,6 +1058,13 @@ document.getElementById('piano').addEventListener('click',e=>{
 });
 readUrlParams();
 
+document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  state.strings=+b.dataset.str;
+  state.tuning=(GUITAR_TUNINGS[state.strings]||GUITAR_TUNINGS[6])[0].id;
+  state.selectedPositions.clear();
+  buildTuningSelect(); render();
+});
 document.getElementById('fb-tuning-ctl').addEventListener('change',e=>{
   state.tuning=e.target.value; state.selectedPositions.clear(); render();
 });

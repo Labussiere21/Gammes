@@ -419,6 +419,13 @@
           <button data-frets="24">24</button>
         </div>
       </div>
+      <div>
+        <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
+        <div class="seg" id="fb-strings-ctl" role="group">
+          <button data-str="4" class="on">4</button>
+          <button data-str="5">5</button>
+        </div>
+      </div>
     </div>
     <!-- Filtres genre -->
     <div style="margin-top:18px">
@@ -584,6 +591,8 @@ function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
 
 /* ===== MODULE AUDIO ===== */
 let _sfInst=null,_audioCtx=null,_audioLoading=false;
+let _cadTimers=[],_cadPlaying=false;
+function stopCadencePlayback(){_cadPlaying=false;_cadTimers.forEach(id=>clearTimeout(id));_cadTimers=[];if(_sfInst)_sfInst.stop();}
 const NOTE_MAP_AUDIO={'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'E#':5,'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11,'B#':0,'Cb':11,'Do':0,'Ré':2,'Mi':4,'Fa':5,'Sol':7,'La':9,'Si':11};
 function noteToMidi(n,oct){
   const clean=n.replace('♯','#').replace('♭','b').replace('𝄫','bb');
@@ -1025,9 +1034,10 @@ const GENRE_COLORS={
 };
 
 /* ==================== ÉTAT ==================== */
-const state={rootPc:9,accPref:'b',frets:12,hand:'right',display:'note',genre:'all',cadenceId:null,chordIdx:0};
+const state={rootPc:9,accPref:'b',frets:12,hand:'right',display:'note',genre:'all',cadenceId:null,chordIdx:0,strings:4};
 const STR4=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
-function currentStrings(){return STR4;}
+const STR5=[{n:'B',pc:11},{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
+function currentStrings(){return state.strings===5?STR5:STR4;}
 
 /* ==================== PIANO ==================== */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -1058,7 +1068,7 @@ function buildGenreTabs(){
   const c=document.getElementById('genre-tabs');c.innerHTML='';
   GENRES.forEach(g=>{
     const b=document.createElement('button');b.className='gtab';b.dataset.genre=g;b.textContent=genreLabel(g);
-    b.onclick=()=>{state.genre=g;state.cadenceId=null;buildCadencesGrid();syncUI();};
+    b.onclick=()=>{stopCadencePlayback();state.genre=g;state.cadenceId=null;buildCadencesGrid();syncUI();};
     c.appendChild(b);
   });
 }
@@ -1075,7 +1085,7 @@ function buildCadencesGrid(){
     card.className='cadence-card'+(state.cadenceId===cad.id?' active':'');
     const _desc=(currentLang()==='en'&&cad.desc_en)?cad.desc_en:cad.desc;
     card.innerHTML=`<div class="cad-header"><div class="cad-label">${cad.label}</div><div class="cad-genre" style="color:${col};border-color:${col}44">${genreLabel(cad.genre)}</div></div><div class="cad-desc">${_desc}</div><div class="cad-degrees">${degs}</div>${cad.chart?`<span class="cad-has-chart">${currentLang()==='en'?'chart':'grille'}</span>`:''}`;
-    card.onclick=()=>{state.cadenceId=cad.id;state.chordIdx=0;render();};
+    card.onclick=()=>{stopCadencePlayback();state.cadenceId=cad.id;state.chordIdx=0;render();};
     c.appendChild(card);
   });
 }
@@ -1166,10 +1176,6 @@ function renderResult(){
     });
     pcw.appendChild(rythSel);
 
-    // État de lecture — pour le stop
-    let _cadTimers=[];
-    let _cadPlaying=false;
-
     const btn=document.createElement('button');
     btn.className='play-btn'; btn.style.cssText='width:auto;border-radius:8px;padding:0 14px;font-size:11px;letter-spacing:.06em';
     btn.innerHTML=t('lbl_play_cad_btn'); btn.title=t('lbl_jouer_cad');
@@ -1177,10 +1183,7 @@ function renderResult(){
     btn.onclick=async()=>{
       // STOP si en cours
       if(_cadPlaying){
-        _cadPlaying=false;
-        _cadTimers.forEach(t=>clearTimeout(t));
-        _cadTimers=[];
-        if(_sfInst) _sfInst.stop();
+        stopCadencePlayback();
         btn.innerHTML=t('lbl_play_cad_btn'); btn.classList.remove('playing');
         return;
       }
@@ -1268,6 +1271,7 @@ function renderResult(){
 
 function navigate(dir){
   const cad=CADENCES.find(c=>c.id===state.cadenceId);if(!cad)return;
+  stopCadencePlayback();
   state.chordIdx=Math.max(0,Math.min(cad.degrees.length-1,state.chordIdx+dir));render();
 }
 
@@ -1281,7 +1285,7 @@ function renderFretboard(chords){
   const pcMap={};
   cur.pcs.forEach((pc,i)=>pcMap[pc]={col:CHORD_COLORS[i]||cur.col,isRoot:i===0,note:spell(pc),ivIdx:i});
   let display=strings.slice().reverse();if(state.hand==='left')display=strings.slice();
-  const thickness={E:3.4,A:2.7,D:2,G:1.3};
+  const thickness={E:3.4,A:2.7,D:2,G:1.3,B:4.5};
   const DEG_NAMES_SHORT={0:'1',1:'♭9',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
   const ivArr=CHORD_INTERVALS[cur.quality]||[0];
   const strDiv=document.createElement('div');strDiv.className='fb-strings';
@@ -1328,6 +1332,7 @@ function syncUI(){
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
+  document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
   document.querySelectorAll('.cadence-card').forEach(c=>{
     const id=CADENCES.find(cd=>cd.label===c.querySelector('.cad-label')?.textContent&&(state.genre==='all'||cd.genre===state.genre))?.id;
@@ -1361,6 +1366,7 @@ function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCaden
 buildPiano();buildGenreTabs();buildCadencesGrid();
 document.getElementById('fb-hand').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.frets=+b.dataset.frets;render();});
+document.getElementById('fb-strings-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;render();});
 document.getElementById('fb-display').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.display=b.dataset.disp;render();});
 initNotationLang();
 render();
