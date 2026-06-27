@@ -1373,6 +1373,15 @@ document.getElementById('fb-display').addEventListener('click',e=>{const b=e.tar
 initNotationLang();
 render();
 updateI18n();
+(function(){
+  const ref=document.referrer;
+  if(ref.includes('-guitare')) sessionStorage.setItem('sbinst','guitar');
+  else if(ref && !ref.includes('cadences.html')) sessionStorage.removeItem('sbinst');
+  if(sessionStorage.getItem('sbinst')==='guitar'){
+    const a=document.querySelector('a.nav-link[href="quintes.html"]');
+    if(a) a.href='tonalites-guitare.html';
+  }
+})();
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft') navigate(-1);
   else if(e.key==='ArrowRight') navigate(1);
