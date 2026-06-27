@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="img/logoonglet.png">
 <link rel="apple-touch-icon" href="img/logoonglet.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Index des tonalités | ScalaBass</title>
+<title>Index des tonalités | ScalaSix</title>
 <meta name="description" content="Index des tonalités : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
-<meta name="keywords" content="cycle des quintes, cercle des quintes, armure tonalité, relative mineure, tonalités musique">
-<link rel="canonical" href="https://labussiere21.github.io/Gammes/quintes.html">
+<meta name="keywords" content="cycle des quintes, cercle des quintes, armure tonalité, relative mineure, tonalités guitare">
+<link rel="canonical" href="https://labussiere21.github.io/Gammes/tonalites-guitare.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -60,12 +60,10 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 @media(max-width:860px){.circle-wrap{width:min(360px,90vw);height:min(360px,90vw);margin:0 auto}}
 
-/* Anneau de fond */
 .circle-bg{
   position:absolute; inset:16px; border-radius:50%;
   border:2px solid var(--line);
 }
-/* Centre du cercle */
 .circle-center{
   position:absolute; inset:0; display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:4px; pointer-events:none;
@@ -74,7 +72,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .cc-note{font-family:"Instrument Serif",serif; font-size:32px; color:var(--brass); line-height:1; transition:.2s}
 .cc-sig{font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); margin-top:2px}
 
-/* Boutons du cercle */
 .circle-btn{
   position:absolute; transform:translate(-50%,-50%);
   width:52px; height:52px; border-radius:50%;
@@ -93,13 +90,11 @@ h1 em{font-style:italic; color:var(--brass)}
 .circle-btn .cb-enhar{font-family:"Space Mono",monospace; font-size:9px; opacity:.6; font-style:normal}
 .circle-btn.active .cb-enhar{opacity:.5; color:#160f08}
 
-/* Ligne des dièses/bémols */
 .sig-arc{position:absolute; inset:0; border-radius:50%; pointer-events:none}
 
 /* ====== PANNEAU DROIT ====== */
 .info-panel{min-width:0}
 
-/* Carte tonalité */
 .tonic-card{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
   border:1px solid var(--line); border-radius:var(--radius);
@@ -116,7 +111,6 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 .tn.root{border-color:var(--d1); color:var(--d1)}
 
-/* Tabs */
 .tabs{display:flex; gap:0; border-bottom:1px solid var(--line); margin-bottom:18px; flex-wrap:wrap}
 .tab{
   font-family:"Space Mono",monospace; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
@@ -126,7 +120,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .tab:hover{color:var(--cream)}
 .tab.on{color:var(--brass); border-bottom-color:var(--brass)}
 
-/* Grilles */
 .modes-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px}
 .mode-card{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -139,7 +132,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .mc-name{font-family:"Instrument Serif",serif; font-size:18px; line-height:1.1; color:var(--cream)}
 .mc-notes{font-family:"Space Mono",monospace; font-size:11px; color:var(--muted-2); margin-top:5px}
 
-/* Accords diatoniques */
 .chords-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px}
 .chord-card{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -150,7 +142,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .chord-card .cd-name{font-family:"Instrument Serif",serif; font-size:20px; line-height:1}
 .chord-card .cd-quality{font-family:"Space Mono",monospace; font-size:10px; color:var(--muted); margin-top:3px}
 
-/* Relatives */
 .relatives-grid{display:flex; gap:10px; flex-wrap:wrap}
 .rel-card{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -162,7 +153,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .rel-card .rc-label{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:4px}
 .rel-card .rc-name{font-family:"Instrument Serif",serif; font-size:20px}
 
-/* Cadences */
 .cad-list{display:flex; flex-direction:column; gap:8px}
 .cad-item{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -173,14 +163,12 @@ h1 em{font-style:italic; color:var(--brass)}
 .cad-genre{font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); padding:3px 8px; border:1px solid var(--line); border-radius:5px}
 .cad-chords{font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); margin-top:4px; width:100%}
 
-/* Hint initial */
 .hint{
   text-align:center; padding:48px 20px; color:var(--muted-2);
   font-size:14px; grid-column:1/-1;
 }
 .hint-icon{font-size:40px; margin-bottom:12px}
 
-/* Seg */
 .seg{display:inline-flex; background:#0e0a07; border:1px solid var(--line); border-radius:9px; padding:3px; gap:2px}
 .seg button{font-family:"Space Mono",monospace; font-size:12px; background:transparent; border:0; color:var(--muted); cursor:pointer; padding:6px 11px; border-radius:7px; transition:.12s;}
 .seg button:hover{color:var(--cream)}
@@ -190,8 +178,6 @@ h1 em{font-style:italic; color:var(--brass)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .anim{animation:fadeIn .18s ease both}
 
-  /* ===== Notation toggle + langue ===== */
-  /* Toggles notation + langue */
   .header-tools{
     display:flex;gap:10px;align-items:center;flex-wrap:nowrap;flex-shrink:0;
   }
@@ -224,7 +210,6 @@ h1 em{font-style:italic; color:var(--brass)}
 .inst-btn.bass-btn.active{background:var(--brass);color:#160f08;font-weight:700}
 .inst-btn.guit-btn.active{background:#bf1828;color:#fff;font-weight:700}
 
-  /* Footer */
   .site-footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,40px) 28px;max-width:1180px;margin:0 auto;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2)}
   .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .footer-copy{letter-spacing:.04em}
@@ -237,31 +222,30 @@ h1 em{font-style:italic; color:var(--brass)}
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}</style>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Index des tonalités | ScalaBass">
+<meta property="og:title" content="Index des tonalités | ScalaSix">
 <meta property="og:description" content="Index des tonalités : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
-<meta property="og:url" content="https://labussiere21.github.io/Gammes/quintes.html">
+<meta property="og:url" content="https://labussiere21.github.io/Gammes/tonalites-guitare.html">
 <meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
-<meta property="og:site_name" content="ScalaBass">
+<meta property="og:site_name" content="ScalaSix">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:locale:alternate" content="es_ES">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Index des tonalités | ScalaBass">
+<meta name="twitter:title" content="Index des tonalités | ScalaSix">
 <meta name="twitter:description" content="Index des tonalités : clique sur une tonalité et découvre son armure, sa gamme, ses accords diatoniques, sa relative mineure et ses cadences.">
 <meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ScalaBass — Index des tonalités",
-  "description": "Index des tonalités pour basse : explore armures, gammes, accords diatoniques et cadences.",
-  "url": "https://labussiere21.github.io/Gammes/quintes.html",
+  "name": "ScalaSix — Index des tonalités",
+  "description": "Index des tonalités pour guitare : explore armures, gammes, accords diatoniques et cadences.",
+  "url": "https://labussiere21.github.io/Gammes/tonalites-guitare.html",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "Web",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
   "inLanguage": ["fr", "en", "es"],
   "isAccessibleForFree": true,
-  "audience": {"@type": "Audience", "audienceType": "Bassistes, musiciens"}
+  "audience": {"@type": "Audience", "audienceType": "Guitaristes, musiciens"}
 }
 </script>
 </head>
@@ -270,22 +254,23 @@ h1 em{font-style:italic; color:var(--brass)}
 
   <!-- Instrument toggle -->
   <div class="inst-bar">
-    <a class="inst-btn bass-btn active" href="quintes.html">Basse</a>
-    <a class="inst-btn guit-btn" href="tonalites-guitare.html">Guitare</a>
+    <a class="inst-btn bass-btn" href="quintes.html">Basse</a>
+    <a class="inst-btn guit-btn active" href="tonalites-guitare.html">Guitare</a>
   </div>
 
 <header>
-  <div style="text-align:center;margin-bottom:8px"><img src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:inline-block"></div>
+  <div style="text-align:center;margin-bottom:8px"><img src="img/logoguitare.png" alt="ScalaSix" style="height:80px;display:inline-block"></div>
     <div class="eyebrow">
-    <span class="site-name">ScalaBass</span>
-          <nav class="site-nav">
-        <a href="index.html"         class="nav-link">Manche</a>
-        <a href="gammes.html"        class="nav-link">Gammes</a>
-        <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
-        <a href="intervalles.html"   class="nav-link">Intervalles</a>
-        <a href="cadences.html"      class="nav-link">Cadences</a>
-        <a href="analyse.html"       class="nav-link">Analyse</a>
-        <a href="quintes.html"       class="nav-link active">Tonalités</a>
+    <span class="site-name">ScalaSix</span>
+      <nav class="site-nav">
+        <a href="manche-guitare.html"      class="nav-link">Manche</a>
+        <a href="gammes-guitare.html"      class="nav-link">Gammes</a>
+        <a href="arpeges-guitare.html"     class="nav-link">Arpèges</a>
+        <a href="accords-guitare.html"     class="nav-link">Accords</a>
+        <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
+        <a href="cadences.html"            class="nav-link">Cadences</a>
+        <a href="analyse-guitare.html"     class="nav-link">Analyse</a>
+        <a href="tonalites-guitare.html"   class="nav-link active">Tonalités</a>
       </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -325,7 +310,6 @@ h1 em{font-style:italic; color:var(--brass)}
       <p data-i18n="lbl_hint_click">Clique sur une tonalité dans le cercle</p>
     </div>
     <div id="content" style="display:none">
-      <!-- Carte tonalité -->
       <div class="tonic-card">
         <div class="tonic-head">
           <span class="tonic-name" id="tonic-name"></span>
@@ -334,7 +318,6 @@ h1 em{font-style:italic; color:var(--brass)}
         <div class="tonic-notes" id="tonic-notes"></div>
       </div>
 
-      <!-- Tabs -->
       <div class="tabs">
         <button class="tab on" data-tab="modes" data-i18n="lbl_tab_modes">Modes</button>
         <button class="tab" data-tab="chords" data-i18n="lbl_tab_chords">Accords</button>
@@ -359,7 +342,6 @@ const EN_TO_FR = {
   'E':'Mi','E#':'Fa','Fb':'Mi','F':'Fa','F#':'Fa♯','Gb':'Sol♭',
   'G':'Sol','G#':'Sol♯','Ab':'La♭','A':'La','A#':'La♯','Bb':'Si♭',
   'B':'Si','B#':'Do','Cb':'Si',
-  // Doubles altérations courantes
   'C##':'Ré','D##':'Mi','F##':'Sol','G##':'La','A##':'Si',
   'Cbb':'Si♭','Dbb':'Do','Ebb':'Ré♭','Fbb':'Mi♭','Gbb':'Fa','Abb':'Sol♭','Bbb':'La♭',
 };
@@ -367,22 +349,18 @@ const EN_TO_FR = {
 function currentLang(){return localStorage.getItem('sblang')||'fr';}
 function currentNotation(){return localStorage.getItem('sbnot')||'en';}
 
-// Convertit une note EN (ex: "Bb", "F#") vers la notation courante
 function prettyNote(noteEN){
   const clean=noteEN.replace(/♯/g,'#').replace(/♭/g,'b');
   const not=currentNotation();
-  const lang=currentLang();
   if(not==='fr'){
     if(EN_TO_FR[clean]) return EN_TO_FR[clean];
     const FR_L={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
     const letter=clean[0]; const acc=clean.slice(1);
     return (FR_L[letter]||letter)+acc.replace(/#/g,'♯').replace(/b/g,'♭');
   }
-  // EN : juste ♯/♭
   return clean.replace(/#/g,'♯').replace(/b/g,'♭');
 }
 
-// t() : traduction d'une clé d'interface
 const _TR={
   fr:{
     lbl_gamme:'La gamme',lbl_degrees:'Degrés & accords diatoniques',lbl_degrees_nd:'Degrés & intervalles',
@@ -415,7 +393,7 @@ const _TR={
     lbl_tonalite:'Tonalité',lbl_hint_click:'Clique sur une tonalité dans le cercle',
     lbl_tab_chords:'Accords',lbl_word_maj:'majeur',lbl_word_min:'mineur',lbl_degre:'degré',
     lbl_in_key:'En',lbl_relative_paren:'(relative)',
-    doc_title:'Index des tonalités — ScalaBass',
+    doc_title:'Index des tonalités — ScalaSix',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -448,7 +426,7 @@ const _TR={
     lbl_tonalite:'Key',lbl_hint_click:'Click a key in the circle',
     lbl_tab_chords:'Chords',lbl_word_maj:'major',lbl_word_min:'minor',lbl_degre:'degree',
     lbl_in_key:'In',lbl_relative_paren:'(relative)',
-    doc_title:'Key Index — ScalaBass',
+    doc_title:'Key Index — ScalaSix',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -460,15 +438,9 @@ const NOTE_NAMES_EN_SH = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A
 const NOTE_NAMES_FR    = ['Do','Ré♭','Ré','Mi♭','Mi','Fa','Sol♭','Sol','La♭','La','Si♭','Si'];
 const NOTE_NAMES_FR_SH = ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'];
 
-// Récupérer depuis localStorage ou défaut
-const _storedNotation = localStorage.getItem('sbnot')||'en';
-const _storedLang     = localStorage.getItem('sblang')||'fr';
-if(!window.state) window._notationReady=true; // sera lu par le state local
-
 function getNotationTable(accPref){
   const pref = (typeof state!=='undefined'&&state.accPref)||accPref||'b';
   const not  = localStorage.getItem('sbnot')||'en';
-  const lang = localStorage.getItem('sblang')||'fr';
   if(not==='fr') return pref==='#'?NOTE_NAMES_FR_SH:NOTE_NAMES_FR;
   return pref==='#'?NOTE_NAMES_EN_SH:NOTE_NAMES_EN;
 }
@@ -477,7 +449,6 @@ function spellNote(pc, accPref){
 }
 
 function initNotationLang(){
-  // ---- Toggle notation A B C / Do Ré Mi ----
   const ns=document.getElementById('notation-seg');
   if(ns){
     const stored=localStorage.getItem('sbnot')||'en';
@@ -492,7 +463,6 @@ function initNotationLang(){
       else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
-  // ---- Toggle langue FR / EN / ES ----
   const ls=document.getElementById('lang-seg');
   if(ls){
     const stored=localStorage.getItem('sblang')||'fr';
@@ -587,11 +557,9 @@ function spell(pc){
   return ((e&&e.acc==='#')?SHARP_SPELL:FLAT_SPELL)[pc];
 }
 
-/* Construit la gamme majeure avec les bonnes lettres */
 function buildMajScale(rootPc){
   const LETTER_OF_PC  = ['C',null,'D',null,'E','F',null,'G',null,'A',null,'B'];
   let rootLetter = LETTER_OF_PC[rootPc];
-  // Toniques non-naturelles → lettre depuis le nom du cercle
   if(!rootLetter){
     const entry = CIRCLE_OF_FIFTHS.find(e=>e.pc===rootPc);
     rootLetter = entry.name[0];
@@ -645,10 +613,7 @@ function updateCircle(){
 }
 
 function sigLabel(entry){
-  // En mode ♯ : afficher les dièses. En mode ♭ : afficher les bémols.
-  // Les entrées sans armure dans le mode actuel (ex: G# en mode ♯)
-  // ne sont jamais affichées (showSharp:false), donc ce cas ne devrait pas arriver.
-  const _sh=n=>`${n} ${t('lbl_diese')}${(currentLang()==='en')?(n>1?'s':''):(n>1?'s':'')}`;
+  const _sh=n=>`${n} ${t('lbl_diese')}${(n>1?'s':'')}`;
   const _fl=n=>`${n} ${t('lbl_bemol')}${(n>1?'s':'')}`;
   if(entry.acc==='#'){
     if(entry.sharps>0) return _sh(entry.sharps);
@@ -667,12 +632,11 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Tonalités'},
-    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Key Index'},
+    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles-guitare.html':'Intervalles','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités'},
+    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles-guitare.html':'Intervals','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
-  // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
   if(typeof t==='function') document.title=t('doc_title');
 }
@@ -689,13 +653,11 @@ function render(){
   const name  = entry.name;
   const notes = buildMajScale(state.pc);
 
-  // Carte tonalité
   document.getElementById('tonic-name').textContent = name+' '+t('lbl_word_maj');
   document.getElementById('tonic-sig').textContent  = sigLabel(entry);
   const tn = document.getElementById('tonic-notes');
   tn.innerHTML = notes.map((n,i)=>`<span class="tn${i===0?' root':''}">${n}</span>`).join('');
 
-  // Tabs sync
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===state.activeTab));
   ['modes','chords','relatives','cadences'].forEach(id=>{
     document.getElementById('tab-'+id).style.display = id===state.activeTab?'':'none';
@@ -713,15 +675,14 @@ function renderModes(notes){
   const c = document.getElementById('tab-modes');
   c.className='modes-grid anim'; c.innerHTML='';
   MODES.forEach((mode,i)=>{
-    const rootNote = notes[i];          // note racine du mode
+    const rootNote = notes[i];
     const rootPc   = (state.pc + SCALE_MAJ[i])%12;
-    // Notes du mode = rotation des notes de la gamme majeure
     const modeNotes = [...notes.slice(i), ...notes.slice(0,i)];
     const col = `var(${DEG_COLORS[i]})`;
     const rootRaw = FLAT_RAW[rootPc];
     const card = document.createElement('a');
     card.className='mode-card';
-    card.href=`gammes.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
+    card.href=`gammes-guitare.html?root=${rootRaw}&scale=${modeScaleId(i)}`;
     card.innerHTML=`
       <div class="mc-deg" style="color:${col}">${mode.symb} — ${t('lbl_degre')} ${mode.deg}</div>
       <div class="mc-name">${rootNote} ${(currentLang()==='en'&&mode.name_en)?mode.name_en:mode.name}</div>
@@ -755,17 +716,14 @@ function renderRelatives(entry, name){
   const c = document.getElementById('tab-relatives');
   c.className='anim'; c.innerHTML='';
 
-  // Gamme majeure de la tonique — source unique pour relative, IV, V, parallèle
   const majNotes = buildMajScale(state.pc);
-  const relMinName = majNotes[5]; // 6e note = relative mineure
+  const relMinName = majNotes[5];
   const relMinPc = (state.pc+9)%12;
   const relMinRaw  = FLAT_RAW[relMinPc];
 
-  // Tonalité parallèle mineure (même tonique, orthographe cohérente)
   const parallelName = majNotes[0];
   const parallelRaw = FLAT_RAW[state.pc];
 
-  // Sous-dominante (IV) et dominante (V) : lire depuis la gamme
   const ivName = majNotes[3];
   const vName  = majNotes[4];
   const ivPc = (state.pc+5)%12;
@@ -775,10 +733,10 @@ function renderRelatives(entry, name){
 
   const _maj=t('lbl_word_maj'), _min=t('lbl_word_min');
   const items=[
-    {label:t('lbl_rel_min'),  name:relMinName+' '+_min,   href:`gammes.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
-    {label:t('lbl_par_min'),  name:parallelName+' '+_min, href:`gammes.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
-    {label:t('lbl_sdom'),     name:ivName+' '+_maj,       href:`quintes.html#${ivRaw}`, col:'var(--d4)'},
-    {label:t('lbl_dom'),      name:vName+' '+_maj,        href:`quintes.html#${vRaw}`, col:'var(--d5)'},
+    {label:t('lbl_rel_min'),  name:relMinName+' '+_min,   href:`gammes-guitare.html?root=${relMinRaw}&scale=minor`, col:'var(--d6)'},
+    {label:t('lbl_par_min'),  name:parallelName+' '+_min, href:`gammes-guitare.html?root=${parallelRaw}&scale=minor`, col:'var(--d3)'},
+    {label:t('lbl_sdom'),     name:ivName+' '+_maj,       href:`tonalites-guitare.html#${ivRaw}`, col:'var(--d4)'},
+    {label:t('lbl_dom'),      name:vName+' '+_maj,        href:`tonalites-guitare.html#${vRaw}`, col:'var(--d5)'},
   ];
 
   const grid = document.createElement('div'); grid.className='relatives-grid';
@@ -787,9 +745,9 @@ function renderRelatives(entry, name){
     a.className='rel-card'; a.href=item.href;
     a.innerHTML=`<div class="rc-label" style="color:${item.col}">${item.label}</div><div class="rc-name">${item.name}</div>`;
     a.onclick=(e)=>{
-      if(item.href.startsWith('quintes')){
+      if(item.href.startsWith('tonalites-guitare')){
         e.preventDefault();
-        const raw=item.href.replace('quintes.html#','');
+        const raw=item.href.replace('tonalites-guitare.html#','');
         const targetPc=CIRCLE_OF_FIFTHS.find(en=>FLAT_RAW[en.pc]===raw)?.pc;
         if(targetPc!==undefined){state.pc=targetPc;render();}
       }
@@ -804,7 +762,6 @@ function renderCadences(notes, name){
   const c = document.getElementById('tab-cadences');
   c.className='cad-list anim'; c.innerHTML='';
 
-  // Cadences majeures
   const h = document.createElement('div');
   h.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:10px';
   h.textContent=t('lbl_in_key')+' '+name+' '+t('lbl_word_maj');
@@ -822,11 +779,9 @@ function renderCadences(notes, name){
     c.appendChild(item);
   });
 
-  // Cadences relatives mineures
   const relMinPc=(state.pc+9)%12;
   const relMinEntry=CIRCLE_OF_FIFTHS.find(e=>e.pc===relMinPc);
   const relMinName=relMinEntry.name;
-  const minNotes=buildMajScale(state.pc).slice(5).concat(buildMajScale(state.pc).slice(0,5)); // rotation éolien
 
   const h2=document.createElement('div');
   h2.style.cssText='font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin:18px 0 10px';
@@ -836,7 +791,6 @@ function renderCadences(notes, name){
   CADENCES_MIN.forEach(cad=>{
     let chordNames;
     if(cad.degs){
-      // degrés par rapport à la gamme mineure
       const minNotes7=[...notes.slice(5),...notes.slice(0,5)];
       chordNames=cad.degs.map(d=>minNotes7[d-1]).join(' – ');
     } else {
@@ -859,12 +813,10 @@ function renderCadences(notes, name){
 /* ====================================================== INIT */
 buildCircle();
 
-
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   state.activeTab=t.dataset.tab; render();
 }));
 
-// Lire hash URL
 const hash=location.hash.replace('#','');
 if(hash){
   const entry=CIRCLE_OF_FIFTHS.find(e=>FLAT_RAW[e.pc]===hash);
@@ -878,7 +830,7 @@ updateI18n();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span class="footer-copy">© 2025 ScalaBass</span>
+    <span class="footer-copy">© 2025 ScalaSix</span>
     <div class="footer-links">
       <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
       <span class="footer-sep">·</span>
@@ -889,7 +841,7 @@ updateI18n();
     <strong style="color:var(--cream)">Mentions légales</strong><br>
     Éditeur : Nicolas Boudras &mdash; contact@scalabass.com<br>
     Hébergement : GitHub Pages (GitHub Inc., San Francisco, CA, USA)<br>
-    ScalaBass est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
+    ScalaSix est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
     Les préférences d'affichage (notation, langue) sont stockées localement dans votre navigateur (localStorage).
   </div>
 </footer></body>
