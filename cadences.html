@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
   :root{
     --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
@@ -323,6 +324,7 @@
   .footer-ml-btn:hover{color:var(--cream)}
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}</style>
+<script src="music-core.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cadences de basse : progressions jazz, blues, rock | ScalaBass">
@@ -536,7 +538,7 @@ const _TR={
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
-    lbl_cad_lede:'107 cadences classées par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une cadence, navigue accord par accord sur le manche.',
+    lbl_cad_lede:'192 cadences classées par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une cadence, navigue accord par accord sur le manche.',
     lbl_alteration:'Altération',lbl_play_cad_btn:'▶ Cadence',lbl_stop_btn:'■ Stop',
     lbl_chart_grid:'Grille',lbl_measures:'mesure',lbl_measures_pl:'mesures',
     lbl_gammes_imp_label:'Gammes pour improviser :',lbl_select_cad:'Sélectionne une cadence pour la visualiser.',
@@ -570,7 +572,7 @@ const _TR={
     lbl_aucune_alt:'no accidentals',lbl_diese:'sharp',lbl_bemol:'flat',
     lbl_jouer_gamme:'Play scale',lbl_jouer_cad:'Play cadence',
     lbl_jouer_acc:'Play chord',lbl_jouer_arp:'Play arpeggio',
-    lbl_cad_lede:'107 cadences sorted by genre — Jazz, Blues, Rock, Metal, Flamenco, Gypsy and more. Pick a root note, click a cadence, and step through it chord by chord on the fretboard.',
+    lbl_cad_lede:'192 cadences sorted by genre — Jazz, Blues, Rock, Metal, Flamenco, Gypsy and more. Pick a root note, click a cadence, and step through it chord by chord on the fretboard.',
     lbl_alteration:'Accidental',lbl_play_cad_btn:'▶ Cadence',lbl_stop_btn:'■ Stop',
     lbl_chart_grid:'Chart',lbl_measures:'bar',lbl_measures_pl:'bars',
     lbl_gammes_imp_label:'Scales for soloing:',lbl_select_cad:'Select a cadence to visualize it.',
@@ -973,8 +975,10 @@ const CHORD_INTERVALS={
   '':    [0,4,7],   'm':[0,3,7],    '7':[0,4,7,10],  'm7':[0,3,7,10],
   'maj7':[0,4,7,11],'m7b5':[0,3,6,10],'dim':[0,3,6],'dim7':[0,3,6,9],
   '5':[0,7],        '7b9':[0,4,7,10,1],
+  'sus4':[0,5,7],   'sus2':[0,2,7],  'aug':[0,4,8],
+  'maj9':[0,4,7,11,2],'m9':[0,3,7,10,2],'9':[0,4,7,10,2],
 };
-const CHORD_LABEL={'':'','m':'m','7':'7','m7':'m7','maj7':'maj7','m7b5':'m7♭5','dim':'°','dim7':'°7','5':'5','7b9':'7♭9'};
+const CHORD_LABEL={'':'','m':'m','7':'7','m7':'m7','maj7':'maj7','m7b5':'m7♭5','dim':'°','dim7':'°7','5':'5','7b9':'7♭9','sus4':'sus4','sus2':'sus2','aug':'+','maj9':'maj9','m9':'m9','9':'9'};
 const DEG_ROMAN=['','I','II','III','IV','V','VI','VII'];
 const DEG_ROMAN_MIN=['','i','ii','iii','iv','v','vi','vii'];
 const FLAT_SPELL=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
@@ -1349,6 +1353,10 @@ document.getElementById('fb-display').addEventListener('click',e=>{const b=e.tar
 initNotationLang();
 render();
 updateI18n();
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft') navigate(-1);
+  else if(e.key==='ArrowRight') navigate(1);
+});
 </script>
 
 
