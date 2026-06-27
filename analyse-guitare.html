@@ -364,7 +364,7 @@
 </section>
 
 <!-- Résultats -->
-<div class="results-zone" id="results-zone" style="display:none">
+<div class="results-zone" id="results-zone">
   <div class="tabs">
     <button class="tab on" data-tab="chords"><span data-i18n="lbl_tab_acc">Accords</span> <span class="count" id="count-chords">0</span></button>
     <button class="tab" data-tab="scales"><span data-i18n="lbl_tab_gam">Gammes</span> <span class="count" id="count-scales">0</span></button>
@@ -756,9 +756,10 @@ function analyzeChords(pcs){
       results.push({root,type,coverage,matched,total:chordPcs.length,extra,chordPcs,score:coverage-extra*0.12});
     }
   }
+  const _rootC=getCurrentRoot();
   results.sort((a,b)=>{
-    const aR=state.rootPc!==null&&a.root===state.rootPc?1:0;
-    const bR=state.rootPc!==null&&b.root===state.rootPc?1:0;
+    const aR=_rootC!==null&&a.root===_rootC?1:0;
+    const bR=_rootC!==null&&b.root===_rootC?1:0;
     if(bR!==aR) return bR-aR;
     return b.coverage!==a.coverage?b.coverage-a.coverage:a.extra-b.extra;
   });
@@ -781,9 +782,10 @@ function analyzeScales(pcs){
         score:coverage-extra*0.1+(extra===0?0.1:0)});
     }
   }
+  const _rootS=getCurrentRoot();
   results.sort((a,b)=>{
-    const aR=state.rootPc!==null&&a.root===state.rootPc?1:0;
-    const bR=state.rootPc!==null&&b.root===state.rootPc?1:0;
+    const aR=_rootS!==null&&a.root===_rootS?1:0;
+    const bR=_rootS!==null&&b.root===_rootS?1:0;
     if(bR!==aR) return bR-aR;
     return b.score-a.score;
   });
@@ -806,9 +808,10 @@ function analyzeCadences(pcs){
       results.push({root,cad,coverage,matched,total:cadRoots.length});
     }
   }
+  const _rootK=getCurrentRoot();
   results.sort((a,b)=>{
-    const aR=state.rootPc!==null&&a.root===state.rootPc?1:0;
-    const bR=state.rootPc!==null&&b.root===state.rootPc?1:0;
+    const aR=_rootK!==null&&a.root===_rootK?1:0;
+    const bR=_rootK!==null&&b.root===_rootK?1:0;
     if(bR!==aR) return bR-aR;
     return b.coverage!==a.coverage?b.coverage-a.coverage:b.matched-a.matched;
   });
@@ -820,8 +823,14 @@ function analyzeCadences(pcs){
 function renderResults(){
   const pcs=[...getPcsForAnalysis().keys()];
   const rz=document.getElementById('results-zone');
-  if(pcs.length<2){rz.style.display='none';return;}
   rz.style.display='';
+  if(pcs.length<2){
+    ['tab-chords','tab-scales','tab-cadences'].forEach(id=>document.getElementById(id).innerHTML='');
+    document.getElementById('count-chords').textContent='0';
+    document.getElementById('count-scales').textContent='0';
+    document.getElementById('count-cad').textContent='0';
+    return;
+  }
   const chords=analyzeChords(pcs);
   const scales=analyzeScales(pcs);
   const cads=analyzeCadences(pcs);
