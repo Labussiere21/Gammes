@@ -569,6 +569,7 @@ const CHORD_TYPES = [
   {id:'aug',     label:'Augmenté',      short:'+',     iv:[0,4,8], label_en:'Augmented'},
   {id:'sus2',    label:'Sus2',          short:'sus2',  iv:[0,2,7], label_en:'Sus2'},
   {id:'sus4',    label:'Sus4',          short:'sus4',  iv:[0,5,7], label_en:'Sus4'},
+  {id:'p5',      label:'Power 5',       short:'5',     iv:[0,7],   label_en:'Power 5'},
   {id:'maj7',    label:'Majeur 7',      short:'maj7',  iv:[0,4,7,11], label_en:'Major 7'},
   {id:'dom7',    label:'Dominant 7',    short:'7',     iv:[0,4,7,10], label_en:'Dominant 7'},
   {id:'min7',    label:'Mineur 7',      short:'m7',    iv:[0,3,7,10], label_en:'Minor 7'},
@@ -831,7 +832,7 @@ function analyzeChords(pcs){
       const matched=chordPcs.filter(pc=>userSet.has(pc)).length;
       const extra=[...userSet].filter(pc=>!chordSet.has(pc)).length;
       const coverage=matched/chordPcs.length;
-      if(coverage<0.5||matched<Math.min(2,userPcs.length)) continue;
+      if(userPcs.length<2 ? matched<1 : (coverage<0.5||matched<2)) continue;
       results.push({root,type,coverage,matched,total:chordPcs.length,extra,chordPcs,
         score:coverage-extra*0.12});
     }
