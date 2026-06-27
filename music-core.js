@@ -95,6 +95,8 @@
   /* ===== MODULE AUDIO (paramétrable par page) ===== */
   let _sfInst=null,_audioCtx=null,_audioLoading=false;
 
+  function stopAllAudio(){if(_sfInst)_sfInst.stop();}
+
   const NOTE_MAP_AUDIO={
     'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'E#':5,
     'F':5,'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,
@@ -128,6 +130,7 @@
   }
 
   async function playSequence(notes,bpm=80,oct=2){
+    stopAllAudio();
     const inst=await initAudio(); if(!inst)return;
     if(_audioCtx.state==='suspended') await _audioCtx.resume();
     const beat=60/bpm;
@@ -138,6 +141,7 @@
   }
 
   async function playChordNotes(notes,oct=2){
+    stopAllAudio();
     const inst=await initAudio(); if(!inst)return;
     if(_audioCtx.state==='suspended') await _audioCtx.resume();
     notes.forEach((n,i)=>{
@@ -232,6 +236,20 @@
     },
   };
 
+  /* ===== SCROLL-TO-TOP ===== */
+  function injectScrollToTop(){
+    const btn=document.createElement('button');
+    btn.id='scroll-to-top'; btn.title='Retour en haut'; btn.textContent='↑';
+    document.body.appendChild(btn);
+    window.addEventListener('scroll',()=>{
+      const vis=window.scrollY>300;
+      btn.style.opacity=vis?'1':'0';
+      btn.style.pointerEvents=vis?'auto':'none';
+    },{passive:true});
+    btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  }
+  document.addEventListener('DOMContentLoaded',injectScrollToTop);
+
   /* ===== EXPORT ===== */
   global.SB={
     currentLang,
@@ -252,6 +270,7 @@
     CHORD_INTERVALS,
     CHORD_LABEL,
     INSTRUMENTS,
+    stopAllAudio,
   };
 
 })(window);

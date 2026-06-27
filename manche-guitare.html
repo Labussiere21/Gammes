@@ -235,6 +235,13 @@
       <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
+          <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
+          <div class="seg" id="fb-strings-ctl" role="group">
+            <button data-str="6" class="on">6</button>
+            <button data-str="7">7</button>
+          </div>
+        </div>
+        <div>
           <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <select id="fb-tuning-ctl" class="tuning-sel"></select>
         </div>
@@ -356,7 +363,7 @@ function getNotationTable(ap){
 function spellNote(pc,ap){return getNotationTable(ap)[pc];}
 
 const DEGREE_COLORS=['#ff3333','#ff7a1a','#ffaa00','#ffe000','#8fd400','#2dc653','#00ccaa','#29b6ff','#3355ff','#9933ee','#dd33cc','#ff1a88'];
-const state={selectedNotes:new Map(),rootPc:null,accPref:'b',tuning:'standard',frets:12,hand:'right'};
+const state={selectedNotes:new Map(),rootPc:null,accPref:'b',strings:6,tuning:'standard',frets:12,hand:'right'};
 function getCurrentRoot(){const pcs=[...state.selectedNotes.keys()];if(state.rootPc!==null&&pcs.includes(state.rootPc))return state.rootPc;return pcs[0]??null;}
 function noteColor(pc){const r=getCurrentRoot();if(r===null)return DEGREE_COLORS[0];return DEGREE_COLORS[(pc-r+12)%12];}
 function toggleNote(pc){
@@ -378,22 +385,29 @@ function pretty(n){
 }
 
 /* Guitar tunings – 6 strings from low to high */
-const TUNINGS=[
-  {id:'standard',  label:'Standard',   notes:['E','A','D','G','B','E']},
-  {id:'drop_d',    label:'Drop D',     notes:['D','A','D','G','B','E']},
-  {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb','Bb','Eb']},
-  {id:'open_g',    label:'Open G',     notes:['D','G','D','G','B','D']},
-  {id:'open_d',    label:'Open D',     notes:['D','A','D','F#','A','D']},
-  {id:'drop_c',    label:'Drop C',     notes:['C','G','C','F','A','D']},
-  {id:'drop_b',    label:'Drop B',     notes:['B','F#','B','E','G#','C#']},
-  {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','F#','B']},
-  {id:'open_e',    label:'Open E',     notes:['E','B','E','G#','B','E']},
-];
+const TUNINGS={
+  6:[
+    {id:'standard',  label:'Standard',   notes:['E','A','D','G','B','E']},
+    {id:'drop_d',    label:'Drop D',     notes:['D','A','D','G','B','E']},
+    {id:'half_down', label:'½ ton bas',  notes:['Eb','Ab','Db','Gb','Bb','Eb']},
+    {id:'open_g',    label:'Open G',     notes:['D','G','D','G','B','D']},
+    {id:'open_d',    label:'Open D',     notes:['D','A','D','F#','A','D']},
+    {id:'drop_c',    label:'Drop C',     notes:['C','G','C','F','A','D']},
+    {id:'drop_b',    label:'Drop B',     notes:['B','F#','B','E','G#','C#']},
+    {id:'drop_a',    label:'Drop A',     notes:['A','E','A','D','F#','B']},
+    {id:'open_e',    label:'Open E',     notes:['E','B','E','G#','B','E']},
+  ],
+  7:[
+    {id:'standard7', label:'Standard 7', notes:['B','E','A','D','G','B','E']},
+  ],
+};
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
-function currentStrings(){const t=TUNINGS.find(t=>t.id===state.tuning)||TUNINGS[0];return t.notes.map(n=>({n,pc:pcOf_n(n)}));}
+function currentStrings(){const tuns=TUNINGS[state.strings]||TUNINGS[6];const t=tuns.find(t=>t.id===state.tuning)||tuns[0];return t.notes.map(n=>({n,pc:pcOf_n(n)}));}
 function buildTuningButtons(){
   const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';
-  TUNINGS.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.label+' ('+t.notes.join('-')+')';if(t.id===state.tuning)o.selected=true;c.appendChild(o);});
+  const tuns=TUNINGS[state.strings]||TUNINGS[6];
+  if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;
+  tuns.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.label+' ('+t.notes.join('-')+')';if(t.id===state.tuning)o.selected=true;c.appendChild(o);});
   c.onchange=()=>{state.tuning=c.value;render();};
 }
 
@@ -433,6 +447,7 @@ function render(){
   document.querySelectorAll('#piano .bkey').forEach(b=>{const pc=+b.dataset.pc,sel=state.selectedNotes.has(pc),col=sel?noteColor(pc):null;b.classList.toggle('sel',sel);b.style.background=col?`linear-gradient(180deg,${col},${col}99)`:''});
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
+  document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.getElementById('fb-tuning-ctl').value=state.tuning;
   document.querySelectorAll('.ng-cell').forEach(c=>{
     const pc=+c.dataset.pc,nm=spell(pc),al=enha(pc);
@@ -531,6 +546,7 @@ buildTuningButtons();
 buildNoteGrid();
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.frets=+b.dataset.frets;render();});
 document.getElementById('fb-hand').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
+document.getElementById('fb-strings-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=(TUNINGS[state.strings]||TUNINGS[6])[0].id;buildTuningButtons();render();});
 
 /* Notation / langue */
 const _ns=document.getElementById('notation-seg');

@@ -143,6 +143,17 @@ h1 em{font-style:italic; color:var(--brass)}
 .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
 .footer-ml.open{display:block}
 
+/* ===== SCROLL-TO-TOP ===== */
+#scroll-to-top{
+  position:fixed;bottom:24px;right:24px;width:40px;height:40px;
+  border-radius:50%;background:var(--brass);color:#1a1008;
+  border:none;font-size:18px;font-weight:700;line-height:40px;text-align:center;
+  cursor:pointer;opacity:0;pointer-events:none;
+  transition:opacity .2s,background .12s;
+  z-index:9999;
+}
+#scroll-to-top:hover{background:#e8b855;}
+
 /* ===== RESPONSIVE NAVIGATION ===== */
 @media(max-width:760px){
   .eyebrow{flex-wrap:wrap;height:auto;gap:6px;padding-bottom:4px}
