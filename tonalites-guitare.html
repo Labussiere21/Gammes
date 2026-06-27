@@ -16,7 +16,7 @@
 :root{
   --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
   --line:#3a2c1e; --wood-a:#5a3f26; --wood-b:#3a2415;
-  --brass:#d9a849; --brass-dim:#9c7a3a;
+  --brass:#bf1828; --brass-dim:#87111b;
   --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
   --d1:#e8503a; --d2:#f08a3c; --d3:#f2c14e; --d4:#4ecf8a;
   --d5:#5bc8f5; --d6:#b09af5; --d7:#f07ab8;
@@ -27,8 +27,8 @@ html{-webkit-text-size-adjust:100%}
 body{
   margin:0;
   background:
-    radial-gradient(1100px 550px at 80% -10%,rgba(217,168,73,.09),transparent 58%),
-    radial-gradient(800px 480px at -8% 105%,rgba(217,168,73,.06),transparent 52%),
+    radial-gradient(1100px 550px at 80% -10%,rgba(191,24,40,.12),transparent 58%),
+    radial-gradient(800px 480px at -8% 105%,rgba(191,24,40,.05),transparent 52%),
     var(--bg);
   color:var(--cream); font-family:"Hanken Grotesk",system-ui,sans-serif;
   line-height:1.5; -webkit-font-smoothing:antialiased;
@@ -39,10 +39,10 @@ body{
 header{margin-bottom:28px}
 .eyebrow{font-family:"Space Mono",monospace; letter-spacing:.18em; text-transform:uppercase; font-size:12px; color:var(--brass); display:flex; gap:12px; align-items:center; height:44px; flex-wrap:nowrap;}
 .site-name{font-weight:700; letter-spacing:.2em; font-size:22px}
-.site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; flex-wrap:nowrap; overflow:hidden;}
-.nav-link{font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:5px; transition:color .12s,background .12s; white-space:nowrap; font-weight:700;}
+.site-nav{display:flex; gap:2px; background:#0e0a07; border:1px solid var(--line); border-radius:8px; padding:3px; flex-shrink:0;}
+.nav-link{font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:5px 10px; border-radius:5px; transition:color .12s,background .12s; white-space:nowrap; font-weight:700; display:inline-block;}
 .nav-link:hover{color:var(--cream)}
-.nav-link.active{background:var(--brass); color:#160f08}
+.nav-link.active{background:var(--brass); color:#fff}
 h1{font-family:"Instrument Serif",serif; font-weight:400; font-size:clamp(38px,7vw,78px); line-height:.95; margin:.12em 0 .1em;}
 h1 em{font-style:italic; color:var(--brass)}
 .lede{color:var(--muted); max-width:60ch; font-size:clamp(14px,1.4vw,16px)}
@@ -83,12 +83,12 @@ h1 em{font-style:italic; color:var(--brass)}
 }
 .circle-btn:hover{border-color:var(--brass-dim); color:var(--brass); transform:translate(-50%,-50%) scale(1.08)}
 .circle-btn.active{
-  background:var(--brass); color:#160f08; border-color:var(--brass);
-  box-shadow:0 0 0 3px rgba(217,168,73,.35),0 4px 16px rgba(0,0,0,.6);
+  background:var(--brass); color:#fff; border-color:var(--brass);
+  box-shadow:0 0 0 3px rgba(191,24,40,.35),0 4px 16px rgba(0,0,0,.6);
   transform:translate(-50%,-50%) scale(1.12);
 }
 .circle-btn .cb-enhar{font-family:"Space Mono",monospace; font-size:9px; opacity:.6; font-style:normal}
-.circle-btn.active .cb-enhar{opacity:.5; color:#160f08}
+.circle-btn.active .cb-enhar{opacity:.5; color:#fff}
 
 .sig-arc{position:absolute; inset:0; border-radius:50%; pointer-events:none}
 
@@ -830,7 +830,7 @@ updateI18n();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span class="footer-copy">© 2025 ScalaSix</span>
+    <span class="footer-copy">© 2026 ScalaSix</span>
     <div class="footer-links">
       <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
       <span class="footer-sep">·</span>
