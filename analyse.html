@@ -890,7 +890,7 @@ function analyzeCadences(pcs){
       }
       const matched=cadRoots.filter(r=>userSet.has(r)).length;
       const coverage=matched/cadRoots.length;
-      if(coverage<0.67||matched<Math.min(2,pcs.length)) continue;
+      if(pcs.length<2 ? matched<1 : (coverage<0.67||matched<2)) continue;
       results.push({root,cad,coverage,matched,total:cadRoots.length});
     }
   }
