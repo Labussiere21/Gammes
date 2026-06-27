@@ -1766,8 +1766,10 @@ function categorizeVoicings(rootPc, intervals, ct) {
   const hasOpen=v=>v.some(x=>x&&x.f===0);
   const nPlayed=v=>v.filter(x=>x!==null).length;
   const loFret=v=>{const fs=v.filter(x=>x&&x.f>0).map(x=>x.f);return fs.length?Math.min(...fs):0;};
-  const addMK=v=>{if(mkSet.has(v))return;mkSet.add(v);mustKnow.push(v);};
-  const put=v=>{if(mkSet.has(v))return;if(hasOpen(v))open.push(v);else moveable.push(v);};
+  // Position fondamentale : la note de la corde jouée la plus grave doit être la fondamentale
+  const isRootBass=v=>{for(let i=0;i<v.length;i++){if(v[i]!==null)return v[i].pc===rootPc%12;}return false;};
+  const addMK=v=>{if(!isRootBass(v))return;if(mkSet.has(v))return;mkSet.add(v);mustKnow.push(v);};
+  const put=v=>{if(!isRootBass(v))return;if(mkSet.has(v))return;if(hasOpen(v))open.push(v);else moveable.push(v);};
 
   // DB positions → À connaître (authoritative, up to 4)
   db_pos.forEach(v=>{if(mustKnow.length<4)addMK(v);else put(v);});
