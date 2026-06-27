@@ -831,7 +831,7 @@ function analyzeChords(pcs){
       const matched=chordPcs.filter(pc=>userSet.has(pc)).length;
       const extra=[...userSet].filter(pc=>!chordSet.has(pc)).length;
       const coverage=matched/chordPcs.length;
-      if(coverage<0.5||matched<2) continue;
+      if(coverage<0.5||matched<Math.min(2,userPcs.length)) continue;
       results.push({root,type,coverage,matched,total:chordPcs.length,extra,chordPcs,
         score:coverage-extra*0.12});
     }
@@ -890,7 +890,7 @@ function analyzeCadences(pcs){
       }
       const matched=cadRoots.filter(r=>userSet.has(r)).length;
       const coverage=matched/cadRoots.length;
-      if(coverage<0.67||matched<2) continue;
+      if(coverage<0.67||matched<Math.min(2,pcs.length)) continue;
       results.push({root,cad,coverage,matched,total:cadRoots.length});
     }
   }
@@ -911,7 +911,7 @@ function renderResults(){
   const pcs=[...getPcsForAnalysis().keys()];
   const rz=document.getElementById('results-zone');
   rz.style.display='';
-  if(pcs.length<2){
+  if(!pcs.length){
     ['tab-chords','tab-scales','tab-cadences'].forEach(id=>document.getElementById(id).innerHTML='');
     document.getElementById('count-chords').textContent='0';
     document.getElementById('count-scales').textContent='0';
