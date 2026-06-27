@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" href="img/logoonglet.png">
 <link rel="apple-touch-icon" href="img/logoonglet.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gammes de guitare : modes sur le manche | ScalaBass</title>
+<title>Gammes de guitare : modes sur le manche | ScalaSix</title>
 <meta name="description" content="Visualise les gammes et modes sur le manche de guitare 6 cordes : modes diatoniques, notes, degrés, accords et lecture audio. Notation Do Ré Mi ou A B C.">
 <meta name="keywords" content="gammes guitare, modes guitare, gamme guitare électrique, manche guitare, théorie musicale guitare">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/gammes-guitare.html">
@@ -508,22 +508,22 @@
   .footer-ml.open{display:block}</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Gammes de guitare : modes sur le manche | ScalaBass">
+<meta property="og:title" content="Gammes de guitare : modes sur le manche | ScalaSix">
 <meta property="og:description" content="Visualise les gammes et modes sur le manche de guitare 6 cordes : notes, degrés, accords diatoniques et lecture audio.">
 <meta property="og:url" content="https://labussiere21.github.io/Gammes/gammes-guitare.html">
 <meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
-<meta property="og:site_name" content="ScalaBass">
+<meta property="og:site_name" content="ScalaSix">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gammes de guitare : modes sur le manche | ScalaBass">
+<meta name="twitter:title" content="Gammes de guitare : modes sur le manche | ScalaSix">
 <meta name="twitter:description" content="Visualise les gammes et modes sur le manche de guitare 6 cordes : notes, degrés, accords diatoniques et lecture audio.">
 <meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ScalaBass — Gammes de guitare",
+  "name": "ScalaSix — Gammes de guitare",
   "description": "Visualise les gammes et modes sur le manche de guitare 6 cordes : notes, degrés, accords diatoniques et lecture audio.",
   "url": "https://labussiere21.github.io/Gammes/gammes-guitare.html",
   "applicationCategory": "EducationalApplication",
@@ -548,9 +548,9 @@
   <div class="chord-tooltip" id="chord-tooltip"></div>
 
   <header>
-    <div style="text-align:center;margin-bottom:8px"><img src="img/logoguitare.png" alt="ScalaGuitare" style="height:80px;display:inline-block"></div>
+    <div style="text-align:center;margin-bottom:8px"><img src="img/logoguitare.png" alt="ScalaSix" style="height:80px;display:inline-block"></div>
     <div class="eyebrow">
-      <span class="site-name">ScalaBass</span>
+      <span class="site-name">ScalaSix</span>
       <nav class="site-nav">
         <a href="manche-guitare.html"  class="nav-link">Manche</a>
         <a href="gammes-guitare.html"  class="nav-link active">Gammes</a>
@@ -559,6 +559,7 @@
         <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
         <a href="cadences.html"        class="nav-link">Cadences</a>
         <a href="analyse-guitare.html" class="nav-link">Analyse</a>
+        <a href="tonalites-guitare.html" class="nav-link">Tonalités</a>
       </nav>
       <div class="header-tools">
         <div class="htool-seg" id="notation-seg">
@@ -1916,7 +1917,7 @@ function updateMeta(){
   const noteCap = noteRaw[0].toUpperCase() + noteRaw.slice(1)
     .replace('#','♯').replace('b','♭');
   const label = SCALE_LABELS_FR[state.scaleId] || state.scaleId;
-  const title = `Gamme de ${noteCap} ${label} à la guitare : notes et manche | ScalaBass`;
+  const title = `Gamme de ${noteCap} ${label} à la guitare : notes et manche | ScalaSix`;
   const desc  = `Gamme de ${noteCap} ${label} sur le manche de guitare : notes, degrés, `
     + `intervalles, accords diatoniques et lecture audio. Visualise les positions et improvise.`;
   document.title = title;
@@ -2000,7 +2001,7 @@ render();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span class="footer-copy">© 2025 ScalaBass</span>
+    <span class="footer-copy">© 2025 ScalaSix</span>
     <div class="footer-links">
       <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
       <span class="footer-sep">·</span>
@@ -2011,7 +2012,7 @@ render();
     <strong style="color:var(--cream)">Mentions légales</strong><br>
     Éditeur : Nicolas Boudras &mdash; contact@scalabass.com<br>
     Hébergement : GitHub Pages (GitHub Inc., San Francisco, CA, USA)<br>
-    ScalaBass est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
+    ScalaSix est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
     Les préférences d'affichage (notation, langue) sont stockées localement dans votre navigateur (localStorage).
   </div>
 </footer></body>

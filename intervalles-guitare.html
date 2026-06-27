@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" href="img/logoonglet.png">
 <link rel="apple-touch-icon" href="img/logoonglet.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intervalles à la guitare : tierce, quinte, octave | ScalaBass</title>
+<title>Intervalles à la guitare : tierce, quinte, octave | ScalaSix</title>
 <meta name="description" content="Visualise tous les intervalles sur le manche de guitare : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
 <meta name="keywords" content="intervalles guitare, tierce guitare, quinte guitare, octave guitare, distance notes guitare, théorie intervalle guitare">
 <link rel="canonical" href="https://labussiere21.github.io/Gammes/intervalles-guitare.html">
@@ -336,21 +336,21 @@
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}</style>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Intervalles à la guitare : tierce, quinte, octave | ScalaBass">
+<meta property="og:title" content="Intervalles à la guitare : tierce, quinte, octave | ScalaSix">
 <meta property="og:description" content="Visualise tous les intervalles sur le manche de guitare : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
 <meta property="og:url" content="https://labussiere21.github.io/Gammes/intervalles-guitare.html">
 <meta property="og:image" content="https://labussiere21.github.io/Gammes/og-image.png">
-<meta property="og:site_name" content="ScalaBass">
+<meta property="og:site_name" content="ScalaSix">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Intervalles à la guitare : tierce, quinte, octave | ScalaBass">
+<meta name="twitter:title" content="Intervalles à la guitare : tierce, quinte, octave | ScalaSix">
 <meta name="twitter:description" content="Visualise tous les intervalles sur le manche de guitare : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.">
 <meta name="twitter:image" content="https://labussiere21.github.io/Gammes/og-image.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ScalaBass — Intervalles Guitare",
+  "name": "ScalaSix — Intervalles Guitare",
   "description": "Visualise tous les intervalles sur le manche de guitare : seconde, tierce, quarte, quinte, sixte, septième, octave. Comprends la distance entre deux notes.",
   "url": "https://labussiere21.github.io/Gammes/intervalles-guitare.html",
   "applicationCategory": "EducationalApplication",
@@ -372,9 +372,9 @@
   </div>
 
   <header>
-    <div style="text-align:center;margin-bottom:8px"><img src="img/logoguitare.png" alt="ScalaGuitare" style="height:80px;display:inline-block"></div>
+    <div style="text-align:center;margin-bottom:8px"><img src="img/logoguitare.png" alt="ScalaSix" style="height:80px;display:inline-block"></div>
     <div class="eyebrow">
-      <span class="site-name">ScalaBass</span>
+      <span class="site-name">ScalaSix</span>
       <nav class="site-nav">
         <a href="manche-guitare.html"       class="nav-link">Manche</a>
         <a href="gammes-guitare.html"       class="nav-link">Gammes</a>
@@ -383,6 +383,7 @@
         <a href="intervalles-guitare.html"  class="nav-link active">Intervalles</a>
         <a href="cadences.html"             class="nav-link">Cadences</a>
         <a href="analyse-guitare.html"  class="nav-link">Analyse</a>
+        <a href="tonalites-guitare.html" class="nav-link">Tonalités</a>
       </nav>
       <div class="header-tools">
         <div class="htool-seg" id="notation-seg">
@@ -539,7 +540,7 @@ const _TR={
     lbl_fondamentale:'Fondamentale',lbl_alteration:'Altération',lbl_gamme_opt:'Gamme (optionnel)',lbl_iv_label:'Intervalle',
     lbl_recap:'Récapitulatif des intervalles',lbl_th_symbole:'Symbole',lbl_th_nom:'Nom',lbl_th_tons:'Tons',lbl_accordage:'Accordage',
     lbl_iv_title:'Intervalle',lbl_sur_manche:'Sur le manche',
-    doc_title:'Intervalles Guitare — ScalaBass',
+    doc_title:'Intervalles Guitare — ScalaSix',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -559,7 +560,7 @@ const _TR={
     lbl_fondamentale:'Root',lbl_alteration:'Accidental',lbl_gamme_opt:'Scale (optional)',lbl_iv_label:'Interval',
     lbl_recap:'Interval summary',lbl_th_symbole:'Symbol',lbl_th_nom:'Name',lbl_th_tons:'Tones',lbl_accordage:'Tuning',
     lbl_iv_title:'Interval',lbl_sur_manche:'On the fretboard',
-    doc_title:'Guitar Intervals — ScalaBass',
+    doc_title:'Guitar Intervals — ScalaSix',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -1043,7 +1044,7 @@ updateI18n();
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span class="footer-copy">© 2025 ScalaBass</span>
+    <span class="footer-copy">© 2025 ScalaSix</span>
     <div class="footer-links">
       <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
       <span class="footer-sep">·</span>
@@ -1054,7 +1055,7 @@ updateI18n();
     <strong style="color:var(--cream)">Mentions légales</strong><br>
     Éditeur : Nicolas Boudras &mdash; contact@scalabass.com<br>
     Hébergement : GitHub Pages (GitHub Inc., San Francisco, CA, USA)<br>
-    ScalaBass est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
+    ScalaSix est un outil gratuit d'apprentissage musical, sans collecte de données personnelles.<br>
     Les préférences d'affichage (notation, langue) sont stockées localement dans votre navigateur (localStorage).
   </div>
 </footer></body>
