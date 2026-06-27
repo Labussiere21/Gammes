@@ -406,7 +406,7 @@
         <a href="intervalles.html"   class="nav-link active">Intervalles</a>
         <a href="cadences.html"      class="nav-link">Cadences</a>
         <a href="analyse.html"       class="nav-link">Analyse</a>
-        <a href="quintes.html"       class="nav-link">Quintes</a>
+        <a href="quintes.html"       class="nav-link">Tonalités</a>
       </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -584,7 +584,7 @@ const _TR={
     lbl_clic_notes:'Cliquez des notes sur le piano ou le manche',
     lbl_tab_acc:'Accords',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
     lbl_effacer:'Effacer',lbl_partager:'🔗 Partager',
-    lbl_cercle:'Cercle des quintes',
+    lbl_cercle:'Index des tonalités',
     lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
     lbl_rel_min:'Relative mineure',lbl_par_min:'Parallèle mineure',
     lbl_sdom:'Sous-dominante (IV)',lbl_dom:'Dominante (V)',
@@ -617,7 +617,7 @@ const _TR={
     lbl_clic_notes:'Click notes on the piano or fretboard',
     lbl_tab_acc:'Chords',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
     lbl_effacer:'Clear',lbl_partager:'🔗 Share',
-    lbl_cercle:'Circle of fifths',
+    lbl_cercle:'Key Index',
     lbl_tab_modes:'Modes',lbl_tab_rel:'Relatives',
     lbl_rel_min:'Relative minor',lbl_par_min:'Parallel minor',
     lbl_sdom:'Subdominant (IV)',lbl_dom:'Dominant (V)',
@@ -923,8 +923,8 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Quintes'},
-    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Circle of 5ths'},
+    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Tonalités'},
+    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Key Index'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
