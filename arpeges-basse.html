@@ -787,12 +787,15 @@ const GROUPS = [
   {label:'Tierce Majeure', label_en:'Major third', arps:[
     {id:'maj',    label:'Majeur',         label_en:'Major',       sub:'',     iv:[0,4,7],        sym:'',      posType:'maj'},
     {id:'maj7',   label:'Majeur 7',       label_en:'Major 7',     sub:'Δ7',   iv:[0,4,7,11],     sym:'maj7',  posType:'maj'},
+    {id:'maj9',   label:'Majeur 9',       label_en:'Major 9',     sub:'Δ9',   iv:[0,4,7,11,2],   sym:'maj9',  posType:'maj'},
     {id:'dom7',   label:'Dominant 7',     label_en:'Dominant 7',  sub:'7',    iv:[0,4,7,10],     sym:'7',     posType:'maj'},
+    {id:'9',      label:'Dominant 9',     label_en:'Dominant 9',  sub:'9',    iv:[0,4,7,10,2],   sym:'9',     posType:'maj'},
     {id:'maj6',   label:'Majeur 6',       label_en:'Major 6',     sub:'6',    iv:[0,4,7,9],      sym:'6',     posType:'maj'},
   ]},
   {label:'Tierce mineure', label_en:'Minor third', arps:[
     {id:'min',    label:'Mineur',         label_en:'Minor',       sub:'m',    iv:[0,3,7],        sym:'m',     posType:'min'},
     {id:'min7',   label:'Mineur 7',       label_en:'Minor 7',     sub:'m7',   iv:[0,3,7,10],     sym:'m7',    posType:'min'},
+    {id:'m9',     label:'Mineur 9',       label_en:'Minor 9',     sub:'m9',   iv:[0,3,7,10,2],   sym:'m9',    posType:'min'},
     {id:'min6',   label:'Mineur 6',       label_en:'Minor 6',     sub:'m6',   iv:[0,3,7,9],      sym:'m6',    posType:'min'},
     {id:'minmaj7',label:'Mineur Maj7',    label_en:'Minor Maj7',  sub:'mΔ7',  iv:[0,3,7,11],     sym:'mMaj7', posType:'min'},
   ]},
@@ -867,6 +870,9 @@ const ARPEGE_DESC = {
   'halfdim':  '<p>L\'arpège <strong>demi-diminué</strong> (ø) est central dans les progressions jazz en mineur sur le degré ii. Sa quinte diminuée et sa septième mineure créent une tension qui appelle la résolution vers le V7 puis l\'Im. Indispensable pour les cadences ii°–V7–Im.</p>',
   'dim7':     '<p>L\'arpège <strong>diminué 7</strong> divise l\'octave en 4 parties égales. Sa symétrie parfaite lui permet de se résoudre vers 4 toniques différentes — 3 formes couvrent les 12 toniques. Très utilisé en jazz et musique classique pour des passages chromatiques et dramatiques.</p>',
   'dom7b5':   '<p>L\'arpège <strong>7♭5</strong> combine tierce majeure, quinte diminuée et septième mineure. Sa quinte bémol crée un second triton, intensifiant la tension de dominante. Interchangeable avec le V7 d\'une tonique à distance de triton (substitution), c\'est un outil clé de la réharmonisation jazz.</p>',
+  'maj9':     '<p>L\'arpège <strong>majeur 9</strong> étend la triade majeure avec la septième majeure et la neuvième. Sa couleur lumineuse et ouverte est au cœur du jazz contemporain, de la bossa nova et de la pop sophistiquée. Sur la basse, la neuvième ajoute de la fluidité mélodique aux lignes de walking bass sur les degrés I et IV.</p>',
+  'm9':       '<p>L\'arpège <strong>mineur 9</strong> enrichit la triade mineure d\'une septième mineure et d\'une neuvième, créant une palette sonore douce et mélancolique. Incontournable en jazz, soul et R&B, il offre de nombreuses possibilités pour des lignes de basse expressives et des ornements mélodiques.</p>',
+  '9':        '<p>L\'arpège de <strong>dominante 9</strong> cumule le triton de la dominante 7 et la neuvième, décuplant la tension harmonique. Sa résolution vers la tonique est encore plus forte qu\'avec la simple 7. C\'est l\'arpège de référence pour les lignes de basse blues et funk sophistiquées, sur le degré V.</p>',
 };
 
 function isDarkColorArp(hex){
