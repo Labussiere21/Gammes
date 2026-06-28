@@ -1327,7 +1327,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
   }
   const S = 28; // string spacing
   const F = 28; // fret spacing
-  const PL = 20; const PT = 38; const PB = 10;
+  const PL = 24; const PT = 38; const PB = 10;
   const nFrets = 5;
   const W = PL * 2 + 5 * S;
   const H = PT + nFrets * F + PB;
@@ -1364,9 +1364,9 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
       svg += `<line x1="${PL}" y1="${y}" x2="${PL+5*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
   }
-  // Fret number (right side to avoid overlapping dots)
+  // Fret number (left side — standard convention, avoids right-edge clipping)
   if (!showNut) {
-    svg += `<text x="${PL+5*S+10}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${startFret+1}</text>`;
+    svg += `<text x="${PL-5}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end" dominant-baseline="central">${startFret+1}</text>`;
   }
   // Inlay dots
   const INLAYS = [3,5,7,9,12,15,17,19];
