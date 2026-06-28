@@ -138,6 +138,45 @@ h1 em{font-style:italic;color:var(--brass)}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-family:"Space Mono",monospace}
 .leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 
+/* Fretboard */
+.seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+.seg button{font-family:"Space Mono",monospace;font-size:13px;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:7px 13px;border-radius:7px;transition:.12s;white-space:nowrap}
+.seg button:hover{color:var(--cream)}
+.seg button.on{background:var(--brass);color:#160f08;font-weight:700}
+.fb-section{margin-top:30px;background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px clamp(14px,2.4vw,24px);box-shadow:0 24px 60px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03)}
+.fb-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.fb-head h2{font-family:"Space Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-2);margin:0}
+.fb-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.fb-scroll{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.fretboard{--fret-w:54px;--open-w:40px;--label-w:28px;min-width:max-content}
+.fb-strings{background:linear-gradient(180deg,#3a2510,#201408);border:1px solid #100a04;border-radius:5px;overflow:hidden;box-shadow:inset 0 2px 14px rgba(0,0,0,.55),0 16px 40px -30px #000;position:relative}
+.fb-row{display:flex;align-items:center;height:42px;position:relative}
+.fb-row+.fb-row{border-top:1px solid rgba(0,0,0,.4)}
+.fb-row::after{content:"";position:absolute;left:var(--label-w);right:0;top:50%;height:var(--str-h,2px);transform:translateY(-50%);background:linear-gradient(180deg,rgba(255,255,255,.45),var(--brass-dim) 45%,rgba(0,0,0,.4));z-index:1;pointer-events:none}
+.str-label{width:var(--label-w);flex:none;text-align:center;z-index:4;font-family:"Space Mono",monospace;font-weight:700;font-size:11px;color:var(--muted)}
+.cell{width:var(--fret-w);flex:none;height:100%;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;border-right:2px solid rgba(20,12,5,.9);box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}
+.cell.open{width:var(--open-w);border-right:0;box-shadow:none}
+.cell.nut-after::after{content:"";position:absolute;right:-1px;top:-1px;bottom:-1px;width:5px;background:linear-gradient(90deg,#efe6d3,#c8bb9c);z-index:3;border-radius:1px}
+.cell.in-box{background:rgba(217,168,73,.12);box-shadow:inset -1px 0 0 rgba(255,255,255,.04),inset 0 0 0 100px rgba(217,168,73,.06)}
+.dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-weight:700;font-size:11px;color:#100608;box-shadow:0 3px 8px rgba(0,0,0,.5);position:relative;z-index:3;animation:fbpop .16s ease both}
+@keyframes fbpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.dot.root{box-shadow:0 0 0 3px rgba(255,255,255,.85),0 3px 8px rgba(0,0,0,.6)}
+.fb-inlays{display:flex;margin-top:6px}
+.fb-inlays .spacer{width:var(--label-w);flex:none}
+.fb-inlays .ic{width:var(--fret-w);flex:none;display:flex;flex-direction:column;align-items:center;gap:4px}
+.fb-inlays .ic.open{width:var(--open-w)}
+.fb-inlays .inlay{width:7px;height:7px;border-radius:50%;background:var(--bone);opacity:.7}
+.fb-inlays .fnum{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted-2)}
+.fretboard.lefty .fb-row{flex-direction:row-reverse}
+.fretboard.lefty .fb-inlays{flex-direction:row-reverse}
+.fretboard.lefty .cell.nut-after::after{right:auto;left:-1px;background:linear-gradient(270deg,#efe6d3,#c8bb9c)}
+.fretboard.lefty .str-label{order:1}
+.pos-nav{display:flex;align-items:center;gap:6px}
+.pos-nav button{width:32px;height:32px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--cream);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+.pos-nav button:hover:not(:disabled){border-color:var(--brass-dim);color:var(--brass)}
+.pos-nav button:disabled{opacity:.28;cursor:default}
+.pos-counter{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--muted);min-width:52px;text-align:center}
+
 /* Family hint */
 .family-hint{font-size:13px;font-style:italic;color:var(--muted);line-height:1.65;padding:9px 13px;background:rgba(217,168,73,.06);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;margin-top:10px;display:none}
 .family-hint.visible{display:block}
@@ -241,6 +280,47 @@ h1 em{font-style:italic;color:var(--brass)}
   <div class="legend" id="iv-legend"></div>
 </section>
 
+<section class="fb-section">
+  <div class="fb-head">
+    <h2 id="lbl-sur-manche">Sur le manche</h2>
+    <div class="fb-tools">
+      <div>
+        <div class="ctl-label" id="lbl-afficher">Afficher</div>
+        <div class="seg" id="fb-display">
+          <button data-disp="note" class="on" id="fb-btn-note">Notes</button>
+          <button data-disp="deg" id="fb-btn-deg">Degrés</button>
+          <button data-disp="fingering" id="fb-btn-dgt">Doigtés</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctl-label" id="lbl-cordes">Cordes</div>
+        <div class="seg" id="fb-strings-ctl"><button class="on">4</button></div>
+      </div>
+      <div>
+        <div class="ctl-label" id="lbl-cases">Cases</div>
+        <div class="seg" id="fb-frets-ctl">
+          <button data-frets="12" class="on">12</button>
+          <button data-frets="15">15</button>
+          <button data-frets="24">24</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctl-label" id="lbl-main">Main</div>
+        <div class="seg" id="fb-hand">
+          <button data-hand="right" class="on" id="fb-btn-right">🤜 Droitier</button>
+          <button data-hand="left" id="fb-btn-left">Gaucher 🤛</button>
+        </div>
+      </div>
+      <div style="flex-basis:100%;height:0"></div>
+      <div>
+        <div class="ctl-label" id="lbl-position">Position</div>
+        <div class="seg" id="fb-position"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fb-scroll"><div class="fretboard" id="fretboard"></div></div>
+</section>
+
 </div>
 
 <script>
@@ -256,6 +336,7 @@ const state={
   notation: localStorage.getItem('sbnot')||'en',
   lang:     localStorage.getItem('sblang')||'fr',
   diagramMode:'degree', hand:'right',
+  display:'note', frets:12,
   selCard:0,
 };
 
@@ -286,6 +367,7 @@ const TR={
     lbl_droitier:'🤜 Droitier',lbl_gaucher:'Gaucher 🤛',
     lbl_jouer:'▶ Jouer',lbl_stop:'■ Stop',
     lbl_positions:'Positions',
+    lbl_sur_manche:'Sur le manche',lbl_afficher:'Afficher',lbl_cordes:'Cordes',lbl_cases:'Cases',lbl_main:'Main',lbl_position:'Position',
     lbl_select:'Sélectionne un accord ci-dessus…',
     lbl_no_voicings:'Aucune position trouvée.',
     lbl_lede:"Sélectionne une tonique et un type d'accord : positions sur le manche de basse 4 cordes.",
@@ -303,6 +385,7 @@ const TR={
     lbl_droitier:'🤜 Right-handed',lbl_gaucher:'Left-handed 🤛',
     lbl_jouer:'▶ Play',lbl_stop:'■ Stop',
     lbl_positions:'Positions',
+    lbl_sur_manche:'On the fretboard',lbl_afficher:'Display',lbl_cordes:'Strings',lbl_cases:'Frets',lbl_main:'Hand',lbl_position:'Position',
     lbl_select:'Select a chord above…',
     lbl_no_voicings:'No position found.',
     lbl_lede:'Select a root note and chord type: positions on the 4-string bass fretboard.',
@@ -340,6 +423,17 @@ function updateI18n(){
   document.getElementById('btn-dgt').textContent=t('lbl_dgt');
   document.getElementById('btn-right').textContent=t('lbl_droitier');
   document.getElementById('btn-left').textContent=t('lbl_gaucher');
+  document.getElementById('fb-btn-note').textContent=t('lbl_note_btn');
+  document.getElementById('fb-btn-deg').textContent=t('lbl_deg');
+  document.getElementById('fb-btn-dgt').textContent=t('lbl_dgt');
+  document.getElementById('fb-btn-right').textContent=t('lbl_droitier');
+  document.getElementById('fb-btn-left').textContent=t('lbl_gaucher');
+  document.getElementById('lbl-sur-manche').textContent=t('lbl_sur_manche');
+  document.getElementById('lbl-afficher').textContent=t('lbl_afficher');
+  document.getElementById('lbl-cordes').textContent=t('lbl_cordes');
+  document.getElementById('lbl-cases').textContent=t('lbl_cases');
+  document.getElementById('lbl-main').textContent=t('lbl_main');
+  document.getElementById('lbl-position').textContent=t('lbl_position');
   const pb=document.getElementById('play-all-btn');
   if(!pb.classList.contains('playing'))pb.textContent=t('lbl_jouer');
   document.getElementById('diagrams-title').textContent=t('lbl_positions');
@@ -850,7 +944,7 @@ function renderDiagrams(voicings,cd){
   voicings.forEach(({v,label},idx)=>{
     const card=document.createElement('div');
     card.className='diagram-card'+(idx===state.selCard?' selected':'');
-    card.addEventListener('click',()=>{state.selCard=idx;renderDiagrams(voicings,cd);});
+    card.addEventListener('click',()=>{state.selCard=idx;renderDiagrams(voicings,cd);renderFretboard(cd);});
     const svgHtml=makeSVG(v,state.diagramMode);
     card.innerHTML=`<div class="diag-label">${label}</div><div>${svgHtml}</div><button class="diag-play" title="Jouer">▶</button>`;
     card.querySelector('.diag-play').addEventListener('click',e=>{e.stopPropagation();playVoicing(v);});
@@ -869,6 +963,86 @@ function renderDiagrams(voicings,cd){
   });
 }
 
+/* ===== FRETBOARD ===== */
+const BASS_STRING_NAMES=['E','A','D','G'];
+
+function buildPositionButtons(n){
+  const c=document.getElementById('fb-position');if(!c)return;
+  c.innerHTML='';
+  if(!n){return;}
+  if(state.selCard>=n)state.selCard=0;
+  const pos=state.selCard+1;
+  const wrap=document.createElement('div');wrap.className='pos-nav';
+  const prev=document.createElement('button');prev.textContent='←';prev.disabled=pos<=1;
+  prev.onclick=()=>{state.selCard=Math.max(0,state.selCard-1);renderDiagrams(_voicings,chordDef());renderFretboard(chordDef());};
+  const ctr=document.createElement('span');ctr.className='pos-counter';ctr.textContent=pos+' / '+n;
+  const next=document.createElement('button');next.textContent='→';next.disabled=pos>=n;
+  next.onclick=()=>{state.selCard=Math.min(n-1,state.selCard+1);renderDiagrams(_voicings,chordDef());renderFretboard(chordDef());};
+  wrap.appendChild(prev);wrap.appendChild(ctr);wrap.appendChild(next);c.appendChild(wrap);
+}
+
+function renderFretboard(cd){
+  const fb=document.getElementById('fretboard');if(!fb)return;
+  fb.innerHTML='';
+  fb.classList.toggle('lefty',state.hand==='left');
+  buildPositionButtons(_voicings.length);
+  if(!cd||!_voicings.length)return;
+
+  const entry=_voicings[Math.min(state.selCard,_voicings.length-1)];
+  const voicing=entry?entry.v:null;
+  if(!voicing)return;
+  const pcToIv={};cd.iv.forEach(iv=>{pcToIv[(state.rootPc+iv)%12]=iv;});
+  const highlightSet=new Set();
+  const mutedStrings=new Set();
+  voicing.forEach((x,s)=>{if(x){highlightSet.add(s+':'+x.f);pcToIv[x.pc]=x.iv;}else{mutedStrings.add(s);}});
+  const fingering=computeFingers(voicing);
+  const nonOpen=voicing.filter(x=>x&&x.f>0);
+  let box={start:0,end:3};
+  if(nonOpen.length){const minF=Math.min(...nonOpen.map(x=>x.f));const maxF=Math.max(...nonOpen.map(x=>x.f));box={start:Math.max(0,minF-1),end:maxF+1};}
+  const fCount=Math.min(24,Math.max(state.frets,box.end));
+  const dispPcs=[...OPC].reverse();
+  const dispNames=[...BASS_STRING_NAMES].reverse();
+  const strDiv=document.createElement('div');strDiv.className='fb-strings';
+
+  dispPcs.forEach((sPc,di)=>{
+    const origIdx=3-di;
+    const th=(1.3+di*.45).toFixed(1);
+    const row=document.createElement('div');row.className='fb-row';row.style.setProperty('--str-h',th+'px');
+    const lab=document.createElement('div');lab.className='str-label';
+    if(mutedStrings.has(origIdx)){lab.innerHTML='<span style="display:block;font-size:9px;color:var(--muted-2)">'+dispNames[di]+'</span><span style="display:block;color:#e8503a;font-size:13px;line-height:1;font-weight:700">×</span>';}
+    else{lab.textContent=dispNames[di];}
+    row.appendChild(lab);
+    for(let f=0;f<=fCount;f++){
+      const inBox=box&&f>=box.start&&f<=box.end;
+      const cell=document.createElement('div');cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
+      const pc=(sPc+f)%12;
+      const iv=pcToIv[pc];
+      if(iv!==undefined&&highlightSet.has(origIdx+':'+f)){
+        const d=document.createElement('div');d.className='dot'+(iv===0?' root':'');
+        const col=IV_COLOR[iv]||'#d9a849';d.style.background=col;d.style.color=isDark(col)?'#ece1cd':'#100608';
+        if(state.display==='fingering')d.textContent=fingering[origIdx]>0?String(fingering[origIdx]):'';
+        else d.textContent=state.display==='note'?spellPc(pc):ivLbl(iv);
+        cell.appendChild(d);
+      }
+      row.appendChild(cell);
+    }
+    strDiv.appendChild(row);
+  });
+  fb.appendChild(strDiv);
+
+  const inl=document.createElement('div');inl.className='fb-inlays';
+  inl.appendChild(Object.assign(document.createElement('div'),{className:'spacer'}));
+  const SINGLE=[3,5,7,9,15,17,19,21],DOUBLE=[12,24];
+  for(let f=0;f<=fCount;f++){
+    const ic=document.createElement('div');ic.className='ic'+(f===0?' open':'');
+    if(DOUBLE.includes(f)){const dbl=document.createElement('div');dbl.style.cssText='display:flex;gap:5px';dbl.innerHTML='<div class="inlay"></div><div class="inlay"></div>';ic.appendChild(dbl);}
+    else if(SINGLE.includes(f)){const a=document.createElement('div');a.className='inlay';ic.appendChild(a);}
+    else{const a=document.createElement('div');a.style.height='7px';ic.appendChild(a);}
+    const num=document.createElement('div');num.className='fnum';num.textContent=f===0?'0':f;ic.appendChild(num);inl.appendChild(ic);
+  }
+  fb.appendChild(inl);
+}
+
 /* ===== MAIN RENDER ===== */
 function render(){
   const cd=chordDef();
@@ -884,6 +1058,7 @@ function render(){
   renderChordInfo(cd);
   _voicings=cd?computeVoicings(state.rootPc,cd.id,cd.iv):[];
   renderDiagrams(_voicings,cd);
+  renderFretboard(cd);
   updateI18n();
 }
 
@@ -905,12 +1080,33 @@ document.getElementById('diag-mode-seg').addEventListener('click',e=>{
   state.diagramMode=b.dataset.mode;
   document.querySelectorAll('#diag-mode-seg button').forEach(x=>x.classList.toggle('on',x===b));
   renderDiagrams(_voicings,chordDef());
+  renderFretboard(chordDef());
 });
 document.getElementById('diag-hand-seg').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||!b.dataset.dhand)return;
   state.hand=b.dataset.dhand;
   document.querySelectorAll('#diag-hand-seg button').forEach(x=>x.classList.toggle('on',x===b));
   renderDiagrams(_voicings,chordDef());
+  renderFretboard(chordDef());
+});
+document.getElementById('fb-display').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.disp)return;
+  state.display=b.dataset.disp;
+  document.querySelectorAll('#fb-display button').forEach(x=>x.classList.toggle('on',x===b));
+  renderFretboard(chordDef());
+});
+document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.frets)return;
+  state.frets=+b.dataset.frets;
+  document.querySelectorAll('#fb-frets-ctl button').forEach(x=>x.classList.toggle('on',x===b));
+  renderFretboard(chordDef());
+});
+document.getElementById('fb-hand').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.hand)return;
+  state.hand=b.dataset.hand;
+  document.querySelectorAll('#fb-hand button,#diag-hand-seg button').forEach(x=>x.classList.toggle('on',(x.dataset.hand||x.dataset.dhand)===state.hand));
+  renderDiagrams(_voicings,chordDef());
+  renderFretboard(chordDef());
 });
 document.getElementById('play-all-btn').addEventListener('click',playAll);
 
