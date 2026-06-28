@@ -132,13 +132,7 @@ h1 em{font-style:italic;color:var(--brass)}
 .legend-item{display:flex;align-items:center;gap:5px;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted)}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-/* Golden rules + family hint */
-.golden-rules{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 18px;margin-bottom:14px}
-.golden-rules summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--brass);letter-spacing:.04em;user-select:none;list-style:none}
-.golden-rules summary::-webkit-details-marker{display:none}
-.golden-rules[open] summary{margin-bottom:10px}
-.rule-item{font-size:13px;line-height:1.72;color:#b8b8cc;padding:7px 0;border-top:1px solid var(--line)}
-.rule-item:first-child{border-top:none;padding-top:0}
+/* Family hint */
 .family-hint{font-size:13px;font-style:italic;color:var(--muted);line-height:1.65;padding:9px 13px;background:rgba(217,168,73,.06);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;margin-top:10px;display:none}
 .family-hint.visible{display:block}
 
@@ -208,14 +202,6 @@ h1 em{font-style:italic;color:var(--brass)}
     <div class="chord-badge"><span id="badge-root">C</span><span class="sym-part" id="badge-sym"></span></div>
     <div class="formula-bar" id="formula-bar"></div>
   </div>
-  <details class="golden-rules" id="golden-rules">
-    <summary>🎸 <span id="golden-title"></span></summary>
-    <div class="rules-body">
-      <p class="rule-item" id="golden-r1"></p>
-      <p class="rule-item" id="golden-r2"></p>
-      <p class="rule-item" id="golden-r3"></p>
-    </div>
-  </details>
   <div class="chord-selector">
     <div class="group-tabs" id="group-tabs"></div>
     <div class="chord-btns" id="chord-btns"></div>
@@ -299,10 +285,6 @@ const TR={
     lbl_e:'Corde E',lbl_a:'Corde A',lbl_d:'Corde D',
     row_fond:'Fond.',row_tierce:'Tierce',row_quinte:'Quinte',row_sept:'7e',
     g_dyades:'Dyades',g_triades:'Triades',g_sept:'7èmes',
-    golden_title:"Les 3 Règles d'Or des Accords à la Basse",
-    golden1:"<b>1. Le Groove avant tout :</b> Les accords ajoutent une texture magnifique, mais ils ne doivent pas remplacer la fondation rythmique. Sur une basse, « moins », c'est souvent « mieux ».",
-    golden2:"<b>2. Attention à la « Boue » (Mud) :</b> Les fréquences graves prennent beaucoup de place. Plaquer un accord complet dans les graves rend le son brouillon et indistinct. C'est pourquoi on évite les accords en dessous de la 7ème case de la corde de Mi.",
-    golden3:"<b>3. Le saut d'Octave (Le secret des 10èmes) :</b> Pour faire sonner une tierce proprement, les bassistes la propulsent souvent une octave plus haut (sur la corde de Sol). La note grave assoit le mix ; la note aiguë chante la mélodie.",
     family_dyad:"L'accord parfait du bassiste rock (Fondamentale + Quinte). Deux notes propres et puissantes qui ne bavent jamais, peu importe la distorsion.",
     family_tenth:"Ici, on garde la Fondamentale dans les graves, mais on joue la Tierce une octave plus haut — ce qui forme une 10ème. Résultat : une harmonie riche et aérée, typique du style de Paul McCartney et Flea.",
     family_triad:"La triade ajoute la Tierce caractéristique, le degré qui définit la couleur majeure ou mineure de l'accord. Joue ces formes au-delà de la 7ème case pour éviter la boue dans les graves.",
@@ -320,10 +302,6 @@ const TR={
     lbl_e:'E string',lbl_a:'A string',lbl_d:'D string',
     row_fond:'Root',row_tierce:'Third',row_quinte:'Fifth',row_sept:'7th',
     g_dyades:'Dyads',g_triades:'Triads',g_sept:'7ths',
-    golden_title:"The 3 Golden Rules of Bass Chords",
-    golden1:"<b>1. Groove First:</b> Chords add beautiful texture, but they should never replace the rhythmic foundation. On bass, \"less\" is often \"more\".",
-    golden2:"<b>2. Beware the Mud:</b> Low frequencies take up a lot of space. Playing a full chord in the low register creates a muddy, indistinct sound. That's why we avoid chords below the 7th fret on the E string.",
-    golden3:"<b>3. The Octave Jump (The 10th Secret):</b> To make a third sound clean, bassists push it an octave higher onto the G string. The low note anchors the mix; the high note sings the melody.",
     family_dyad:"The perfect bass chord (Root + Fifth). Two clean, powerful notes that never get muddy — whatever the distortion.",
     family_tenth:"The Root stays in the low register while the Third is played an octave higher — forming a 10th. The result: a rich, airy harmony typical of Paul McCartney and Flea's style.",
     family_triad:"The triad adds the characteristic Third, the degree that defines the major or minor color of the chord. Play these shapes above the 7th fret to avoid muddiness in the low register.",
@@ -360,10 +338,6 @@ function updateI18n(){
   document.getElementById('diagrams-title').textContent=t('lbl_positions');
   document.getElementById('lede-text').textContent=t('lbl_lede');
   document.title=state.lang==='en'?'Bass Chords — ScalaBass':'Accords de Basse — ScalaBass';
-  document.getElementById('golden-title').textContent=t('golden_title');
-  document.getElementById('golden-r1').innerHTML=t('golden1');
-  document.getElementById('golden-r2').innerHTML=t('golden2');
-  document.getElementById('golden-r3').innerHTML=t('golden3');
   renderFamilyHint();
 }
 
