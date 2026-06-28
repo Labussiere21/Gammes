@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ ui_title }}</title>
+  <meta name="description" content="{{ ui_meta_desc }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="alternate" hreflang="fr" href="{{ alt_url_fr }}">
+  <link rel="alternate" hreflang="en" href="{{ alt_url_en }}">
+  <link rel="alternate" hreflang="x-default" href="{{ alt_url_fr }}">
+  <meta property="og:title" content="{{ ui_og_title }}">
+  <meta property="og:description" content="{{ ui_og_desc }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ page_url }}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ ui_schema_head }}",
+    "description": "{{ ui_schema_desc }}",
+    "url": "{{ page_url }}",
+    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+  }
+  </script>
+  <style>
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:{{ accent }};--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topnav{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .topnav .logo{font-weight:700;letter-spacing:.15em;font-size:13px;text-transform:uppercase;color:var(--accent)}
+    .topnav a{color:var(--muted);font-size:13px}
+    .topnav a:hover{color:var(--text)}
+    .breadcrumb{padding:10px 24px;font-size:12px;color:var(--muted)}
+    .breadcrumb a{color:var(--muted)}
+    main{max-width:860px;margin:0 auto;padding:28px 24px 64px}
+    h1{font-size:clamp(22px,4vw,34px);font-weight:700;line-height:1.2;margin-bottom:6px}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:28px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .sub-badge{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 10px;font-size:13px;font-family:monospace}
+    h2{font-size:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+    .notes-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+    .note-pill{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-family:"Space Mono",monospace}
+    .note-pill .nn{font-size:16px;font-weight:700;color:#c8c8d8}
+    .note-pill .nr{font-size:10px;color:var(--muted);letter-spacing:.06em}
+    .note-pill.root{border-color:var(--accent);background:rgba(0,0,0,.18)}
+    .note-pill.root .nn{color:var(--accent)}
+    .note-pill.root .nr{color:var(--accent);opacity:.7}
+    .iv-struct{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-family:"Space Mono",monospace;font-size:13px;margin-top:6px}
+    .ivn{color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
+    .ivl{border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700}
+    .ivl.st{background:rgba(232,80,58,.1);color:var(--red);border:1px solid rgba(232,80,58,.3)}
+    .ivl.wt{background:rgba(96,200,160,.1);color:var(--green);border:1px solid rgba(96,200,160,.3)}
+    .ivl.lg{background:rgba(69,163,217,.1);color:var(--blue);border:1px solid rgba(69,163,217,.3)}
+    .desc-block{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;line-height:1.7;color:#c8c8d8;font-size:14px}
+    .cta-block{margin-top:40px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .cta-block p{font-size:14px;color:var(--muted);max-width:420px}
+    .cta-btn{display:inline-block;background:var(--accent);color:{{ btn_text_color }};font-weight:700;font-size:14px;padding:10px 22px;border-radius:8px;text-decoration:none;white-space:nowrap}
+    .cta-btn:hover{text-decoration:none;opacity:.85}
+    .page-nav{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px}
+    .page-nav a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--muted)}
+    .page-nav a:hover{color:var(--text);text-decoration:none}
+    .page-nav .active{border-color:var(--accent);color:var(--accent)}
+    .related-arps{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+    .related-arps .rg-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+    .related-arps .rc-list{display:flex;flex-wrap:wrap;gap:6px}
+    .related-arps .rc-list a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 12px;font-size:13px;color:var(--muted);font-family:monospace}
+    .related-arps .rc-list a:hover{color:var(--text);text-decoration:none}
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="logo">{{ ui_brand }}</span>
+  {% for lnk in nav_links %}
+  <a href="{{ lnk.url }}">{{ lnk.label }}</a>
+  {% endfor %}
+</nav>
+
+<div class="breadcrumb">
+  <a href="{{ nav_base }}/">{{ ui_all_arps }}</a>
+  &rsaquo;
+  {% if lang == 'fr' %}<a href="{{ nav_base }}/{{ root.slug }}/">{{ root.fr }}</a>
+  {% else %}<a href="{{ nav_base }}/{{ root.slug_en }}/">{{ root.name }}</a>{% endif %}
+  &rsaquo; {{ arp_label }}
+</div>
+
+<main>
+  <h1>{{ ui_h1 }}</h1>
+  <div class="sub">
+    <span class="sub-badge">{{ root.name }}{{ arp.sym }}</span>
+    <span>{{ group_label }}</span>
+    <span>·</span>
+    <span>{{ n_notes }} note{{ 's' if n_notes > 1 else '' }}</span>
+    {% if arp.sym %}<span>·</span><span>{{ ui_symbol }} : <strong>{{ arp.sym }}</strong></span>{% endif %}
+  </div>
+
+  <h2>{{ ui_notes }}</h2>
+  <div class="notes-row">
+    {% for item in notes_with_roles %}
+    <div class="note-pill{% if loop.first %} root{% endif %}">
+      <span class="nn">{{ item.name }}</span>
+      <span class="nr">{{ item.role }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:4px">
+    {{ notes_secondary_label }} : {{ notes_secondary | join(' – ') }}
+  </p>
+
+  <h2>{{ ui_intervals }}</h2>
+  <div class="iv-struct">
+    {% for item in notes_with_roles %}
+    <span class="ivn">{{ item.name }}</span>
+    {% if not loop.last %}
+    {% set gap = arp.iv[loop.index] - arp.iv[loop.index0] %}
+    {% if gap == 1 %}<span class="ivl st">½T</span>
+    {% elif gap == 2 %}<span class="ivl wt">T</span>
+    {% elif gap == 3 %}<span class="ivl lg">T+½</span>
+    {% elif gap == 4 %}<span class="ivl lg">2T</span>
+    {% else %}<span class="ivl lg">{{ gap }}½T</span>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  <h2>{{ ui_about }}</h2>
+  <div class="desc-block">{{ desc }}</div>
+
+  <div class="cta-block">
+    <p>{{ ui_cta_text | safe }}</p>
+    <a class="cta-btn" href="{{ app_link }}">{{ ui_cta_btn }}</a>
+  </div>
+
+  {% if related_arps %}
+  <div class="related-arps">
+    <div class="rg-label">{{ ui_related }}</div>
+    <div class="rc-list">
+      {% for ra in related_arps %}
+      <a href="{{ nav_base }}/{% if lang == 'fr' %}{{ root.slug }}{% else %}{{ root.slug_en }}{% endif %}/{{ ra.slug }}/">{{ root.name }}{{ ra.sym or ra.id }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <h2 style="margin-top:40px">{{ ui_other_keys }}</h2>
+  <div class="page-nav">
+    {% for r in nav_roots %}
+    <a href="{{ nav_base }}/{{ r.slug }}/{{ arp_slug }}/"
+       {% if r.slug == (root.slug if lang == 'fr' else root.slug_en) %}class="active"{% endif %}>{{ r.name }}</a>
+    {% endfor %}
+  </div>
+
+</main>
+</body>
+</html>
