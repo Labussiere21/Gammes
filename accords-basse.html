@@ -1264,8 +1264,7 @@ document.getElementById('play-all-btn').addEventListener('click',playAll);
   buildPiano();
   render();
 })();
-(()=>{const b=document.getElementById('scroll-to-top');if(!b)return;window.addEventListener('scroll',()=>{const v=window.scrollY>300;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();
+(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>300;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();
 </script>
-<button id="scroll-to-top" title="Haut de page">↑</button>
 </body>
 </html>
