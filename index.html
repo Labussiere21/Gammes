@@ -326,7 +326,9 @@
   .footer-ml-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--muted);letter-spacing:.04em;padding:0;transition:color .12s}
   .footer-ml-btn:hover{color:var(--cream)}
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
-  .footer-ml.open{display:block}</style>
+  .footer-ml.open{display:block}
+#scroll-to-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--brass);color:#1a1008;border:none;font-size:20px;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999;display:flex;align-items:center;justify-content:center}
+#scroll-to-top:hover{background:#e8b855}</style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Manche de basse interactif : toutes les notes | ScalaBass">
 <meta property="og:description" content="Visualise n'importe quelle note sur tout le manche de basse 4, 5 ou 6 cordes. Accordages multiples, droitier ou gaucher, jusqu'à 24 cases.">
@@ -925,6 +927,7 @@ initNotationLang();
 render();
 updateI18n();
 </script>
+<script>(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>100;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();</script>
 
 <footer class="site-footer">
   <div class="footer-inner">
