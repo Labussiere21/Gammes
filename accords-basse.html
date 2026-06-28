@@ -132,6 +132,16 @@ h1 em{font-style:italic;color:var(--brass)}
 .legend-item{display:flex;align-items:center;gap:5px;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted)}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
+/* Golden rules + family hint */
+.golden-rules{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 18px;margin-bottom:14px}
+.golden-rules summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--brass);letter-spacing:.04em;user-select:none;list-style:none}
+.golden-rules summary::-webkit-details-marker{display:none}
+.golden-rules[open] summary{margin-bottom:10px}
+.rule-item{font-size:13px;line-height:1.72;color:#b8b8cc;padding:7px 0;border-top:1px solid var(--line)}
+.rule-item:first-child{border-top:none;padding-top:0}
+.family-hint{font-size:13px;font-style:italic;color:var(--muted);line-height:1.65;padding:9px 13px;background:rgba(217,168,73,.06);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;margin-top:10px;display:none}
+.family-hint.visible{display:block}
+
 @media(max-width:760px){
   .eyebrow{flex-wrap:wrap;height:auto;gap:6px;padding-bottom:4px}
   .site-name{font-size:17px}
@@ -198,9 +208,18 @@ h1 em{font-style:italic;color:var(--brass)}
     <div class="chord-badge"><span id="badge-root">C</span><span class="sym-part" id="badge-sym"></span></div>
     <div class="formula-bar" id="formula-bar"></div>
   </div>
+  <details class="golden-rules" id="golden-rules">
+    <summary>🎸 <span id="golden-title"></span></summary>
+    <div class="rules-body">
+      <p class="rule-item" id="golden-r1"></p>
+      <p class="rule-item" id="golden-r2"></p>
+      <p class="rule-item" id="golden-r3"></p>
+    </div>
+  </details>
   <div class="chord-selector">
     <div class="group-tabs" id="group-tabs"></div>
     <div class="chord-btns" id="chord-btns"></div>
+    <div class="family-hint" id="family-hint"></div>
   </div>
 </section>
 
@@ -280,6 +299,14 @@ const TR={
     lbl_e:'Corde E',lbl_a:'Corde A',lbl_d:'Corde D',
     row_fond:'Fond.',row_tierce:'Tierce',row_quinte:'Quinte',row_sept:'7e',
     g_dyades:'Dyades',g_triades:'Triades',g_sept:'7èmes',
+    golden_title:"Les 3 Règles d'Or des Accords à la Basse",
+    golden1:"<b>1. Le Groove avant tout :</b> Les accords ajoutent une texture magnifique, mais ils ne doivent pas remplacer la fondation rythmique. Sur une basse, « moins », c'est souvent « mieux ».",
+    golden2:"<b>2. Attention à la « Boue » (Mud) :</b> Les fréquences graves prennent beaucoup de place. Plaquer un accord complet dans les graves rend le son brouillon et indistinct. C'est pourquoi on évite les accords en dessous de la 7ème case de la corde de Mi.",
+    golden3:"<b>3. Le saut d'Octave (Le secret des 10èmes) :</b> Pour faire sonner une tierce proprement, les bassistes la propulsent souvent une octave plus haut (sur la corde de Sol). La note grave assoit le mix ; la note aiguë chante la mélodie.",
+    family_dyad:"L'accord parfait du bassiste rock (Fondamentale + Quinte). Deux notes propres et puissantes qui ne bavent jamais, peu importe la distorsion.",
+    family_tenth:"Ici, on garde la Fondamentale dans les graves, mais on joue la Tierce une octave plus haut — ce qui forme une 10ème. Résultat : une harmonie riche et aérée, typique du style de Paul McCartney et Flea.",
+    family_triad:"La triade ajoute la Tierce caractéristique, le degré qui définit la couleur majeure ou mineure de l'accord. Joue ces formes au-delà de la 7ème case pour éviter la boue dans les graves.",
+    family_shell:"À la basse, 4 notes simultanées, c'est souvent trop brouillon. Ces formes allégées (Shell Voicings) sacrifient la Quinte pour ne garder que l'essentiel : Fondamentale, Tierce et Septième.",
   },
   en:{
     lbl_tonique:'Root',lbl_note:'Note',
@@ -293,9 +320,32 @@ const TR={
     lbl_e:'E string',lbl_a:'A string',lbl_d:'D string',
     row_fond:'Root',row_tierce:'Third',row_quinte:'Fifth',row_sept:'7th',
     g_dyades:'Dyads',g_triades:'Triads',g_sept:'7ths',
+    golden_title:"The 3 Golden Rules of Bass Chords",
+    golden1:"<b>1. Groove First:</b> Chords add beautiful texture, but they should never replace the rhythmic foundation. On bass, \"less\" is often \"more\".",
+    golden2:"<b>2. Beware the Mud:</b> Low frequencies take up a lot of space. Playing a full chord in the low register creates a muddy, indistinct sound. That's why we avoid chords below the 7th fret on the E string.",
+    golden3:"<b>3. The Octave Jump (The 10th Secret):</b> To make a third sound clean, bassists push it an octave higher onto the G string. The low note anchors the mix; the high note sings the melody.",
+    family_dyad:"The perfect bass chord (Root + Fifth). Two clean, powerful notes that never get muddy — whatever the distortion.",
+    family_tenth:"The Root stays in the low register while the Third is played an octave higher — forming a 10th. The result: a rich, airy harmony typical of Paul McCartney and Flea's style.",
+    family_triad:"The triad adds the characteristic Third, the degree that defines the major or minor color of the chord. Play these shapes above the 7th fret to avoid muddiness in the low register.",
+    family_shell:"Playing 4 notes at once on bass is often too muddy. These lighter Shell Voicings deliberately drop the Fifth to keep only the essentials: Root, Third, and Seventh.",
   },
 };
 function t(k){return(TR[state.lang]||TR.fr)[k]||k;}
+
+const CHORD_FAMILY={
+  p5:'dyad',p4:'dyad',maj3:'dyad',min3:'dyad',
+  oct_maj3:'tenth',oct_min3:'tenth',
+  maj:'triad',min:'triad',
+  maj7:'shell',dom7:'shell',min7:'shell',
+};
+
+function renderFamilyHint(){
+  const el=document.getElementById('family-hint');
+  const fam=CHORD_FAMILY[state.chordId];
+  if(!fam){el.classList.remove('visible');return;}
+  el.textContent=t('family_'+fam);
+  el.classList.add('visible');
+}
 
 function updateI18n(){
   document.getElementById('lbl-tonique').textContent=t('lbl_tonique');
@@ -310,6 +360,11 @@ function updateI18n(){
   document.getElementById('diagrams-title').textContent=t('lbl_positions');
   document.getElementById('lede-text').textContent=t('lbl_lede');
   document.title=state.lang==='en'?'Bass Chords — ScalaBass':'Accords de Basse — ScalaBass';
+  document.getElementById('golden-title').textContent=t('golden_title');
+  document.getElementById('golden-r1').innerHTML=t('golden1');
+  document.getElementById('golden-r2').innerHTML=t('golden2');
+  document.getElementById('golden-r3').innerHTML=t('golden3');
+  renderFamilyHint();
 }
 
 /* ===== CHORD DATA ===== */
@@ -434,32 +489,34 @@ const D_SH={
 // Movable shapes: offsets from root fret (0=root, 'x'=muted, neg=below root fret)
 const BASS_MOVABLE_CHORDS={
   major:[
-    {name:'Corde Mi (Standard)',      shape:[0,2,2,1]},
-    {name:'Corde Mi (10ème)',         shape:[0,-1,'x','x']},
-    {name:'Corde La (Standard)',      shape:['x',0,2,2]},
-    {name:'Corde La (10ème)',         shape:['x',0,-1,'x']},
+    {name:'Triade Majeure (Fdt + 5e)',          shape:[0,2,2,'x']},
+    {name:'Triade Majeure (Fdt + 5e + Tierce)', shape:[0,2,2,1]},
+    {name:'Dixième majeure (Corde Mi)',          shape:[0,-1,'x','x']},
+    {name:'Triade Majeure (Corde La)',           shape:['x',0,2,2]},
+    {name:'Dixième majeure (Corde La)',          shape:['x',0,-1,'x']},
   ],
   minor:[
-    {name:'Corde Mi (Standard)',      shape:[0,2,2,0]},
-    {name:'Corde Mi (10ème min)',     shape:[0,-2,'x','x']},
-    {name:'Corde La (Standard)',      shape:['x',0,2,5]},
-    {name:'Corde La (10ème min)',     shape:['x',0,-2,'x']},
+    {name:'Triade Mineure (Fdt + 5e)',               shape:[0,2,2,'x']},
+    {name:'Triade Mineure (Fdt + 5e + Tierce min)',  shape:[0,2,2,0]},
+    {name:'Dixième mineure (Corde Mi)',               shape:[0,-2,'x','x']},
+    {name:'Triade Mineure (Corde La)',                shape:['x',0,2,5]},
+    {name:'Dixième mineure (Corde La)',               shape:['x',0,-2,'x']},
   ],
   dom7:[
-    {name:'Corde Mi (Pleine)',        shape:[0,2,0,1]},
-    {name:'Corde Mi (Shell 1-♭7-3)',  shape:[0,'x',0,1]},
-    {name:'Corde La (Pleine)',        shape:['x',0,2,0]},
-    {name:'Corde La (Shell 1-3-♭7)', shape:['x',0,-1,0]},
+    {name:'7e Forme Pleine (Corde Mi)',         shape:[0,2,0,1]},
+    {name:'7e Shell : Fdt + Tierce + ♭7',      shape:[0,'x',0,1]},
+    {name:'7e Forme Pleine (Corde La)',         shape:['x',0,2,0]},
+    {name:'7e Shell : Fdt + ♭7 + Tierce',      shape:['x',0,-1,0]},
   ],
   min7:[
-    {name:'Corde Mi (Pleine)',        shape:[0,2,0,0]},
-    {name:'Corde Mi (Shell 1-♭7-♭3)',shape:[0,'x',0,0]},
-    {name:'Corde La (Pleine)',        shape:['x',0,1,0]},
-    {name:'Corde La (Shell 1-♭3-♭7)',shape:['x',0,-2,0]},
+    {name:'m7 Forme Pleine (Corde Mi)',         shape:[0,2,0,0]},
+    {name:'m7 Shell : Fdt + Tierce min + ♭7',  shape:[0,'x',0,0]},
+    {name:'m7 Forme Pleine (Corde La)',         shape:['x',0,1,0]},
+    {name:'m7 Shell : Fdt + ♭7 + Tierce min',  shape:['x',0,-2,0]},
   ],
   maj7:[
-    {name:'Corde Mi (Shell 1-7-3)',   shape:[0,'x',1,1]},
-    {name:'Corde La (Pleine)',        shape:['x',0,2,1]},
+    {name:'Δ7 Shell : Fdt + Tierce + 7maj',    shape:[0,'x',1,1]},
+    {name:'Δ7 Forme Pleine (Corde La)',         shape:['x',0,2,1]},
   ],
 };
 // Open-position chords: absolute fret numbers
@@ -538,12 +595,7 @@ function computeVoicings(rootPc,chordId,ivArr){
     results.push({v:arrToVoicing(fa,rootPc,ivArr),label});
   }
   const eb=eB(rootPc),ab=aB(rootPc),db=dB(rootPc);
-  // 1. Built-in shape functions
-  if(E_SH[chordId])tryFa(E_SH[chordId](eb),t('lbl_e'));
-  if(A_SH[chordId])tryFa(A_SH[chordId](ab),t('lbl_a'));
-  if(D_SH[chordId])tryFa(D_SH[chordId](db),t('lbl_d'));
-  if(E_SH[chordId]&&eb===0)tryFa(E_SH[chordId](12),'XII');
-  // 2. Movable chord database (offset → absolute frets, deduped via seen)
+  // 1. Movable chord database first (labels take priority over generic E/A/D labels)
   const DB_MAP={maj:'major',min:'minor',dom7:'dom7',min7:'min7',maj7:'maj7'};
   const dbKey=DB_MAP[chordId];
   if(dbKey&&BASS_MOVABLE_CHORDS[dbKey]){
@@ -555,6 +607,11 @@ function computeVoicings(rootPc,chordId,ivArr){
       tryFa(shape.map(v=>v==='x'?null:rootFret+v),name);
     });
   }
+  // 2. Built-in shape functions (fallback — catches dyads + unique A/D-root shapes)
+  if(E_SH[chordId])tryFa(E_SH[chordId](eb),t('lbl_e'));
+  if(A_SH[chordId])tryFa(A_SH[chordId](ab),t('lbl_a'));
+  if(D_SH[chordId])tryFa(D_SH[chordId](db),t('lbl_d'));
+  if(E_SH[chordId]&&eb===0)tryFa(E_SH[chordId](12),'XII');
   // 3. Open-position voicings (absolute frets; faValid rejects non-matching roots)
   const OC_MAP={maj:'major',min:'minor',dom7:'dom7',min7:'min7',maj7:'maj7'};
   const ocType=OC_MAP[chordId];
@@ -840,6 +897,7 @@ function render(){
   document.getElementById('badge-sym').textContent=cd?cd.sym:'';
   buildGroupTabs();
   buildChordBtns();
+  renderFamilyHint();
   renderFormula(cd);
   renderChordInfo(cd);
   _voicings=cd?computeVoicings(state.rootPc,cd.id,cd.iv):[];
