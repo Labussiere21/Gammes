@@ -101,6 +101,12 @@ h1 em{font-style:italic;color:var(--brass)}
 .chord-btn:hover{color:var(--cream);border-color:var(--brass-dim)}
 .chord-btn.on{background:var(--brass);color:#160f08;border-color:var(--brass)}
 
+/* Inversions */
+.inv-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.inv-btn{font-family:"Space Mono",monospace;font-size:11px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);cursor:pointer;padding:4px 11px;border-radius:6px;transition:.12s;font-weight:700}
+.inv-btn:hover{color:var(--cream);border-color:var(--muted-2)}
+.inv-btn.on{background:var(--brass-dim);color:var(--cream);border-color:var(--brass-dim)}
+
 /* Chord info */
 .chord-info-wrap{margin-top:20px;background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px clamp(14px,2.4vw,24px)}
 .chord-stack{display:flex;flex-direction:column;gap:5px}
@@ -251,6 +257,7 @@ h1 em{font-style:italic;color:var(--brass)}
   <div class="chord-selector">
     <div class="group-tabs" id="group-tabs"></div>
     <div class="chord-btns" id="chord-btns"></div>
+    <div class="inv-row" id="inv-row" style="display:none"></div>
     <div class="family-hint" id="family-hint"></div>
   </div>
 </section>
@@ -338,6 +345,7 @@ const state={
   diagramMode:'degree', hand:'right',
   display:'note', frets:12,
   selCard:0,
+  invBassIv:0,
 };
 
 function noteTbl(){
@@ -405,6 +413,37 @@ const CHORD_FAMILY={
   oct_maj3:'tenth',oct_min3:'tenth',
   maj:'triad',min:'triad',
   maj7:'shell',dom7:'shell',min7:'shell',
+};
+
+const CHORD_INVERSIONS={
+  maj:[
+    {id:'root',sym:'',   label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5', label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+  ],
+  min:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/♭3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:3},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+  ],
+  dom7:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3',  label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/♭7', label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:10},
+  ],
+  maj7:[
+    {id:'root',sym:'',   label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5', label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/7', label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:11},
+  ],
+  min7:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/♭3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:3},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/♭7', label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:10},
+  ],
 };
 
 function renderFamilyHint(){
@@ -658,7 +697,51 @@ function computeFingers(voicing){
   });
 }
 
+/* Generate voicings where the lowest sounding string has the inversion note (bassIv).
+   For each candidate string (E/A/D), we place the inversion note at its natural fret (and +12),
+   then enumerate all chord-tone combinations on higher strings within a 4-fret window.
+   faValid enforces root presence, span ≤ 4, and ≥ 2 distinct PCs. */
+function computeInversionVoicings(rootPc,ivArr,bassIv){
+  const results=[];const seen=new Set();
+  const targetPc=(rootPc+bassIv)%12;
+  const strNames=['Mi','La','Ré'];
+  for(let sBass=0;sBass<3;sBass++){
+    const bf0=(targetPc-OPC[sBass]+12)%12;
+    [bf0,bf0+12].forEach(bf=>{
+      if(bf>14)return;
+      const winMax=bf+4;
+      const bassNoteMidi=OMI[sBass]+bf;
+      // Higher strings: only allow frets that produce a note >= bassNoteMidi in MIDI
+      const higherStrs=[];
+      for(let s=sBass+1;s<4;s++)higherStrs.push(s);
+      const opts=higherStrs.map(s=>{
+        const minF=Math.max(0,bassNoteMidi-OMI[s]);
+        const arr=[null];
+        for(let f=minF;f<=winMax;f++){
+          const pc=(OPC[s]+f)%12;
+          const iv=(pc-rootPc+12)%12;
+          if(ivArr.includes(iv))arr.push(f);
+        }
+        return arr;
+      });
+      function pick(hi,fa){
+        if(hi===higherStrs.length){
+          if(faValid(fa,rootPc,ivArr)){
+            const key=fa.map(f=>f===null?'x':f).join(',');
+            if(!seen.has(key)){seen.add(key);results.push({v:arrToVoicing(fa,rootPc,ivArr),label:'Corde '+strNames[sBass]});}
+          }
+          return;
+        }
+        opts[hi].forEach(f=>{const next=[...fa];next[higherStrs[hi]]=f;pick(hi+1,next);});
+      }
+      const init=Array(4).fill(null);init[sBass]=bf;pick(0,init);
+    });
+  }
+  return results;
+}
+
 function computeVoicings(rootPc,chordId,ivArr){
+  if(state.invBassIv!==0)return computeInversionVoicings(rootPc,ivArr,state.invBassIv);
   const results=[];const seen=new Set();
   function tryFa(fa,label){
     if(!fa)return;
@@ -866,7 +949,7 @@ function buildGroupTabs(){
     const b=document.createElement('button');
     b.className='group-tab'+(g.id===state.chordGroup?' on':'');
     b.textContent=state.lang==='en'?g.label_en:g.label_fr;
-    b.onclick=()=>{state.chordGroup=g.id;state.chordId=g.chords[0].id;state.selCard=0;render();};
+    b.onclick=()=>{state.chordGroup=g.id;state.chordId=g.chords[0].id;state.selCard=0;state.invBassIv=0;render();};
     c.appendChild(b);
   });
 }
@@ -879,8 +962,23 @@ function buildChordBtns(){
     b.className='chord-btn'+(cd.id===state.chordId?' on':'');
     const lbl=state.lang==='en'?cd.lbl_en:cd.lbl_fr;
     b.innerHTML=`${lbl}<span style="opacity:.5;margin-left:6px;font-size:10px">${cd.sym||'—'}</span>`;
-    b.onclick=()=>{state.chordId=cd.id;state.selCard=0;render();};
+    b.onclick=()=>{state.chordId=cd.id;state.selCard=0;state.invBassIv=0;render();};
     c.appendChild(b);
+  });
+}
+
+function buildInvButtons(){
+  const row=document.getElementById('inv-row');
+  const invs=CHORD_INVERSIONS[state.chordId];
+  if(!invs){row.style.display='none';return;}
+  row.style.display='flex';row.innerHTML='';
+  invs.forEach(inv=>{
+    const b=document.createElement('button');
+    b.className='inv-btn'+(state.invBassIv===inv.bassIv?' on':'');
+    const lbl=state.lang==='en'?inv.label_en:inv.label_fr;
+    b.innerHTML=lbl+(inv.sym?` <span style="opacity:.5;margin-left:5px">${inv.sym}</span>`:'');
+    b.onclick=()=>{state.invBassIv=inv.bassIv;state.selCard=0;render();};
+    row.appendChild(b);
   });
 }
 
@@ -1050,9 +1148,12 @@ function render(){
   const rootName=spellPc(state.rootPc);
   document.getElementById('rd-name').textContent=rootName;
   document.getElementById('badge-root').textContent=rootName;
-  document.getElementById('badge-sym').textContent=cd?cd.sym:'';
+  const _invs=CHORD_INVERSIONS[cd?.id];
+  const _inv=_invs?_invs.find(i=>i.bassIv===state.invBassIv):null;
+  document.getElementById('badge-sym').textContent=(cd?cd.sym:'')+(_inv&&_inv.sym?_inv.sym:'');
   buildGroupTabs();
   buildChordBtns();
+  buildInvButtons();
   renderFamilyHint();
   renderFormula(cd);
   renderChordInfo(cd);
