@@ -1366,7 +1366,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
   }
   // Fret number — right side of diagram, in the added right-padding zone
   if (!showNut) {
-    svg += `<text x="${PL+5*S+6}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${startFret+1}</text>`;
+    svg += `<text x="${PL+5*S+16}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${startFret+1}</text>`;
   }
   // Inlay dots
   const INLAYS = [3,5,7,9,12,15,17,19];
