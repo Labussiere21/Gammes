@@ -655,27 +655,36 @@ function arrToVoicing(fa,rootPc,iv){
   });
 }
 
-function faValid(fa,rootPc,iv){
+// Validates that a fret array (fa) forms a musically correct chord voicing.
+// minDistinct: minimum number of distinct pitch classes required (2 = any 2 notes,
+//              3 = all chord tones for triads / at least 3 for 7th chords).
+function faValid(fa,rootPc,iv,minDistinct=2){
   const cPcs=new Set(iv.map(i=>(rootPc+i)%12));
   const rpc=rootPc%12;
   let hasRoot=false,count=0;
   const played=new Set();
   const fretted=[];
+
   for(let s=0;s<4;s++){
+    // Rule 1 — one note per string: guaranteed by data structure (fa[s] is a single fret or null)
     const f=fa[s];if(f===null)continue;
     if(f<0)return false;
     count++;
     const pc=(OPC[s]+f)%12;
-    if(!cPcs.has(pc))return false;
+    if(!cPcs.has(pc))return false; // non-chord tone → reject
     if(pc===rpc)hasRoot=true;
     played.add(pc);
     if(f>0)fretted.push(f);
   }
+
+  // Rule 4 — Fret span (basic check, ignores open strings): max 4 frets
   if(fretted.length>=2){
     const mx=Math.max(...fretted),mn=Math.min(...fretted);
-    if(mx-mn>(count===2?7:4))return false;
+    if(mx-mn>4)return false; // isPlayable() handles the fret-7 exception separately
   }
-  return count>=1&&hasRoot&&played.size>=Math.min(iv.length,2);
+
+  // Rules 2+3 — Root required; minimum distinct pitch classes (completeness)
+  return count>=1 && hasRoot && played.size>=Math.min(iv.length,minDistinct);
 }
 
 function computeFingers(voicing){
@@ -741,13 +750,15 @@ function computeInversionVoicings(rootPc,ivArr,bassIv){
     const local=[];const seenLocal=new Set();
     const pick=(hi,fa)=>{
       if(hi===higherStrs.length){
-        if(faValid(fa,rootPc,ivArr)&&isPlayable(fa)){
-          let maxMidi=bassNoteMidi;
-          for(let s=sBass+1;s<4;s++){if(fa[s]!==null)maxMidi=Math.max(maxMidi,OMI[s]+fa[s]);}
-          if(maxMidi-bassNoteMidi>12)return;
+        // Rule 2: minDistinct=3 → all chord tones for triads, ≥3 for 7th chords
+        // Rule 3: inversion note is lowest by construction (higherStrs only adds strings
+        //         above sBass, and minF ensures their MIDI ≥ bassNoteMidi)
+        // Rules 4+5: isPlayable() checks span, string skip, mud
+        if(faValid(fa,rootPc,ivArr,3)&&isPlayable(fa)){
           const pcs=[];for(let s=0;s<4;s++){if(fa[s]!==null)pcs.push((OPC[s]+fa[s])%12);}
           const pcKey=pcs.slice().sort((a,b)=>a-b).join(',');
-          if(!seenLocal.has(pcKey)){seenLocal.add(pcKey);local.push({fa:[...fa],pcKey,midi:maxMidi-bassNoteMidi});}
+          const span=Math.max(0,...fa.map((f,s)=>f!==null?OMI[s]+f:0))-bassNoteMidi;
+          if(!seenLocal.has(pcKey)){seenLocal.add(pcKey);local.push({fa:[...fa],pcKey,span});}
         }
         return;
       }
@@ -756,9 +767,9 @@ function computeInversionVoicings(rootPc,ivArr,bassIv){
     const init=Array(4).fill(null);init[sBass]=bf;pick(0,init);
     local.sort((a,b)=>{
       const ap=a.pcKey.split(',').length,bp=b.pcKey.split(',').length;
-      return bp!==ap?bp-ap:a.midi-b.midi;
+      return bp!==ap?bp-ap:a.span-b.span;
     });
-    local.slice(0,2).forEach(r=>{
+    local.slice(0,3).forEach(r=>{
       const key=r.fa.map(f=>f===null?'x':f).join(',');
       if(!seenKey.has(key)){seenKey.add(key);results.push({v:arrToVoicing(r.fa,rootPc,ivArr),label:'Corde '+strNames[sBass]});}
     });
@@ -844,9 +855,9 @@ function makeSVG(voicing,mode){
       svg+=`<line x1="${PL}" y1="${y}" x2="${PL+(N-1)*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
   }
-  // Fret number (left side — standard convention)
+  // Fret number — left side, clear of inlay dots (dots at cx≈70, number ends at x≈16)
   if(!showNut){
-    svg+=`<text x="${PL-5}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end" dominant-baseline="central">${sf+1}</text>`;
+    svg+=`<text x="${PL-6}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end" dominant-baseline="central">${sf+1}</text>`;
   }
   // Inlays
   const INLAYS=[3,5,7,9,12,15,17,19];
