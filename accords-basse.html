@@ -487,36 +487,37 @@ const D_SH={
 };
 
 // Movable shapes: offsets from root fret (0=root, 'x'=muted, neg=below root fret)
+// Interval (A→G at offset d): iv=(10+d)%12 → maj3(4) needs d=6; min3(3) needs d=5
+// Interval (E→G at offset d): iv=(3+d)%12  → maj3(4) needs d=1; min3(3) needs d=0
 const BASS_MOVABLE_CHORDS={
   major:[
     {name:'Triade Majeure (Fdt + 5e)',          shape:[0,2,2,'x']},
     {name:'Triade Majeure (Fdt + 5e + Tierce)', shape:[0,2,2,1]},
-    {name:'Dixième majeure (Corde Mi)',          shape:[0,-1,'x','x']},
+    {name:'10ème Majeure (Corde Mi)',            shape:[0,'x','x',1]},  // E@b+G@(b+1): iv=4=maj3 ✓
+    {name:'10ème Majeure (Corde La)',            shape:['x',0,'x',6]}, // A@b+G@(b+6): iv=4=maj3 ✓
     {name:'Triade Majeure (Corde La)',           shape:['x',0,2,2]},
-    {name:'Dixième majeure (Corde La)',          shape:['x',0,-1,'x']},
   ],
   minor:[
     {name:'Triade Mineure (Fdt + 5e)',               shape:[0,2,2,'x']},
     {name:'Triade Mineure (Fdt + 5e + Tierce min)',  shape:[0,2,2,0]},
-    {name:'Dixième mineure (Corde Mi)',               shape:[0,-2,'x','x']},
-    {name:'Triade Mineure (Corde La)',                shape:['x',0,2,5]},
-    {name:'Dixième mineure (Corde La)',               shape:['x',0,-2,'x']},
+    {name:'10ème Mineure (Corde Mi)',                shape:[0,'x','x',0]}, // E@b+G@b: iv=3=min3 ✓
+    {name:'10ème Mineure (Corde La)',                shape:['x',0,'x',5]}, // A@b+G@(b+5): iv=3=min3 ✓
+    {name:'Triade Mineure (Corde La)',               shape:['x',0,2,5]},
   ],
   dom7:[
-    {name:'7e Forme Pleine (Corde Mi)',         shape:[0,2,0,1]},
-    {name:'7e Shell : Fdt + Tierce + ♭7',      shape:[0,'x',0,1]},
-    {name:'7e Forme Pleine (Corde La)',         shape:['x',0,2,0]},
-    {name:'7e Shell : Fdt + ♭7 + Tierce',      shape:['x',0,-1,0]},
+    {name:'Dom7 Forme Pleine (Corde Mi)',        shape:[0,2,0,1]},
+    {name:'Dom7 Shell Voicing (Corde Mi)',       shape:[0,'x',0,1]},
+    {name:'Dom7 Forme Pleine (Corde La)',        shape:['x',0,2,0]},
+    {name:'Dom7 Shell Voicing (Corde La)',       shape:['x',0,-1,0]},
   ],
   min7:[
-    {name:'m7 Forme Pleine (Corde Mi)',         shape:[0,2,0,0]},
-    {name:'m7 Shell : Fdt + Tierce min + ♭7',  shape:[0,'x',0,0]},
-    {name:'m7 Forme Pleine (Corde La)',         shape:['x',0,1,0]},
-    {name:'m7 Shell : Fdt + ♭7 + Tierce min',  shape:['x',0,-2,0]},
+    {name:'Min7 Forme Pleine (Corde Mi)',        shape:[0,2,0,0]},
+    {name:'Min7 Shell Voicing (Corde Mi)',       shape:[0,'x',0,0]},
+    {name:'Min7 Shell Voicing (Corde La)',       shape:['x',0,-2,0]},
   ],
   maj7:[
-    {name:'Δ7 Shell : Fdt + Tierce + 7maj',    shape:[0,'x',1,1]},
-    {name:'Δ7 Forme Pleine (Corde La)',         shape:['x',0,2,1]},
+    {name:'Maj7 Shell Voicing (Corde Mi)',       shape:[0,'x',1,1]},
+    {name:'Maj7 Shell Voicing (Corde La)',       shape:['x',0,2,1]},
   ],
 };
 // Open-position chords: absolute fret numbers
@@ -560,7 +561,7 @@ function faValid(fa,rootPc,iv){
   }
   if(fretted.length>=2){
     const mx=Math.max(...fretted),mn=Math.min(...fretted);
-    if(mx-mn>4)return false;
+    if(mx-mn>(count===2?7:4))return false;
   }
   return count>=1&&hasRoot&&played.size>=Math.min(iv.length,2);
 }
@@ -634,13 +635,15 @@ function makeSVG(voicing,mode){
   if(state.hand==='left'){v=[...v].reverse();fg=[...fg].reverse();}
   const strNames=state.hand==='left'?['G','D','A','E']:['E','A','D','G'];
 
-  const S=32,F=26,PL=18,PT=36,PB=18,nF=5,N=4;
-  const W=PL*2+(N-1)*S,H=PT+nF*F+PB;
+  const S=32,F=26,PL=18,PT=36,PB=18,N=4;
   const frets=v.map(x=>x?x.f:-1);
   const pNO=frets.filter(f=>f>0);
   const minFP=pNO.length?Math.min(...pNO):1;
+  const maxFP=pNO.length?Math.max(...pNO):1;
   const sf=minFP<=2?0:minFP-1;
   const showNut=sf===0;
+  const nF=Math.max(5,maxFP-sf+1);
+  const W=PL*2+(N-1)*S,H=PT+nF*F+PB;
 
   let svg=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
 
