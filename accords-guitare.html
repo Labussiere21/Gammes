@@ -188,6 +188,12 @@ h1 em{font-style:italic; color:var(--brass)}
 .chord-btn:hover{border-color:var(--cherry-dim); color:var(--cream)}
 .chord-btn.on{background:var(--cherry); border-color:var(--cherry); color:#fff}
 
+/* ===== INVERSIONS ===== */
+.inv-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.inv-btn{font-family:"Space Mono",monospace;font-size:11px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);cursor:pointer;padding:4px 11px;border-radius:6px;transition:.12s;font-weight:700}
+.inv-btn:hover{color:var(--cream);border-color:var(--muted-2)}
+.inv-btn.on{background:var(--cherry);color:#fff;border-color:var(--cherry)}
+
 /* ===== INTERVAL FORMULA ===== */
 .formula-bar{
   display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:14px;
@@ -520,6 +526,7 @@ h1 em{font-style:italic; color:var(--brass)}
     <div class="chord-selector">
       <div class="group-tabs" id="group-tabs"></div>
       <div class="chord-btns" id="chord-btns"></div>
+      <div class="inv-row" id="inv-row" style="display:none"></div>
     </div>
   </section>
 
@@ -632,6 +639,7 @@ const state = {
   accPref: 'b',
   chordGroup: 'triades',
   chordId: 'maj',
+  invBassIv: 0,
   notation: 'en',
   lang: localStorage.getItem('sblang')||'fr',
   strings: 6,
@@ -717,6 +725,38 @@ function spellByInterval(rootPc,iv){
 
 const ENHA={b:{1:'C♯',3:'D♯',6:'F♯',8:'G♯',10:'A♯'},'#':{1:'D♭',3:'E♭',6:'G♭',8:'A♭',10:'B♭'}};
 
+/* ============================================================ CHORD INVERSIONS */
+const CHORD_INVERSIONS={
+  maj:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3',  label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+  ],
+  min:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/♭3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:3},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+  ],
+  '7':[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3',  label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/♭7', label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:10},
+  ],
+  maj7:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/3',  label_fr:'1er renversement',  label_en:'1st inversion', bassIv:4},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/7',  label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:11},
+  ],
+  m7:[
+    {id:'root',sym:'',    label_fr:'Fondamental',       label_en:'Root position', bassIv:0},
+    {id:'inv1',sym:'/♭3', label_fr:'1er renversement',  label_en:'1st inversion', bassIv:3},
+    {id:'inv2',sym:'/5',  label_fr:'2ème renversement', label_en:'2nd inversion', bassIv:7},
+    {id:'inv3',sym:'/♭7', label_fr:'3ème renversement', label_en:'3rd inversion', bassIv:10},
+  ],
+};
+
 /* ============================================================ CHORD DEFS */
 const CHORD_GROUPS = [
   { id:'triades', label:'Triades', label_en:'Triads', chords:[
@@ -781,16 +821,6 @@ const CHORD_GROUPS = [
     { id:'7b9s5',  sym:'7♭9♯5',label:'7 ♭9♯5',           label_en:'7 ♭9♯5',       iv:[0,4,8,10,1] },
     { id:'7s9s5',  sym:'7♯9♯5',label:'7 ♯9♯5',           label_en:'7 ♯9♯5',       iv:[0,4,8,10,3] },
     { id:'13b5',   sym:'13♭5', label:'13 ♭5',            label_en:'13 ♭5',         iv:[0,4,6,10,9] },
-  ]},
-  { id:'inv', label:'Renversements', label_en:'Inversions', chords:[
-    { id:'maj_1',  sym:'/3',    label:'Maj 1er renv. (/3)',  label_en:'Maj 1st inv. (/3)',  iv:[0,4,7],    bassIv:4 },
-    { id:'maj_2',  sym:'/5',    label:'Maj 2e renv. (/5)',   label_en:'Maj 2nd inv. (/5)',  iv:[0,4,7],    bassIv:7 },
-    { id:'min_1',  sym:'m/♭3',  label:'Min 1er renv. (/♭3)',label_en:'Min 1st inv. (/♭3)', iv:[0,3,7],    bassIv:3 },
-    { id:'min_2',  sym:'m/5',   label:'Min 2e renv. (/5)',   label_en:'Min 2nd inv. (/5)',  iv:[0,3,7],    bassIv:7 },
-    { id:'dom7_1', sym:'7/3',   label:'Dom7 1er renv.',      label_en:'Dom7 1st inv.',      iv:[0,4,7,10], bassIv:4 },
-    { id:'dom7_2', sym:'7/5',   label:'Dom7 2e renv.',       label_en:'Dom7 2nd inv.',      iv:[0,4,7,10], bassIv:7 },
-    { id:'dom7_3', sym:'7/♭7',  label:'Dom7 3e renv.',       label_en:'Dom7 3rd inv.',      iv:[0,4,7,10], bassIv:10 },
-    { id:'maj7_1', sym:'Δ7/3',  label:'Maj7 1er renv.',      label_en:'Maj7 1st inv.',      iv:[0,4,7,11], bassIv:4 },
   ]},
 ];
 
@@ -1483,7 +1513,7 @@ function buildGroupTabs(){
   CHORD_GROUPS.forEach(g=>{
     const b=document.createElement('button'); b.className='group-tab'+(g.id===state.chordGroup?' on':'');
     b.textContent=currentLang()==='en'?g.label_en:g.label; b.dataset.group=g.id;
-    b.onclick=()=>{ state.chordGroup=g.id; state.chordId=CHORD_GROUPS.find(x=>x.id===g.id).chords[0].id; render(); };
+    b.onclick=()=>{ state.chordGroup=g.id; state.chordId=CHORD_GROUPS.find(x=>x.id===g.id).chords[0].id; state.invBassIv=0; render(); };
     c.appendChild(b);
   });
 }
@@ -1495,8 +1525,23 @@ function buildChordBtns(){
   g.chords.forEach(cd=>{
     const b=document.createElement('button'); b.className='chord-btn'+(cd.id===state.chordId?' on':'');
     b.innerHTML=`${currentLang()==='en'?cd.label_en:cd.label}<span style="opacity:.5;margin-left:6px;font-size:10px">${cd.sym||'—'}</span>`;
-    b.onclick=()=>{ state.chordId=cd.id; render(); };
+    b.onclick=()=>{ state.chordId=cd.id; state.invBassIv=0; render(); };
     c.appendChild(b);
+  });
+}
+
+function buildInvButtons(){
+  const row=document.getElementById('inv-row');
+  const invs=CHORD_INVERSIONS[state.chordId];
+  if(!invs){row.style.display='none';return;}
+  row.style.display='flex';row.innerHTML='';
+  invs.forEach(inv=>{
+    const b=document.createElement('button');
+    b.className='inv-btn'+(state.invBassIv===inv.bassIv?' on':'');
+    const lbl=state.lang==='en'?inv.label_en:inv.label_fr;
+    b.innerHTML=lbl+(inv.sym?` <span style="opacity:.5;margin-left:5px">${inv.sym}</span>`:'');
+    b.onclick=()=>{state.invBassIv=inv.bassIv;state.position=1;render();};
+    row.appendChild(b);
   });
 }
 
@@ -1803,10 +1848,10 @@ function renderDiagrams(def){
   container.innerHTML='';
   if(!def){container.innerHTML=`<div class="no-voicings">${t('lbl_select')}</div>`;return;}
 
-  const isInversion=def.bassIv!=null&&def.bassIv!==0;
+  const isInversion=state.invBassIv!==0;
   let allVoicings,sections;
   if(isInversion){
-    allVoicings=findVoicings(state.rootPc,def.iv,def.bassIv,def.id);
+    allVoicings=findVoicings(state.rootPc,def.iv,state.invBassIv,def.id);
     sections=[{label:null,voicings:allVoicings}];
   }else{
     const{mustKnow,open,moveable}=categorizeVoicings(state.rootPc,def.iv,def.id||'');
@@ -2263,15 +2308,19 @@ function render(){
   buildPiano();
   buildGroupTabs();
   buildChordBtns();
+  buildInvButtons();
 
   const def=currentChordDef();
   const rootName=spellPc(state.rootPc);
 
+  const _invs=CHORD_INVERSIONS[def?.id];
+  const _inv=_invs?_invs.find(i=>i.bassIv===state.invBassIv):null;
+
   document.getElementById('rd-name').textContent=rootName;
   document.getElementById('badge-root').textContent=rootName;
-  document.getElementById('badge-sym').textContent=def?(currentLang()==='en'?def.label_en:def.label):'—';
+  document.getElementById('badge-sym').textContent=(def?(currentLang()==='en'?def.label_en:def.label):'—')+(_inv&&_inv.sym?' '+_inv.sym:'');
   document.getElementById('diagrams-title').textContent=
-    def?`Positions — ${rootName}${def.sym||''}` : t('lbl_positions');
+    def?`Positions — ${rootName}${def.sym||''}${_inv&&_inv.sym?_inv.sym:''}` : t('lbl_positions');
 
   renderFormula(def);
   renderChordInfo(def);
