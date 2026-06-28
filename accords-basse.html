@@ -817,7 +817,7 @@ function makeSVG(voicing,mode){
   if(state.hand==='left'){v=[...v].reverse();fg=[...fg].reverse();}
   const strNames=state.hand==='left'?['G','D','A','E']:['E','A','D','G'];
 
-  const S=32,F=26,PL=18,PT=36,PB=18,N=4;
+  const S=32,F=26,PL=22,PT=36,PB=18,N=4;
   const frets=v.map(x=>x?x.f:-1);
   const pNO=frets.filter(f=>f>0);
   const minFP=pNO.length?Math.min(...pNO):1;
@@ -844,9 +844,9 @@ function makeSVG(voicing,mode){
       svg+=`<line x1="${PL}" y1="${y}" x2="${PL+(N-1)*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
   }
-  // Fret number
+  // Fret number (left side — standard convention)
   if(!showNut){
-    svg+=`<text x="${PL+(N-1)*S+8}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${sf+1}</text>`;
+    svg+=`<text x="${PL-5}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end" dominant-baseline="central">${sf+1}</text>`;
   }
   // Inlays
   const INLAYS=[3,5,7,9,12,15,17,19];
