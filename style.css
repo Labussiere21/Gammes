@@ -56,6 +56,10 @@ header{margin-bottom:30px}
 .nav-link:hover{color:var(--cream)}
 .nav-link.active{background:var(--brass); color:#160f08}
 
+/* ===== LOGO + SÉLECTEUR INSTRUMENT ===== */
+.logo-bar{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:8px}
+.logo-bar .inst-bar{margin-bottom:0}
+
 /* ===== SÉLECTEUR INSTRUMENT (Basse / Guitare) ===== */
 .inst-bar{display:flex;gap:3px;margin-bottom:10px;background:#0e0a07;border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content}
 .inst-btn{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:5px 14px;border-radius:5px;transition:.12s;white-space:nowrap}
