@@ -836,7 +836,7 @@ function makeSVG(voicing,mode){
   const sf=minFP<=2?0:minFP-1;
   const showNut=sf===0;
   const nF=Math.max(5,maxFP-sf+1);
-  const W=PL*2+(N-1)*S,H=PT+nF*F+PB;
+  const W=PL*2+(N-1)*S+24,H=PT+nF*F+PB;
 
   let svg=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
 
@@ -855,9 +855,9 @@ function makeSVG(voicing,mode){
       svg+=`<line x1="${PL}" y1="${y}" x2="${PL+(N-1)*S}" y2="${y}" stroke="#4a1525" stroke-width="1"/>`;
     }
   }
-  // Fret number — left side, clear of inlay dots (dots at cx≈70, number ends at x≈16)
+  // Fret number — right side of diagram, in the added right-padding zone
   if(!showNut){
-    svg+=`<text x="${PL-6}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="end" dominant-baseline="central">${sf+1}</text>`;
+    svg+=`<text x="${PL+(N-1)*S+6}" y="${PT+F*.5}" font-family="Space Mono,monospace" font-size="10" fill="#9d8a72" text-anchor="start" dominant-baseline="central">${sf+1}</text>`;
   }
   // Inlays
   const INLAYS=[3,5,7,9,12,15,17,19];
