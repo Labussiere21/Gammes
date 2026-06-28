@@ -697,44 +697,50 @@ function computeFingers(voicing){
   });
 }
 
-/* Generate voicings where the lowest sounding string has the inversion note (bassIv).
-   For each candidate string (E/A/D), we place the inversion note at its natural fret (and +12),
-   then enumerate all chord-tone combinations on higher strings within a 4-fret window.
-   faValid enforces root presence, span ≤ 4, and ≥ 2 distinct PCs. */
 function computeInversionVoicings(rootPc,ivArr,bassIv){
-  const results=[];const seen=new Set();
+  const results=[];const seenKey=new Set();
   const targetPc=(rootPc+bassIv)%12;
   const strNames=['Mi','La','Ré'];
   for(let sBass=0;sBass<3;sBass++){
-    const bf0=(targetPc-OPC[sBass]+12)%12;
-    [bf0,bf0+12].forEach(bf=>{
-      if(bf>14)return;
-      const winMax=bf+4;
-      const bassNoteMidi=OMI[sBass]+bf;
-      // Higher strings: only allow frets that produce a note >= bassNoteMidi in MIDI
-      const higherStrs=[];
-      for(let s=sBass+1;s<4;s++)higherStrs.push(s);
-      const opts=higherStrs.map(s=>{
-        const minF=Math.max(0,bassNoteMidi-OMI[s]);
-        const arr=[null];
-        for(let f=minF;f<=winMax;f++){
-          const pc=(OPC[s]+f)%12;
-          const iv=(pc-rootPc+12)%12;
-          if(ivArr.includes(iv))arr.push(f);
-        }
-        return arr;
-      });
-      function pick(hi,fa){
-        if(hi===higherStrs.length){
-          if(faValid(fa,rootPc,ivArr)){
-            const key=fa.map(f=>f===null?'x':f).join(',');
-            if(!seen.has(key)){seen.add(key);results.push({v:arrToVoicing(fa,rootPc,ivArr),label:'Corde '+strNames[sBass]});}
-          }
-          return;
-        }
-        opts[hi].forEach(f=>{const next=[...fa];next[higherStrs[hi]]=f;pick(hi+1,next);});
+    const bf=(targetPc-OPC[sBass]+12)%12;
+    if(bf>14)continue;
+    const winMax=bf+4;
+    const bassNoteMidi=OMI[sBass]+bf;
+    const higherStrs=[];
+    for(let s=sBass+1;s<4;s++)higherStrs.push(s);
+    const opts=higherStrs.map(s=>{
+      const minF=Math.max(0,bassNoteMidi-OMI[s]);
+      const arr=[null];
+      for(let f=minF;f<=winMax;f++){
+        const pc=(OPC[s]+f)%12;
+        const iv=(pc-rootPc+12)%12;
+        if(ivArr.includes(iv))arr.push(f);
       }
-      const init=Array(4).fill(null);init[sBass]=bf;pick(0,init);
+      return arr;
+    });
+    const local=[];const seenLocal=new Set();
+    const pick=(hi,fa)=>{
+      if(hi===higherStrs.length){
+        if(faValid(fa,rootPc,ivArr)){
+          let maxMidi=bassNoteMidi;
+          for(let s=sBass+1;s<4;s++){if(fa[s]!==null)maxMidi=Math.max(maxMidi,OMI[s]+fa[s]);}
+          if(maxMidi-bassNoteMidi>12)return;
+          const pcs=[];for(let s=0;s<4;s++){if(fa[s]!==null)pcs.push((OPC[s]+fa[s])%12);}
+          const pcKey=pcs.slice().sort((a,b)=>a-b).join(',');
+          if(!seenLocal.has(pcKey)){seenLocal.add(pcKey);local.push({fa:[...fa],pcKey,midi:maxMidi-bassNoteMidi});}
+        }
+        return;
+      }
+      opts[hi].forEach(f=>{const next=[...fa];next[higherStrs[hi]]=f;pick(hi+1,next);});
+    };
+    const init=Array(4).fill(null);init[sBass]=bf;pick(0,init);
+    local.sort((a,b)=>{
+      const ap=a.pcKey.split(',').length,bp=b.pcKey.split(',').length;
+      return bp!==ap?bp-ap:a.midi-b.midi;
+    });
+    local.slice(0,2).forEach(r=>{
+      const key=r.fa.map(f=>f===null?'x':f).join(',');
+      if(!seenKey.has(key)){seenKey.add(key);results.push({v:arrToVoicing(r.fa,rootPc,ivArr),label:'Corde '+strNames[sBass]});}
     });
   }
   return results;
