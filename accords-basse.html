@@ -1264,7 +1264,7 @@ document.getElementById('play-all-btn').addEventListener('click',playAll);
   buildPiano();
   render();
 })();
-(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>100;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();
 </script>
+<script>(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>100;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();</script>
 </body>
 </html>
