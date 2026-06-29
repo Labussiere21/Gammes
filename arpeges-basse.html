@@ -347,35 +347,6 @@
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}
 
-/* ===== PANEL RÉSUMÉ ARPÈGE ===== */
-.arp-info-wrap{
-  margin-top:16px;
-  background:linear-gradient(180deg,var(--panel-2),var(--panel));
-  border:1px solid var(--line); border-radius:var(--radius);
-  padding:16px clamp(14px,2.4vw,24px);
-  box-shadow:0 24px 60px -40px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03);
-}
-.chord-stack{ display:flex; flex-direction:column; gap:5px; }
-.stack-row{ display:flex; align-items:stretch; gap:8px; min-height:40px; }
-.stack-cat{
-  font-family:"Space Mono",monospace; font-size:9px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
-  width:68px; flex-shrink:0; display:flex; align-items:center;
-  justify-content:flex-end; padding-right:10px;
-  border-right:1px solid var(--line);
-}
-.stack-blocks{ display:flex; flex-wrap:wrap; gap:5px; align-items:center; padding-left:4px; }
-.stack-block{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  border-radius:10px; padding:7px 14px; min-width:54px;
-  box-shadow:0 3px 12px rgba(0,0,0,.55);
-}
-.stack-block .sbn{ font-size:20px; font-weight:700; line-height:1; font-family:"Space Mono",monospace; }
-.stack-block .sbi{ font-size:10px; font-weight:700; letter-spacing:.06em; margin-top:3px; text-transform:uppercase; opacity:.6; }
-.arp-desc-text{ font-size:13.5px; line-height:1.72; color:var(--muted-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
-.arp-desc-text p{ margin:0 0 12px; }
-.arp-desc-text p:last-child{ margin-bottom:0; }
-.arp-desc-text strong{ color:var(--cream); font-weight:600; }
 #scroll-to-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--brass);color:#1a1008;border:none;font-size:20px;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999;display:flex;align-items:center;justify-content:center}
 #scroll-to-top:hover{background:#e8b855}</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
@@ -463,12 +434,6 @@
       <div class="ctl-label" data-i18n="lbl_arpege">Arpège</div>
       <div class="arp-groups" id="arp-groups"></div>
     </div>
-  </section>
-
-  <!-- Panel Résumé / Description -->
-  <section class="arp-info-wrap" id="arp-info-wrap" style="display:none">
-    <div class="chord-stack" id="arp-chord-stack"></div>
-    <div class="arp-desc-text" id="arp-desc-text"></div>
   </section>
 
   <!-- Résultats -->
@@ -843,118 +808,6 @@ function buildArp(rootName, iv){
   });
 }
 
-/* ============================================================ RÉSUMÉ ARPÈGE */
-const ARP_IV_LABEL = {0:'R',1:'♭9',2:'9',3:'♭3',4:'3',5:'4/11',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
-const ARP_IV_COLOR = {
-  0:'#ff3333', 1:'#ff7a1a', 2:'#ffaa00', 3:'#2dc653', 4:'#8fd400',
-  5:'#00ccaa', 6:'#ffe000', 7:'#29b6ff', 8:'#3355ff', 9:'#9933ee',
-  10:'#dd33cc', 11:'#ff1a88',
-  14:'#ffaa00', 17:'#2dc653', 18:'#00ccaa', 21:'#9933ee'
-};
-const ARP_GRID_DEF = [
-  [{iv:9,label:'6'}, {iv:10,label:'♭7'}, {iv:11,label:'7'}],
-  'sep',
-  [{iv:6,label:'♭5'}, {iv:7,label:'5'},  {iv:8,label:'♯5'}],
-  [{iv:2,label:'sus2'},{iv:3,label:'m3'}, {iv:4,label:'3'}],
-  [{iv:5,label:'sus4'},{iv:0,label:'1'},  null],
-];
-const ARPEGE_DESC = {
-  'maj':      '<p>L\'arpège <strong>majeur</strong> parcourt les notes de la triade majeure (fondamentale, tierce majeure, quinte). Pilier du jeu de basse, on le retrouve sur les degrés I et IV de toute progression tonale, du blues au jazz en passant par le rock et la funk. Ses positions s\'apprennent via les boîtes CAGED.</p>',
-  'maj7':     '<p>L\'arpège <strong>majeur 7</strong> ajoute la septième majeure à la triade, créant une couleur lumineuse et sereine. Idéal sur les degrés I et IV en jazz et bossa nova. Sa septième doit être jouée avec soin pour éviter la friction avec la tonique de l\'accord suivant.</p>',
-  'dom7':     '<p>L\'arpège de <strong>dominante 7</strong> est l\'arpège le plus important du blues. Son triton interne (tierce majeure ↔ septième mineure) crée une tension directionnelle vers la résolution. Présent sur le degré V de toute gamme majeure et sur les trois degrés I7, IV7, V7 du blues.</p>',
-  'maj6':     '<p>L\'arpège <strong>majeur 6</strong> enrichit la triade d\'une sixte majeure sans la tension de la septième. Sa couleur douce et légèrement rétro est très utilisée en jazz, swing et bossa nova. Il évite la dissonance de la septième tout en ajoutant de la profondeur harmonique.</p>',
-  'min':      '<p>L\'arpège <strong>mineur</strong> est le pilier des tonalités mineures à la basse. Sa tierce mineure lui donne sa couleur mélancolique caractéristique. Indispensable au rock, jazz, soul et blues, il se retrouve aux degrés II, III et VI des progressions majeures.</p>',
-  'min7':     '<p>L\'arpège <strong>mineur 7</strong> est l\'arpège de basse le plus polyvalent du jazz et de la funk. Sa couleur douce s\'intègre partout. Il correspond aux degrés II, III et VI de la gamme majeure et constitue la base de toutes les lignes de basse sur les progressions ii-V-I.</p>',
-  'min6':     '<p>L\'arpège <strong>mineur 6</strong> ajoute la sixte majeure à la triade mineure, créant une couleur douce-amère très expressive. Très utilisé en jazz et bossa nova, notamment dans les progressions de basse descendantes chromatiques (mM7 – m7 – m6).</p>',
-  'minmaj7':  '<p>L\'arpège <strong>mineur Maj7</strong> combine une tierce mineure et une septième majeure — une tension interne propre à la gamme mineure harmonique. Sa couleur mystérieuse est utilisée en jazz avancé, musique de film et dans la descente chromatique mM7 – m7 – m6.</p>',
-  'p5':       '<p>L\'arpège <strong>Power 5</strong> ne contient que la fondamentale et la quinte juste, sans tierce. Neutre harmoniquement (ni majeur ni mineur), il définit la puissance sonore du rock et du métal. À la basse, deux notes suffisent à poser l\'accord tout en laissant aux autres instruments toute liberté pour la couleur harmonique.</p>',
-  'sus2':     '<p>L\'arpège <strong>sus2</strong> évite la tierce et utilise la seconde majeure, créant une couleur ouverte sans ambiguïté majeure/mineure. Expressif en rock et pop moderne, il laisse beaucoup de liberté harmonique et s\'intègre facilement dans des textures aériennes.</p>',
-  'sus4':     '<p>L\'arpège <strong>sus4</strong> remplace la tierce par la quarte juste, créant une tension suspendue. Son instabilité naturelle rend les lignes de basse dynamiques, cherchant leur résolution vers la triade majeure ou mineure. Très présent en funk et rock.</p>',
-  'dom7sus4': '<p>L\'arpège <strong>7sus4</strong> est très apprécié en jazz-fusion et funk (Herbie Hancock, Marcus Miller). Il combine la suspension de quarte et la septième mineure, créant une texture ouverte tout en maintenant la tension fonctionnelle de dominante.</p>',
-  'aug':      '<p>L\'arpège <strong>augmenté</strong> remplace la quinte juste par une quinte augmentée, créant une couleur symétrique et mystérieuse. Sa géométrie particulière — une même forme couvre 3 toniques — simplifie son apprentissage. Utilisé en jazz et musique de film pour des transitions colorées.</p>',
-  'aug7':     '<p>L\'arpège <strong>augmenté 7</strong> cumule quinte augmentée et septième mineure. Issu de la gamme par tons, il précède souvent une résolution vers un accord mineur avec une double tension très expressive. Très apprécié en jazz avancé et fusion.</p>',
-  'dim':      '<p>L\'arpège <strong>diminué</strong> empile des tierces mineures sur une quinte diminuée. Sa symétrie — une forme couvre 3 toniques différentes — facilite son apprentissage. Excellent pour des passages de tension dramatiques avant une résolution, en jazz comme en classique.</p>',
-  'halfdim':  '<p>L\'arpège <strong>demi-diminué</strong> (ø) est central dans les progressions jazz en mineur sur le degré ii. Sa quinte diminuée et sa septième mineure créent une tension qui appelle la résolution vers le V7 puis l\'Im. Indispensable pour les cadences ii°–V7–Im.</p>',
-  'dim7':     '<p>L\'arpège <strong>diminué 7</strong> divise l\'octave en 4 parties égales. Sa symétrie parfaite lui permet de se résoudre vers 4 toniques différentes — 3 formes couvrent les 12 toniques. Très utilisé en jazz et musique classique pour des passages chromatiques et dramatiques.</p>',
-  'dom7b5':   '<p>L\'arpège <strong>7♭5</strong> combine tierce majeure, quinte diminuée et septième mineure. Sa quinte bémol crée un second triton, intensifiant la tension de dominante. Interchangeable avec le V7 d\'une tonique à distance de triton (substitution), c\'est un outil clé de la réharmonisation jazz.</p>',
-  'maj9':     '<p>L\'arpège <strong>majeur 9</strong> étend la triade majeure avec la septième majeure et la neuvième. Sa couleur lumineuse et ouverte est au cœur du jazz contemporain, de la bossa nova et de la pop sophistiquée. Sur la basse, la neuvième ajoute de la fluidité mélodique aux lignes de walking bass sur les degrés I et IV.</p>',
-  'maj7#11':  '<p>L\'arpège <strong>maj7♯11</strong> est issu de la gamme lydienne. Sa quarte augmentée (♯11) remplace la quarte juste, apportant une couleur brillante et moderne sans dissonance agressive. Très utilisé en jazz fusion et bossa nova sur le degré I ou IV lydien.</p>',
-  'maj13':    '<p>L\'arpège <strong>majeur 13</strong> empile neuvième, onzième et treizième sur l\'accord maj7, offrant une richesse harmonique maximale. Sur la basse, on sélectionne généralement 3 à 4 des notes disponibles pour construire une ligne cohérente. Très présent en jazz avancé et fusion.</p>',
-  'm9':       '<p>L\'arpège <strong>mineur 9</strong> enrichit la triade mineure d\'une septième mineure et d\'une neuvième, créant une palette sonore douce et mélancolique. Incontournable en jazz, soul et R&B, il offre de nombreuses possibilités pour des lignes de basse expressives et des ornements mélodiques.</p>',
-  'm11':      '<p>L\'arpège <strong>mineur 11</strong> ajoute l\'onzième juste au min9, créant une couleur suspendue et enveloppante caractéristique du jazz modal et de la soul contemporaine. Sa quarte résonne parfaitement avec la septième mineure pour des progressions de basse profondes et évocatrices.</p>',
-  'm13':      '<p>L\'arpège <strong>mineur 13</strong> est l\'accord mineur le plus riche qui soit, avec ses 7 notes. Il encapsule toute la gamme dorienne. À la basse, il ouvre un vaste vocabulaire de lignes mélodiques. Très utilisé en jazz fusion, il est associé aux modes mineur et dorien.</p>',
-  '9':        '<p>L\'arpège de <strong>dominante 9</strong> cumule le triton de la dominante 7 et la neuvième, décuplant la tension harmonique. Sa résolution vers la tonique est encore plus forte qu\'avec la simple 7. C\'est l\'arpège de référence pour les lignes de basse blues et funk sophistiquées, sur le degré V.</p>',
-  '11':       '<p>L\'arpège de <strong>dominante 11</strong> est l\'accord de suspension par excellence en jazz. Sa quarte juste crée une tension caractéristique résolue en retirant la tierce. Sur la basse, la sixième et septième corde (ou les positions centrales) permettent de faire sonner toute la richesse de cet accord de manière idiomatique.</p>',
-  '13':       '<p>L\'arpège de <strong>dominante 13</strong> est l\'accord de dominante le plus complet du jazz. Sa treizième (sixte) ajoutée à la dominante 9 crée une tension maximale qui réclame sa résolution. C\'est l\'accord de V7 "de luxe" du bebop, indispensable dans les cadences ii – V7(13) – I.</p>',
-};
-
-function isDarkColorArp(hex){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return(0.299*r+0.587*g+0.114*b)/255<0.5;
-}
-
-const ARP_IV_NAME_FR={0:'Fond.',1:'♭9e',2:'9e',3:'3ce min.',4:'3ce maj.',5:'4te/11e',6:'♭5/♯11e',7:'5te',8:'5te aug.',9:'6te',10:'7e min.',11:'7e maj.',14:'9e',17:'11e',18:'11e aug.',21:'13e'};
-const ARP_IV_NAME_EN={0:'Root',1:'♭9th',2:'9th',3:'min 3rd',4:'maj 3rd',5:'4th/11th',6:'♭5/♯11th',7:'5th',8:'aug 5th',9:'6th',10:'min 7th',11:'maj 7th',14:'9th',17:'11th',18:'aug 11th',21:'13th'};
-function arpIvName(iv,ivSet){
-  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
-    if(iv===2) return currentLang()==='en'?'2nd':'2ce';
-    if(iv===5) return currentLang()==='en'?'4th':'4te';
-  }
-  return(currentLang()==='en'?ARP_IV_NAME_EN:ARP_IV_NAME_FR)[iv]||'';
-}
-function arpIvLabel(iv,ivSet){
-  if(ivSet&&!ivSet.has(3)&&!ivSet.has(4)){
-    if(iv===2) return '2';
-    if(iv===5) return '4';
-  }
-  return ARP_IV_LABEL[iv]||'?';
-}
-
-function arpSlotOf(iv,ivSet){
-  const hasThird=ivSet.has(3)||ivSet.has(4);
-  if(iv===0) return 'root';
-  if(iv===2||iv===14) return hasThird?'ext':'third';   // 2nd / 9e
-  if(iv===3||iv===4) return 'third';
-  if(iv===5||iv===17) return hasThird?'ext':'third';   // 4te / 11e
-  if(iv===18) return 'ext';                            // ♯11e
-  if(iv===6||iv===7||iv===8) return 'fifth';
-  if(iv===21) return 'ext';                            // 13e
-  return 'seventh';
-}
-
-function renderArpInfo(arpDef){
-  const wrap=document.getElementById('arp-info-wrap');
-  if(!arpDef){wrap.style.display='none';return;}
-  wrap.style.display='';
-  const ivSet=new Set(arpDef.iv);
-  const slots={root:[],third:[],fifth:[],seventh:[],ext:[]};
-  arpDef.iv.forEach(iv=>{slots[arpSlotOf(iv,ivSet)].push(iv);});
-  const rowDefs=[
-    {key:'ext',     label:null},
-    {key:'seventh', label:null},
-    {key:'fifth',   label:null},
-    {key:'third',   label:null},
-    {key:'root',    label:null},
-  ];
-  const stack=document.getElementById('arp-chord-stack'); stack.innerHTML='';
-  rowDefs.forEach(({key,label})=>{
-    const ivs=slots[key]; if(!ivs.length)return;
-    const catLabel=label??ivs.map(iv=>arpIvName(iv,ivSet)).join(' / ');
-    const row=document.createElement('div'); row.className='stack-row';
-    const cat=document.createElement('div'); cat.className='stack-cat'; cat.textContent=catLabel;
-    const blks=document.createElement('div'); blks.className='stack-blocks';
-    ivs.forEach(iv=>{
-      const col=ARP_IV_COLOR[iv]||'#d9a849';
-      const tc=isDarkColorArp(col)?'#ece1cd':'#0c0306';
-      const noteName=spellByInterval(state.rootPc,iv);
-      const blk=document.createElement('div'); blk.className='stack-block'; blk.style.background=col;
-      blk.innerHTML=`<span class="sbn" style="color:${tc}">${noteName}</span><span class="sbi" style="color:${tc}">${arpIvLabel(iv,ivSet)}</span>`;
-      blks.appendChild(blk);
-    });
-    row.appendChild(cat); row.appendChild(blks); stack.appendChild(row);
-  });
-  document.getElementById('arp-desc-text').innerHTML=ARPEGE_DESC[arpDef.id]||'<p>Description bientôt disponible.</p>';
-}
 
 
 /* ============================================================ ÉTAT */
@@ -965,18 +818,6 @@ const state={
 const SHARP_SPELL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_SPELL= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
 function rootName(){return(state.accPref==='#'?SHARP_SPELL:FLAT_SPELL)[state.rootPc];}
-function spellByInterval(rootPc,iv){
-  const LSTEP=[0,1,1,2,2,3,4,4,4,5,6,6];
-  const LN=['C','D','E','F','G','A','B'];
-  const LPC=[0,2,4,5,7,9,11];
-  const rootLtr=FLAT_SPELL[rootPc][0];
-  const rIdx=LN.indexOf(rootLtr);
-  const tIdx=(rIdx+LSTEP[iv])%7;
-  const tPc=(rootPc+iv)%12;
-  let d=tPc-LPC[tIdx]; if(d>6)d-=12; if(d<-6)d+=12;
-  const acc=d===1?'#':d===-1?'b':d===2?'##':d===-2?'bb':'';
-  return pretty(LN[tIdx]+acc);
-}
 
 /* ============================================================ PIANO */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -1255,7 +1096,6 @@ function render(){
     const _paw=document.getElementById('play-arp-wrap');if(_paw)_paw.innerHTML='';
     buildPositionButtons(0);
     renderFretboard([],rootPc,'sym',currentStrings(),[]);
-    renderArpInfo(null);
     return;
   }
   const arpPcs=arpDef.iv.map(i=>(rootPc+i)%12);
@@ -1312,7 +1152,6 @@ function render(){
   // Manche
   const strings=currentStrings();
   renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv);
-  renderArpInfo(arpDef);
 }
 
 /* ============================================================ INIT */
