@@ -377,11 +377,7 @@
         <a href="analyse.html"       class="nav-link">Analyse</a>
         <a href="quintes.html"       class="nav-link">Tonalités</a>
       </nav>
-      <div class="inst-bar" style="margin:0 0 0 auto">
-        <button class="inst-btn bass-btn" id="inst-bass">Basse</button>
-        <button class="inst-btn guit-btn" id="inst-guit">Guitare</button>
-      </div>
-    <div class="header-tools">
+    <div class="header-tools" style="margin-left:auto">
       <div class="htool-seg" id="notation-seg">
         <button data-notation="en" class="on" style="min-width:72px">A B C</button>
         <button data-notation="fr" style="min-width:72px">Do Ré Mi</button>
@@ -556,8 +552,6 @@ const _TR={
     lbl_gammes_imp_label:'Gammes pour improviser :',lbl_select_cad:'Sélectionne une cadence pour la visualiser.',
     lbl_genre_label:'Genre',lbl_prev:'← Préc.',lbl_next:'Suiv. →',
     doc_title:'Cadences de basse — ScalaBass',
-    doc_title_guitar:'Progressions d\'accords Guitare — ScalaSix',
-    lbl_prog_lede:'192 progressions d\'accords par genre — Jazz, Blues, Rock, Metal, Flamenco, Gipsy et plus. Choisis une tonique, clique sur une progression, navigue accord par accord sur le manche.',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -592,8 +586,6 @@ const _TR={
     lbl_gammes_imp_label:'Scales for soloing:',lbl_select_cad:'Select a cadence to visualize it.',
     lbl_genre_label:'Genre',lbl_prev:'← Prev.',lbl_next:'Next →',
     doc_title:'Bass Cadences — ScalaBass',
-    doc_title_guitar:'Guitar Chord Progressions — ScalaSix',
-    lbl_prog_lede:'192 chord progressions by genre — Jazz, Blues, Rock, Metal, Flamenco, Gypsy and more. Pick a root note, click a progression, and step through it chord by chord on the fretboard.',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -609,18 +601,16 @@ function noteToMidi(n,oct){
   return (oct+1)*12+pc;
 }
 async function initAudio(){
-  const sfName=isGuitar()?'acoustic_guitar_nylon':'electric_bass_finger';
-  if(_sfInst&&_sfInst._sfName===sfName)return _sfInst;
+  if(_sfInst)return _sfInst;
   if(_audioLoading)return null;
   _audioLoading=true;
   try{
     if(!_audioCtx)_audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    _sfInst=await Soundfont.instrument(_audioCtx,sfName,{
+    _sfInst=await Soundfont.instrument(_audioCtx,'electric_bass_finger',{
       soundfont:'MusyngKite',
       nameToUrl:(name,sf,fmt)=>`https://gleitz.github.io/midi-js-soundfonts/${sf}/${name}-${fmt}.js`,
       format:'mp3',gain:3.5,
     });
-    _sfInst._sfName=sfName;
     return _sfInst;
   }catch(e){console.warn('Audio:',e);_audioLoading=false;return null;}
 }
@@ -1045,13 +1035,10 @@ const GENRE_COLORS={
 };
 
 /* ==================== ÉTAT ==================== */
-if(!sessionStorage.getItem('sbinst')&&document.referrer.includes('-guitare'))sessionStorage.setItem('sbinst','guitar');
-const state={rootPc:9,accPref:'b',frets:12,hand:'right',display:'note',genre:'all',cadenceId:null,chordIdx:0,strings:4,inst:sessionStorage.getItem('sbinst')||'bass'};
-function isGuitar(){return state.inst==='guitar';}
+const state={rootPc:9,accPref:'b',frets:12,hand:'right',display:'note',genre:'all',cadenceId:null,chordIdx:0,strings:4};
 const STR4=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
 const STR5=[{n:'B',pc:11},{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
-const STR6_GUITAR=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7},{n:'B',pc:11},{n:'e',pc:4}];
-function currentStrings(){if(isGuitar())return STR6_GUITAR;return state.strings===5?STR5:STR4;}
+function currentStrings(){return state.strings===5?STR5:STR4;}
 
 /* ==================== PIANO ==================== */
 const WHITE=[{pc:0,n:'C'},{pc:2,n:'D'},{pc:4,n:'E'},{pc:5,n:'F'},{pc:7,n:'G'},{pc:9,n:'A'},{pc:11,n:'B'}];
@@ -1217,7 +1204,7 @@ function renderResult(){
       chords.forEach((ch,i)=>{
         for(let r=0;r<REPS;r++){
           const t=_audioCtx.currentTime+(i*REPS+r)*BEAT;
-          const _oct=isGuitar()?3:2;
+          const _oct=2;
           if(rootOnly){
             const midi=noteToMidi(spell(ch.pc).replace('♯','#').replace('♭','b'),_oct);
             inst.play(midi,t,{duration:BEAT*0.85,gain:3.5});
@@ -1301,13 +1288,11 @@ function renderFretboard(chords){
   cur.pcs.forEach((pc,i)=>pcMap[pc]={col:CHORD_COLORS[i]||cur.col,isRoot:i===0,note:spell(pc),ivIdx:i});
   let display=strings.slice().reverse();if(state.hand==='left')display=strings.slice();
   const thickness={E:3.4,A:2.7,D:2,G:1.3,B:4.5,e:0.6};
-  const GUITAR_TH=[2.0,1.6,1.3,1.0,0.8,0.6]; // low E → high e
   const DEG_NAMES_SHORT={0:'1',1:'♭9',3:'♭3',4:'3',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7',14:'9',17:'11',18:'♯11',21:'13'};
   const ivArr=CHORD_INTERVALS[cur.quality]||[0];
   const strDiv=document.createElement('div');strDiv.className='fb-strings';
   display.forEach((s,di)=>{
-    const gOrigIdx=state.hand==='right'?display.length-1-di:di;
-    const th=isGuitar()?GUITAR_TH[gOrigIdx]:(thickness[s.n]||2);
+    const th=thickness[s.n]||2;
     const row=document.createElement('div');row.className='fb-row';row.style.setProperty('--str-h',th+'px');
     const lab=document.createElement('div');lab.className='str-label';lab.textContent=prettyNote(s.n);row.appendChild(lab);
     for(let f=0;f<=state.frets;f++){
@@ -1346,17 +1331,6 @@ function renderFretboard(chords){
 
 /* ==================== SYNCHRO UI ==================== */
 function syncUI(){
-  document.getElementById('inst-bass')?.classList.toggle('active',!isGuitar());
-  document.getElementById('inst-guit')?.classList.toggle('active',isGuitar());
-  const r=document.documentElement.style;
-  if(isGuitar()){
-    r.setProperty('--brass','#bf1828');r.setProperty('--brass-dim','#8a0e1a');
-    r.setProperty('--bg-glow-a','rgba(191,24,40,.09)');r.setProperty('--bg-glow-b','rgba(191,24,40,.06)');
-  }else{
-    r.setProperty('--brass','#d9a849');r.setProperty('--brass-dim','#9c7a3a');
-    r.setProperty('--bg-glow-a','rgba(217,168,73,.09)');r.setProperty('--bg-glow-b','rgba(217,168,73,.06)');
-  }
-  const scw=document.getElementById('strings-ctl-wrap');if(scw)scw.style.display=isGuitar()?'none':'';
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
@@ -1386,13 +1360,7 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
-  if(typeof t==='function'){
-    document.title=isGuitar()?t('doc_title_guitar'):t('doc_title');
-    const h1=document.getElementById('page-h1');
-    if(h1) h1.innerHTML=isGuitar()?(lang==='en'?'Chord Prog<em>ressions</em>':'Pro<em>gressions</em>'):'Ca<em>dences</em>';
-    const lede=document.querySelector('.lede[data-i18n="lbl_cad_lede"]');
-    if(lede) lede.textContent=isGuitar()?t('lbl_prog_lede'):t('lbl_cad_lede');
-  }
+  if(typeof t==='function') document.title=t('doc_title');
 }
 
 function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCadencesGrid();renderResult();}
@@ -1403,14 +1371,6 @@ document.getElementById('fb-hand').addEventListener('click',e=>{const b=e.target
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.frets=+b.dataset.frets;render();});
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;render();});
 document.getElementById('fb-display').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.display=b.dataset.disp;render();});
-document.getElementById('inst-bass').addEventListener('click',()=>{
-  state.inst='bass'; sessionStorage.setItem('sbinst','bass');
-  _sfInst=null; _audioLoading=false; render();
-});
-document.getElementById('inst-guit').addEventListener('click',()=>{
-  state.inst='guitar'; sessionStorage.setItem('sbinst','guitar');
-  _sfInst=null; _audioLoading=false; render();
-});
 initNotationLang();
 render();
 updateI18n();
