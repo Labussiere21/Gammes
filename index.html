@@ -151,6 +151,9 @@
   .seg button:hover{color:var(--cream)}
   .seg button.on{background:var(--brass); color:#160f08; font-weight:700}
 
+  .tuning-sel{font-family:"Space Mono",monospace; font-size:12px; background:#080206; border:1px solid var(--line); color:var(--muted); padding:6px 10px; border-radius:8px; cursor:pointer; outline:none;}
+  .tuning-sel:focus{border-color:var(--brass)}
+
   /* Info rapide : positions trouvées */
   .positions-info{
     margin-top:18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;
@@ -437,7 +440,7 @@
         </div>
         <div>
           <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
-          <div class="seg" id="fb-tuning-ctl" role="group"></div>
+          <select id="fb-tuning-ctl" class="tuning-sel"></select>
         </div>
         </div>
         <div>
@@ -708,7 +711,7 @@ const TUNINGS = {
 };
 function pcOf_n(n){const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let pc=LP[n[0]];for(let i=1;i<n.length;i++){if(n[i]==='#')pc++;else if(n[i]==='b')pc--;}return((pc%12)+12)%12;}
 function currentStrings(){const tuns=TUNINGS[state.strings];const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];return tun.notes.map(n=>({n,pc:pcOf_n(n)}));}
-function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');if(!c)return;c.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;tuns.forEach(t=>{const b=document.createElement('button');b.textContent=(currentLang()==='en'?(t.label.replace('½ ton bas','½ step down').replace('1 ton bas','1 step down')):t.label);b.className=t.id===state.tuning?'on':'';b.onclick=()=>{state.tuning=t.id;render();};c.appendChild(b);});}
+function buildTuningSelect(){const sel=document.getElementById('fb-tuning-ctl');if(!sel)return;sel.innerHTML='';const tuns=TUNINGS[state.strings];if(!tuns.find(t=>t.id===state.tuning))state.tuning=tuns[0].id;const isEn=currentLang()==='en';tuns.forEach(t=>{const opt=document.createElement('option');const lbl=isEn?t.label.replace('½ ton bas','½ step down').replace('1 ton bas','1 step down'):t.label;opt.value=t.id;opt.textContent=`${lbl} — ${t.notes.join(' ')}`;if(t.id===state.tuning)opt.selected=true;sel.appendChild(opt);});}
 
 
 /* ============================================================ PIANO */
@@ -779,7 +782,7 @@ function render(){
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
-  document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on',b.textContent===((TUNINGS[state.strings]||[]).find(t=>t.id===state.tuning)||{}).label));
+  document.getElementById('fb-tuning-ctl').value=state.tuning;
 
   // Grille rapide — colorée par degré
   document.querySelectorAll('.ng-cell').forEach((c)=>{
@@ -908,8 +911,9 @@ document.getElementById('piano').addEventListener('click',e=>{
   toggleNote(+k.dataset.pc); render();
 });
 document.getElementById('fretboard').addEventListener('click',e=>{const cell=e.target.closest('.cell');if(!cell||cell.dataset.pc===undefined)return;toggleNote(+cell.dataset.pc);render();});
-buildTuningButtons();
-document.getElementById('fb-strings-ctl')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=TUNINGS[state.strings][0].id;buildTuningButtons();render();});
+buildTuningSelect();
+document.getElementById('fb-tuning-ctl').addEventListener('change',e=>{state.tuning=e.target.value;render();});
+document.getElementById('fb-strings-ctl')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;state.tuning=TUNINGS[state.strings][0].id;buildTuningSelect();render();});
 document.getElementById('fb-hand')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
 buildNoteGrid();
 
