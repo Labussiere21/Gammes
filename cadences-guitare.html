@@ -391,6 +391,11 @@
         <button data-lang="fr" class="on" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
       </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="hand-seg">
+        <button data-hand="right">🤜</button>
+        <button data-hand="left">🤛</button>
+      </div>
     </div>
     </div>
     <h1 id="page-h1">Pro<em>gressions</em></h1>
@@ -406,13 +411,6 @@
           <div class="piano" id="piano"></div>
           <div style="display:flex;flex-direction:column;gap:12px">
 
-            <div>
-              <div class="ctl-label" data-i18n="lbl_main">Main</div>
-              <div class="seg" id="fb-hand" role="group">
-                <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
-                <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -702,6 +700,18 @@ function initNotationLang(){
       else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
+}
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
 }
 
 /* ============================================================ DONNÉES */
@@ -1039,7 +1049,7 @@ const GENRE_COLORS={
 };
 
 /* ==================== ÉTAT ==================== */
-const state={rootPc:9,accPref:'b',frets:12,hand:'right',display:'note',genre:'all',cadenceId:null,chordIdx:0};
+const state={rootPc:9,accPref:'b',frets:12,hand:localStorage.getItem('sbhand')||'right',display:'note',genre:'all',cadenceId:null,chordIdx:0};
 const STR6=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7},{n:'B',pc:11},{n:'e',pc:4}];
 function currentStrings(){return STR6;}
 
@@ -1336,7 +1346,6 @@ function renderFretboard(chords){
 function syncUI(){
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
-  document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
   document.querySelectorAll('.cadence-card').forEach(c=>{
@@ -1369,11 +1378,12 @@ function render(){updateI18n();buildPiano();buildGenreTabs();syncUI();buildCaden
 
 /* ==================== INIT ==================== */
 buildPiano();buildGenreTabs();buildCadencesGrid();
-document.getElementById('fb-hand').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.hand=b.dataset.hand;render();});
+
 document.getElementById('fb-frets-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.frets=+b.dataset.frets;render();});
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.strings=+b.dataset.str;render();});
 document.getElementById('fb-display').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.display=b.dataset.disp;render();});
 initNotationLang();
+initHandSeg();
 render();
 updateI18n();
 document.addEventListener('keydown',e=>{

@@ -233,6 +233,11 @@ h1 em{font-style:italic;color:var(--brass)}
         <button data-lang="fr" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
       </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="hand-seg">
+        <button data-hand="right">🤜</button>
+        <button data-hand="left">🤛</button>
+      </div>
     </div>
   </div>
   <h1>Ac<em>cords</em></h1>
@@ -313,13 +318,6 @@ h1 em{font-style:italic;color:var(--brass)}
           <button data-frets="24">24</button>
         </div>
       </div>
-      <div>
-        <div class="ctl-label" id="lbl-main">Main</div>
-        <div class="seg" id="fb-hand">
-          <button data-hand="right" class="on" id="fb-btn-right">🤜 Droitier</button>
-          <button data-hand="left" id="fb-btn-left">Gaucher 🤛</button>
-        </div>
-      </div>
       <div style="flex-basis:100%;height:0"></div>
       <div>
         <div class="ctl-label" id="lbl-position">Position</div>
@@ -344,7 +342,7 @@ const state={
   chordGroup:'dyades', chordId:'p5',
   notation: localStorage.getItem('sbnot')||'en',
   lang:     localStorage.getItem('sblang')||'fr',
-  diagramMode:'degree', hand:'right',
+  diagramMode:'degree', hand:localStorage.getItem('sbhand')||'right',
   display:'note', frets:12,
   selCard:0,
   invBassIv:0,
@@ -1204,6 +1202,19 @@ function render(){
   updateI18n();
 }
 
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
+}
+
 /* ===== EVENTS ===== */
 document.getElementById('notation-seg').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||!b.dataset.notation)return;
@@ -1243,13 +1254,7 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
   document.querySelectorAll('#fb-frets-ctl button').forEach(x=>x.classList.toggle('on',x===b));
   renderFretboard(chordDef());
 });
-document.getElementById('fb-hand').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b||!b.dataset.hand)return;
-  state.hand=b.dataset.hand;
-  document.querySelectorAll('#fb-hand button,#diag-hand-seg button').forEach(x=>x.classList.toggle('on',(x.dataset.hand||x.dataset.dhand)===state.hand));
-  renderDiagrams(_voicings,chordDef());
-  renderFretboard(chordDef());
-});
+
 document.getElementById('play-all-btn').addEventListener('click',playAll);
 
 /* ===== INIT ===== */
@@ -1261,6 +1266,7 @@ document.getElementById('play-all-btn').addEventListener('click',playAll);
     b.classList.toggle('on',b.dataset.lang===state.lang);
   });
   buildPiano();
+  initHandSeg();
   render();
 })();
 </script>

@@ -574,6 +574,11 @@
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
           <button data-lang="en" style="min-width:34px">EN</button>
         </div>
+        <div class="htool-divider"></div>
+        <div class="htool-seg" id="hand-seg">
+          <button data-hand="right">🤜</button>
+          <button data-hand="left">🤛</button>
+        </div>
       </div>
     </div>
     <h1>Gam<em>mes</em></h1>
@@ -661,13 +666,6 @@
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
             <button data-frets="24">24</button>
-          </div>
-        </div>
-        <div>
-          <div class="ctl-label" data-i18n="lbl_main">Main</div>
-          <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
-            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         <div style="flex-basis:100%; height:0"></div>
@@ -912,6 +910,18 @@ function initNotationLang(){
       else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
+}
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
 }
 
 /* ============================================================
@@ -1253,7 +1263,7 @@ const state = {
   strings: 6,
   tuning: 'standard',
   frets: 12,
-  hand: 'right',
+  hand: localStorage.getItem('sbhand')||'right',
   position: 'all',
 };
 
@@ -1431,7 +1441,6 @@ function render(){
   document.querySelectorAll('#scale-family button').forEach(b=>b.classList.toggle('on', b.dataset.fam===state.family));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on', b.dataset.disp===state.display));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on', +b.dataset.frets===state.frets));
-  document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on', b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   const _tsel=document.getElementById('fb-tuning-ctl'); if(_tsel) _tsel.value=state.tuning;
   document.querySelectorAll('#scale-types button').forEach(b=>b.classList.toggle('on', b.dataset.id===state.scaleId));
@@ -1991,10 +2000,7 @@ document.getElementById('scale-family').addEventListener('click',e=>{
 });
 bindSeg('fb-display','display');
 bindSeg('fb-frets-ctl','frets', v=>+v);
-document.getElementById('fb-hand').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  state.hand=b.dataset.hand; render();
-});
+
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.strings=+b.dataset.str;
@@ -2002,6 +2008,7 @@ document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   buildTuningButtons(); render();
 });
 initNotationLang();
+initHandSeg();
 render();
 </script>
 <script>(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>100;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();</script>
