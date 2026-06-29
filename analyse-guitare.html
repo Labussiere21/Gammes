@@ -302,8 +302,9 @@
       <a href="arpeges-guitare.html"   class="nav-link">Arpèges</a>
       <a href="accords-guitare.html"   class="nav-link">Accords</a>
       <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
-      <a href="analyse-guitare.html"   class="nav-link active">Analyse</a>
-        <a href="tonalites-guitare.html" class="nav-link">Tonalités</a>
+      <a href="cadences-guitare.html"   class="nav-link">Cadences</a>
+      <a href="analyse-guitare.html"    class="nav-link active">Analyse</a>
+      <a href="tonalites-guitare.html"  class="nav-link">Tonalités</a>
     </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -943,7 +944,7 @@ function renderCadCards(cads){
         <span class="rc-score ${scoreClass(pct)}">${pct}%</span>
       </div>
       <div class="rc-sub">${r.cad.genre} · ${r.matched}/${r.total} ${t('lbl_chords_recognized')}</div>
-      <a class="rc-link" href="cadences.html">${t('lbl_see_cad')}</a>`;
+      <a class="rc-link" href="cadences-guitare.html">${t('lbl_see_cad')}</a>`;
     c.appendChild(card);
   });
 }
@@ -1028,12 +1029,12 @@ function updateI18n(){
     fr:{
       'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes',
       'arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords',
-      'intervalles-guitare.html':'Intervalles','analyse-guitare.html':'Analyse'
+      'intervalles-guitare.html':'Intervalles','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités'
     },
     en:{
       'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales',
       'arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords',
-      'intervalles-guitare.html':'Intervals','analyse-guitare.html':'Analyse'
+      'intervalles-guitare.html':'Intervals','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index'
     },
   };
   const nm=NAV[lang]||NAV.fr;

@@ -372,14 +372,14 @@
     <div class="eyebrow">
       <span class="site-name">ScalaSix</span>
             <nav class="site-nav">
-        <a href="index.html"              class="nav-link">Manche</a>
-        <a href="gammes-guitare.html"     class="nav-link">Gammes</a>
-        <a href="arpeges-guitare.html"    class="nav-link">Arpèges</a>
-        <a href="accords-guitare.html"    class="nav-link">Accords</a>
+        <a href="manche-guitare.html"      class="nav-link">Manche</a>
+        <a href="gammes-guitare.html"      class="nav-link">Gammes</a>
+        <a href="arpeges-guitare.html"     class="nav-link">Arpèges</a>
+        <a href="accords-guitare.html"     class="nav-link">Accords</a>
         <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
-        <a href="cadences.html"           class="nav-link active">Cadences</a>
-        <a href="analyse-guitare.html"    class="nav-link">Analyse</a>
-        <a href="tonalites-guitare.html"  class="nav-link">Tonalités</a>
+        <a href="cadences-guitare.html"    class="nav-link active">Cadences</a>
+        <a href="analyse-guitare.html"     class="nav-link">Analyse</a>
+        <a href="tonalites-guitare.html"   class="nav-link">Tonalités</a>
       </nav>
     <div class="header-tools" style="margin-left:auto">
       <div class="htool-seg" id="notation-seg">
@@ -742,13 +742,13 @@ const SCALE_NAMES_EN={
 };
 function scaleName(s){ return (currentLang()==='en'?(SCALE_NAMES_EN[s]||SCALE_NAMES[s]||s):(SCALE_NAMES[s]||s)); }
 const SCALE_LINKS={
-  major:'gammes.html?scale=major',minor:'gammes.html?scale=minor',
-  harmonic:'gammes.html?scale=harmonic',melodic:'gammes.html?scale=melodic',
-  dorian:'gammes.html?scale=dorian',phrygian:'gammes.html?scale=phrygian',
-  lydian:'gammes.html?scale=lydian',mixolydian:'gammes.html?scale=mixolydian',
-  penta_min:'gammes.html?scale=penta_min',penta_maj:'gammes.html?scale=penta_maj',
-  blues_min:'gammes.html?scale=blues_min',blues_maj:'gammes.html?scale=blues_maj',
-  dim:'gammes.html?scale=dim',
+  major:'gammes-guitare.html?scale=major',minor:'gammes-guitare.html?scale=minor',
+  harmonic:'gammes-guitare.html?scale=harmonic',melodic:'gammes-guitare.html?scale=melodic',
+  dorian:'gammes-guitare.html?scale=dorian',phrygian:'gammes-guitare.html?scale=phrygian',
+  lydian:'gammes-guitare.html?scale=lydian',mixolydian:'gammes-guitare.html?scale=mixolydian',
+  penta_min:'gammes-guitare.html?scale=penta_min',penta_maj:'gammes-guitare.html?scale=penta_maj',
+  blues_min:'gammes-guitare.html?scale=blues_min',blues_maj:'gammes-guitare.html?scale=blues_maj',
+  dim:'gammes-guitare.html?scale=dim',
 };
 
 /* ===================== 192 CADENCES ===================== */
@@ -1364,8 +1364,8 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','intervalles-guitare.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités','accords-guitare.html':'Accords'},
-    en:{'gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','intervalles-guitare.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index','accords-guitare.html':'Chords'},
+    fr:{'gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','intervalles-guitare.html':'Intervalles','manche-guitare.html':'Manche','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités','accords-guitare.html':'Accords'},
+    en:{'gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','intervalles-guitare.html':'Intervals','manche-guitare.html':'Fretboard','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index','accords-guitare.html':'Chords'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
