@@ -173,7 +173,7 @@
     font-family:"Space Mono",monospace; font-weight:700; font-size:12px;
     letter-spacing:.22em; text-transform:uppercase; color:var(--muted-2); margin:0;
   }
-  .fb-tools{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+  .fb-tools{display:flex; gap:20px; flex-wrap:wrap; align-items:flex-end}
   .fb-scroll{overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch}
   .fretboard{--fret-w:62px; --open-w:46px; --label-w:30px; min-width:max-content; margin:0 auto}
   .fb-strings{
@@ -434,8 +434,6 @@
       <h2 data-i18n="lbl_sur_manche">Sur le manche</h2>
       <div class="fb-tools">
         <div>
-          
-        <div>
           <div class="ctl-label" data-i18n="lbl_cordes">Cordes</div>
           <div class="seg" id="fb-strings-ctl" role="group">
             <button data-str="4" class="on">4</button>
@@ -446,7 +444,6 @@
         <div>
           <div class="ctl-label" data-i18n="lbl_accordage">Accordage</div>
           <select id="fb-tuning-ctl" class="tuning-sel"></select>
-        </div>
         </div>
         <div>
           <div class="ctl-label" data-i18n="lbl_cases">Cases</div>
