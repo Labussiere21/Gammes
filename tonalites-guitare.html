@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -269,7 +269,7 @@ h1 em{font-style:italic; color:var(--brass)}
         <a href="arpeges-guitare.html"     class="nav-link">Arpèges</a>
         <a href="accords-guitare.html"     class="nav-link">Accords</a>
         <a href="intervalles-guitare.html" class="nav-link">Intervalles</a>
-        <a href="cadences.html"            class="nav-link">Cadences</a>
+        <a href="cadences-guitare.html" class="nav-link">Cadences</a>
         <a href="analyse-guitare.html"     class="nav-link">Analyse</a>
         <a href="tonalites-guitare.html"   class="nav-link active">Tonalités</a>
       </nav>
@@ -650,8 +650,8 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles-guitare.html':'Intervalles','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités'},
-    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles-guitare.html':'Intervals','cadences.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index'},
+    fr:{'manche-guitare.html':'Manche','gammes-guitare.html':'Gammes','arpeges-guitare.html':'Arpèges','accords-guitare.html':'Accords','intervalles-guitare.html':'Intervalles','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Tonalités'},
+    en:{'manche-guitare.html':'Fretboard','gammes-guitare.html':'Scales','arpeges-guitare.html':'Arpeggios','accords-guitare.html':'Chords','intervalles-guitare.html':'Intervals','cadences-guitare.html':'Cadences','analyse-guitare.html':'Analyse','tonalites-guitare.html':'Key Index'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
