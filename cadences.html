@@ -1077,12 +1077,12 @@ function genreLabel(g){
   if(g==='all') return currentLang()==='en'?'All':'Tous';
   return currentLang()==='en' ? (GENRE_EN[g]||g) : g;
 }
-const GENRES=['all',...[...new Set(CADENCES.map(c=>c.genre))]];
+const GENRES=[...[...new Set(CADENCES.map(c=>c.genre))]];
 function buildGenreTabs(){
   const c=document.getElementById('genre-tabs');c.innerHTML='';
   GENRES.forEach(g=>{
     const b=document.createElement('button');b.className='gtab';b.dataset.genre=g;b.textContent=genreLabel(g);
-    b.onclick=()=>{stopCadencePlayback();state.genre=g;state.cadenceId=null;buildCadencesGrid();syncUI();};
+    b.onclick=()=>{stopCadencePlayback();state.genre=(state.genre===g?'all':g);state.cadenceId=null;buildCadencesGrid();syncUI();};
     c.appendChild(b);
   });
 }
