@@ -1048,7 +1048,7 @@ const GENRE_COLORS={
 };
 
 /* ==================== ÉTAT ==================== */
-const state={rootPc:9,accPref:'b',frets:12,hand:localStorage.getItem('sbhand')||'right',display:'note',genre:'all',cadenceId:null,chordIdx:0,strings:4};
+const state={rootPc:9,accPref:'b',frets:12,hand:localStorage.getItem('sbhand')||'right',display:'note',genre:null,cadenceId:null,chordIdx:0,strings:4};
 const STR4=[{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
 const STR5=[{n:'B',pc:11},{n:'E',pc:4},{n:'A',pc:9},{n:'D',pc:2},{n:'G',pc:7}];
 function currentStrings(){return state.strings===5?STR5:STR4;}
@@ -1082,7 +1082,7 @@ function buildGenreTabs(){
   const c=document.getElementById('genre-tabs');c.innerHTML='';
   GENRES.forEach(g=>{
     const b=document.createElement('button');b.className='gtab';b.dataset.genre=g;b.textContent=genreLabel(g);
-    b.onclick=()=>{stopCadencePlayback();state.genre=(state.genre===g?'all':g);state.cadenceId=null;buildCadencesGrid();syncUI();};
+    b.onclick=()=>{stopCadencePlayback();state.genre=(state.genre===g?null:g);state.cadenceId=null;buildCadencesGrid();syncUI();};
     c.appendChild(b);
   });
 }
@@ -1090,7 +1090,7 @@ function buildGenreTabs(){
 /* ==================== GRILLE CADENCES ==================== */
 function buildCadencesGrid(){
   const c=document.getElementById('cadences-grid');c.innerHTML='';
-  CADENCES.filter(cad=>state.genre==='all'||cad.genre===state.genre).forEach(cad=>{
+  CADENCES.filter(cad=>state.genre&&cad.genre===state.genre).forEach(cad=>{
     const col=GENRE_COLORS[cad.genre]||'var(--brass)';
     const _dcm={};
     cad.degrees.forEach(dg=>{const k=dg.d+'_'+dg.acc;if(!(k in _dcm))_dcm[k]=CHORD_COLORS[(dg.d-1)%8];});
@@ -1350,7 +1350,7 @@ function syncUI(){
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
   document.querySelectorAll('.cadence-card').forEach(c=>{
-    const id=CADENCES.find(cd=>cd.label===c.querySelector('.cad-label')?.textContent&&(state.genre==='all'||cd.genre===state.genre))?.id;
+    const id=CADENCES.find(cd=>cd.label===c.querySelector('.cad-label')?.textContent&&state.genre&&cd.genre===state.genre)?.id;
     c.classList.toggle('active',!!id&&id===state.cadenceId);
   });
   document.querySelectorAll('.gtab').forEach(b=>{
