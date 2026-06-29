@@ -1384,7 +1384,6 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
     }
   }
   // String markers
-  const NOTE_NAMES_SVG = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   for (let s = 0; s < 6; s++) {
     const x = PL + s * S;
     const v = voicing[s];
@@ -1398,7 +1397,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
       if (mode === 'fingering') {
         lbl0 = '0'; fs0 = 8;
       } else if (mode === 'note') {
-        lbl0 = NOTE_NAMES_SVG[v.pc];
+        lbl0 = spellPc(v.pc);
         fs0 = lbl0 && lbl0.length > 2 ? 7 : 8;
       } else {
         lbl0 = IV_LABEL[v.iv] || '?';
@@ -1417,7 +1416,7 @@ function makeSVG(voicing, fingering, mode, capoPos=0) {
         lbl = fg === 0 ? '0' : fg === null ? '?' : String(fg);
         fs = 11;
       } else if (mode === 'note') {
-        lbl = NOTE_NAMES_SVG[v.pc];
+        lbl = spellPc(v.pc);
         fs = lbl.length > 2 ? 9 : 10;
       } else {
         lbl = IV_LABEL[v.iv] || '?';

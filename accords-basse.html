@@ -821,7 +821,6 @@ function computeVoicings(rootPc,chordId,ivArr){
 }
 
 /* ===== SVG DIAGRAM (4-string) ===== */
-const NOTE_SVG=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function makeSVG(voicing,mode){
   if(!mode)mode=state.diagramMode;
@@ -888,7 +887,7 @@ function makeSVG(voicing,mode){
       const tc=isDark(col)?'#ece1cd':'#0c0306';
       let lbl,fs;
       if(mode==='fingering'){lbl='0';fs=8;}
-      else if(mode==='note'){lbl=NOTE_SVG[vi.pc];fs=lbl.length>2?7:8;}
+      else if(mode==='note'){lbl=spellPc(vi.pc);fs=lbl.length>2?7:8;}
       else{lbl=ivLbl(vi.iv);fs=lbl.length>2?7:8;}
       svg+=`<circle cx="${x}" cy="${PT-13}" r="8" fill="${col}"/>`;
       svg+=`<text x="${x}" y="${PT-13}" font-family="Space Mono,monospace" font-size="${fs}" fill="${tc}" text-anchor="middle" font-weight="700" dominant-baseline="central">${lbl}</text>`;
@@ -900,7 +899,7 @@ function makeSVG(voicing,mode){
       svg+=`<circle cx="${x}" cy="${cy}" r="11" fill="${col}"/>`;
       let lbl,fs;
       if(mode==='fingering'){lbl=fg&&fg[s]!==null?(fg[s]===0?'0':String(fg[s])):'?';fs=11;}
-      else if(mode==='note'){lbl=NOTE_SVG[vi.pc];fs=lbl.length>2?9:10;}
+      else if(mode==='note'){lbl=spellPc(vi.pc);fs=lbl.length>2?9:10;}
       else{lbl=ivLbl(vi.iv);fs=lbl.length>2?9:10;}
       svg+=`<text x="${x}" y="${cy}" font-family="Space Mono,monospace" font-size="${fs}" fill="${tc}" text-anchor="middle" font-weight="700" dominant-baseline="central">${lbl}</text>`;
     }
