@@ -372,7 +372,6 @@
     <div class="eyebrow">
       <span class="site-name">ScalaBass</span>
             <nav class="site-nav">
-        <a href="index.html"         class="nav-link">Manche</a>
         <a href="gammes.html"        class="nav-link">Gammes</a>
         <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
         <a href="accords-basse.html" class="nav-link">Accords</a>
@@ -1366,8 +1365,8 @@ function updateI18n(){
   if(typeof currentLang!=='function') return;
   const lang=currentLang();
   const NAV={
-    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','index.html':'Manche','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Tonalités'},
-    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','index.html':'Fretboard','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Key Index'},
+    fr:{'gammes.html':'Gammes','arpeges-basse.html':'Arpèges','intervalles.html':'Intervalles','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Tonalités'},
+    en:{'gammes.html':'Scales','arpeges-basse.html':'Arpeggios','intervalles.html':'Intervals','cadences.html':'Cadences','analyse.html':'Analyse','quintes.html':'Key Index'},
   };
   const nm=NAV[lang]||NAV.fr;
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
