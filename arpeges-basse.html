@@ -413,6 +413,11 @@
           <button data-lang="fr" class="on" style="min-width:34px">FR</button>
           <button data-lang="en" style="min-width:34px">EN</button>
         </div>
+        <div class="htool-divider"></div>
+        <div class="htool-seg" id="hand-seg">
+          <button data-hand="right">🤜</button>
+          <button data-hand="left">🤛</button>
+        </div>
       </div>
     </div>
     <h1>Ar<em>pèges</em></h1>
@@ -487,13 +492,6 @@
             <button data-frets="12" class="on">12</button>
             <button data-frets="15">15</button>
             <button data-frets="24">24</button>
-          </div>
-        </div>
-        <div>
-          <div class="ctl-label" data-i18n="lbl_main">Main</div>
-          <div class="seg" id="fb-hand" role="group">
-            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
-            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
           </div>
         </div>
         <div style="flex-basis:100%;height:0"></div>
@@ -813,7 +811,7 @@ function buildArp(rootName, iv){
 /* ============================================================ ÉTAT */
 const state={
   rootPc:9, accPref:'b', arpId:null, display:'note',
-  strings:4, tuning:'standard', frets:12, hand:'right', position:'all'
+  strings:4, tuning:'standard', frets:12, hand:localStorage.getItem('sbhand')||'right', position:'all'
 };
 const SHARP_SPELL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_SPELL= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
@@ -1080,7 +1078,6 @@ function render(){
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on',b.dataset.disp===state.display));
   document.querySelectorAll('#fb-strings-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.str===state.strings));
   document.querySelectorAll('#fb-frets-ctl button').forEach(b=>b.classList.toggle('on',+b.dataset.frets===state.frets));
-  document.querySelectorAll('#fb-hand button').forEach(b=>b.classList.toggle('on',b.dataset.hand===state.hand));
   document.querySelectorAll('#fb-tuning-ctl button').forEach(b=>b.classList.toggle('on',b.textContent===((TUNINGS[state.strings]||[]).find(t=>t.id===state.tuning)||{}).label));
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
@@ -1154,6 +1151,19 @@ function render(){
   renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv);
 }
 
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
+}
+
 /* ============================================================ INIT */
 buildPiano();
 buildArpGroups();
@@ -1176,11 +1186,9 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
   state.frets=+b.dataset.frets; render();
 });
 // Main
-document.getElementById('fb-hand').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  state.hand=b.dataset.hand; render();
-});
+
 initNotationLang();
+initHandSeg();
 (()=>{
   const p=new URLSearchParams(location.search);
   const rootStr=p.get('root');

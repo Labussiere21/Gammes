@@ -299,6 +299,11 @@ h1 em{font-style:italic; color:var(--brass)}
         <button data-lang="fr" class="on" style="min-width:34px">FR</button>
         <button data-lang="en" style="min-width:34px">EN</button>
       </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="hand-seg">
+        <button data-hand="right">🤜</button>
+        <button data-hand="left">🤛</button>
+      </div>
     </div>
   </div>
   <h1>Index des <em>tonalités</em></h1>
@@ -509,6 +514,18 @@ function initNotationLang(){
       else { if(typeof buildPiano==='function') buildPiano(); if(typeof updateI18n==='function') updateI18n(); }
     });
   }
+}
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
 }
 
 /* ====================================================== DONNÉES */
@@ -874,6 +891,7 @@ if(hash){
 }
 
 initNotationLang();
+initHandSeg();
 render();
 updateI18n();
 </script>

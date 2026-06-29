@@ -492,6 +492,11 @@ h1 em{font-style:italic; color:var(--brass)}
           <button data-lang="fr" class="on">FR</button>
           <button data-lang="en">EN</button>
         </div>
+        <div class="htool-divider"></div>
+        <div class="htool-seg" id="hand-seg">
+          <button data-hand="right">🤜</button>
+          <button data-hand="left">🤛</button>
+        </div>
       </div>
     </div>
     <h1>Ac<em>cords</em></h1>
@@ -609,13 +614,6 @@ h1 em{font-style:italic; color:var(--brass)}
             <button data-frets="24">24</button>
           </div>
         </div>
-        <div>
-          <div class="ctl-label" data-i18n="lbl_main">Main</div>
-          <div class="seg" id="fb-hand">
-            <button data-hand="right" class="on" data-i18n="lbl_droitier">🤜 Droitier</button>
-            <button data-hand="left" data-i18n="lbl_gaucher">Gaucher 🤛</button>
-          </div>
-        </div>
         <div style="flex-basis:100%;height:0"></div>
         <div>
           <div class="ctl-label" data-i18n="lbl_position">Position</div>
@@ -646,7 +644,7 @@ const state = {
   strings: 6,
   tuning: 'standard',
   frets: 12,
-  hand: 'right',
+  hand: localStorage.getItem('sbhand')||'right',
   display: 'note',
   position: 1,
   diagramMode: 'degree',
@@ -2334,6 +2332,19 @@ function render(){
   renderFretboard(def);
 }
 
+function initHandSeg(){
+  const seg=document.getElementById('hand-seg');if(!seg)return;
+  const saved=localStorage.getItem('sbhand')||'right';
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.hand===saved));
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    const h=b.dataset.hand;localStorage.setItem('sbhand',h);
+    seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    if(typeof state!=='undefined')state.hand=h;
+    if(typeof render==='function')render();else if(typeof buildFretboard==='function')buildFretboard();
+  });
+}
+
 /* ============================================================ INIT */
 buildPiano();
 document.getElementById('piano').addEventListener('click',e=>{
@@ -2398,16 +2409,9 @@ document.getElementById('diag-hand-seg').addEventListener('click',e=>{
   const b=e.target.closest('button[data-dhand]'); if(!b)return;
   state.hand=b.dataset.dhand;
   document.querySelectorAll('#diag-hand-seg button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('#fb-hand button').forEach(x=>x.classList.toggle('on',x.dataset.hand===state.hand));
   render();
 });
-document.getElementById('fb-hand').addEventListener('click',e=>{
-  const b=e.target.closest('button[data-hand]'); if(!b)return;
-  state.hand=b.dataset.hand;
-  document.querySelectorAll('#fb-hand button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('#diag-hand-seg button').forEach(x=>x.classList.toggle('on',x.dataset.dhand===state.hand));
-  render();
-});
+
 
 // Lecture des paramètres URL (depuis analyse-guitare)
 (()=>{
@@ -2421,6 +2425,7 @@ document.getElementById('fb-hand').addEventListener('click',e=>{
     for(const g of CHORD_GROUPS){const c=g.chords.find(x=>x.id===chordStr);if(c){state.chordGroup=g.id;state.chordId=chordStr;break;}}
   }
 })();
+initHandSeg();
 render();
 </script>
 <script>(()=>{const b=document.createElement('button');b.id='scroll-to-top';b.title='Haut de page';b.textContent='↑';document.body.appendChild(b);window.addEventListener('scroll',()=>{const v=window.scrollY>100;b.style.opacity=v?'1':'0';b.style.pointerEvents=v?'auto':'none';});b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});})();</script>
