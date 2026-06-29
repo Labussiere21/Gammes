@@ -18,6 +18,7 @@
     --bg:#15100c; --bg-2:#1d160f; --panel:#241a12; --panel-2:#2c2016;
     --line:#3a2c1e; --wood-a:#4a3320; --wood-b:#2c1d12;
     --brass:#d9a849; --brass-dim:#9c7a3a;
+    --bg-glow-a:rgba(217,168,73,.09); --bg-glow-b:rgba(217,168,73,.06);
     --bone:#efe6d3; --cream:#ece1cd; --muted:#9d8a72; --muted-2:#6f5f4c;
     --d1:#e8503a; --d2:#f08a3c; --d3:#f2c14e; --d4:#57c08a;
     --d5:#45a3d9; --d6:#8c7bd6; --d7:#e06aa8; --d8:#60c8a0;
@@ -28,8 +29,8 @@
   body{
     margin:0;
     background:
-      radial-gradient(1100px 550px at 80% -10%, rgba(217,168,73,.09), transparent 58%),
-      radial-gradient(800px 480px at -8% 105%, rgba(217,168,73,.06), transparent 52%),
+      radial-gradient(1100px 550px at 80% -10%, var(--bg-glow-a), transparent 58%),
+      radial-gradient(800px 480px at -8% 105%, var(--bg-glow-b), transparent 52%),
       var(--bg);
     color:var(--cream); font-family:"Hanken Grotesk",system-ui,sans-serif;
     line-height:1.5; -webkit-font-smoothing:antialiased;
@@ -361,12 +362,8 @@
 
 
   <header>
-    <div class="logo-bar" style="display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:8px">
-      <div class="inst-bar" style="margin-bottom:0">
-        <button class="inst-btn bass-btn" id="inst-bass">Basse</button>
-        <button class="inst-btn guit-btn" id="inst-guit">Guitare</button>
-      </div>
-      <img src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:block">
+    <div class="logo-bar" style="text-align:center;margin-bottom:8px">
+      <img src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:inline-block">
     </div>
     <div class="eyebrow">
       <span class="site-name">ScalaBass</span>
@@ -380,6 +377,10 @@
         <a href="analyse.html"       class="nav-link">Analyse</a>
         <a href="quintes.html"       class="nav-link">Tonalités</a>
       </nav>
+      <div class="inst-bar" style="margin:0 0 0 auto">
+        <button class="inst-btn bass-btn" id="inst-bass">Basse</button>
+        <button class="inst-btn guit-btn" id="inst-guit">Guitare</button>
+      </div>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
         <button data-notation="en" class="on" style="min-width:72px">A B C</button>
@@ -1347,6 +1348,14 @@ function renderFretboard(chords){
 function syncUI(){
   document.getElementById('inst-bass')?.classList.toggle('active',!isGuitar());
   document.getElementById('inst-guit')?.classList.toggle('active',isGuitar());
+  const r=document.documentElement.style;
+  if(isGuitar()){
+    r.setProperty('--brass','#bf1828');r.setProperty('--brass-dim','#8a0e1a');
+    r.setProperty('--bg-glow-a','rgba(191,24,40,.09)');r.setProperty('--bg-glow-b','rgba(191,24,40,.06)');
+  }else{
+    r.setProperty('--brass','#d9a849');r.setProperty('--brass-dim','#9c7a3a');
+    r.setProperty('--bg-glow-a','rgba(217,168,73,.09)');r.setProperty('--bg-glow-b','rgba(217,168,73,.06)');
+  }
   const scw=document.getElementById('strings-ctl-wrap');if(scw)scw.style.display=isGuitar()?'none':'';
   document.querySelectorAll('#piano .wkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
   document.querySelectorAll('#piano .bkey').forEach(b=>b.classList.toggle('sel',+b.dataset.pc===state.rootPc));
