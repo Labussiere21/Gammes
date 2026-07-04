@@ -25,7 +25,7 @@ from generate import ROOTS, ENHARMONIC_ROOTS
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).parent.parent
 TMPL_DIR  = Path(__file__).parent / "templates"
-BASE_URL  = "https://labussiere21.github.io/Gammes"
+BASE_URL  = "https://scalabass.com"
 
 NOTE_NAMES_FR = ['Do', 'Réb', 'Ré', 'Mib', 'Mi', 'Fa', 'Solb', 'Sol', 'Lab', 'La', 'Sib', 'Si']
 NOTE_NAMES_EN = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']

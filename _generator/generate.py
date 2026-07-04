@@ -24,7 +24,7 @@ REPO_ROOT    = Path(__file__).parent.parent
 OUT_ROOT_FR  = REPO_ROOT / "fr" / "gammes"
 OUT_ROOT_EN  = REPO_ROOT / "en" / "scales"
 TMPL_DIR     = Path(__file__).parent / "templates"
-BASE_URL     = "https://labussiere21.github.io/Gammes"
+BASE_URL     = "https://scalabass.com"
 APP_URL      = f"{BASE_URL}/gammes.html"
 
 # ---------------------------------------------------------------------------

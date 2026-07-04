@@ -27,7 +27,7 @@ REPO_ROOT   = Path(__file__).parent.parent
 OUT_FR      = REPO_ROOT / "fr" / "accords-guitare"
 OUT_EN      = REPO_ROOT / "en" / "chords-guitar"
 TMPL_DIR    = Path(__file__).parent / "templates"
-BASE_URL    = "https://labussiere21.github.io/Gammes"
+BASE_URL    = "https://scalabass.com"
 APP_URL     = f"{BASE_URL}/accords-guitare.html"
 
 # ---------------------------------------------------------------------------
