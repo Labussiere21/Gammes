@@ -1856,6 +1856,10 @@ function categorizeVoicings(rootPc, intervals, ct) {
   specials.forEach(put);
   e_sh.forEach(put);a_sh.forEach(put);g_sh.forEach(put);
   c_sh.forEach(put);d_sh.forEach(put);fills.forEach(put);
+  // DB order isn't fret order (e.g. a high-fret DB entry can be the first one
+  // whose bass note is the root) — always display positions lowest fret first.
+  mustKnow.sort((a,b)=>loFret(a)-loFret(b));
+  open.sort((a,b)=>loFret(a)-loFret(b));
   moveable.sort((a,b)=>loFret(a)-loFret(b));
   return{mustKnow,open,moveable};
 }
