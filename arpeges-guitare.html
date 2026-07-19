@@ -350,7 +350,59 @@
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}
 #scroll-to-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--brass);color:#1a1008;border:none;font-size:20px;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999;display:flex;align-items:center;justify-content:center}
-#scroll-to-top:hover{background:#e8b855}</style>
+#scroll-to-top:hover{background:#e8b855}
+
+  /* ================================================================
+     MOBILE : dropdowns tonique/arpège + manche vertical (façon app iOS)
+     ================================================================ */
+  .mobile-controls{display:none}
+  .mfield{display:flex;flex-direction:column;gap:6px}
+  .mselect{
+    -webkit-appearance:none;appearance:none;
+    font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:16px;font-weight:600;
+    color:var(--cream);background:#100b07;
+    border:1px solid var(--line);border-radius:10px;
+    padding:13px 40px 13px 14px;width:100%;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23bf1828' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;
+  }
+  .mselect:focus{outline:none;border-color:var(--brass)}
+
+  /* Manche vertical (grille) */
+  .fbv{
+    display:grid;align-items:stretch;margin:0 auto;max-width:520px;
+    background:linear-gradient(90deg,var(--wood-a),var(--wood-b));
+    border:1px solid #120c07;border-radius:8px;overflow:hidden;padding-bottom:4px;
+    box-shadow:inset 0 2px 14px rgba(0,0,0,.55), 0 16px 40px -30px #000;
+  }
+  .fbv-corner{background:rgba(0,0,0,.28)}
+  .fbv-str-label{
+    height:32px;display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:13px;
+    color:var(--bone);background:rgba(0,0,0,.28);
+  }
+  .fbv-fnum{
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2);
+  }
+  .fbv-fnum.mark{color:var(--brass-dim);font-weight:700}
+  .fbv-cell{position:relative;height:48px}
+  .fbv-cell::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);
+    background:linear-gradient(90deg,rgba(255,255,255,.5),var(--brass-dim) 45%,rgba(0,0,0,.4));z-index:1;
+  }
+  .fbv-cell:not(.open){border-top:2px solid rgba(0,0,0,.5)}
+  .fbv-cell.nut{border-top:5px solid #e6dcc6}
+  .fbv-cell.in-box{background:rgba(217,168,73,.10)}
+  .fbv .dot{position:absolute;inset:0;margin:auto;width:33px;height:33px;z-index:3}
+
+  @media(max-width:600px){
+    .desktop-tonic,.desktop-arp{display:none!important}
+    .mobile-controls{display:grid;gap:16px;grid-template-columns:1fr}
+    .fretboard{min-width:0;width:100%;margin:0}
+    .card{overflow-x:auto}
+    h1{font-size:clamp(40px,13vw,58px)}
+  }</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Arpèges de guitare : majeur, mineur, 7, maj7 | ScalaSix">
@@ -428,7 +480,17 @@
 
   <!-- Contrôles -->
   <section class="controls">
-    <div class="ctl-row">
+    <div class="mobile-controls">
+      <div class="mfield">
+        <label class="ctl-label" for="m-root" data-i18n="lbl_tonique">Tonique</label>
+        <select id="m-root" class="mselect" aria-label="Tonique"></select>
+      </div>
+      <div class="mfield">
+        <label class="ctl-label" for="m-arp" data-i18n="lbl_arpege">Arpège</label>
+        <select id="m-arp" class="mselect" aria-label="Arpège"></select>
+      </div>
+    </div>
+    <div class="ctl-row desktop-tonic">
       <div>
         <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
@@ -437,7 +499,7 @@
       </div>
     </div>
 
-    <div style="margin-top:18px">
+    <div style="margin-top:18px" class="desktop-arp">
       <div class="ctl-label" data-i18n="lbl_arpege">Arpège</div>
       <div class="arp-groups" id="arp-groups"></div>
     </div>
@@ -955,6 +1017,85 @@ function computeBoxes(arpPcs, rootPc, posType, strings){
   }
 }
 
+/* ---- Smartphone : manche vertical + dropdowns ---- */
+function isMobileFB(){ return window.matchMedia('(max-width:600px)').matches; }
+
+function renderFbCaption(box){
+  const cap=document.getElementById('fb-caption'); if(!cap) return;
+  if(box){
+    const _en=currentLang()==='en';
+    cap.innerHTML=`<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}.`
+      +`<span class="hint">${_en?'Boxes overlap and repeat one octave higher. “All” shows the whole arpeggio again.':"Les boîtes s'imbriquent et se répètent une octave plus haut. « Tout » réaffiche l'arpège complet."}</span>`;
+  } else { cap.textContent=''; }
+}
+
+// Manche vertical : cordes en colonnes (grave→aigu de gauche à droite), cases en lignes
+function renderFretboardV(fb, ctx){
+  const {pcMap, strings, box, frets} = ctx;
+  const lefty = state.hand==='left';
+  const order = lefty ? strings.slice().reverse() : strings.slice();
+  const grid=document.createElement('div'); grid.className='fbv';
+  grid.style.gridTemplateColumns = `26px repeat(${order.length}, minmax(0,1fr))`;
+
+  const corner=document.createElement('div'); corner.className='fbv-corner'; grid.appendChild(corner);
+  order.forEach(s=>{ const h=document.createElement('div'); h.className='fbv-str-label'; h.textContent=prettyNote(s.n); grid.appendChild(h); });
+
+  const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
+  const SINGLE=[3,5,7,9,15,17,19,21], DOUBLE=[12,24];
+  for(let f=0; f<=frets; f++){
+    const fn=document.createElement('div'); fn.className='fbv-fnum'; fn.textContent=f;
+    if(SINGLE.includes(f)||DOUBLE.includes(f)) fn.classList.add('mark');
+    grid.appendChild(fn);
+    order.forEach(s=>{
+      const inBox = box && f>=box.start && f<=box.end;
+      const cell=document.createElement('div');
+      cell.className='fbv-cell'+(f===0?' open':'')+(f===1?' nut':'')+(inBox?' in-box':'');
+      const pc=(s.pc+f)%12;
+      if(pcMap[pc]){
+        const info=pcMap[pc];
+        const d=document.createElement('div');
+        d.className='dot'+(info.root?' root':'')+((box && !inBox)?' ghost':'');
+        d.style.background=info.color;
+        const label = state.display==='note' ? pretty(SPELL[pc]) : pretty(info.degLabel);
+        d.textContent=label;
+        d.title=`${s.n} ${t('lbl_cases')} ${f} — ${t('lbl_degre_btn')} ${pretty(info.degLabel)}`;
+        cell.appendChild(d);
+      }
+      grid.appendChild(cell);
+    });
+  }
+  fb.appendChild(grid);
+}
+
+// Dropdowns tonique / arpège (mobile) — synchronisés avec l'état
+function buildMobileControls(){
+  const rs=document.getElementById('m-root'), as_=document.getElementById('m-arp');
+  if(!rs||!as_) return;
+  const BLACK=[1,3,6,8,10];
+  const _fr=currentNotation()==='fr';
+  const flatTbl=_fr?NOTE_NAMES_FR:NOTE_NAMES_EN;
+  const sharpTbl=_fr?NOTE_NAMES_FR_SH:NOTE_NAMES_EN_SH;
+  rs.innerHTML='';
+  for(let pc=0;pc<12;pc++){
+    const o=document.createElement('option'); o.value=pc;
+    o.textContent = BLACK.includes(pc) ? `${flatTbl[pc]} / ${sharpTbl[pc]}` : flatTbl[pc];
+    if(pc===state.rootPc) o.selected=true;
+    rs.appendChild(o);
+  }
+  as_.innerHTML='';
+  GROUPS.forEach(g=>{
+    const og=document.createElement('optgroup'); og.label=(currentLang()==='en'&&g.label_en)?g.label_en:g.label;
+    g.arps.forEach(a=>{
+      const o=document.createElement('option'); o.value=a.id;
+      const lbl=(currentLang()==='en'&&a.label_en)?a.label_en:a.label;
+      o.textContent=lbl+(a.sub?` (${a.sub})`:'');
+      if(a.id===state.arpId) o.selected=true;
+      og.appendChild(o);
+    });
+    as_.appendChild(og);
+  });
+}
+
 function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.classList.toggle('lefty', state.hand==='left');
@@ -985,6 +1126,20 @@ function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
   let frets=state.frets;
   if(box) frets=Math.min(24,Math.max(frets,box.end));
   fb.style.setProperty('--frets',frets);
+
+  if(isMobileFB()){
+    renderFretboardV(fb, {pcMap, strings, box, frets});
+    renderFbCaption(box);
+    const SPELL_R0=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
+    const lg0=document.getElementById('legend'); lg0.innerHTML='';
+    arpPcs.forEach((pc,i)=>{
+      const semi=(pc-rootPc+12)%12;
+      const el=document.createElement('div'); el.className='legend-item'+(i===0?' root-leg':'');
+      el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[semi]}"></span>${pretty(DEG_SHORT_RAW[semi])} — ${pretty(SPELL_R0[pc])}${i===0?' ('+t('lbl_root')+')':''}`;
+      lg0.appendChild(el);
+    });
+    return;
+  }
 
   let display=strings.slice();
   display.reverse();
@@ -1020,12 +1175,7 @@ function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
   fb.appendChild(strDiv);
 
   // Caption
-  const cap=document.getElementById('fb-caption');
-  if(box){
-    const _en=currentLang()==='en';
-    cap.innerHTML=`<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}.`
-      +`<span class="hint">${_en?'Boxes overlap and repeat one octave higher. “All” shows the whole arpeggio again.':"Les boîtes s'imbriquent et se répètent une octave plus haut. « Tout » réaffiche l'arpège complet."}</span>`;
-  } else { cap.textContent=''; }
+  renderFbCaption(box);
 
   // Inlays
   const inl=document.createElement('div'); inl.className='fb-inlays';
@@ -1081,6 +1231,7 @@ function render(){
   // rafraîchir les noms de notes du piano (notation FR/EN)
   if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
   if(typeof buildArpGroups==='function') buildArpGroups();
+  buildMobileControls();
   const _lng=currentLang();
   document.querySelectorAll('.bass-btn').forEach(el=>el.textContent=_lng==='en'?'Bass':'Basse');
   document.querySelectorAll('.guit-btn').forEach(el=>el.textContent=_lng==='en'?'Guitar':'Guitare');
@@ -1201,6 +1352,13 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
   state.frets=+b.dataset.frets; render();
 });
 // Main
+
+// Dropdowns mobiles
+document.getElementById('m-root').addEventListener('change',e=>{ state.rootPc=+e.target.value; render(); });
+document.getElementById('m-arp').addEventListener('change',e=>{ state.arpId=e.target.value; state.position='all'; render(); });
+// Re-render au passage de la limite mobile/desktop (rotation, redimensionnement)
+let _wasMobileFB=isMobileFB();
+window.addEventListener('resize',()=>{ const m=isMobileFB(); if(m!==_wasMobileFB){ _wasMobileFB=m; render(); } });
 
 initNotationLang();
 initHandSeg();
