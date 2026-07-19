@@ -516,7 +516,59 @@
   .footer-ml{display:none;margin-top:14px;padding:16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8}
   .footer-ml.open{display:block}
 #scroll-to-top{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--brass);color:#1a1008;border:none;font-size:20px;font-weight:700;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999;display:flex;align-items:center;justify-content:center}
-#scroll-to-top:hover{background:#e8b855}</style>
+#scroll-to-top:hover{background:#e8b855}
+
+  /* ================================================================
+     MOBILE : dropdowns tonique/gamme + manche vertical (façon app iOS)
+     ================================================================ */
+  .mobile-controls{display:none}
+  .mfield{display:flex;flex-direction:column;gap:6px}
+  .mselect{
+    -webkit-appearance:none;appearance:none;
+    font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:16px;font-weight:600;
+    color:var(--cream);background:#100b07;
+    border:1px solid var(--line);border-radius:10px;
+    padding:13px 40px 13px 14px;width:100%;cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d9a849' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;
+  }
+  .mselect:focus{outline:none;border-color:var(--brass)}
+
+  /* Manche vertical (grille) */
+  .fbv{
+    display:grid;align-items:stretch;margin:0 auto;max-width:520px;
+    background:linear-gradient(90deg,var(--wood-a),var(--wood-b));
+    border:1px solid #120c07;border-radius:8px;overflow:hidden;padding-bottom:4px;
+    box-shadow:inset 0 2px 14px rgba(0,0,0,.55), 0 16px 40px -30px #000;
+  }
+  .fbv-corner{background:rgba(0,0,0,.28)}
+  .fbv-str-label{
+    height:32px;display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:13px;
+    color:var(--bone);background:rgba(0,0,0,.28);
+  }
+  .fbv-fnum{
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2);
+  }
+  .fbv-fnum.mark{color:var(--brass-dim);font-weight:700}
+  .fbv-cell{position:relative;height:48px}
+  .fbv-cell::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);
+    background:linear-gradient(90deg,rgba(255,255,255,.5),var(--brass-dim) 45%,rgba(0,0,0,.4));z-index:1;
+  }
+  .fbv-cell:not(.open){border-top:2px solid rgba(0,0,0,.5)}
+  .fbv-cell.nut{border-top:5px solid #e6dcc6}
+  .fbv-cell.in-box{background:rgba(217,168,73,.10)}
+  .fbv .dot{position:absolute;inset:0;margin:auto;width:33px;height:33px;z-index:3}
+
+  @media(max-width:600px){
+    .desktop-tonic,.desktop-scale{display:none!important}
+    .mobile-controls{display:grid;gap:16px;grid-template-columns:1fr}
+    .fretboard{min-width:0;width:100%;margin:0}
+    .card{overflow-x:auto}
+    h1{font-size:clamp(40px,13vw,58px)}
+  }</style>
 <script src="https://cdn.jsdelivr.net/npm/soundfont-player@0.12.0/dist/soundfont-player.min.js"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gammes de basse : 72 gammes sur le manche | ScalaBass">
@@ -597,7 +649,17 @@
 
   <!-- Contrôles -->
   <section class="controls">
-    <div class="ctl-row">
+    <div class="mobile-controls">
+      <div class="mfield">
+        <label class="ctl-label" for="m-root" data-i18n="lbl_tonique">Tonique</label>
+        <select id="m-root" class="mselect" aria-label="Tonique"></select>
+      </div>
+      <div class="mfield">
+        <label class="ctl-label" for="m-scale" data-i18n="lbl_gamme_label">Gamme</label>
+        <select id="m-scale" class="mselect" aria-label="Gamme"></select>
+      </div>
+    </div>
+    <div class="ctl-row desktop-tonic">
       <div class="ctl-block">
         <div class="ctl-label" data-i18n="lbl_tonique">Tonique</div>
         <div class="piano-wrap">
@@ -617,7 +679,7 @@
       </div>
     </div>
 
-    <div style="margin-top:20px">
+    <div style="margin-top:20px" class="desktop-scale">
       <div class="ctl-label" data-i18n="lbl_gamme_label">Gamme</div>
       <div class="scale-types" id="scale-types"></div>
     </div>
@@ -1451,6 +1513,8 @@ function render(){
   buildScaleTypes();
   // reconstruire le piano pour rafraîchir les noms de notes (notation FR/EN)
   buildPiano();
+  // dropdowns mobiles (tonique + gamme) synchronisés
+  buildMobileControls();
   // synchro états visuels des segments
   document.querySelectorAll('#scale-family button').forEach(b=>b.classList.toggle('on', b.dataset.fam===state.family));
   document.querySelectorAll('#fb-display button').forEach(b=>b.classList.toggle('on', b.dataset.disp===state.display));
@@ -1712,6 +1776,86 @@ function pcOf_simple(n){
 // Réutilise pcOf existant — alias pour clarté dans le contexte accordage
 TUNINGS[4].forEach(t=>t.notes=t.notes.map(n=>n));
 
+/* ---- Smartphone : manche vertical + dropdowns ---- */
+function isMobileFB(){ return window.matchMedia('(max-width:600px)').matches; }
+
+function renderFbCaption(box, notes, strings, lowPc){
+  const cap=document.getElementById('fb-caption'); if(!cap) return;
+  if(box){
+    let lowNote=null;
+    for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
+    const _en=currentLang()==='en';
+    cap.innerHTML = `<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
+      + (lowNote?(_en?`, lowest note ${pretty(lowNote)} on the ${strings[0].n} string`:`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`):'') + '.'
+      + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
+  } else {
+    cap.textContent='';
+  }
+}
+
+// Manche vertical : cordes en colonnes (grave→aigu de gauche à droite), cases en lignes
+function renderFretboardV(fb, ctx){
+  const {notes, pcMap, strings, box, frets, lowPc} = ctx;
+  const lefty = state.hand==='left';
+  const order = lefty ? strings.slice().reverse() : strings.slice();
+  const grid = document.createElement('div'); grid.className='fbv';
+  grid.style.gridTemplateColumns = `26px repeat(${order.length}, minmax(0,1fr))`;
+
+  // ligne d'en-tête : coin + libellé de chaque corde
+  const corner=document.createElement('div'); corner.className='fbv-corner'; grid.appendChild(corner);
+  order.forEach(s=>{ const h=document.createElement('div'); h.className='fbv-str-label'; h.textContent=prettyNote(s.n); grid.appendChild(h); });
+
+  const SINGLE=[3,5,7,9,15,17,19,21], DOUBLE=[12,24];
+  for(let f=0; f<=frets; f++){
+    const fn=document.createElement('div'); fn.className='fbv-fnum'; fn.textContent=f;
+    if(SINGLE.includes(f)||DOUBLE.includes(f)) fn.classList.add('mark');
+    grid.appendChild(fn);
+    order.forEach(s=>{
+      const inBox = box && f>=box.start && f<=box.end;
+      const cell=document.createElement('div');
+      cell.className='fbv-cell'+(f===0?' open':'')+(f===1?' nut':'')+(inBox?' in-box':'');
+      const pc=(s.pc+f)%12;
+      if(pcMap[pc]){
+        const info=pcMap[pc];
+        const d=document.createElement('div');
+        d.className='dot'+(info.root?' root':'')+((box && !inBox)?' ghost':'');
+        d.style.background=info.color; d.dataset.pc=pc;
+        d.textContent = state.display==='note' ? pretty(info.note) : pretty(info.degLabel);
+        d.title = `${s.n} case ${f} — ${pretty(info.note)} (degré ${pretty(info.degLabel)})`;
+        cell.appendChild(d);
+      }
+      grid.appendChild(cell);
+    });
+  }
+  fb.appendChild(grid);
+}
+
+// Dropdowns tonique / gamme (mobile) — synchronisés avec l'état
+function buildMobileControls(){
+  const rs=document.getElementById('m-root'), ss=document.getElementById('m-scale');
+  if(!rs||!ss) return;
+  const BLACK=[1,3,6,8,10];
+  const _fr=currentNotation()==='fr';
+  const flatTbl=_fr?NOTE_NAMES_FR:NOTE_NAMES_EN;
+  const sharpTbl=_fr?NOTE_NAMES_FR_SH:NOTE_NAMES_EN_SH;
+  rs.innerHTML='';
+  for(let pc=0;pc<12;pc++){
+    const o=document.createElement('option'); o.value=pc;
+    o.textContent = BLACK.includes(pc) ? `${flatTbl[pc]} / ${sharpTbl[pc]}` : flatTbl[pc];
+    if(pc===state.rootPc) o.selected=true;
+    rs.appendChild(o);
+  }
+  ss.innerHTML='';
+  let curGroup=-1, og=null;
+  SCALE_DEFS.forEach(s=>{
+    if(s.group!==curGroup){ og=document.createElement('optgroup'); og.label=t('grp_'+s.group)||GROUP_LABELS[s.group]||''; ss.appendChild(og); curGroup=s.group; }
+    const o=document.createElement('option'); o.value=s.id;
+    o.textContent=(currentLang()==='en'&&s.label_en)?s.label_en:s.label;
+    if(s.id===state.scaleId) o.selected=true;
+    og.appendChild(o);
+  });
+}
+
 function renderFretboard(notes, rootPc, def){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.classList.toggle('lefty', state.hand==='left');
@@ -1781,6 +1925,13 @@ function renderFretboard(notes, rootPc, def){
   if(box) frets = Math.min(24, Math.max(frets, box.end));
   fb.style.setProperty('--frets', frets);
 
+  // ---- Rendu vertical sur smartphone ----
+  if(isMobileFB()){
+    renderFretboardV(fb, {notes, pcMap, strings, box, frets, lowPc});
+    renderFbCaption(box, notes, strings, lowPc);
+    return;
+  }
+
   let display = strings.slice();
   display.reverse();
 
@@ -1814,17 +1965,7 @@ function renderFretboard(notes, rootPc, def){
   fb.appendChild(strDiv);
 
   // Légende sous le manche (position)
-  const cap=document.getElementById('fb-caption');
-  if(box){
-    let lowNote=null;
-    for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
-    const _en=currentLang()==='en';
-    cap.innerHTML = `<b>${_en?'Position':'Position'} ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
-      + (lowNote?(_en?`, lowest note ${pretty(lowNote)} on the ${strings[0].n} string`:`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`):'') + '.'
-      + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
-  } else {
-    cap.textContent='';
-  }
+  renderFbCaption(box, notes, strings, lowPc);
 
   // réglette : inlays + numéros de case
   const inl=document.createElement('div'); inl.className='fb-inlays';
@@ -2030,6 +2171,13 @@ document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
   render();
 });
 bindSeg('fb-frets-ctl','frets', v=>+v);
+
+// Dropdowns mobiles
+document.getElementById('m-root').addEventListener('change',e=>{ state.rootPc=+e.target.value; render(); });
+document.getElementById('m-scale').addEventListener('change',e=>{ state.scaleId=e.target.value; state.position='all'; render(); });
+// Re-render au passage de la limite mobile/desktop (rotation, redimensionnement)
+let _wasMobileFB=isMobileFB();
+window.addEventListener('resize',()=>{ const m=isMobileFB(); if(m!==_wasMobileFB){ _wasMobileFB=m; render(); } });
 
 initNotationLang();
 initHandSeg();
