@@ -269,7 +269,8 @@ POSITIONS_HINT_EN = {
 def related_in_group(chord_id, group_id, limit=5):
     for g in CHORD_GROUPS:
         if g["id"] == group_id:
-            return [c for c in g["chords"] if c["id"] != chord_id][:limit]
+            others = [c for c in g["chords"] if c["id"] != chord_id][:limit]
+            return [{**c, "slug": chord_slug(c["id"])} for c in others]
     return []
 
 # ---------------------------------------------------------------------------

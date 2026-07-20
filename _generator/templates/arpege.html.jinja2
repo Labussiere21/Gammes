@@ -81,8 +81,8 @@
 <div class="breadcrumb">
   <a href="{{ nav_base }}/">{{ ui_all_arps }}</a>
   &rsaquo;
-  {% if lang == 'fr' %}<a href="{{ nav_base }}/{{ root.slug }}/">{{ root.fr }}</a>
-  {% else %}<a href="{{ nav_base }}/{{ root.slug_en }}/">{{ root.name }}</a>{% endif %}
+  {% if lang == 'fr' %}{{ root.fr }}
+  {% else %}{{ root.name }}{% endif %}
   &rsaquo; {{ arp_label }}
 </div>
 
