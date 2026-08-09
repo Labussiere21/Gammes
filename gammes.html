@@ -1164,8 +1164,11 @@ const SCALE_DESC_EN = {
 };
 
 function pcOf(name){
-  let pc = LETTER_PC[name[0]];
-  for(let i=1;i<name.length;i++){ if(name[i]==='#') pc++; else if(name[i]==='b') pc--; }
+  // La gamme chromatique arrive avec des altérations Unicode (D♭) : normaliser,
+  // sinon pcOf('D♭') renvoie 2 et la note se confond avec D.
+  const s = name.replace(/♯/g,'#').replace(/♭/g,'b');
+  let pc = LETTER_PC[s[0]];
+  for(let i=1;i<s.length;i++){ if(s[i]==='#') pc++; else if(s[i]==='b') pc--; }
   return ((pc%12)+12)%12;
 }
 
@@ -1208,8 +1211,8 @@ const SCALE_DEFS = [
   {id:'dim_ht',          label:'Diminuée ½T-T',         sub:'8 notes, symétrique', group:1, diat:false, posType:'sym', npos:4, fam:'min', ls:[0,0,1,2,3,4,5,6], iv:[0,1,3,4,6,7,9,10], label_en:'Diminished ½T-T', sub_en:'8 notes, symmetric'},
   {id:'half_dim',        label:'Demi-diminuée',         sub:'= Locrien',       group:1, diat:false, posType:'sym',   npos:4,  fam:'min', ls:[0,1,2,3,4,5,6],    iv:[0,1,3,5,6,8,10], label_en:'Half diminished', sub_en:'= Locrian'},
   {id:'whole_tone',      label:'Par ton',               sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,2,4,6,8,10], label_en:'Whole tone', sub_en:'6 notes, symmetric'},
-  {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,1,2,3,4,5], iv:[0,3,4,7,8,11], label_en:'Augmented hexatonic', sub_en:'6 notes, symmetric'},
-  {id:'chromatic', label:'Chromatique', sub:'12 notes', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,2,3,4,5,6,7,8,9,10,11], iv:[0,1,2,3,4,5,6,7,8,9,10,11], label_en:'Chromatic', sub_en:'12 notes'},
+  {id:'aug_hex',         label:'Hexatonique augmentée', sub:'6 notes, symétrique', group:1, diat:false, posType:'sym', npos:3, fam:'maj', ls:[0,2,2,4,5,6], iv:[0,3,4,7,8,11], label_en:'Augmented hexatonic', sub_en:'6 notes, symmetric'},
+  {id:'chromatic', label:'Chromatique', sub:'12 notes', group:1, diat:false, posType:'sym', npos:5, fam:'maj', ls:[0,1,1,2,2,3,4,4,5,5,6,6], iv:[0,1,2,3,4,5,6,7,8,9,10,11], label_en:'Chromatic', sub_en:'12 notes'},
   // ======= GROUPE 2 : MODES DÉRIVÉS & JAZZ =======
   {id:'phryg_dom',       label:'Phrygien dominant',     sub:'Mode V harm.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,1,4,5,7,8,10], label_en:'Phrygian dominant', sub_en:'Mode V harm.'},
   {id:'lydian_dom',      label:'Lydien dominant',       sub:'Mode IV mél.',    group:2, diat:false, posType:'penta', pos:'maj', fam:'maj', ls:[0,1,2,3,4,5,6], iv:[0,2,4,6,7,9,10], label_en:'Lydian dominant', sub_en:'Mode IV mel.'},
@@ -1271,20 +1274,69 @@ const PENTA_PARENTS = {
   maj: {ls:[0,1,2,4,5], iv:[0,2,4,7,9]},
 };
 
-// Noms d'intervalles (en demi-tons depuis la tonique)
+// Noms d'intervalles (en demi-tons depuis la tonique).
+// Convention des méthodes Play Music (Tauzin) : la qualité découle de l'ÉCRITURE
+// de la note, pas du seul nombre de demi-tons — Fa# = quarte augmentée alors que
+// Solb = quinte diminuée, bien que les deux fassent 6 demi-tons.
+const IV_ORD_FR  = ['Unisson','Seconde','Tierce','Quarte','Quinte','Sixte','Septième'];
+const IV_ORD_EN  = ['Unison','2nd','3rd','4th','5th','6th','7th'];
+const IV_BASE    = [0,2,4,5,7,9,11];                     // demi-tons de l'intervalle juste/majeur
+const IV_PURE    = [true,false,false,true,true,false,false];
+const IV_QUAL_FR = {pure:{'-1':'diminuée','0':'juste','1':'augmentée'},
+                    imp :{'-2':'diminuée','-1':'mineure','0':'majeure','1':'augmentée'}};
+const IV_QUAL_EN = {pure:{'-1':'Diminished','0':'Perfect','1':'Augmented'},
+                    imp :{'-2':'Diminished','-1':'Minor','0':'Major','1':'Augmented'}};
+// Repli quand l'écriture de la note n'est pas connue
 const INTERVAL_NAMES = {
-  0:'Tonique', 1:'2nde mineure', 2:'2nde Majeure', 3:'3ce mineure',
-  4:'3ce Majeure', 5:'4te Juste', 6:'Triton', 7:'5te Juste',
-  8:'6te mineure', 9:'6te Majeure', 10:'7ème mineure', 11:'7ème Majeure'
+  0:'Tonique', 1:'Seconde mineure', 2:'Seconde majeure', 3:'Tierce mineure',
+  4:'Tierce majeure', 5:'Quarte juste', 6:'Triton', 7:'Quinte juste',
+  8:'Sixte mineure', 9:'Sixte majeure', 10:'Septième mineure', 11:'Septième majeure'
 };
 const INTERVAL_NAMES_EN = {
-  0:'Root', 1:'Minor 2nd', 2:'Major 2nd', 3:'Minor 3rd',
+  0:'Tonic', 1:'Minor 2nd', 2:'Major 2nd', 3:'Minor 3rd',
   4:'Major 3rd', 5:'Perfect 4th', 6:'Tritone', 7:'Perfect 5th',
   8:'Minor 6th', 9:'Major 6th', 10:'Minor 7th', 11:'Major 7th'
 };
-function ivName(semis){ return (currentLang()==='en'?INTERVAL_NAMES_EN:INTERVAL_NAMES)[semis]; }
+function ivName(semis, note, root){
+  const _en=currentLang()==='en';
+  if(note && root){
+    const ld=(LETTERS.indexOf(note[0])-LETTERS.indexOf(root[0])+7)%7;
+    if(ld>=0){
+      const delta=(((semis-IV_BASE[ld])%12)+18)%12-6;    // écart signé ramené dans [-6,5]
+      const q=(IV_PURE[ld]?(_en?IV_QUAL_EN:IV_QUAL_FR).pure:(_en?IV_QUAL_EN:IV_QUAL_FR).imp)[delta];
+      if(q){
+        if(ld===0 && delta===0) return _en?'Tonic':'Tonique';
+        return _en ? `${q} ${IV_ORD_EN[ld]}` : `${IV_ORD_FR[ld]} ${q}`;
+      }
+    }
+  }
+  return (_en?INTERVAL_NAMES_EN:INTERVAL_NAMES)[semis];
+}
 const DEG_COLORS = ['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
 const DEG_SHORT = {0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'b6',9:'6',10:'b7',11:'7'};
+// Chiffrage de degré conforme à l'écriture de la note (méthodes Tauzin) : la gamme
+// par tons se chiffre 1 2 3 #4 #5 #6 et non 1 2 3 b5 b6 b7. Repli sur DEG_SHORT
+// (chiffrage par demi-tons) quand l'écriture n'est pas connue.
+const DEG_ACC = {'-2':'bb','-1':'b','0':'','1':'#'};
+function degChiffrage(note, root){
+  if(!note || !root) return null;
+  const ld=(LETTERS.indexOf(note[0])-LETTERS.indexOf(root[0])+7)%7;
+  const semis=(pcOf(note)-pcOf(root)+12)%12;
+  const acc=DEG_ACC[(((semis-IV_BASE[ld])%12)+18)%12-6];
+  return acc==null ? null : acc+(ld+1);
+}
+// Le chiffrage par lettres n'a de sens que si la gamme use une lettre par degré
+// dans l'ordre (majeure, modes, harmonique, par tons, maqams…). Les pentatoniques
+// et les gammes symétriques sautent ou répètent des lettres : chiffrage classique.
+function letterStepwise(notes){
+  const r=LETTERS.indexOf(notes[0][0]);
+  return notes.length<=7 && notes.every((n,i)=>LETTERS.indexOf(n[0])===(r+i)%7);
+}
+function degOf(note, notes){
+  const root=notes[0];
+  if(letterStepwise(notes)){ const c=degChiffrage(note, root); if(c) return c; }
+  return DEG_SHORT[(pcOf(note)-pcOf(root)+12)%12];
+}
 
 function buildScale(root, ls, iv){
   const rootLetterIdx = LETTERS.indexOf(root[0]);
@@ -1587,7 +1639,7 @@ function render(){
     pill.className='note-pill'+(i===0?' root':'');
     pill.dataset.index=i; // pour le highlight audio
     pill.innerHTML=`<span class="dot" style="background:${DEG_COLORS[i]}"></span>
-      <span class="deg">${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])}</span><span class="nm">${pretty(n)}</span>`;
+      <span class="deg">${pretty(degOf(n, notes))}</span><span class="nm">${pretty(n)}</span>`;
     sn.appendChild(pill);
   });
 
@@ -1618,7 +1670,7 @@ function render(){
     tr.innerHTML=`
       <td class="deg-num" style="color:${DEG_COLORS[i%DEG_COLORS.length]}">${i+1}</td>
       <td class="tt-note"><span class="swatch" style="background:${DEG_COLORS[i%DEG_COLORS.length]}"></span>${pretty(n)}</td>
-      <td class="interval">${ivName(semis)}</td>
+      <td class="interval">${ivName(semis, n, notes[0])}</td>
       <td><span class="rn">${tri.roman}</span> &nbsp;</td>
       <td class="chord-notes">${tri.notes.map(pretty).join(' ')}</td>`;
     tr.querySelector('td:nth-child(4)').appendChild(csym);
@@ -1688,7 +1740,7 @@ function render(){
   notes.forEach((n,i)=>{
     const el=document.createElement('div');
     el.className='legend-item'+(i===0?' root-leg':'');
-    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(DEG_SHORT[(pcOf(n)-rootPc+12)%12])} — ${pretty(n)}${i===0?' ('+t('lbl_root')+')':''}`;
+    el.innerHTML=`<span class="sw" style="background:${DEG_COLORS[i]}"></span>${pretty(degOf(n, notes))} — ${pretty(n)}${i===0?' ('+t('lbl_root')+')':''}`;
     lg.appendChild(el);
   });
 }
@@ -1705,7 +1757,7 @@ function render(){
       <div class="ct-row">
         <span class="ct-deg" style="color:${d['c'+k]}">${pretty(DEG_SHORT[+d['i'+k]])}</span>
         <span class="ct-note" style="color:${d['c'+k]}">${pretty(d['n'+k])}</span>
-        <span class="ct-interval">${ivName(+d['i'+k])}</span>
+        <span class="ct-interval">${ivName(+d['i'+k], d['n'+k], d.n0)}</span>
       </div>`).join('');
     tip.innerHTML=`
       <div class="ct-title"><b>${pretty(d.sym)}</b></div>
@@ -1794,17 +1846,20 @@ function renderFbCaption(box, notes, strings, lowPc){
   const cap=document.getElementById('fb-caption'); if(!cap) return;
   if(box){
     // Convention des méthodes Play Music (Tauzin) : une position se décrit par la
-    // note sur laquelle elle démarre, exprimée en chiffrage de degré — « Positions
-    // usuelles démarrant sur la tonique ». On prend donc la 1re note de la gamme
-    // rencontrée sur la corde grave à l'intérieur de la boîte.
-    let startNote=null;
-    for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){startNote=m;break;} }
+    // note sur laquelle elle démarre, en chiffrage de degré. Cette note est la note
+    // GÉNÉRATRICE de la boîte (la note de la pentatonique parente qui lui donne son
+    // numéro : P1 = tonique, P2 = 2, P3 = 3, P4 = 5, P5 = 6), pas la note la plus
+    // grave de la fenêtre — celle-ci peut descendre un degré plus bas.
+    // Boîtes symétriques (pas de pentatonique parente) : repli sur la 1re note de la
+    // gamme rencontrée sur la corde grave dans la boîte.
+    let startNote = box.gen!=null ? notes.find(n=>pcOf(n)===box.gen) : null;
+    if(!startNote) for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){startNote=m;break;} }
     const _en=currentLang()==='en';
     let start='';
     if(startNote){
-      const deg=(pcOf(startNote)-pcOf(notes[0])+12)%12;
-      const degTxt = deg===0 ? (_en?'the tonic':'la tonique')
-                             : (_en?`the ${pretty(DEG_SHORT[deg])}`:`le ${pretty(DEG_SHORT[deg])}`);
+      const dch=degOf(startNote, notes);
+      const degTxt = dch==='1' ? (_en?'the tonic':'la tonique')
+                             : (_en?`the ${pretty(dch)}`:`le ${pretty(dch)}`);
       start = _en ? `, starting on ${degTxt} (${pretty(startNote)}), ${prettyNote(strings[0].n)} string`
                   : `, démarrant sur ${degTxt} (${pretty(startNote)}), corde de ${prettyNote(strings[0].n)}`;
     }
@@ -1885,7 +1940,7 @@ function renderFretboard(notes, rootPc, def){
 
   // map classe de hauteur -> {note, deg}
   const pcMap = {};
-  notes.forEach((n,i)=>{ const pc=pcOf(n); pcMap[pc] = {note:n, deg:i+1, degLabel:DEG_SHORT[(pc-rootPc+12)%12], color:DEG_COLORS[i], root:i===0}; });
+  notes.forEach((n,i)=>{ const pc=pcOf(n); pcMap[pc] = {note:n, deg:i+1, degLabel:degOf(n, notes), color:DEG_COLORS[i], root:i===0}; });
 
   let strings = currentStrings();
   const lowPc  = strings[0].pc;                    // corde la plus grave (E ou B)
@@ -1934,13 +1989,13 @@ function renderFretboard(notes, rootPc, def){
           idx=(idx+1)%M; const nx=sc[idx]; let na=ca+1; while(((lowPc+na)%12)!==nx)na++; ca=na;
         }
         if(lo<0){lo+=12;hi+=12;}
-        boxes.push([lo,hi]);
-      }
+        boxes.push([lo,hi,sc[q-1]]);   // sc[q-1] = note génératrice : c'est elle qui
+      }                                // numérote la position (P1 = tonique, P2 = 2…)
       orderedBoxes=boxes;
     }
 
     const win=orderedBoxes[(state.position-1)%orderedBoxes.length];
-    box={start:win[0], end:win[1]};
+    box={start:win[0], end:win[1], gen:win.length>2?win[2]:null};
   }
 
   // Nombre de cases affichées : on étend si la boîte dépasse
