@@ -1,28 +1,22 @@
 .claude/
+__pycache__/
+*.pyc
 
-# --- Methodes et supports sous copyright ---
+# --- Ouvrages sous copyright : ne JAMAIS publier ---
 # Le repo est public et GitHub Pages sert la racine : tout fichier suivi ici
-# devient telechargeable sur scalabass.com. Les methodes Play Music / Tauzin
-# et les autres ouvrages achetes ne doivent JAMAIS etre suivis (ils sont en
-# plus filigranes avec l'adresse e-mail de l'acheteur).
-MET-*.pdf
-MET-*-MP3/
-*-methodepdf/
-*_guide_pdf/
-*_guide_pdf.zip
+# devient telechargeable sur scalabass.com. Les methodes achetees sont en plus
+# filigranees avec l'adresse e-mail de l'acheteur.
+ressources/
 guitarememo/
 GammesPentatoniquesBasse.pdf
 phil-capone-guitar-chord-biblepdf_compress.pdf
+*_pdf.zip
+*_guide_pdf.zip
 
-# --- Archives et sources de travail ---
+# --- Sources de travail ---
 Gammes-main.zip
 files.zip
-*.zip
 *.mp4
 *.txt
 !robots.txt
-
-# --- Divers ---
 Capture d'*.png
-__pycache__/
-*.pyc
