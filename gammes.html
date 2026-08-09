@@ -821,7 +821,7 @@ const _TR={
     lbl_rel_min:'Relative mineure',lbl_par_min:'Parallèle mineure',
     lbl_sdom:'Sous-dominante (IV)',lbl_dom:'Dominante (V)',
     lbl_type_accord:'Type d\'accord',lbl_pos_ouverte:'Position ouverte',
-    lbl_root:'fondamentale',lbl_bientot:'Bientôt disponible',
+    lbl_root:'tonique',lbl_bientot:'Bientôt disponible',
     lbl_aucune_alt:'aucune altération',lbl_diese:'dièse',lbl_bemol:'bémol',
     lbl_jouer_gamme:'Jouer la gamme',lbl_jouer_cad:'Jouer la cadence',
     lbl_jouer_acc:'Jouer l\'accord',lbl_jouer_arp:'Jouer l\'arpège',
@@ -1271,9 +1271,9 @@ const PENTA_PARENTS = {
   maj: {ls:[0,1,2,4,5], iv:[0,2,4,7,9]},
 };
 
-// Noms d'intervalles (en demi-tons depuis la fondamentale)
+// Noms d'intervalles (en demi-tons depuis la tonique)
 const INTERVAL_NAMES = {
-  0:'Fondamentale', 1:'2nde mineure', 2:'2nde Majeure', 3:'3ce mineure',
+  0:'Tonique', 1:'2nde mineure', 2:'2nde Majeure', 3:'3ce mineure',
   4:'3ce Majeure', 5:'4te Juste', 6:'Triton', 7:'5te Juste',
   8:'6te mineure', 9:'6te Majeure', 10:'7ème mineure', 11:'7ème Majeure'
 };
@@ -1793,11 +1793,23 @@ function isMobileFB(){ return window.matchMedia('(max-width:600px)').matches; }
 function renderFbCaption(box, notes, strings, lowPc){
   const cap=document.getElementById('fb-caption'); if(!cap) return;
   if(box){
-    let lowNote=null;
-    for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
+    // Convention des méthodes Play Music (Tauzin) : une position se décrit par la
+    // note sur laquelle elle démarre, exprimée en chiffrage de degré — « Positions
+    // usuelles démarrant sur la tonique ». On prend donc la 1re note de la gamme
+    // rencontrée sur la corde grave à l'intérieur de la boîte.
+    let startNote=null;
+    for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){startNote=m;break;} }
     const _en=currentLang()==='en';
+    let start='';
+    if(startNote){
+      const deg=(pcOf(startNote)-pcOf(notes[0])+12)%12;
+      const degTxt = deg===0 ? (_en?'the tonic':'la tonique')
+                             : (_en?`the ${pretty(DEG_SHORT[deg])}`:`le ${pretty(DEG_SHORT[deg])}`);
+      start = _en ? `, starting on ${degTxt} (${pretty(startNote)}), ${prettyNote(strings[0].n)} string`
+                  : `, démarrant sur ${degTxt} (${pretty(startNote)}), corde de ${prettyNote(strings[0].n)}`;
+    }
     cap.innerHTML = `<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
-      + (lowNote?(_en?`, anchor note ${pretty(lowNote)} on the ${prettyNote(strings[0].n)} string`:`, note d'ancrage ${pretty(lowNote)} sur la corde ${prettyNote(strings[0].n)}`):'') + '.'
+      + start + '.'
       + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
   } else {
     cap.textContent='';
