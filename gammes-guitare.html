@@ -1340,7 +1340,7 @@ const PENTA_PARENTS = {
 };
 
 // Noms d'intervalles (en demi-tons depuis la tonique).
-// Convention des méthodes Play Music (Tauzin) : la qualité découle de l'ÉCRITURE
+// Convention classique : la qualité découle de l'ÉCRITURE
 // de la note, pas du seul nombre de demi-tons — Fa# = quarte augmentée alors que
 // Solb = quinte diminuée, bien que les deux fassent 6 demi-tons.
 const IV_ORD_FR  = ['Unisson','Seconde','Tierce','Quarte','Quinte','Sixte','Septième'];
@@ -1379,7 +1379,7 @@ function ivName(semis, note, root){
 }
 const DEG_COLORS = ['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
 const DEG_SHORT = {0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'b6',9:'6',10:'b7',11:'7'};
-// Chiffrage de degré conforme à l'écriture de la note (méthodes Tauzin) : la gamme
+// Chiffrage de degré conforme à l'écriture de la note : la gamme
 // par tons se chiffre 1 2 3 #4 #5 #6 et non 1 2 3 b5 b6 b7. Repli sur DEG_SHORT
 // (chiffrage par demi-tons) quand l'écriture n'est pas connue.
 const DEG_ACC = {'-2':'bb','-1':'b','0':'','1':'#'};
@@ -1895,14 +1895,13 @@ function currentOpenAbs(){ const m=currentTuning().midi; return m.map(v=>v-m[0])
 /* ---- Smartphone : manche vertical + dropdowns ---- */
 function isMobileFB(){ return window.matchMedia('(max-width:600px)').matches; }
 
-/* --- Doigtes « demarrant sur la tonique » (methodes Play Music / Bruno Tauzin) ---
-   Une planche du livre = le nombre de notes de la gamme jouees sur chaque corde,
-   de la plus grave a la plus aigue, en montant depuis la tonique. Les cases se
-   recalculent ici depuis l'accordage courant, ce qui reproduit les 136 diagrammes
-   du livre case pour case (corde de Si de la guitare comprise) tout en s'adaptant
-   aux accordages drop et aux 5/6 cordes.
-   Source : MET-B-051 / MET-G-103, planches « Positions usuelles demarrant sur la
-   tonique ». Gammes hors methode : doigte regulier n notes par corde. */
+/* --- Doigtes « demarrant sur la tonique » ---------------------------------
+   Une forme = le nombre de notes de la gamme jouees sur chaque corde, de la plus
+   grave a la plus aigue, en montant depuis la tonique. Les cases se recalculent
+   depuis l'accordage courant, donc la meme forme s'adapte a la tonalite, aux
+   accordages drop et aux 5/6 cordes (corde de Si de la guitare comprise).
+   Quatre formes usuelles par gamme ; pour les gammes non couvertes, on retombe
+   sur un doigte regulier de n notes par corde. */
 const TONIC_SHAPES = {
   major:       [[1,3,3,2,3,3],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
   minor:       [[1,3,3,3,3,2],[3,3,2,3,3,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
@@ -1956,7 +1955,7 @@ function tonicShapeCells(counts, notes, rootPc, strings){
 function renderFbCaption(box, notes, strings, lowPc){
   const cap=document.getElementById('fb-caption'); if(!cap) return;
   if(box){
-    // Convention des méthodes Play Music (Tauzin) : une position se décrit par la
+    // Convention classique : une position se décrit par la
     // note sur laquelle elle démarre, en chiffrage de degré. Cette note est la note
     // GÉNÉRATRICE de la boîte (la note de la pentatonique parente qui lui donne son
     // numéro : P1 = tonique, P2 = 2, P3 = 3, P4 = 5, P5 = 6), pas la note la plus
@@ -1976,8 +1975,8 @@ function renderFbCaption(box, notes, strings, lowPc){
     }
     if(box.mode==='tonic'){
       const src = box.src==='method'
-        ? (_en?'From the Play Music method plates.':'D’après les planches de la méthode Play Music.')
-        : (_en?'Regular fingering derived for this scale (not in the method).':'Doigté régulier déduit pour cette gamme (absente de la méthode).');
+        ? (_en?'Traditional shape, one of the four usual fingerings.':'Forme traditionnelle, l’un des quatre doigtés usuels.')
+        : (_en?'Regular fingering derived for this scale.':'Doigté régulier déduit pour cette gamme.');
       cap.innerHTML = `<b>${_en?'Tonic start':'Départ tonique'} ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
         + start + '.'
         + `<span class="hint">${_en?`Fingering starting on the tonic, ${box.counts.join('-')} scale notes per string (low to high). `:`Doigté démarrant sur la tonique, ${box.counts.join('-')} notes de la gamme par corde (de la grave à l’aiguë). `}${src}</span>`;
