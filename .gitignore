@@ -1,7 +1,28 @@
 .claude/
-arpeges_basse_guide_pdf/
-arpeges_basse_guide_pdf.zip
+
+# --- Methodes et supports sous copyright ---
+# Le repo est public et GitHub Pages sert la racine : tout fichier suivi ici
+# devient telechargeable sur scalabass.com. Les methodes Play Music / Tauzin
+# et les autres ouvrages achetes ne doivent JAMAIS etre suivis (ils sont en
+# plus filigranes avec l'adresse e-mail de l'acheteur).
+MET-*.pdf
+MET-*-MP3/
+*-methodepdf/
+*_guide_pdf/
+*_guide_pdf.zip
+guitarememo/
+GammesPentatoniquesBasse.pdf
+phil-capone-guitar-chord-biblepdf_compress.pdf
+
+# --- Archives et sources de travail ---
 Gammes-main.zip
 files.zip
+*.zip
 *.mp4
 *.txt
+!robots.txt
+
+# --- Divers ---
+Capture d'*.png
+__pycache__/
+*.pyc
