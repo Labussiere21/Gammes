@@ -550,7 +550,8 @@ def main():
             out_dir = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
-            pages_fr.append(page_url_fr)
+            # Page enharmonique : canonique vers la page principale, donc PAS
+            # dans le sitemap (on ne soumet que des URLs canoniques).
 
             # EN
             triads_en = build_triads(eroot["name"], scale["ls"], scale["iv"], lang='en')
@@ -603,7 +604,6 @@ def main():
             out_dir = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
-            pages_en.append(page_url_en)
 
     # ---- Hub FR ----
     OUT_ROOT_FR.mkdir(parents=True, exist_ok=True)
@@ -614,6 +614,7 @@ def main():
         "scale_slug": scale_slug,
         "lang":       "fr",
         "hub_base":   f"{BASE_URL}/fr/gammes-guitare",
+        "hub_url":    f"{BASE_URL}/fr/gammes-guitare/",
     }
     (OUT_ROOT_FR / "index.html").write_text(hub_tpl.render(**hub_ctx_fr), encoding="utf-8")
     pages_fr.append(f"{BASE_URL}/fr/gammes-guitare/")
@@ -627,6 +628,7 @@ def main():
         "scale_slug": scale_slug,
         "lang":       "en",
         "hub_base":   f"{BASE_URL}/en/scales-guitar",
+        "hub_url":    f"{BASE_URL}/en/scales-guitar/",
     }
     (OUT_ROOT_EN / "index.html").write_text(hub_tpl.render(**hub_ctx_en), encoding="utf-8")
     pages_en.append(f"{BASE_URL}/en/scales-guitar/")

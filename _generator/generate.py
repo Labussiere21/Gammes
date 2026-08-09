@@ -604,7 +604,8 @@ def main():
             out_dir_fr = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir_fr.mkdir(parents=True, exist_ok=True)
             (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
-            pages_fr.append(page_url_fr)
+            # Page enharmonique : canonique vers la page principale, donc PAS
+            # dans le sitemap (on ne soumet que des URLs canoniques).
 
             # EN
             triads_en = build_triads(eroot["name"], scale["ls"], scale["iv"], lang='en')
@@ -657,11 +658,11 @@ def main():
             out_dir_en = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
-            pages_en.append(page_url_en)
 
     # ---- Hub FR ----
     OUT_ROOT_FR.mkdir(parents=True, exist_ok=True)
     hub_ctx_fr = {
+        "hub_url": f"{BASE_URL}/fr/gammes/",
         "scales": SCALE_DEFS,
         "roots":  ROOTS,
         "BASE_URL": BASE_URL,
@@ -673,6 +674,7 @@ def main():
     # ---- Hub EN ----
     OUT_ROOT_EN.mkdir(parents=True, exist_ok=True)
     hub_ctx_en = {
+        "hub_url": f"{BASE_URL}/en/scales/",
         "scales": SCALE_DEFS,
         "roots":  ROOTS,
         "BASE_URL": BASE_URL,

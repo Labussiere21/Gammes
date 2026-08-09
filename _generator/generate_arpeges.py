@@ -362,7 +362,10 @@ def _gen_one(tpl, inst, lang_code, out_root, base_url_path, app_url,
     out_dir = out_root / root_slug / slug
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(tpl.render(**ctx), encoding="utf-8")
-    pages_list.append(page_url)
+    # Page enharmonique : canonique vers la page principale, donc pas dans le
+    # sitemap (on ne soumet que des URLs canoniques).
+    if not is_enharmonic:
+        pages_list.append(page_url)
 
 
 # ---------------------------------------------------------------------------
