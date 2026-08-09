@@ -2,21 +2,20 @@
 __pycache__/
 *.pyc
 
-# --- Ouvrages sous copyright : ne JAMAIS publier ---
-# Le repo est public et GitHub Pages sert la racine : tout fichier suivi ici
-# devient telechargeable sur scalabass.com. Les methodes achetees sont en plus
-# filigranees avec l'adresse e-mail de l'acheteur.
+# --- Documents de travail : jamais publies ---------------------------------
+# Le depot est public et GitHub Pages sert la racine : tout fichier suivi ici
+# devient telechargeable depuis le site. Les supports de reference restent
+# donc locaux.
+# Filtrage par extension et non par nom : un document ajoute plus tard est
+# couvert sans qu'on ait a y penser, ou qu'il soit range.
+# Pour publier volontairement un fichier de ces types : git add -f <chemin>
 ressources/
-guitarememo/
-GammesPentatoniquesBasse.pdf
-phil-capone-guitar-chord-biblepdf_compress.pdf
-*_pdf.zip
-*_guide_pdf.zip
-
-# --- Sources de travail ---
-Gammes-main.zip
-files.zip
+*.pdf
+*.mp3
 *.mp4
+*.zip
+
+# --- Divers ---
 *.txt
 !robots.txt
 Capture d'*.png
