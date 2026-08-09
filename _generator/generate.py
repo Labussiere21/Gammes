@@ -140,12 +140,20 @@ SCALE_DEFS = [
     {"id":"todi",            "label":"Todi",                   "label_en":"Todi",                   "sub":"Raga indien",          "sub_en":"Indian raga",         "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,6,7,8,11]},
     {"id":"kafi",            "label":"Kafi",                   "label_en":"Kafi",                   "sub":"Raga indien",          "sub_en":"Indian raga",         "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,5,7,9,10]},
     {"id":"kalyan",          "label":"Kalyan",                 "label_en":"Kalyan",                 "sub":"Raga indien",          "sub_en":"Indian raga",         "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,6,7,9,11]},
+    {"id":"harmonic_maj",    "label":"Majeure harmonique",     "label_en":"Harmonic major",         "sub":"♭6",                 "sub_en":"♭6",                "group":2,"diat":True, "fam":"maj","ls":[0,1,2,3,4,5,6],  "iv":[0,2,4,5,7,8,11]},
+    {"id":"bebop_dorian",    "label":"Bebop dorienne",         "label_en":"Bebop Dorian",           "sub":"8 notes",             "sub_en":"8 notes",            "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,3,4,5,6],"iv":[0,2,3,4,5,7,9,10]},
+    {"id":"spanish_8",       "label":"Espagnole 8 tons",       "label_en":"8-Tone Spanish",         "sub":"8 notes",             "sub_en":"8 notes",            "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,3,4,5,6],"iv":[0,1,3,4,5,6,8,10]},
+    {"id":"oriental",        "label":"Orientale",              "label_en":"Oriental",               "sub":"Exotique",            "sub_en":"Exotic",             "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],  "iv":[0,1,4,5,6,9,10]},
 ]
 
 # ---------------------------------------------------------------------------
 # DESCRIPTIONS FRANÇAIS
 # ---------------------------------------------------------------------------
 SCALE_DESCS = {
+    "harmonic_maj": "La gamme majeure harmonique est une majeure à sixte bémol. Elle garde la tension de la septième majeure tout en assombrissant la couleur, ce qui la rend précieuse sur les accords majeurs 7 dans un contexte modal ou néoclassique. Ses sept modes fournissent une famille entière de sonorités peu explorées.",
+    "bebop_dorian": "La gamme bebop dorienne ajoute une note de passage chromatique entre la tierce mineure et la quarte du mode dorien. Cette huitième note place les notes de l'accord sur les temps forts et produit les lignes fluides et swinguantes du bebop sur les accords mineurs 7.",
+    "spanish_8": "La gamme espagnole à 8 tons, aussi appelée Jewish scale, mêle les couleurs phrygiennes et diminuées. Ses deux tierces (mineure et majeure) et sa quinte diminuée en font une gamme très expressive, centrale dans le flamenco et la musique klezmer.",
+    "oriental": "La gamme orientale combine des couleurs mineures et augmentées autour de deux secondes augmentées. Sa quinte diminuée et sa sixte majeure créent une sonorité envoûtante caractéristique des musiques du Moyen-Orient.",
     "major":        "La gamme majeure est le fondement de toute la théorie musicale occidentale. Lumineuse et stable, elle structure la majorité des morceaux de rock, pop, jazz et musique classique. Pour la basse, elle fournit la feuille de route naturelle pour construire des lignes dans n'importe quelle tonalité majeure.",
     "minor":        "La gamme mineure naturelle (mode éolien) est la gamme mineure de référence. Plus sombre et expressive que la majeure, elle est omniprésente dans le rock, la pop mélancolique, le métal et le jazz. Les lignes de basse en mineur naturel soulignent parfaitement l'émotion de la tonalité.",
     "harmonic":     "La gamme mineure harmonique se distingue par sa seconde augmentée (3 demi-tons) entre le 6e et le 7e degré. Ce saut caractéristique lui donne un caractère dramatique et orientalisant très présent dans la musique classique, le flamenco et les films d'action. La 7e sensible crée une forte tension vers la tonique.",
@@ -231,6 +239,10 @@ GROUP_DESCS = {
 # DESCRIPTIONS ANGLAIS
 # ---------------------------------------------------------------------------
 SCALE_DESCS_EN = {
+    "harmonic_maj": "The harmonic major scale is a major scale with a flattened 6th. It keeps the tension of the major 7th while darkening the color, which makes it valuable over major 7 chords in modal or neoclassical settings. Its seven modes provide a whole family of under-explored sounds.",
+    "bebop_dorian": "The bebop Dorian scale adds a chromatic passing note between the minor 3rd and the 4th of the Dorian mode. This eighth note places chord tones on strong beats and produces the fluid, swinging bebop lines over minor 7 chords.",
+    "spanish_8": "The 8-tone Spanish scale, also called the Jewish scale, blends Phrygian and diminished colors. Its two thirds (minor and major) and its diminished fifth make it highly expressive, and it is central to flamenco and klezmer music.",
+    "oriental": "The Oriental scale combines minor and augmented colors around two augmented seconds. Its diminished fifth and major sixth create the enchanting sound characteristic of Middle Eastern music.",
     "major":        "The major scale is the foundation of Western music theory. Bright and stable, it underlies the vast majority of rock, pop, jazz, and classical pieces. For bass players, it provides the natural roadmap for building lines in any major key.",
     "minor":        "The natural minor scale (Aeolian mode) is the reference minor scale. Darker and more expressive than the major, it appears constantly in rock, melancholic pop, metal, and jazz. Bass lines in natural minor perfectly underscore the emotional weight of the key.",
     "harmonic":     "The harmonic minor scale stands out for its augmented second (3 semitones) between the 6th and 7th degrees. This distinctive leap gives it a dramatic, Eastern-tinged character found in classical music, flamenco, and action film scores. The leading tone creates strong tension toward the tonic.",
