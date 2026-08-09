@@ -178,6 +178,11 @@
   .tab .count{font-size:10px; opacity:.7; margin-left:5px; background:rgba(191,24,40,.15); padding:2px 6px; border-radius:4px}
   .tab.on .count{background:rgba(191,24,40,.25)}
 
+  .scale-filters{display:flex; flex-wrap:wrap; gap:8px 18px; margin:-8px 0 16px; padding:10px 12px;
+    background:var(--panel-2,#00000022); border:1px solid var(--line); border-radius:8px}
+  .scale-filters label{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
+    cursor:pointer; user-select:none}
+  .scale-filters input{accent-color:var(--brass); cursor:pointer; margin:0}
   .results-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px}
   .result-card{
     background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -441,6 +446,12 @@
     <button class="tab" data-tab="cadences"><span data-i18n="lbl_tab_cad">Cadences</span> <span class="count" id="count-cad">0</span></button>
   </div>
   <div id="tab-chords" class="results-grid"></div>
+  <div class="scale-filters" id="scale-filters" style="display:none">
+    <label><input type="checkbox" data-grp="0" checked><span data-i18n="lbl_grp0">Modes diatoniques</span></label>
+    <label><input type="checkbox" data-grp="1" checked><span data-i18n="lbl_grp1">Pentatoniques, blues &amp; symétriques</span></label>
+    <label><input type="checkbox" data-grp="2" checked><span data-i18n="lbl_grp2">Modes dérivés &amp; jazz</span></label>
+    <label><input type="checkbox" data-grp="3"><span data-i18n="lbl_grp3">Gammes exotiques</span></label>
+  </div>
   <div id="tab-scales" class="results-grid" style="display:none"></div>
   <div id="tab-cadences" class="results-grid" style="display:none"></div>
 </div>
@@ -485,6 +496,8 @@ const _TR={
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) hors accord',lbl_in_scale:'dans la gamme',lbl_out_scale:'hors gamme',
     lbl_on_word:'sur',lbl_chords_recognized:'accords reconnus',lbl_no_note_hint:'Aucune note — clique sur le piano ou le manche',
     lbl_tab_acc:'Accords',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
+    lbl_grp0:'Modes diatoniques',lbl_grp1:'Pentatoniques, blues & symétriques',
+    lbl_grp2:'Modes dérivés & jazz',lbl_grp3:'Gammes exotiques',
     lbl_link_copied:'✓ Lien copié !',
     lbl_droitier:'🤜 Droitier',lbl_gaucher:'Gaucher 🤛',lbl_note_btn:'Notes',lbl_degre_btn:'Degrés',
     doc_title:'Analyse musicale guitare — ScalaSix',
@@ -499,6 +512,8 @@ const _TR={
     lbl_notes_word:'notes',lbl_note_word:'note',lbl_out_chord:'note(s) outside chord',lbl_in_scale:'in the scale',lbl_out_scale:'outside scale',
     lbl_on_word:'of',lbl_chords_recognized:'chords recognized',lbl_no_note_hint:'No note — click on the piano or fretboard',
     lbl_tab_acc:'Chords',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
+    lbl_grp0:'Diatonic modes',lbl_grp1:'Pentatonic, blues & symmetric',
+    lbl_grp2:'Derived modes & jazz',lbl_grp3:'Exotic scales',
     lbl_link_copied:'✓ Link copied!',
     lbl_droitier:'🤜 Right-handed',lbl_gaucher:'Left-handed 🤛',lbl_note_btn:'Notes',lbl_degre_btn:'Degrees',
     doc_title:'Guitar Music Analysis — ScalaSix',
@@ -572,29 +587,84 @@ const CHORD_TYPES = [
 ];
 
 const SCALE_DEFS_LITE = [
-  {id:'major',    label:'Majeure',              sub:'Ionien',          fam:'maj', iv:[0,2,4,5,7,9,11], label_en:'Major', sub_en:'Ionian'},
-  {id:'minor',    label:'Mineure naturelle',    sub:'Éolien',          fam:'min', iv:[0,2,3,5,7,8,10], label_en:'Natural minor', sub_en:'Aeolian'},
-  {id:'harmonic', label:'Mineure harmonique',   sub:'',                fam:'min', iv:[0,2,3,5,7,8,11], label_en:'Harmonic minor', sub_en:''},
-  {id:'melodic',  label:'Mineure mélodique',    sub:'',                fam:'min', iv:[0,2,3,5,7,9,11], label_en:'Melodic minor', sub_en:''},
-  {id:'dorian',   label:'Dorien',               sub:'mode II',         fam:'min', iv:[0,2,3,5,7,9,10], label_en:'Dorian', sub_en:'mode II'},
-  {id:'phrygian', label:'Phrygien',             sub:'mode III',        fam:'min', iv:[0,1,3,5,7,8,10], label_en:'Phrygian', sub_en:'mode III'},
-  {id:'lydian',   label:'Lydien',               sub:'mode IV',         fam:'maj', iv:[0,2,4,6,7,9,11], label_en:'Lydian', sub_en:'mode IV'},
-  {id:'mixolydian',label:'Mixolydien',          sub:'mode V',          fam:'maj', iv:[0,2,4,5,7,9,10], label_en:'Mixolydian', sub_en:'mode V'},
-  {id:'locrian',  label:'Locrien',              sub:'mode VII',        fam:'min', iv:[0,1,3,5,6,8,10], label_en:'Locrian', sub_en:'mode VII'},
-  {id:'penta_min',label:'Pentatonique min.',    sub:'5 notes',         fam:'min', iv:[0,3,5,7,10], label_en:'Minor pentatonic', sub_en:'5 notes'},
-  {id:'penta_maj',label:'Pentatonique maj.',    sub:'5 notes',         fam:'maj', iv:[0,2,4,7,9], label_en:'Major pentatonic', sub_en:'5 notes'},
-  {id:'blues_min',label:'Blues mineure',        sub:'6 notes',         fam:'min', iv:[0,3,5,6,7,10], label_en:'Minor blues', sub_en:'6 notes'},
-  {id:'blues_maj',label:'Blues majeure',        sub:'6 notes',         fam:'maj', iv:[0,2,3,4,7,9], label_en:'Major blues', sub_en:'6 notes'},
-  {id:'whole_tone',label:'Par ton',            sub:'symétrique',      fam:'maj', iv:[0,2,4,6,8,10], label_en:'Whole tone', sub_en:'symmetric'},
-  {id:'dim',      label:'Diminuée T-½T',        sub:'symétrique',      fam:'min', iv:[0,2,3,5,6,8,9,11], label_en:'Diminished T-½T', sub_en:'symmetric'},
-  {id:'phryg_dom',label:'Phrygien dominant',    sub:'Mode V harm.',    fam:'maj', iv:[0,1,4,5,7,8,10], label_en:'Phrygian dominant', sub_en:'Mode V harm.'},
-  {id:'lydian_dom',label:'Lydien dominant',     sub:'Mode IV mél.',    fam:'maj', iv:[0,2,4,6,7,9,10], label_en:'Lydian dominant', sub_en:'Mode IV mel.'},
-  {id:'altered',  label:'Altérée',              sub:'Mode VII mél.',   fam:'min', iv:[0,1,3,4,6,8,10], label_en:'Altered', sub_en:'Mode VII mel.'},
-  {id:'locrian_s2',label:'Locrien ♯2',          sub:'Mode VI mél.',    fam:'min', iv:[0,2,3,5,6,8,10], label_en:'Locrian ♯2', sub_en:'Mode VI mel.'},
-  {id:'double_harm',label:'Double harmonique',  sub:'Byzantine',       fam:'maj', iv:[0,1,4,5,7,8,11], label_en:'Double harmonic', sub_en:'Byzantine'},
-  {id:'hung_min', label:'Mineure hongroise',    sub:'Gypsy minor',     fam:'min', iv:[0,2,3,6,7,8,11], label_en:'Hungarian minor', sub_en:'Gypsy minor'},
-  {id:'hirajoshi',label:'Hirajoshi',            sub:'Japonaise',       fam:'min', iv:[0,2,3,7,8], label_en:'Hirajoshi', sub_en:'Japanese'},
-  {id:'persian',  label:'Persane',              sub:'Exotique',        fam:'min', iv:[0,1,4,5,6,8,11], label_en:'Persian', sub_en:'Exotic'},
+  // Table complete reprise de gammes.html (76 gammes). grp : 0 modes diatoniques,
+  // 1 pentatoniques/blues/symetriques, 2 modes derives & jazz, 3 exotiques.
+  {id:'major', label:'Majeure', sub:'Ionien mode I', fam:'maj', grp:0, iv:[0,2,4,5,7,9,11], label_en:'Major', sub_en:'Ionian mode I'},
+  {id:'minor', label:'Mineure naturelle', sub:'Éolien mode VI', fam:'min', grp:0, iv:[0,2,3,5,7,8,10], label_en:'Natural minor', sub_en:'Aeolian mode VI'},
+  {id:'harmonic', label:'Mineure harmonique', sub:'Éolien M7', fam:'min', grp:0, iv:[0,2,3,5,7,8,11], label_en:'Harmonic minor', sub_en:'Aeolian M7'},
+  {id:'melodic', label:'Mineure mélodique', sub:'Dorien M7', fam:'min', grp:0, iv:[0,2,3,5,7,9,11], label_en:'Melodic minor', sub_en:'Dorian M7'},
+  {id:'dorian', label:'Dorien', sub:'mode II', fam:'min', grp:0, iv:[0,2,3,5,7,9,10], label_en:'Dorian', sub_en:'mode II'},
+  {id:'phrygian', label:'Phrygien', sub:'mode III', fam:'min', grp:0, iv:[0,1,3,5,7,8,10], label_en:'Phrygian', sub_en:'mode III'},
+  {id:'lydian', label:'Lydien', sub:'mode IV', fam:'maj', grp:0, iv:[0,2,4,6,7,9,11], label_en:'Lydian', sub_en:'mode IV'},
+  {id:'mixolydian', label:'Mixolydien', sub:'mode V', fam:'maj', grp:0, iv:[0,2,4,5,7,9,10], label_en:'Mixolydian', sub_en:'mode V'},
+  {id:'locrian', label:'Locrien', sub:'mode VII', fam:'min', grp:0, iv:[0,1,3,5,6,8,10], label_en:'Locrian', sub_en:'mode VII'},
+  {id:'penta_min', label:'Pentatonique min.', sub:'5 notes', fam:'min', grp:1, iv:[0,3,5,7,10], label_en:'Minor pentatonic', sub_en:'5 notes'},
+  {id:'penta_maj', label:'Pentatonique maj.', sub:'5 notes', fam:'maj', grp:1, iv:[0,2,4,7,9], label_en:'Major pentatonic', sub_en:'5 notes'},
+  {id:'blues_min', label:'Blues mineure', sub:'6 notes', fam:'min', grp:1, iv:[0,3,5,6,7,10], label_en:'Minor blues', sub_en:'6 notes'},
+  {id:'blues_maj', label:'Blues majeure', sub:'6 notes', fam:'maj', grp:1, iv:[0,2,3,4,7,9], label_en:'Major blues', sub_en:'6 notes'},
+  {id:'penta_dom', label:'Pentatonique dominante', sub:'5 notes', fam:'maj', grp:1, iv:[0,2,4,7,10], label_en:'Dominant pentatonic', sub_en:'5 notes'},
+  {id:'penta_min6', label:'Pentatonique min. 6', sub:'5 notes', fam:'min', grp:1, iv:[0,3,5,9,10], label_en:'Minor 6 pentatonic', sub_en:'5 notes'},
+  {id:'penta_sus', label:'Pentatonique sus', sub:'5 notes', fam:'maj', grp:1, iv:[0,2,5,7,10], label_en:'Sus pentatonic', sub_en:'5 notes'},
+  {id:'blues_dom', label:'Blues dominante', sub:'6 notes', fam:'maj', grp:1, iv:[0,2,4,6,7,10], label_en:'Dominant blues', sub_en:'6 notes'},
+  {id:'blues_hex', label:'Blues hexatonique', sub:'6 notes', fam:'min', grp:1, iv:[0,2,3,5,7,10], label_en:'Blues hexatonic', sub_en:'6 notes'},
+  {id:'penta_maj7', label:'Pentatonique maj. 7', sub:'5 notes', fam:'maj', grp:1, iv:[0,2,4,7,11], label_en:'Major 7 pentatonic', sub_en:'5 notes'},
+  {id:'penta_min_lead', label:'Penta min. + guidage', sub:'6 notes (♭3 4 5 ♭7 7)', fam:'min', grp:1, iv:[0,3,5,7,10,11], label_en:'Minor leading pentatonic', sub_en:'6 notes (♭3 4 5 ♭7 7)'},
+  {id:'boogie', label:'Rock', sub:'7 notes', fam:'maj', grp:1, iv:[0,2,3,4,7,9,10], label_en:'Rock\\', sub_en:'7 notes'},
+  {id:'penta_majb2', label:'Pentatonique maj. ♭2', sub:'5 notes', fam:'maj', grp:1, iv:[0,1,4,7,9], label_en:'Maj. b2 pentatonic', sub_en:'5 notes'},
+  {id:'dim', label:'Diminuée T-½T', sub:'8 notes, symétrique', fam:'min', grp:1, iv:[0,2,3,5,6,8,9,11], label_en:'Diminished T-½T', sub_en:'8 notes, symmetric'},
+  {id:'dim_ht', label:'Diminuée ½T-T', sub:'8 notes, symétrique', fam:'min', grp:1, iv:[0,1,3,4,6,7,9,10], label_en:'Diminished ½T-T', sub_en:'8 notes, symmetric'},
+  {id:'half_dim', label:'Demi-diminuée', sub:'= Locrien ♮2', fam:'min', grp:1, iv:[0,2,3,5,6,8,10], label_en:'Half diminished', sub_en:'= Locrian'},
+  {id:'whole_tone', label:'Par ton', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,2,4,6,8,10], label_en:'Whole tone', sub_en:'6 notes, symmetric'},
+  {id:'aug_hex', label:'Hexatonique augmentée', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,3,4,7,8,11], label_en:'Augmented hexatonic', sub_en:'6 notes, symmetric'},
+  {id:'chromatic', label:'Chromatique', sub:'12 notes', fam:'maj', grp:1, iv:[0,1,2,3,4,5,6,7,8,9,10,11], label_en:'Chromatic', sub_en:'12 notes'},
+  {id:'phryg_dom', label:'Phrygien dominant', sub:'Mode V harm.', fam:'maj', grp:2, iv:[0,1,4,5,7,8,10], label_en:'Phrygian dominant', sub_en:'Mode V harm.'},
+  {id:'lydian_dom', label:'Lydien dominant', sub:'Mode IV mél.', fam:'maj', grp:2, iv:[0,2,4,6,7,9,10], label_en:'Lydian dominant', sub_en:'Mode IV mel.'},
+  {id:'altered', label:'Altérée', sub:'Mode VII mél.', fam:'min', grp:2, iv:[0,1,3,4,6,8,10], label_en:'Altered', sub_en:'Mode VII mel.'},
+  {id:'locrian_s2', label:'Locrien ♯2', sub:'Mode VI mél.', fam:'min', grp:2, iv:[0,2,3,5,6,8,10], label_en:'Locrian #2', sub_en:'Mode VI mel.'},
+  {id:'lydian_aug', label:'Lydien augmenté', sub:'Mode III mél.', fam:'maj', grp:2, iv:[0,2,4,6,8,9,11], label_en:'Lydian augmented', sub_en:'Mode III mel.'},
+  {id:'mixo_b6', label:'Mixolydien ♭6', sub:'Mode V mél.', fam:'maj', grp:2, iv:[0,2,4,5,7,8,10], label_en:'Mixolydian b6', sub_en:'Mode V mel.'},
+  {id:'dorian_b2', label:'Dorien ♭2', sub:'Mode II mél.', fam:'min', grp:2, iv:[0,1,3,5,7,9,10], label_en:'Dorian b2', sub_en:'Mode II mel.'},
+  {id:'locrian6', label:'Locrien ♮6', sub:'Mode II harm.', fam:'min', grp:2, iv:[0,1,3,5,6,9,10], label_en:'Locrian nat.6', sub_en:'Mode II harm.'},
+  {id:'ionian_s5', label:'Ionien ♯5', sub:'Mode III harm.', fam:'maj', grp:2, iv:[0,2,4,5,8,9,11], label_en:'Ionian #5', sub_en:'Mode III harm.'},
+  {id:'dorian_s4', label:'Dorien ♯4', sub:'Mode IV harm.', fam:'min', grp:2, iv:[0,2,3,6,7,9,10], label_en:'Dorian #4', sub_en:'Mode IV harm.'},
+  {id:'lydian_s2', label:'Lydien ♯2', sub:'Mode VI harm.', fam:'maj', grp:2, iv:[0,3,4,6,7,9,11], label_en:'Lydian #2', sub_en:'Mode VI harm.'},
+  {id:'superlocrian_bb7', label:'Super Locrien 𝄫7', sub:'Mode VII harm.', fam:'min', grp:2, iv:[0,1,3,4,6,8,9], label_en:'Super Locrian bb7', sub_en:'Mode VII harm.'},
+  {id:'bebop_maj', label:'Bebop majeure', sub:'8 notes (♯5)', fam:'maj', grp:2, iv:[0,2,4,5,7,8,9,11], label_en:'Bebop major', sub_en:'8 notes (#5)'},
+  {id:'bebop_dom', label:'Bebop dominante', sub:'8 notes', fam:'maj', grp:2, iv:[0,2,4,5,7,9,10,11], label_en:'Bebop dominant', sub_en:'8 notes'},
+  {id:'bebop_min', label:'Bebop mineure', sub:'8 notes', fam:'min', grp:2, iv:[0,2,3,4,5,7,9,10], label_en:'Bebop minor', sub_en:'8 notes'},
+  {id:'harmonic_maj', label:'Majeure harmonique', sub:'♭6', fam:'maj', grp:2, iv:[0,2,4,5,7,8,11], label_en:'Harmonic major', sub_en:'♭6'},
+  {id:'bebop_dorian', label:'Bebop dorienne', sub:'8 notes', fam:'min', grp:2, iv:[0,2,3,4,5,7,9,10], label_en:'Bebop Dorian', sub_en:'8 notes'},
+  {id:'spanish_8', label:'Espagnole 8 tons', sub:'8 notes', fam:'min', grp:2, iv:[0,1,3,4,5,6,8,10], label_en:'8-Tone Spanish', sub_en:'8 notes'},
+  {id:'double_harm', label:'Double harmonique', sub:'Byzantine / Tsigane', fam:'maj', grp:3, iv:[0,1,4,5,7,8,11], label_en:'Double harmonic', sub_en:'Byzantine / Gypsy'},
+  {id:'hung_min', label:'Mineure hongroise', sub:'Gypsy minor', fam:'min', grp:3, iv:[0,2,3,6,7,8,11], label_en:'Hungarian minor', sub_en:'Gypsy minor'},
+  {id:'hung_maj', label:'Majeure hongroise', sub:'Hungarian major', fam:'maj', grp:3, iv:[0,3,4,6,7,9,10], label_en:'Hungarian major', sub_en:'Hungarian major'},
+  {id:'gypsy_maj', label:'Tzigane majeure', sub:'Gypsy major', fam:'maj', grp:3, iv:[0,1,4,5,7,8,10], label_en:'Gypsy major', sub_en:'Gypsy major'},
+  {id:'romanian_min', label:'Mineure roumaine', sub:'Dorien ♯4', fam:'min', grp:3, iv:[0,2,3,6,7,9,10], label_en:'Romanian minor', sub_en:'Dorian #4'},
+  {id:'persian', label:'Persane', sub:'Exotique', fam:'min', grp:3, iv:[0,1,4,5,6,8,11], label_en:'Persian', sub_en:'Exotic'},
+  {id:'arabic', label:'Arabe', sub:'Exotique', fam:'maj', grp:3, iv:[0,2,4,5,6,8,10], label_en:'Arabic', sub_en:'Exotic'},
+  {id:'enigmatic', label:'Énigmatique', sub:'Verdi', fam:'maj', grp:3, iv:[0,1,4,6,8,10,11], label_en:'Enigmatic', sub_en:'Verdi'},
+  {id:'napolitaine_maj', label:'Napolitaine majeure', sub:'Exotique', fam:'maj', grp:3, iv:[0,1,3,5,7,9,11], label_en:'Neapolitan major', sub_en:'Exotic'},
+  {id:'napolitaine_min', label:'Napolitaine mineure', sub:'Exotique', fam:'min', grp:3, iv:[0,1,3,5,7,8,11], label_en:'Neapolitan minor', sub_en:'Exotic'},
+  {id:'prometheus', label:'Prometheus', sub:'Scriabine', fam:'maj', grp:3, iv:[0,2,4,6,9,10], label_en:'Prometheus', sub_en:'Scriabin'},
+  {id:'overtone', label:'Acoustique (Overtone)', sub:'= Lydien dominant', fam:'maj', grp:3, iv:[0,2,4,6,7,9,10], label_en:'Overtone', sub_en:'= Lydian dominant'},
+  {id:'hijaz', label:'Hijaz', sub:'Maqam (≈ Phryg. dom.)', fam:'min', grp:3, iv:[0,1,4,5,7,8,10], label_en:'Hijaz', sub_en:'Maqam (≈ Phryg. dom.)'},
+  {id:'hijaz_kar', label:'Hijaz Kar', sub:'Maqam', fam:'min', grp:3, iv:[0,1,4,5,7,8,11], label_en:'Hijaz Kar', sub_en:'Maqam'},
+  {id:'bayati', label:'Bayati', sub:'Maqam', fam:'min', grp:3, iv:[0,1,3,5,7,8,10], label_en:'Bayati', sub_en:'Maqam'},
+  {id:'nahawand', label:'Nahawand', sub:'Maqam (≈ min. harm.)', fam:'min', grp:3, iv:[0,2,3,5,7,8,11], label_en:'Nahawand', sub_en:'Maqam (≈ harm. min.)'},
+  {id:'rast', label:'Rast', sub:'Maqam (≈ Mixolydien)', fam:'maj', grp:3, iv:[0,2,4,5,7,9,10], label_en:'Rast', sub_en:'Maqam (≈ Mixolydian)'},
+  {id:'nikriz', label:'Nikriz', sub:'Maqam', fam:'min', grp:3, iv:[0,2,3,6,7,8,10], label_en:'Nikriz', sub_en:'Maqam'},
+  {id:'saba', label:'Saba', sub:'Maqam', fam:'min', grp:3, iv:[0,1,3,4,7,8,10], label_en:'Saba', sub_en:'Maqam'},
+  {id:'kurd', label:'Kurd', sub:'Maqam (≈ Phrygien)', fam:'min', grp:3, iv:[0,1,3,5,7,8,10], label_en:'Kurd', sub_en:'Maqam (≈ Phrygian)'},
+  {id:'hirajoshi', label:'Hirajoshi', sub:'Japonaise, 5 notes', fam:'min', grp:3, iv:[0,2,3,7,8], label_en:'Hirajoshi', sub_en:'Japanese, 5 notes'},
+  {id:'insen', label:'Insen', sub:'Japonaise, 5 notes', fam:'min', grp:3, iv:[0,1,5,7,10], label_en:'Insen', sub_en:'Japanese, 5 notes'},
+  {id:'kumoi', label:'Kumoi', sub:'Japonaise, 5 notes', fam:'min', grp:3, iv:[0,2,3,7,9], label_en:'Kumoi', sub_en:'Japanese, 5 notes'},
+  {id:'iwato', label:'Iwato', sub:'Japonaise, 5 notes', fam:'min', grp:3, iv:[0,1,5,6,10], label_en:'Iwato', sub_en:'Japanese, 5 notes'},
+  {id:'yo', label:'Yo', sub:'Japonaise, 5 notes', fam:'maj', grp:3, iv:[0,2,5,7,9], label_en:'Yo', sub_en:'Japanese, 5 notes'},
+  {id:'bhairav', label:'Bhairav', sub:'Raga', fam:'maj', grp:3, iv:[0,1,4,5,7,8,11], label_en:'Bhairav', sub_en:'Raga'},
+  {id:'todi', label:'Todi', sub:'Raga', fam:'min', grp:3, iv:[0,1,3,6,7,8,11], label_en:'Todi', sub_en:'Raga'},
+  {id:'kafi', label:'Kafi', sub:'Raga indien (≈ Dorien)', fam:'min', grp:3, iv:[0,2,3,5,7,9,10], label_en:'Kafi', sub_en:'Indian raga (≈ Dorian)'},
+  {id:'kalyan', label:'Kalyan', sub:'Raga indien (≈ Lydien)', fam:'maj', grp:3, iv:[0,2,4,6,7,9,11], label_en:'Kalyan', sub_en:'Indian raga (≈ Lydian)'},
+  {id:'oriental', label:'Orientale', sub:'Exotique', fam:'min', grp:3, iv:[0,1,4,5,6,9,10], label_en:'Oriental', sub_en:'Exotic'},
 ];
 
 const CAD_LITE = [
@@ -926,10 +996,13 @@ function analyzeChords(pcs){
   return results.slice(0,15);
 }
 
+const SCALE_GROUPS=new Set([0,1,2]);   // groupe 3 (exotiques) sur demande
 function analyzeScales(pcs){
   const userPcs=[...new Set(pcs)]; const userSet=new Set(userPcs);
   const results=[]; const seen=new Set();
   for(const def of SCALE_DEFS_LITE){
+    if(!SCALE_GROUPS.has(def.grp)) continue;
+    if(def.iv.length>=12) continue;   // la chromatique contient tout : jamais informative ici
     const key=def.iv.join(',');
     for(let root=0;root<12;root++){
       const scalePcs=def.iv.map(i=>(root+i)%12);
@@ -949,7 +1022,7 @@ function analyzeScales(pcs){
     if(bR!==aR) return bR-aR;
     return b.score-a.score;
   });
-  return results.slice(0,16);
+  return results.slice(0,24);
 }
 
 function analyzeCadences(pcs){
@@ -1241,6 +1314,11 @@ document.getElementById('fb-display').addEventListener('click',e=>{
 });
 document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{
   state.activeTab=tab.dataset.tab; render();
+  document.getElementById('scale-filters').style.display=(state.activeTab==='scales'?'flex':'none');
+}));
+document.querySelectorAll('#scale-filters input').forEach(cb=>cb.addEventListener('change',()=>{
+  if(cb.checked) SCALE_GROUPS.add(+cb.dataset.grp); else SCALE_GROUPS.delete(+cb.dataset.grp);
+  render();
 }));
 initNotationLang();
 initHandSeg();
