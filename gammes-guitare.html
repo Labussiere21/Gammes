@@ -732,7 +732,14 @@
         </div>
         <div style="flex-basis:100%; height:0"></div>
         <div>
-          <div class="ctl-label" data-i18n="lbl_position">Position (boîte)</div>
+          <div class="ctl-label" data-i18n="lbl_posmode">Type de position</div>
+          <div class="seg" id="fb-posmode" role="group">
+            <button data-mode="box" class="on" data-i18n="lbl_mode_box">Boîtes</button>
+            <button data-mode="tonic" data-i18n="lbl_mode_tonic">Départ tonique</button>
+          </div>
+        </div>
+        <div>
+          <div class="ctl-label" id="fb-position-label">Position (boîte)</div>
           <div class="seg" id="fb-position" role="group"></div>
         </div>
       </div>
@@ -824,6 +831,8 @@ const _TR={
     lbl_alteration:'Altération',lbl_famille:'Famille',
     lbl_lede:'Choisis une tonique, une gamme, et lis-la note par note : degrés, armure, accords de chaque degré, et la position exacte sur le manche de ta guitare.',
     lbl_pos_all:'Tout',
+    lbl_posmode:'Type de position',lbl_mode_box:'Boîtes',lbl_mode_tonic:'Départ tonique',
+    lbl_depart:'Doigté (départ tonique)',
   },
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
@@ -862,6 +871,8 @@ const _TR={
     lbl_alteration:'Accidental',lbl_famille:'Family',
     lbl_lede:'Pick a root note and a scale, then read it note by note: degrees, key signature, the chord on each degree, and the exact shape on your guitar fretboard.',
     lbl_pos_all:'All',
+    lbl_posmode:'Position type',lbl_mode_box:'Boxes',lbl_mode_tonic:'Tonic start',
+    lbl_depart:'Fingering (tonic start)',
   },
 };
 function t(key){return (_TR[currentLang()]||_TR.fr)[key]||(_TR.fr[key]||key);}
@@ -1380,6 +1391,7 @@ const state = {
   frets: 12,
   hand: localStorage.getItem('sbhand')||'right',
   position: 'all',
+  posMode: 'box',   // 'box' = boîtes 1..5 | 'tonic' = doigtés démarrant sur la tonique
 };
 
 // Orthographe préférée d'une classe de hauteur selon la préférence
@@ -1493,9 +1505,12 @@ function bindSeg(id, key, cast=(v)=>v){
 }
 
 // Boutons de position : "Tout" + 1..N (N = nb de notes de la gamme)
-function buildPositionButtons(n){
+function buildPositionButtons(n, tonicMode){
   const c=document.getElementById('fb-position');
-  if(state.position!=='all' && state.position>n) state.position='all';
+  if(state.position!=='all' && state.position>n) state.position = tonicMode?1:'all';
+  if(tonicMode && state.position==='all') state.position=1;
+  const lab=document.getElementById('fb-position-label');
+  if(lab) lab.textContent = t(tonicMode?'lbl_depart':'lbl_position');
   c.innerHTML='';
   const mk=(val,label)=>{
     const b=document.createElement('button');
@@ -1504,7 +1519,7 @@ function buildPositionButtons(n){
     b.onclick=()=>{ state.position=val; render(); };
     return b;
   };
-  c.appendChild(mk('all',t('lbl_pos_all')));
+  if(!tonicMode) c.appendChild(mk('all',t('lbl_pos_all')));
   for(let i=1;i<=n;i++) c.appendChild(mk(i, String(i)));
 }
 
@@ -1665,7 +1680,9 @@ function render(){
   });
 
   // Boutons de position : 4 ou 5 selon la gamme
-  buildPositionButtons(def.posType==='sym' ? (def.npos||5) : 5);
+  const _tonicMode = state.posMode==='tonic';
+  buildPositionButtons(_tonicMode ? tonicShapeList(def, notes, state.strings).length
+                                  : (def.posType==='sym' ? (def.npos||5) : 5), _tonicMode);
 
   // Manche
   renderFretboard(notes, rootPc, def);
@@ -1810,6 +1827,64 @@ function currentOpenAbs(){ const m=currentTuning().midi; return m.map(v=>v-m[0])
 /* ---- Smartphone : manche vertical + dropdowns ---- */
 function isMobileFB(){ return window.matchMedia('(max-width:600px)').matches; }
 
+/* --- Doigtes « demarrant sur la tonique » (methodes Play Music / Bruno Tauzin) ---
+   Une planche du livre = le nombre de notes de la gamme jouees sur chaque corde,
+   de la plus grave a la plus aigue, en montant depuis la tonique. Les cases se
+   recalculent ici depuis l'accordage courant, ce qui reproduit les 136 diagrammes
+   du livre case pour case (corde de Si de la guitare comprise) tout en s'adaptant
+   aux accordages drop et aux 5/6 cordes.
+   Source : MET-B-051 / MET-G-103, planches « Positions usuelles demarrant sur la
+   tonique ». Gammes hors methode : doigte regulier n notes par corde. */
+const TONIC_SHAPES = {
+  major:       [[1,3,3,2,3,3],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  minor:       [[1,3,3,3,3,2],[3,3,2,3,3,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  harmonic:    [[1,3,2,3,3,3],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  melodic:     [[1,3,3,3,2,3],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  penta_min:   [[1,2,2,2,2,2],[1,3,2,2,1,2],[2,2,2,2,2,2],[2,4,3,2,2,3]],
+  penta_maj:   [[1,2,2,2,2,2],[2,2,2,2,2,2],[3,2,2,2,2,2],[3,2,3,2,3,3]],
+  blues_min:   [[1,3,2,2,3,2],[1,4,2,2,2,2],[2,3,2,3,2,2],[2,5,4,2,3,3]],
+  dim:         [[1,3,3,3,3,3],[2,3,4,3,3,3],[3,4,3,3,3,3],[3,4,4,4,4,4]],
+  dim_ht:      [[2,3,3,3,3,3],[2,4,3,3,3,3],[3,3,4,3,3,3],[4,4,4,4,4,4]],
+  whole_tone:  [[1,3,2,3,2,2],[2,3,2,3,2,2],[3,2,3,2,2,3],[3,3,3,3,3,3]],
+  dorian:      [[1,3,3,3,2,3],[3,2,3,3,3,2],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  phrygian:    [[1,3,3,3,3,2],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  lydian:      [[1,3,3,2,3,3],[2,3,3,2,3,3],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  mixolydian:  [[1,3,3,2,3,3],[2,3,3,3,3,2],[3,3,3,3,3,3],[3,6,3,3,3,4]],
+  locrian:     [[1,3,3,3,3,2],[2,3,3,3,2,3],[3,3,3,3,3,3],[3,6,3,3,3,3]],
+};
+
+function tonicShapeList(def, notes, nStrings){
+  const base = TONIC_SHAPES[def.id] || [Array(nStrings).fill(notes.length<=5?2:3)];
+  return base.map(s=>{
+    const out=s.slice(0,nStrings);
+    while(out.length<nStrings) out.push(s[s.length-1]);
+    return out;
+  });
+}
+
+// Pose le doigte : tonique sur la corde grave, puis les degres de la gamme en
+// montant, n par corde. Monte d'une octave si le doigte sort du manche.
+function tonicShapeCells(counts, notes, rootPc, strings){
+  const lowPc=strings[0].pc, oa=currentOpenAbs(), sc=notes.map(pcOf);
+  const base=(rootPc-lowPc+12)%12;
+  for(let oct=0; oct<3; oct++){
+    let a=base+12*oct, k=0, ok=true;
+    const cells=new Set(); let lo=Infinity, hi=-Infinity;
+    for(let si=0; si<counts.length && ok; si++){
+      for(let n=0; n<counts[si]; n++){
+        const fr=a-oa[si];
+        if(fr<0 || fr>24){ ok=false; break; }
+        cells.add(si+':'+fr); lo=Math.min(lo,fr); hi=Math.max(hi,fr);
+        k=(k+1)%sc.length;
+        let nx=a+1; while(((lowPc+nx)%12)!==sc[k]) nx++;
+        a=nx;
+      }
+    }
+    if(ok) return {cells, start:lo, end:hi};
+  }
+  return null;
+}
+
 function renderFbCaption(box, notes, strings, lowPc){
   const cap=document.getElementById('fb-caption'); if(!cap) return;
   if(box){
@@ -1831,6 +1906,15 @@ function renderFbCaption(box, notes, strings, lowPc){
       start = _en ? `, starting on ${degTxt} (${pretty(startNote)}), ${prettyNote(strings[0].n)} string`
                   : `, démarrant sur ${degTxt} (${pretty(startNote)}), corde de ${prettyNote(strings[0].n)}`;
     }
+    if(box.mode==='tonic'){
+      const src = box.src==='method'
+        ? (_en?'From the Play Music method plates.':'D’après les planches de la méthode Play Music.')
+        : (_en?'Regular fingering derived for this scale (not in the method).':'Doigté régulier déduit pour cette gamme (absente de la méthode).');
+      cap.innerHTML = `<b>${_en?'Tonic start':'Départ tonique'} ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
+        + start + '.'
+        + `<span class="hint">${_en?`Fingering starting on the tonic, ${box.counts.join('-')} scale notes per string (low to high). `:`Doigté démarrant sur la tonique, ${box.counts.join('-')} notes de la gamme par corde (de la grave à l’aiguë). `}${src}</span>`;
+      return;
+    }
     cap.innerHTML = `<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
       + start + '.'
       + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
@@ -1841,7 +1925,7 @@ function renderFbCaption(box, notes, strings, lowPc){
 
 // Manche vertical : cordes en colonnes (grave→aigu de gauche à droite), cases en lignes
 function renderFretboardV(fb, ctx){
-  const {notes, pcMap, strings, box, frets, lowPc} = ctx;
+  const {notes, pcMap, strings, box, frets, lowPc, shape} = ctx;
   const lefty = state.hand==='left';
   const order = lefty ? strings.slice().reverse() : strings.slice();
   const grid = document.createElement('div'); grid.className='fbv';
@@ -1855,8 +1939,9 @@ function renderFretboardV(fb, ctx){
     const fn=document.createElement('div'); fn.className='fbv-fnum'; fn.textContent=f;
     if(SINGLE.includes(f)||DOUBLE.includes(f)) fn.classList.add('mark');
     grid.appendChild(fn);
-    order.forEach(s=>{
-      const inBox = box && f>=box.start && f<=box.end;
+    order.forEach((s,oi)=>{
+      const si = lefty ? order.length-1-oi : oi;
+      const inBox = shape ? shape.cells.has(si+':'+f) : (box && f>=box.start && f<=box.end);
       const cell=document.createElement('div');
       cell.className='fbv-cell'+(f===0?' open':'')+(f===1?' nut':'')+(inBox?' in-box':'');
       const pc=(s.pc+f)%12;
@@ -1915,8 +2000,14 @@ function renderFretboard(notes, rootPc, def){
   // --- Calcul des boîtes (positions) ---
   // Type 'penta' : 5 boîtes via pentatonique parente (modes, penta, blues)
   // Type 'sym'   : N boîtes symétriques (dim=4, demi-dim=4, par-ton=5)
-  let box=null;
-  if(state.position!=='all'){
+  let box=null, shape=null;
+  if(state.posMode==='tonic'){
+    const list=tonicShapeList(def, notes, strings.length);
+    const sx=Math.min(Math.max((state.position==='all'?1:state.position)-1,0), list.length-1);
+    shape=tonicShapeCells(list[sx], notes, rootPc, strings);
+    if(shape) box={start:shape.start, end:shape.end, gen:pcOf(notes[0]),
+                   mode:'tonic', counts:list[sx], src:TONIC_SHAPES[def.id]?'method':'derived'};
+  } else if(state.position!=='all'){
     const scalePcs = notes.map(pcOf);
     const highPc   = strings[strings.length-1].pc;
     let orderedBoxes;
@@ -1972,7 +2063,7 @@ function renderFretboard(notes, rootPc, def){
 
   // ---- Rendu vertical sur smartphone ----
   if(isMobileFB()){
-    renderFretboardV(fb, {notes, pcMap, strings, box, frets, lowPc});
+    renderFretboardV(fb, {notes, pcMap, strings, box, frets, lowPc, shape});
     renderFbCaption(box, notes, strings, lowPc);
     return;
   }
@@ -1982,12 +2073,13 @@ function renderFretboard(notes, rootPc, def){
 
   const strDiv=document.createElement('div'); strDiv.className='fb-strings';
   display.forEach((s, di)=>{
+    const si = strings.length-1-di;
     const row=document.createElement('div'); row.className='fb-row';
     row.style.setProperty('--str-h', (2 + di * 0.7).toFixed(1)+'px');
     const lab=document.createElement('div'); lab.className='str-label'; lab.textContent=prettyNote(s.n);
     row.appendChild(lab);
     for(let f=0; f<=frets; f++){
-      const inBox = box && f>=box.start && f<=box.end;
+      const inBox = shape ? shape.cells.has(si+':'+f) : (box && f>=box.start && f<=box.end);
       const cell=document.createElement('div');
       cell.className='cell'+(f===0?' open nut-after':'')+(inBox?' in-box':'');
       const pc=(s.pc+f)%12;
@@ -2207,6 +2299,13 @@ document.getElementById('scale-family').addEventListener('click',e=>{
   state.family=b.dataset.fam; buildScaleTypes(); render();
 });
 bindSeg('fb-display','display');
+document.getElementById('fb-posmode').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.posMode=b.dataset.mode;
+  state.position = state.posMode==='tonic' ? 1 : 'all';
+  document.querySelectorAll('#fb-posmode button').forEach(x=>x.classList.toggle('on',x===b));
+  render();
+});
 bindSeg('fb-frets-ctl','frets', v=>+v);
 
 document.getElementById('fb-strings-ctl').addEventListener('click',e=>{
