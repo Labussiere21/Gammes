@@ -1240,6 +1240,34 @@ function renderResults(){
 function scoreClass(pct){return pct===100?'s100':pct>=75?'s75':'slow';}
 function exactClass(pct){return pct===100?'exact':'partial';}
 
+/* --- Basse reelle et renversement -----------------------------------------
+   Le piano ne donne qu'une classe de hauteur : impossible d'en deduire une
+   basse. Les positions du manche, elles, portent une hauteur exacte
+   (midiBase de la corde + case), donc on peut nommer la note la plus grave
+   reellement jouee et en deduire le renversement. */
+function bassPc(){
+  const strs=currentStrings();
+  let lo=Infinity, pc=null;
+  state.selectedPositions.forEach((v,key)=>{
+    const p=key.split('-'), si=+p[0], fret=+p[1];
+    const s=strs[si]; if(!s) return;
+    const midi=s.midiBase+fret;
+    if(midi<lo){ lo=midi; pc=v.pc; }
+  });
+  return pc;
+}
+const INV_FR=['','1er renversement','2e renversement','3e renversement','4e renversement','5e renversement'];
+const INV_EN=['','1st inversion','2nd inversion','3rd inversion','4th inversion','5th inversion'];
+// Renvoie {slash, label} si la basse n'est pas la fondamentale de l'accord.
+function inversionOf(type, root, chordPcs){
+  const b=bassPc();
+  if(b===null || b===root || !chordPcs.includes(b)) return null;
+  const iv=(b-root+12)%12;
+  const rank=type.iv.findIndex(x=>(((x%12)+12)%12)===iv);
+  const names=currentLang()==='en'?INV_EN:INV_FR;
+  return {slash:spell(b), label:(rank>0?names[rank]:'')||''};
+}
+
 function renderChordCards(chords,userPcs){
   const c=document.getElementById('tab-chords'); c.innerHTML='';
   const userSet=new Set(userPcs);
@@ -1248,7 +1276,8 @@ function renderChordCards(chords,userPcs){
     const pct=Math.round(r.coverage*100);
     const _tl=(currentLang()==='en'&&r.type.label_en)?r.type.label_en:r.type.label;
     const nameShort=spell(r.root)+r.type.short;
-    const nameFull=spell(r.root)+' '+_tl;
+    const _inv=inversionOf(r.type, r.root, r.chordPcs);
+    const nameFull=spell(r.root)+' '+_tl+(_inv?' / '+_inv.slash:'');
     const displayName=nameFull;
     const noteChips=r.chordPcs.map(pc=>{const deg=(pc-r.root+12)%12;const col=DEGREE_COLORS[deg];return userSet.has(pc)?`<span class="rc-note in" style="color:${col};border-color:${col}55;background:${col}12">${spell(pc)}</span>`:`<span class="rc-note out">${spell(pc)}</span>`;}).join('');
     const extraNote=r.extra>0?`<span style="font-size:11px;color:var(--muted-2)"> +${r.extra} ${t('lbl_out_chord')}</span>`:'';
@@ -1260,7 +1289,7 @@ function renderChordCards(chords,userPcs){
         <div class="rc-name">${displayName}</div>
         <span class="rc-score ${scoreClass(pct)}">${pct}%</span>
       </div>
-      <div class="rc-sub">${r.matched}/${r.total} ${t('lbl_notes_word')}${extraNote?'  '+extraNote:''}</div>
+      <div class="rc-sub">${r.matched}/${r.total} ${t('lbl_notes_word')}${extraNote?'  '+extraNote:''}${_inv&&_inv.label?` \u00b7 <span style="color:var(--brass)">${_inv.label}</span>`:''}</div>
       <div class="rc-notes">${noteChips}</div>
       ${link}`;
     card.style.cursor='pointer';
