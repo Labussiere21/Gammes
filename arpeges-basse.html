@@ -967,7 +967,13 @@ function buildTuningButtons(){const c=document.getElementById('fb-tuning-ctl');i
 
 function computeBoxes(arpPcs, rootPc, posType, strings){
   const lowPc=strings[0].pc, highPc=strings[strings.length-1].pc;
-  const openAbs=strings.map((_,i)=>i*5);
+  // Demi-tons depuis la corde grave, déduits de l'accordage réel : les accordages
+  // drop ne sont pas en quartes (Drop D = [0,7,12,17]).
+  const openAbs=strings.reduce((a,s,i)=>{
+    if(i===0) return [0];
+    let d=((s.pc-strings[i-1].pc)%12+12)%12; if(d===0) d=12;
+    a.push(a[i-1]+d); return a;
+  },[]);
 
   if(posType==='sym'){
     // Boîtes symétriques (augmenté, dim, dim7)

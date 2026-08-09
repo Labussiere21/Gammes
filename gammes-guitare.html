@@ -1764,7 +1764,7 @@ function renderFbCaption(box, notes, strings, lowPc){
     for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
     const _en=currentLang()==='en';
     cap.innerHTML = `<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
-      + (lowNote?(_en?`, lowest note ${pretty(lowNote)} on the ${strings[0].n} string`:`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`):'') + '.'
+      + (lowNote?(_en?`, anchor note ${pretty(lowNote)} on the ${prettyNote(strings[0].n)} string`:`, note d'ancrage ${pretty(lowNote)} sur la corde ${prettyNote(strings[0].n)}`):'') + '.'
       + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
   } else {
     cap.textContent='';

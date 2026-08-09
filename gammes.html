@@ -1767,6 +1767,17 @@ function currentStrings(){
   const tun=tuns.find(t=>t.id===state.tuning)||tuns[0];
   return tun.notes.map(n=>({n, pc:pcOf(n)}));
 }
+// openAbs : demi-tons depuis la corde grave, déduits de l'accordage réel.
+// Les accordages drop ne sont PAS en quartes (Drop D = [0,7,12,17]) — un i*5
+// codé en dur décalerait les boîtes.
+function currentOpenAbs(){
+  const st=currentStrings(), abs=[0];
+  for(let i=1;i<st.length;i++){
+    let d=((st[i].pc-st[i-1].pc)%12+12)%12; if(d===0) d=12;
+    abs.push(abs[i-1]+d);
+  }
+  return abs;
+}
 function pcOf_simple(n){
   const LP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
   let pc=LP[n[0]];
@@ -1786,7 +1797,7 @@ function renderFbCaption(box, notes, strings, lowPc){
     for(let f=box.start; f<=box.end; f++){ const m=notes.find(n=>pcOf(n)===(lowPc+f)%12); if(m){lowNote=m;break;} }
     const _en=currentLang()==='en';
     cap.innerHTML = `<b>Position ${state.position}</b> — ${_en?'frets':'cases'} ${box.start} ${_en?'to':'à'} ${box.end}`
-      + (lowNote?(_en?`, lowest note ${pretty(lowNote)} on the ${strings[0].n} string`:`, note la plus grave ${pretty(lowNote)} sur la corde ${strings[0].n}`):'') + '.'
+      + (lowNote?(_en?`, anchor note ${pretty(lowNote)} on the ${prettyNote(strings[0].n)} string`:`, note d'ancrage ${pretty(lowNote)} sur la corde ${prettyNote(strings[0].n)}`):'') + '.'
       + `<span class="hint">${_en?'Boxes overlap (≈2 notes per string) and repeat one octave higher. “All” shows the whole scale again.':"Les boîtes s'imbriquent (≈2 notes par corde) et se répètent une octave plus haut. « Tout » réaffiche la gamme entière."}</span>`;
   } else {
     cap.textContent='';
@@ -1902,7 +1913,7 @@ function renderFretboard(notes, rootPc, def){
       // Boîtes via pentatonique parente (algorithme validé)
       const parent = PENTA_PARENTS[def.pos] || PENTA_PARENTS.min;
       const penta  = buildScale(notes[0], parent.ls, parent.iv);
-      const sc     = penta.map(pcOf), M=sc.length, openAbs=strings.map((s,i)=>i*5);
+      const sc     = penta.map(pcOf), M=sc.length, openAbs=currentOpenAbs();
       const boxes=[];
       for(let q=1;q<=M;q++){
         let idx=q-1, ca=(sc[q-1]-lowPc+12)%12, lo=Infinity, hi=-Infinity;
