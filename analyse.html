@@ -185,6 +185,10 @@
   .scale-filters label{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
     cursor:pointer; user-select:none}
   .scale-filters input{accent-color:var(--brass); cursor:pointer; margin:0}
+  .chord-input-row{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+  .chord-input select{background:var(--panel); color:var(--txt); border:1px solid var(--line);
+    border-radius:6px; padding:6px 8px; font-size:13px; font-family:inherit; cursor:pointer}
+  .btn-add{padding:6px 12px; font-size:13px; white-space:nowrap}
   .results-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px}
   .result-card{
     background:linear-gradient(180deg,var(--panel-2),var(--panel));
@@ -403,6 +407,14 @@
         <span class="empty-hint" data-i18n="lbl_no_note_hint">Aucune note — clique sur le piano ou le manche</span>
       </div>
     </div>
+    <div class="chord-input">
+      <div class="ctl-label" data-i18n="lbl_add_chord">Partir d'un accord</div>
+      <div class="chord-input-row">
+        <select id="ci-root" aria-label="Tonique de l'accord"></select>
+        <select id="ci-type" aria-label="Type d'accord"></select>
+        <button class="btn btn-add" id="ci-add" data-i18n="lbl_add_btn">+ Ajouter ses notes</button>
+      </div>
+    </div>
   </div>
 
   <!-- Grille de notes (mobile) -->
@@ -521,6 +533,7 @@ const _TR={
     lbl_iv_title:'Intervalle',lbl_sur_manche:'Sur le manche',
     lbl_clic_notes:'Cliquez des notes sur le piano ou le manche',
     lbl_tab_acc:'Arpèges',lbl_tab_gam:'Gammes',lbl_tab_cad:'Cadences',
+    lbl_add_chord:'Partir d\'un accord',lbl_add_btn:'+ Ajouter ses notes',
     lbl_grp0:'Modes diatoniques',lbl_grp1:'Pentatoniques, blues & symétriques',
     lbl_grp2:'Modes dérivés & jazz',lbl_grp3:'Gammes exotiques',
     lbl_effacer:'Effacer',lbl_partager:'🔗 Partager',
@@ -562,6 +575,7 @@ const _TR={
     lbl_iv_title:'Interval',lbl_sur_manche:'On the fretboard',
     lbl_clic_notes:'Click notes on the piano or fretboard',
     lbl_tab_acc:'Arpeggios',lbl_tab_gam:'Scales',lbl_tab_cad:'Cadences',
+    lbl_add_chord:'Start from a chord',lbl_add_btn:'+ Add its notes',
     lbl_grp0:'Diatonic modes',lbl_grp1:'Pentatonic, blues & symmetric',
     lbl_grp2:'Derived modes & jazz',lbl_grp3:'Exotic scales',
     lbl_effacer:'Clear',lbl_partager:'🔗 Share',
@@ -672,7 +686,7 @@ const CHORD_TYPES = [
 ];
 
 const SCALE_DEFS_LITE = [
-  // Table complete reprise de gammes.html (76 gammes). grp : 0 modes diatoniques,
+  // Table complete reprise de gammes.html (98 gammes). grp : 0 modes diatoniques,
   // 1 pentatoniques/blues/symetriques, 2 modes derives & jazz, 3 exotiques.
   {id:'major', label:'Majeure', sub:'Ionien mode I', fam:'maj', grp:0, iv:[0,2,4,5,7,9,11], label_en:'Major', sub_en:'Ionian mode I'},
   {id:'minor', label:'Mineure naturelle', sub:'Éolien mode VI', fam:'min', grp:0, iv:[0,2,3,5,7,8,10], label_en:'Natural minor', sub_en:'Aeolian mode VI'},
@@ -702,6 +716,11 @@ const SCALE_DEFS_LITE = [
   {id:'whole_tone', label:'Par ton', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,2,4,6,8,10], label_en:'Whole tone', sub_en:'6 notes, symmetric'},
   {id:'aug_hex', label:'Hexatonique augmentée', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,3,4,7,8,11], label_en:'Augmented hexatonic', sub_en:'6 notes, symmetric'},
   {id:'chromatic', label:'Chromatique', sub:'12 notes', fam:'maj', grp:1, iv:[0,1,2,3,4,5,6,7,8,9,10,11], label_en:'Chromatic', sub_en:'12 notes'},
+  {id:'leading_wt', label:'Par tons ascendante', sub:'6 notes + 7ème', fam:'maj', grp:1, iv:[0,2,4,6,8,10,11], label_en:'Leading whole tone', sub_en:'6 notes + 7th'},
+  {id:'tritone_sc', label:'Triton', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,1,4,6,7,10], label_en:'Tritone', sub_en:'6 notes, symmetric'},
+  {id:'two_semitone_tritone', label:'Deux demi-tons triton', sub:'6 notes, symétrique', fam:'maj', grp:1, iv:[0,1,2,6,7,8], label_en:'Two-semitone tritone', sub_en:'6 notes, symmetric'},
+  {id:'prometheus_nea', label:'Prometheus napolitain', sub:'6 notes', fam:'maj', grp:1, iv:[0,1,4,6,9,10], label_en:'Neapolitan Prometheus', sub_en:'6 notes'},
+  {id:'man_gong', label:'Man Gong', sub:'Pentatonique', fam:'min', grp:1, iv:[0,3,5,8,10], label_en:'Man Gong', sub_en:'Pentatonic'},
   {id:'phryg_dom', label:'Phrygien dominant', sub:'Mode V harm.', fam:'maj', grp:2, iv:[0,1,4,5,7,8,10], label_en:'Phrygian dominant', sub_en:'Mode V harm.'},
   {id:'lydian_dom', label:'Lydien dominant', sub:'Mode IV mél.', fam:'maj', grp:2, iv:[0,2,4,6,7,9,10], label_en:'Lydian dominant', sub_en:'Mode IV mel.'},
   {id:'altered', label:'Altérée', sub:'Mode VII mél.', fam:'min', grp:2, iv:[0,1,3,4,6,8,10], label_en:'Altered', sub_en:'Mode VII mel.'},
@@ -720,6 +739,14 @@ const SCALE_DEFS_LITE = [
   {id:'harmonic_maj', label:'Majeure harmonique', sub:'♭6', fam:'maj', grp:2, iv:[0,2,4,5,7,8,11], label_en:'Harmonic major', sub_en:'♭6'},
   {id:'bebop_dorian', label:'Bebop dorienne', sub:'8 notes', fam:'min', grp:2, iv:[0,2,3,4,5,7,9,10], label_en:'Bebop Dorian', sub_en:'8 notes'},
   {id:'spanish_8', label:'Espagnole 8 tons', sub:'8 notes', fam:'min', grp:2, iv:[0,1,3,4,5,6,8,10], label_en:'8-Tone Spanish', sub_en:'8 notes'},
+  {id:'dorian_b5', label:'Dorien ♭5', sub:'Mode II maj. harm.', fam:'min', grp:2, iv:[0,2,3,5,6,9,10], label_en:'Dorian ♭5', sub_en:'Mode II harm. maj.'},
+  {id:'phrygian_b4', label:'Phrygien ♭4', sub:'Mode III maj. harm.', fam:'min', grp:2, iv:[0,1,3,4,7,8,10], label_en:'Phrygian ♭4', sub_en:'Mode III harm. maj.'},
+  {id:'lydian_b3', label:'Lydien ♭3', sub:'Mode IV maj. harm.', fam:'min', grp:2, iv:[0,2,3,6,7,9,11], label_en:'Lydian ♭3', sub_en:'Mode IV harm. maj.'},
+  {id:'mixolydian_b2', label:'Mixolydien ♭2', sub:'Mode V maj. harm.', fam:'maj', grp:2, iv:[0,1,4,5,7,9,10], label_en:'Mixolydian ♭2', sub_en:'Mode V harm. maj.'},
+  {id:'lydian_aug_s2', label:'Lydien augmenté ♯2', sub:'Mode VI maj. harm.', fam:'maj', grp:2, iv:[0,3,4,6,8,9,11], label_en:'Lydian augmented ♯2', sub_en:'Mode VI harm. maj.'},
+  {id:'locrian_bb7', label:'Locrien ♭♭7', sub:'Mode VII maj. harm.', fam:'min', grp:2, iv:[0,1,3,5,6,8,9], label_en:'Locrian ♭♭7', sub_en:'Mode VII harm. maj.'},
+  {id:'bebop_melodic', label:'Bebop mineure mélodique', sub:'8 notes', fam:'min', grp:2, iv:[0,2,3,5,7,8,9,11], label_en:'Bebop melodic minor', sub_en:'8 notes'},
+  {id:'bebop_harm_min', label:'Bebop mineure harmonique', sub:'8 notes', fam:'min', grp:2, iv:[0,2,3,5,7,8,10,11], label_en:'Bebop harmonic minor', sub_en:'8 notes'},
   {id:'double_harm', label:'Double harmonique', sub:'Byzantine / Tsigane', fam:'maj', grp:3, iv:[0,1,4,5,7,8,11], label_en:'Double harmonic', sub_en:'Byzantine / Gypsy'},
   {id:'hung_min', label:'Mineure hongroise', sub:'Gypsy minor', fam:'min', grp:3, iv:[0,2,3,6,7,8,11], label_en:'Hungarian minor', sub_en:'Gypsy minor'},
   {id:'hung_maj', label:'Majeure hongroise', sub:'Hungarian major', fam:'maj', grp:3, iv:[0,3,4,6,7,9,10], label_en:'Hungarian major', sub_en:'Hungarian major'},
@@ -750,6 +777,15 @@ const SCALE_DEFS_LITE = [
   {id:'kafi', label:'Kafi', sub:'Raga indien (≈ Dorien)', fam:'min', grp:3, iv:[0,2,3,5,7,9,10], label_en:'Kafi', sub_en:'Indian raga (≈ Dorian)'},
   {id:'kalyan', label:'Kalyan', sub:'Raga indien (≈ Lydien)', fam:'maj', grp:3, iv:[0,2,4,6,7,9,11], label_en:'Kalyan', sub_en:'Indian raga (≈ Lydian)'},
   {id:'oriental', label:'Orientale', sub:'Exotique', fam:'min', grp:3, iv:[0,1,4,5,6,9,10], label_en:'Oriental', sub_en:'Exotic'},
+  {id:'lydian_s2s6', label:'Lydien ♯2 ♯6', sub:'Mode II dbl harm.', fam:'maj', grp:3, iv:[0,3,4,6,7,10,11], label_en:'Lydian ♯2 ♯6', sub_en:'Mode II dbl harm.'},
+  {id:'ultraphrygian', label:'Ultraphrygien', sub:'Mode III dbl harm.', fam:'min', grp:3, iv:[0,1,3,4,7,8,9], label_en:'Ultraphrygian', sub_en:'Mode III dbl harm.'},
+  {id:'ionian_s2s5', label:'Ionien ♯2 ♯5', sub:'Mode VI dbl harm.', fam:'maj', grp:3, iv:[0,3,4,5,8,9,11], label_en:'Ionian ♯2 ♯5', sub_en:'Mode VI dbl harm.'},
+  {id:'locrian_bb3bb7', label:'Locrien ♭♭3 ♭♭7', sub:'Mode VII dbl harm.', fam:'min', grp:3, iv:[0,1,2,5,6,8,9], label_en:'Locrian ♭♭3 ♭♭7', sub_en:'Mode VII dbl harm.'},
+  {id:'purvi', label:'Purvi', sub:'Thaat', fam:'maj', grp:3, iv:[0,1,4,6,7,8,11], label_en:'Purvi', sub_en:'Thaat'},
+  {id:'marwa', label:'Marwa', sub:'Thaat', fam:'maj', grp:3, iv:[0,1,4,6,7,9,11], label_en:'Marwa', sub_en:'Thaat'},
+  {id:'enigmatic_min', label:'Énigmatique mineure', sub:'7 notes', fam:'min', grp:3, iv:[0,1,3,6,7,10,11], label_en:'Enigmatic minor', sub_en:'7 notes'},
+  {id:'pelog', label:'Pelog balinais', sub:'Pentatonique', fam:'min', grp:3, iv:[0,1,3,7,8], label_en:'Balinese Pelog', sub_en:'Pentatonic'},
+  {id:'algerian', label:'Algérienne', sub:'8 notes', fam:'min', grp:3, iv:[0,2,3,5,6,7,8,11], label_en:'Algerian', sub_en:'8 notes'},
 ];
 
 // Cadences simplifiées pour l'analyse (fondamentales uniquement)
@@ -1085,6 +1121,34 @@ function analyzeChords(pcs){
 }
 
 const SCALE_GROUPS=new Set([0,1,2]);   // groupe 3 (exotiques) sur demande
+/* --- Entree par accord : ajoute les notes d'un accord a la selection --------
+   L'analyseur raisonne en classes de hauteur ; saisir un accord revient donc a
+   selectionner ses notes d'un coup. Les gammes qui le contiennent remontent
+   ensuite avec 0 note hors gamme dans l'onglet Gammes. */
+function buildChordInput(){
+  const rs=document.getElementById('ci-root'), ts=document.getElementById('ci-type');
+  if(!rs||!ts) return;
+  rs.innerHTML=''; ts.innerHTML='';
+  for(let pc=0;pc<12;pc++){
+    const o=document.createElement('option'); o.value=pc; o.textContent=spell(pc); rs.appendChild(o);
+  }
+  CHORD_TYPES.forEach(t=>{
+    const o=document.createElement('option'); o.value=t.id;
+    o.textContent=(currentLang()==='en'&&t.label_en)?t.label_en:t.label; ts.appendChild(o);
+  });
+}
+function addChordNotes(){
+  const rs=document.getElementById('ci-root'), ts=document.getElementById('ci-type');
+  const root=+rs.value, type=CHORD_TYPES.find(t=>t.id===ts.value);
+  if(!type) return;
+  type.iv.forEach(iv=>{ const pc=(root+iv)%12; if(!state.selectedPcs.has(pc)) state.selectedPcs.set(pc,true); });
+  if(state.rootPc===null||state.rootPc===undefined) state.rootPc=root;
+  state.activeTab='scales';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab==='scales'));
+  const fb=document.getElementById('scale-filters'); if(fb) fb.style.display='flex';
+  render();
+}
+
 function analyzeScales(pcs){
   const userPcs=[...new Set(pcs)]; const userSet=new Set(userPcs);
   const results=[];
@@ -1422,6 +1486,8 @@ document.querySelectorAll('#scale-filters input').forEach(cb=>cb.addEventListene
   if(cb.checked) SCALE_GROUPS.add(+cb.dataset.grp); else SCALE_GROUPS.delete(+cb.dataset.grp);
   render();
 }));
+buildChordInput();
+document.getElementById('ci-add').addEventListener('click',addChordNotes);
 initNotationLang();
 initHandSeg();
 render();
