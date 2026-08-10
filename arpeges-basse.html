@@ -557,6 +557,10 @@
           </div>
         </div>
         <div style="flex-basis:100%;height:0"></div>
+        <div class="inv-field">
+          <div class="ctl-label" data-i18n="lbl_renversement">Renversement</div>
+          <div class="seg" id="arp-inv" role="group"></div>
+        </div>
         <div>
           <div class="ctl-label" data-i18n="lbl_position">Position</div>
           <div class="seg" id="fb-position" role="group"></div>
@@ -607,7 +611,7 @@ const _TR={
   fr:{
     lbl_gamme:'La gamme',lbl_degrees:'Degrés & accords diatoniques',lbl_degrees_nd:'Degrés & intervalles',
     lbl_manche:'Sur le manche',lbl_tonique:'Tonique',lbl_type:'Type de gamme',
-    lbl_cordes:'Cordes',lbl_cases:'Cases',lbl_main:'Main',lbl_position:'Position (boîte)',
+    lbl_cordes:'Cordes',lbl_cases:'Cases',lbl_main:'Main',lbl_position:'Position (boîte)',lbl_renversement:'Renversement',
     lbl_affichage:'Affichage',lbl_droitier:'🤜 Droitier',lbl_gaucher:'Gaucher 🤛',
     lbl_note_btn:'Note',lbl_degre_btn:'Degré',lbl_tout:'Tout',
     lbl_fam_all:'Toutes',lbl_fam_maj:'Majeures',lbl_fam_min:'Mineures',
@@ -639,7 +643,7 @@ const _TR={
   en:{
     lbl_gamme:'The scale',lbl_degrees:'Degrees & diatonic chords',lbl_degrees_nd:'Degrees & intervals',
     lbl_manche:'On the fretboard',lbl_tonique:'Root note',lbl_type:'Scale type',
-    lbl_cordes:'Strings',lbl_cases:'Frets',lbl_main:'Hand',lbl_position:'Position (box)',
+    lbl_cordes:'Strings',lbl_cases:'Frets',lbl_main:'Hand',lbl_position:'Position (box)',lbl_renversement:'Inversion',
     lbl_affichage:'Display',lbl_droitier:'🤜 Right-handed',lbl_gaucher:'Left-handed 🤛',
     lbl_note_btn:'Note',lbl_degre_btn:'Degree',lbl_tout:'All',
     lbl_fam_all:'All',lbl_fam_maj:'Major',lbl_fam_min:'Minor',
@@ -873,7 +877,7 @@ function buildArp(rootName, iv){
 /* ============================================================ ÉTAT */
 const state={
   rootPc:9, accPref:'b', arpId:null, display:'note',
-  strings:4, tuning:'standard', frets:12, hand:localStorage.getItem('sbhand')||'right', position:'all'
+  strings:4, tuning:'standard', frets:12, hand:localStorage.getItem('sbhand')||'right', position:'all', invIdx:0
 };
 const SHARP_SPELL=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const FLAT_SPELL= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
@@ -917,7 +921,7 @@ function buildArpGroups(){
       const b=document.createElement('button'); b.className='arpbtn'; b.dataset.id=a.id;
       const _al=(currentLang()==='en'&&a.label_en)?a.label_en:a.label;
       b.innerHTML=`${_al}<span class="abadge">${a.sub||'—'}</span>`;
-      b.onclick=()=>{state.arpId=a.id;state.position='all';render();};
+      b.onclick=()=>{state.arpId=a.id;state.position='all';state.invIdx=0;render();};
       btns.appendChild(b);
     });
     col.appendChild(btns); c.appendChild(col);
@@ -1091,7 +1095,7 @@ function buildMobileControls(){
   });
 }
 
-function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
+function renderFretboard(arpPcs, rootPc, posType, strings, ivs, bassPc){
   const fb=document.getElementById('fretboard'); fb.innerHTML='';
   fb.classList.toggle('lefty', state.hand==='left');
   const lowPc=strings[0].pc;
@@ -1101,12 +1105,12 @@ function renderFretboard(arpPcs, rootPc, posType, strings, ivs){
     ivs.forEach((iv,i)=>{
       const pc=(rootPc+iv)%12;
       const semi=iv%12;
-      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[iv]??DEG_SHORT_RAW[semi]??'?', color:DEG_COLORS[semi], root:i===0};
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[iv]??DEG_SHORT_RAW[semi]??'?', color:DEG_COLORS[semi], root:(bassPc==null?i===0:pc===bassPc)};
     });
   } else {
     arpPcs.forEach((pc,i)=>{
       const semi=(pc-rootPc+12)%12;
-      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:i===0};
+      pcMap[pc]={deg:i+1, degLabel:DEG_SHORT_RAW[semi]||'?', color:DEG_COLORS[semi], root:(bassPc==null?i===0:pc===bassPc)};
     });
   }
 
@@ -1224,6 +1228,43 @@ function updateI18n(){
   if(typeof t==='function') document.title=t('doc_title');
 }
 
+/* --- Renversements ---------------------------------------------------------
+   Les renversements se deduisent de l'arpege lui-meme : une rotation par note.
+   Pas de table a maintenir, toutes les familles sont couvertes (triades,
+   septiemes, enrichis, sus, power). bassIv = intervalle de la note mise a la
+   basse ; l'index 0 est l'etat fondamental. */
+const INV_FR=['Fondamental','1er renversement','2e renversement','3e renversement','4e renversement','5e renversement'];
+const INV_EN=['Root position','1st inversion','2nd inversion','3rd inversion','4th inversion','5th inversion'];
+function inversionsOf(arpDef){
+  if(!arpDef) return [];
+  return arpDef.iv.map((iv,i)=>({
+    idx:i, bassIv:iv%12,
+    sym:i===0?'':'/'+pretty(DEG_SHORT_RAW[iv]??DEG_SHORT_RAW[iv%12]??'?'),
+    label:(currentLang()==='en'?INV_EN:INV_FR)[i]||''
+  }));
+}
+function currentInv(arpDef){
+  const list=inversionsOf(arpDef);
+  if(!list.length) return null;
+  return list[Math.min(state.invIdx||0, list.length-1)];
+}
+function buildInvButtons(arpDef){
+  const c=document.getElementById('arp-inv'); if(!c) return;
+  const list=inversionsOf(arpDef);
+  c.innerHTML='';
+  if(list.length<2){ c.closest('.inv-field').style.display='none'; return; }
+  c.closest('.inv-field').style.display='';
+  if((state.invIdx||0)>=list.length) state.invIdx=0;
+  list.forEach(inv=>{
+    const b=document.createElement('button');
+    b.textContent=inv.idx===0?(currentLang()==='en'?'Root':'Fond.'):inv.sym;
+    b.title=inv.label;
+    b.className=(state.invIdx||0)===inv.idx?'on':'';
+    b.onclick=()=>{ state.invIdx=inv.idx; render(); };
+    c.appendChild(b);
+  });
+}
+
 function render(){
   // rafraîchir les noms de notes du piano (notation FR/EN)
   if(typeof buildPiano==='function') buildPiano();if(typeof updateI18n==="function")updateI18n();
@@ -1257,7 +1298,12 @@ function render(){
   const SPELL=state.accPref==='#'?SHARP_SPELL:FLAT_SPELL;
 
   // Nom et badge
-  document.getElementById('arp-name').innerHTML=`<b>${pretty(root)}</b> ${(currentLang()==='en'&&arpDef.label_en)?arpDef.label_en:arpDef.label}`;
+  buildInvButtons(arpDef);
+  const _inv=currentInv(arpDef);
+  const _bassPc=_inv?(rootPc+_inv.bassIv)%12:rootPc;
+  const _slash=(_inv&&_inv.idx>0)?` / <b>${pretty(SPELL[_bassPc])}</b>`:'';
+  const _invTag=(_inv&&_inv.idx>0)?` <span style="color:var(--brass);font-size:.82em">· ${_inv.label}</span>`:'';
+  document.getElementById('arp-name').innerHTML=`<b>${pretty(root)}</b> ${(currentLang()==='en'&&arpDef.label_en)?arpDef.label_en:arpDef.label}${_slash}${_invTag}`;
   // Bouton ▶ jouer l'arpège
   const paw=document.getElementById('play-arp-wrap');
   if(paw){
@@ -1290,7 +1336,12 @@ function render(){
 
   // Tableau
   const tb=document.getElementById('arp-tbody'); tb.innerHTML='';
-  arpPcs.forEach((pc,i)=>{
+  // Rotation : le tableau se lit depuis la note mise a la basse, mais chaque
+  // ligne garde son degre reel dans l'accord.
+  const _shift=_inv?_inv.idx:0;
+  const _ordered=arpPcs.slice(_shift).concat(arpPcs.slice(0,_shift));
+  _ordered.forEach((pc,_j)=>{
+    const i=(_j+_shift)%arpPcs.length;
     const semi=(pc-rootPc+12)%12;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="tdeg" style="color:${DEG_COLORS[semi]}">${i+1}</td>
@@ -1306,7 +1357,7 @@ function render(){
 
   // Manche
   const strings=currentStrings();
-  renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv);
+  renderFretboard(arpPcs,rootPc,arpDef.posType,strings,arpDef.iv,_bassPc);
 }
 
 function initHandSeg(){
@@ -1347,7 +1398,7 @@ document.getElementById('fb-frets-ctl').addEventListener('click',e=>{
 
 // Dropdowns mobiles
 document.getElementById('m-root').addEventListener('change',e=>{ state.rootPc=+e.target.value; render(); });
-document.getElementById('m-arp').addEventListener('change',e=>{ state.arpId=e.target.value; state.position='all'; render(); });
+document.getElementById('m-arp').addEventListener('change',e=>{ state.arpId=e.target.value; state.position='all'; state.invIdx=0; render(); });
 // Re-render au passage de la limite mobile/desktop (rotation, redimensionnement)
 let _wasMobileFB=isMobileFB();
 window.addEventListener('resize',()=>{ const m=isMobileFB(); if(m!==_wasMobileFB){ _wasMobileFB=m; render(); } });
