@@ -403,6 +403,16 @@ def gen_hub(out_root, lang_code, pages_list, base_url_path, app_url, accent,
     html = f"""<!DOCTYPE html>
 <html lang="{lang_code}">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{h1} — Diagrammes et positions | {brand}</title>
