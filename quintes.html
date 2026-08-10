@@ -2,14 +2,15 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
   gtag('js', new Date());
-
   gtag('config', 'G-D2K9X05BCG');
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
 
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="img/logoonglet.png">
@@ -926,11 +927,12 @@ updateI18n();
     <strong>Données personnelles</strong> : ScalaBass est gratuit, sans compte ni formulaire. Le site
     utilise <strong>Google Analytics 4</strong> pour mesurer son audience : cet outil dépose des cookies
     sur votre appareil et transmet des données de navigation à Google LLC. Aucune publicité, aucune
-    revente de données. Vous pouvez le bloquer via les réglages de votre navigateur ou une extension
-    dédiée. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
+    revente de données. Un bandeau vous demande votre accord avant tout dépôt, et votre choix reste modifiable
+    à tout moment depuis la <a href="/cookies.html">gestion des cookies</a>. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
     votre navigateur via localStorage et ne quittent jamais votre appareil.<br>
     <strong>Contenu</strong> : les gammes, accords et arpèges sont des données théoriques musicales,
     non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
   </div>
-</footer></body>
+</footer><script src="/consent.js" defer></script>
+</body>
 </html>

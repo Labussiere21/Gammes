@@ -504,14 +504,15 @@ def gen_hub(out_root, lang, pages_list):
 <html lang="{lang}">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){{dataLayer.push(arguments);}}
+  gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500}});
+  try{{ if(localStorage.getItem('sbconsent')==='granted'){{ gtag('consent','update',{{'analytics_storage':'granted'}}); }} }}catch(e){{}}
   gtag('js', new Date());
-
   gtag('config', 'G-D2K9X05BCG');
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -568,6 +569,7 @@ def gen_hub(out_root, lang, pages_list):
     <a class="cta-btn" href="{APP_URL}">{"Lancer ScalaBass →" if lang=="fr" else "Launch ScalaBass →"}</a>
   </div>
 </main>
+<script src="/consent.js" defer></script>
 </body>
 </html>"""
 

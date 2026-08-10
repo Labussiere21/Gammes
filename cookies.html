@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
+  gtag('js', new Date());
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="img/logoonglet.png">
+<link rel="apple-touch-icon" href="img/logoonglet.png">
+<title>Gestion des cookies | ScalaBass</title>
+<meta name="description" content="Activez ou désactivez la mesure d'audience de ScalaBass. Votre choix est conservé sur cet appareil et modifiable à tout moment.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://scalabass.com/cookies.html">
+<link rel="stylesheet" href="style.css">
+<style>
+  .ck-wrap{max-width:760px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 60px}
+  .ck-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-top:22px}
+  .ck-card h2{margin:0 0 10px;font-size:17px;color:var(--cream)}
+  .ck-card p{margin:0 0 12px;font-size:14px;line-height:1.7;color:var(--muted)}
+  .ck-state{display:flex;align-items:center;gap:10px;margin:18px 0;font-size:14px}
+  .ck-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .ck-on{background:#5cc86b}.ck-off{background:#8a7a68}
+  .ck-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .ck-btn{font-family:inherit;font-size:14px;font-weight:600;padding:10px 22px;border-radius:8px;
+    cursor:pointer;border:1px solid var(--brass);background:transparent;color:var(--cream);min-width:150px}
+  .ck-btn.primary{background:var(--brass);color:#160f08}
+  .ck-note{font-size:12.5px;color:var(--muted-2);line-height:1.7;margin-top:16px}
+  table.ck-tab{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+  table.ck-tab th,table.ck-tab td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);color:var(--muted)}
+  table.ck-tab th{color:var(--cream);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo-bar" style="display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:8px">
+    <img src="img/logobasse.png" alt="ScalaBass" style="height:70px;display:block">
+  </div>
+  <div class="eyebrow">
+    <span class="site-name">ScalaBass</span>
+    <nav class="site-nav">
+      <a href="index.html"         class="nav-link">Manche</a>
+      <a href="gammes.html"        class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      <a href="accords-basse.html" class="nav-link">Accords</a>
+      <a href="analyse.html"       class="nav-link">Analyse</a>
+    </nav>
+  </div>
+  <h1>Gestion des <i>cookies</i></h1>
+</header>
+
+<div class="ck-wrap">
+
+  <div class="ck-card">
+    <h2>Mesure d’audience</h2>
+    <p>ScalaBass utilise Google Analytics pour compter les visites et savoir quelles pages
+       servent réellement. C’est le seul traceur du site : il n’y a ni publicité, ni revente
+       de données, ni suivi entre sites.</p>
+    <p><strong>Rien n’est déposé tant que vous n’avez pas accepté.</strong> Tant que vous
+       refusez, aucun cookie de mesure n’est écrit et aucune donnée n’est envoyée.</p>
+
+    <div class="ck-state">
+      <span class="ck-dot ck-off" id="ck-dot"></span>
+      <span id="ck-label">Chargement…</span>
+    </div>
+
+    <div class="ck-actions">
+      <button class="ck-btn" id="ck-off" type="button">Désactiver</button>
+      <button class="ck-btn primary" id="ck-on" type="button">Activer</button>
+    </div>
+
+    <p class="ck-note">Votre choix est conservé sur cet appareil, dans le stockage local de
+      votre navigateur. Il n’est associé à aucun compte. Vider les données du site le
+      réinitialise, et le bandeau réapparaîtra.</p>
+  </div>
+
+  <div class="ck-card">
+    <h2>Ce qui est déposé si vous acceptez</h2>
+    <table class="ck-tab">
+      <tr><th>Cookie</th><th>Rôle</th><th>Durée</th></tr>
+      <tr><td>_ga</td><td>Distinguer les visiteurs</td><td>13 mois</td></tr>
+      <tr><td>_ga_G-D2K9X05BCG</td><td>Maintenir l’état de session</td><td>13 mois</td></tr>
+    </table>
+    <p class="ck-note">Les données sont traitées par Google LLC. Vous pouvez également
+      installer le <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener">module
+      de désactivation de Google Analytics</a>, qui vaut pour tous les sites.</p>
+  </div>
+
+  <div class="ck-card">
+    <h2>Préférences d’affichage</h2>
+    <p>Notation (ABC ou solfège), langue, main et accordage sont enregistrés dans le stockage
+      local de votre navigateur. Ils sont nécessaires au fonctionnement du site, ne quittent
+      jamais votre appareil et ne demandent donc pas de consentement.</p>
+  </div>
+
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <a href="index.html">Accueil</a>
+    </div>
+  </div>
+</footer>
+
+<script src="consent.js"></script>
+<script>
+(function(){
+  var dot=document.getElementById('ck-dot'), lbl=document.getElementById('ck-label');
+  function paint(){
+    var v=null; try{ v=localStorage.getItem('sbconsent'); }catch(e){}
+    var on = v==='granted';
+    dot.className='ck-dot '+(on?'ck-on':'ck-off');
+    lbl.textContent = on ? 'Mesure d’audience activée'
+                         : (v==='denied' ? 'Mesure d’audience désactivée'
+                                         : 'Aucun choix exprimé — mesure inactive');
+  }
+  document.getElementById('ck-on').onclick=function(){ window.sbConsentSet('granted'); paint(); };
+  document.getElementById('ck-off').onclick=function(){ window.sbConsentSet('denied'); paint(); };
+  paint();
+})();
+</script>
+</body>
+</html>
