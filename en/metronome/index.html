@@ -45,6 +45,7 @@
 
 
 
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -464,7 +465,7 @@ const EN={
 'Quatre doubles':'Four sixteenths','Départ retardé, trois doubles':'Delayed start, three sixteenths','Doubles sur 1, 2 et 4':'Sixteenths on 1, 2 and 4','Attaque sur la dernière double':'Hit on the last sixteenth',
 'Doubles sur 3 et 4':'Sixteenths on 3 and 4','Trois doubles puis silence':'Three sixteenths then rest','Doubles sur 1, 3 et 4':'Sixteenths on 1, 3 and 4','Deux croches':'Two eighths','Doubles sur 1 et 4':'Sixteenths on 1 and 4',
 'Une croche en contretemps':'An off-beat eighth','Une seule double sur 2':'A single sixteenth on 2','Doubles sur 2 et 4':'Sixteenths on 2 and 4','Deux doubles':'Two sixteenths','Deux doubles centrales':'Two middle sixteenths',
-'Réglage enregistré':'Setting saved','Formules copiées':'Formulas copied','Réglage':'Setting','Groove à':'Groove at','Copie ce texte :':'Copy this text:',
+'Réglage enregistré':'Setting saved','Formules copiées':'Formulas copied','Swing audible sur les croches : subdivision passée en croches':'Swing only shows on off-beats: subdivision set to eighth notes','Réglage':'Setting','Groove à':'Groove at','Copie ce texte :':'Copy this text:',
 };
 const lang=()=>{try{return localStorage.getItem('sblang')||'fr';}catch(e){return 'fr';}};
 const T=s=>(lang()==='en'&&EN[s])||s;
@@ -529,7 +530,12 @@ function syncUI(){
   $$('.swing-val').forEach(e=>e.textContent=S.swing+' %');
 }
 function setBpm(v,quiet){S.bpm=clamp(Math.round(v),20,300);syncUI();if(!quiet)save();}
-function setSwing(v){S.swing=clamp(Math.round(v),0,100);syncUI();save();}
+function setSwing(v){
+  S.swing=clamp(Math.round(v),0,100);
+  /* le swing décale les contretemps : en noires (ou en triolets) il n'y a rien à décaler → on passe en croches */
+  if(S.swing>0&&!S.fig&&(S.sub===1||S.sub===3)){S.sub=2;const e=$('#sub');if(e)e.value='2';toast('Swing audible sur les croches : subdivision passée en croches');}
+  syncUI();save();
+}
 
 $$('[data-bpm]').forEach(b=>{
   let rep=null,to=null;
