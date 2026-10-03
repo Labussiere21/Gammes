@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
+  gtag('js', new Date());
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="img/logoonglet.png">
+<link rel="apple-touch-icon" href="img/logoonglet.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15100c">
+<title>Générateur de grilles d'accords gratuit (export PDF) | ScalaBass</title>
+<meta name="description" content="Crée tes grilles d'accords : reprises, cases 1 et 2, structure du morceau (couplets, refrains, solo…) et export PDF paysage ou portrait. Gratuit, sans compte, tes morceaux restent sur ton appareil.">
+<meta name="keywords" content="grille d'accords, générateur de grille, grille accords PDF, structure morceau, reprises, grille basse, grille guitare">
+<link rel="canonical" href="https://scalabass.com/grilles.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nav-tools.css">
+<link rel="stylesheet" href="outils.css">
+<link rel="stylesheet" href="grilles/grilles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Générateur de grilles d'accords ScalaBass","url":"https://scalabass.com/grilles.html","applicationCategory":"MusicApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":"fr"}
+</script>
+</head>
+<body data-tool="grilles">
+<div class="wrap">
+<header>
+  <div class="logo-bar">
+    <div class="inst-bar" style="margin-bottom:0">
+      <button type="button" class="inst-btn bass-btn active" data-inst="bass">Basse</button>
+      <button type="button" class="inst-btn guit-btn" data-inst="guitar">Guitare</button>
+    </div>
+    <img id="site-logo" src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:block">
+  </div>
+  <div class="eyebrow">
+    <span class="site-name" id="site-name">ScalaBass</span>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html" class="nav-link">Manche</a>
+      <a href="gammes.html" class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      <a href="accords-basse.html" class="nav-link">Accords</a>
+      <a href="intervalles.html" class="nav-link">Intervalles</a>
+      <a href="cadences.html" class="nav-link">Cadences</a>
+      <a href="analyse.html" class="nav-link">Analyse</a>
+      <a href="quintes.html" class="nav-link">Tonalités</a>
+      <a href="metronome.html" class="nav-link active">Outils</a>
+    </nav>
+    <div class="header-tools">
+      <div class="htool-seg" id="notation-seg">
+        <button data-notation="en" class="on" style="min-width:72px">A B C</button>
+        <button data-notation="fr" style="min-width:72px">Do Ré Mi</button>
+      </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="lang-seg">
+        <button data-lang="fr" class="on" style="min-width:34px">FR</button>
+        <button data-lang="en" style="min-width:34px">EN</button>
+      </div>
+    </div>
+  </div>
+  <h1>Grilles <em>d'accords</em></h1>
+  <p class="lede">Écris la grille de ton morceau mesure par mesure, avec reprises, cases 1 et 2 et structure complète, puis exporte-la en PDF à imprimer ou à glisser dans ta tablette. Tout reste dans ton navigateur.</p>
+</header>
+
+<div class="gm">
+  <div class="top">
+    <div class="song">
+      <input id="f-title" class="song-title" placeholder="Titre du morceau" aria-label="Titre" autocomplete="off">
+      <div class="song-meta">
+        <label>Artiste <input id="f-artist" size="16" autocomplete="off"></label>
+        <label>Tonalité <input id="f-key" size="4" autocomplete="off"></label>
+        <label>Tempo <input id="f-tempo" size="5" autocomplete="off"></label>
+        <label class="grow">Note de fin <input id="f-notes" placeholder="ex. Fin sur Dm" autocomplete="off"></label>
+      </div>
+    </div>
+    <div class="export">
+      <div class="seg" id="orient" role="radiogroup" aria-label="Orientation du PDF">
+        <button type="button" data-orient="portrait" role="radio">Portrait</button>
+        <button type="button" data-orient="landscape" role="radio">Paysage</button>
+      </div>
+      <button type="button" id="b-share" class="btn">Copier le lien</button>
+      <button type="button" id="b-preview" class="btn">Aperçu</button>
+      <button type="button" id="b-pdf" class="btn primary">Télécharger le PDF</button>
+    </div>
+  </div>
+
+  <nav class="bar">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="grids" class="tab">Grilles</button>
+      <button type="button" role="tab" data-tab="structure" class="tab">Structure <span id="t-total" class="pill"></span></button>
+      <button type="button" role="tab" data-tab="library" class="tab">Morceaux</button>
+    </div>
+    <div class="file">
+      <button type="button" id="b-new" class="link">Nouveau morceau</button>
+      <button type="button" id="b-open" class="link">Ouvrir un .grille</button>
+      <button type="button" id="b-save" class="link">Enregistrer en .grille</button>
+      <input type="file" id="file-input" accept=".grille,.json,application/json" hidden>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ======================= GRILLES ======================= -->
+    <section id="tab-grids" class="panel grids">
+      <aside class="sections">
+        <ol id="section-list" class="section-list"></ol>
+        <div class="add-row">
+          <select id="new-type" aria-label="Type de section"></select>
+          <button type="button" id="b-add-section" class="btn small">Ajouter</button>
+        </div>
+        <div class="sec-actions">
+          <button type="button" id="b-dup" class="link">Dupliquer</button>
+          <button type="button" id="b-del" class="link danger">Supprimer</button>
+          <button type="button" id="b-up" class="icon" aria-label="Monter">↑</button>
+          <button type="button" id="b-down" class="icon" aria-label="Descendre">↓</button>
+        </div>
+      </aside>
+
+      <div class="editor" id="editor">
+        <div class="sec-head">
+          <label>Section <select id="s-type"></select></label>
+          <label>N° <input id="s-num" type="number" min="0" max="30"></label>
+          <label>Nom perso <input id="s-label" placeholder="ex. Refrain de fin" size="14"></label>
+          <label>Cellules / ligne <input id="s-cols" type="number" min="1" max="8"></label>
+          <label>Lignes <input id="s-rows" type="number" min="1" max="24"></label>
+        </div>
+
+        <div class="tools" aria-label="Actions sur la case sélectionnée">
+          <button type="button" data-act="start" class="tool" title="Début de reprise">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="3" height="18"/><rect x="9" y="3" width="1.4" height="18"/><circle cx="14" cy="9" r="1.7"/><circle cx="14" cy="15" r="1.7"/></svg>
+            Début reprise</button>
+          <button type="button" data-act="end" class="tool" title="Fin de reprise">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="9" r="1.7"/><circle cx="10" cy="15" r="1.7"/><rect x="13.6" y="3" width="1.4" height="18"/><rect x="17" y="3" width="3" height="18"/></svg>
+            Fin reprise</button>
+          <label class="times">Répéter ×<input id="t-times" type="number" min="2" max="64" value="2"></label>
+          <button type="button" data-act="v1" class="tool">Case 1.</button>
+          <button type="button" data-act="v2" class="tool">Case 2.</button>
+          <button type="button" data-act="sim" class="tool" title="Même mesure que la précédente">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6" stroke-width="2.6" fill="none"/><circle cx="7" cy="9" r="1.8"/><circle cx="17" cy="15" r="1.8"/></svg>
+            Même mesure</button>
+          <button type="button" data-act="clear" class="tool quiet">Vider la case</button>
+        </div>
+
+        <div class="sheet">
+          <div id="grid" class="grid"></div>
+          <div class="side">
+            <div class="meas"><span id="m-value">0</span><small>mesures</small></div>
+            <label class="check"><input type="checkbox" id="m-auto"> Calcul auto</label>
+            <input id="m-manual" type="number" min="0" max="999" aria-label="Mesures (manuel)">
+            <label class="stack">Commentaire<input id="s-comment" placeholder="imprimé sous la grille"></label>
+            <details class="help">
+              <summary>Comment saisir</summary>
+              <p>Deux accords dans une mesure : <kbd>C Bb</kbd> ou <kbd>C, Bb</kbd> (diagonale dans le PDF). <kbd>C/E</kbd> reste un renversement.</p>
+              <p><kbd>%</kbd> = même mesure que la précédente.</p>
+              <p>La petite ligne sous l'accord sert aux indications : rythme, « syncopé »…</p>
+              <p><kbd>Entrée</kbd> ou <kbd>Tab</kbd> : case suivante. Les cases vides en fin de ligne ne sont pas imprimées.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= STRUCTURE ======================= -->
+    <section id="tab-structure" class="panel structure" hidden>
+      <div class="flow-wrap">
+        <ol id="flow" class="flow"></ol>
+        <p id="flow-empty" class="empty">Pas encore de structure. Utilise le générateur à droite ou ajoute les parties une par une.</p>
+        <div class="add-row">
+          <select id="item-type" aria-label="Type de partie"></select>
+          <button type="button" id="b-add-item" class="btn small">Ajouter une partie</button>
+          <button type="button" id="b-renum" class="link">Renuméroter</button>
+        </div>
+      </div>
+
+      <aside class="struct-side">
+        <div class="card" id="item-editor">
+          <h3 id="ie-title">Partie sélectionnée</h3>
+          <label class="stack">Nom perso<input id="i-label" placeholder="ex. Refrain de fin"></label>
+          <label class="stack">Grille jouée<select id="i-grid"></select></label>
+          <div class="inline">
+            <label class="check"><input type="checkbox" id="i-auto"> Mesures de la grille</label>
+            <input id="i-meas" type="number" min="0" max="999" aria-label="Mesures">
+          </div>
+          <label class="stack">Note<input id="i-note" placeholder="ex. fin sur Dm"></label>
+          <div class="inline end">
+            <button type="button" id="b-i-up" class="icon" aria-label="Avancer">←</button>
+            <button type="button" id="b-i-down" class="icon" aria-label="Reculer">→</button>
+            <button type="button" id="b-i-del" class="link danger">Retirer</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Générer la structure</h3>
+          <p class="hint">Indique combien de chaque partie. Elles sont numérotées et reliées à leur grille (Couplet 3 joue la grille du Couplet 1 s'il n'y a que deux grilles de couplet).</p>
+          <div id="gen" class="gen"></div>
+          <button type="button" id="b-generate" class="btn primary wide">Générer</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ======================= MORCEAUX ======================= -->
+    <section id="tab-library" class="panel library" hidden>
+      <div class="lib-search">
+        <input id="lib-filter" type="search" placeholder="Chercher un titre ou un artiste" aria-label="Chercher un morceau">
+      </div>
+      <div class="lib-cols">
+        <div class="lib-col">
+          <h2>Sur cet appareil</h2>
+          <p class="hint">Chaque morceau que tu crées ou ouvres est gardé ici automatiquement, dans ce navigateur. Pour le retrouver ailleurs, utilise « Enregistrer en .grille » ou « Copier le lien ».</p>
+          <ul id="lib-local" class="lib-list"></ul>
+        </div>
+        <div class="lib-col">
+          <h2>Exemples</h2>
+          <p class="hint">Un morceau complet pour voir comment fonctionnent les reprises, les cases 1 et 2 et la structure. Ouvrir en crée une copie modifiable.</p>
+          <ul id="lib-online" class="lib-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<section class="card" style="margin-top:20px"><div class="prose">
+  <h2>Une grille d'accords lisible, du premier coup d'œil</h2>
+  <p>Chaque mesure est une case. Marque le <strong>début et la fin d'une reprise</strong>, indique la <strong>case 1</strong> et la <strong>case 2</strong>, ajoute <strong>%</strong> pour répéter la mesure précédente. Le nombre de mesures se calcule tout seul, y compris avec les reprises, et la <strong>structure</strong> (intro, couplets, refrains, solo, outro) se génère en un clic.</p>
+  <p>Ton travail est enregistré automatiquement dans ce navigateur. Tu peux aussi l'exporter en fichier <strong>.grille</strong> ou le partager avec un lien, et le télécharger en <strong>PDF</strong> en paysage ou en portrait.</p>
+</div></section>
+</div><!-- /wrap -->
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy" id="footer-brand">© 2026 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    <strong>Éditeur</strong> : site personnel à but non lucratif. Conformément à l’article 6 III 2
+    de la loi n° 2004-575 du 21 juin 2004 (LCEN), l’éditeur non professionnel a choisi de ne pas
+    rendre publique son identité ; celle-ci est détenue par l’hébergeur, tenu au secret professionnel.<br>
+    <strong>Contact</strong> : contact@scalabass.com<br>
+    <strong>Hébergeur</strong> : GitHub, Inc. — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107,
+    États-Unis — <a href="https://github.com" rel="noopener">github.com</a><br>
+    <strong>Données personnelles</strong> : ScalaBass est gratuit, sans compte ni formulaire. Le site
+    utilise <strong>Google Analytics 4</strong> pour mesurer son audience : cet outil dépose des cookies
+    sur votre appareil et transmet des données de navigation à Google LLC. Aucune publicité, aucune
+    revente de données. Un bandeau vous demande votre accord avant tout dépôt, et votre choix reste modifiable
+    à tout moment depuis la <a href="/cookies.html">gestion des cookies</a>. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
+    votre navigateur via localStorage et ne quittent jamais votre appareil.<br>
+    <strong>Contenu</strong> : les gammes, accords et arpèges sont des données théoriques musicales,
+    non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
+  </div>
+</footer>
+
+<script src="music-core.js"></script>
+<script src="sb-tools.js"></script>
+<script src="nav-tools.js" defer></script>
+<script src="grilles/model.js"></script>
+<script src="grilles/example.js"></script>
+<script src="grilles/pdf.js"></script>
+<script src="grilles/grilles.js"></script>
+<script>SBT.init();</script>
+<script src="/consent.js" defer></script>
+</body>
+</html>

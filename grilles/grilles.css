@@ -1,0 +1,250 @@
+/* ================================================================
+ * grilles.css — ScalaBass / ScalaSix — Grilles d'accords
+ * Tout est scopé sous .gm pour ne pas entrer en collision avec
+ * style.css / outils.css (.btn, .seg, .card, .chip, .hint…).
+ * Palette : variables du site (thème basse ou guitare automatique).
+ * ================================================================ */
+.gm{
+  --ink:var(--cream); --ink-soft:var(--muted); --ink-faint:var(--muted-2);
+  --accent:var(--brass); --accent-soft:rgba(var(--glow),.14);
+  --sheet:#150f0a; --grid-a:rgba(var(--glow),.16); --grid-b:rgba(var(--glow),.07);
+  --cell:#221810; --cell-line:rgba(236,225,205,.78);
+  --marker:var(--brass); --danger:#e2574a;
+  --f-ui:"Hanken Grotesk",system-ui,sans-serif; --f-chord:"Hanken Grotesk",system-ui,sans-serif;
+  --f-mono:"Space Mono",monospace;
+  color:var(--ink); font-family:var(--f-ui); font-size:15px;
+}
+html[data-inst="guitar"] .gm{--sheet:#130a0c;--cell:#241217}
+.gm [hidden]{display:none!important}
+.gm input:not([type=checkbox]),.gm select{
+  font:inherit;color:var(--cream);background:#0e0a07;border:1px solid var(--line);
+  border-radius:8px;padding:6px 9px;min-width:0;
+}
+.gm select{cursor:pointer}
+.gm input[type=number]{width:4.4em}
+.gm input[type=checkbox]{accent-color:var(--brass);width:16px;height:16px}
+.gm input::placeholder{color:var(--muted-2)}
+.gm button{font-family:inherit;color:inherit;cursor:pointer}
+
+/* ---------- boutons ---------- */
+.gm .btn{
+  font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--brass-dim);background:rgba(var(--glow),.07);color:var(--cream);
+  border-radius:9px;padding:9px 15px;transition:.12s;white-space:nowrap;
+}
+.gm .btn:hover{background:rgba(var(--glow),.18);border-color:var(--brass)}
+.gm .btn.primary{background:var(--brass);border-color:var(--brass);color:var(--on-brass)}
+.gm .btn.primary:hover{filter:brightness(1.1)}
+.gm .btn.small{padding:6px 11px;font-size:11px}
+.gm .btn.wide{width:100%;margin-top:12px}
+.gm .link{
+  border:0;background:none;padding:4px 2px;color:var(--brass);font-size:13px;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brass-dim);
+}
+.gm .link:hover{text-decoration-color:currentColor}
+.gm .link.danger{color:var(--danger);text-decoration-color:rgba(226,87,74,.45)}
+.gm .icon{border:1px solid var(--line);background:#0e0a07;border-radius:8px;width:32px;height:30px;color:var(--cream)}
+.gm .icon:hover{border-color:var(--brass)}
+.gm .seg{display:inline-flex;background:#0e0a07;border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+.gm .seg button{
+  font-family:var(--f-mono);font-size:12px;border:0;background:transparent;color:var(--muted);
+  padding:6px 13px;border-radius:7px;
+}
+.gm .seg button[aria-checked=true]{background:var(--brass);color:var(--on-brass);font-weight:700}
+
+/* ---------- en-tête du morceau ---------- */
+.gm .top{
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px;
+  padding-bottom:16px;
+}
+.gm .song{flex:1 1 460px;min-width:0}
+.gm .song-title{
+  display:block;width:100%;font-family:"Instrument Serif",serif!important;font-weight:400;
+  font-size:clamp(34px,5vw,54px)!important;line-height:1.05;letter-spacing:0;
+  border:0!important;background:transparent!important;padding:0!important;color:var(--cream)!important;
+}
+.gm .song-title::placeholder{color:var(--muted-2)}
+.gm .song-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;color:var(--muted);font-size:13px}
+.gm .song-meta label{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.gm .song-meta input{font-family:var(--f-ui);text-transform:none;letter-spacing:0;font-size:14px}
+.gm .song-meta .grow{flex:1 1 220px}
+.gm .song-meta .grow input{flex:1}
+.gm .export{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+
+/* ---------- onglets ---------- */
+.gm .bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px;margin-top:6px}
+.gm .tabs{display:flex;gap:4px}
+.gm .tab{
+  font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid transparent;border-bottom:0;background:transparent;color:var(--muted);
+  padding:10px 20px 11px;border-radius:10px 10px 0 0;
+}
+.gm .tab[aria-selected=true]{background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--cream);border-color:var(--line)}
+.gm .pill{
+  font-family:var(--f-mono);font-weight:700;font-size:11px;background:rgba(var(--glow),.16);color:var(--brass);
+  border:0;border-radius:20px;padding:1px 8px;margin-left:4px;cursor:default;
+}
+.gm .pill:empty{display:none}
+.gm .file{display:flex;flex-wrap:wrap;gap:4px 16px;padding-bottom:9px}
+
+.gm main{padding:0}
+.gm .panel{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);
+  border-radius:0 var(--radius) var(--radius) var(--radius);
+  box-shadow:0 24px 60px -44px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+/* ---------- onglet grilles ---------- */
+.gm .grids{display:grid;grid-template-columns:230px 1fr;min-height:560px}
+.gm .sections{border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.gm .section-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;flex:1;overflow:auto}
+.gm .section-list li button{
+  width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  border:1px solid transparent;background:transparent;border-radius:9px;padding:8px 10px;text-align:left;color:var(--cream);
+}
+.gm .section-list li button:hover{background:rgba(255,255,255,.04)}
+.gm .section-list li button[aria-current=true]{background:var(--accent-soft);border-color:var(--brass-dim);font-weight:600}
+.gm .section-list small{font-family:var(--f-mono);color:var(--brass);font-weight:700;white-space:nowrap;font-size:11px}
+.gm .add-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.gm .add-row select{flex:0 1 190px}
+.gm .sec-actions{display:flex;gap:10px;align-items:center}
+.gm .sec-actions .icon:first-of-type{margin-left:auto}
+
+.gm .editor{padding:16px 20px 20px;min-width:0}
+.gm .sec-head{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:13px;color:var(--muted)}
+.gm .sec-head label,.gm .times,.gm .check{display:inline-flex;align-items:center;gap:6px}
+.gm .sec-head label{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.gm .sec-head input,.gm .sec-head select{text-transform:none;letter-spacing:0;font-family:var(--f-ui);font-size:14px}
+
+.gm .tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0}
+.gm .tool{
+  display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#0e0a07;color:var(--cream);
+  border-radius:9px;padding:7px 12px;font-size:13px;transition:.12s;
+}
+.gm .tool svg{width:18px;height:18px;fill:currentColor;stroke:currentColor}
+.gm .tool:hover{border-color:var(--brass);color:var(--brass)}
+.gm .tool[aria-pressed=true]{background:var(--accent-soft);border-color:var(--brass);color:var(--brass);font-weight:600}
+.gm .tool.quiet{color:var(--muted)}
+.gm .times{font-size:13px;margin:0 8px 0 2px;color:var(--muted)}
+
+/* La feuille : carnet quadrillé sombre */
+.gm .sheet{
+  display:flex;flex-wrap:wrap;gap:24px;padding:30px 24px 28px 64px;
+  border:1px solid var(--line);border-radius:12px;background-color:var(--sheet);
+  background-image:
+    linear-gradient(90deg,transparent 43px,rgba(226,87,74,.55) 43px,rgba(226,87,74,.55) 45px,transparent 45px),
+    linear-gradient(var(--grid-a) 1px,transparent 1px),
+    linear-gradient(var(--grid-b) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-b) 1px,transparent 1px);
+  background-size:100% 100%,100% 32px,100% 8px,32px 100%;
+  background-position:0 0,0 -1px,0 -1px,45px 0;
+}
+.gm .grid{display:grid;gap:0;align-content:start}
+.gm .grid .rownum{font:500 12px var(--f-mono);color:var(--muted-2);align-self:center;justify-self:end;padding-right:10px}
+.gm .cell{
+  position:relative;width:112px;height:84px;background:var(--cell);border:1.5px solid var(--cell-line);
+  margin:0 0 -1.5px -1.5px;display:flex;flex-direction:column;
+}
+.gm .cell.selected{box-shadow:0 0 0 3px var(--marker);z-index:2}
+.gm .cell input{border:0;background:transparent;text-align:center;width:100%;padding:0;border-radius:0;color:var(--cream)}
+.gm .cell .chord{flex:1;font:800 26px/1 var(--f-chord);letter-spacing:-.01em}
+.gm .cell .chord.small{font-size:19px}
+.gm .cell .chord.tiny{font-size:15px}
+.gm .cell .note{height:20px;font:italic 12px var(--f-ui);color:var(--muted);border-top:1px dashed var(--line)}
+.gm .cell input:focus{outline:none}
+.gm .cell .note::placeholder{color:transparent}
+.gm .cell.selected .note::placeholder{color:var(--muted-2)}
+.gm .cell.rep-start{border-left:5px double var(--cell-line)}
+.gm .cell.rep-start::before,.gm .cell.rep-end::after{
+  content:"";position:absolute;top:calc(50% - 10px);width:5px;height:5px;border-radius:50%;
+  background:var(--cream);box-shadow:0 12px 0 var(--cream);
+}
+.gm .cell.rep-start::before{left:3px}
+.gm .cell.rep-end{border-right:5px double var(--cell-line)}
+.gm .cell.rep-end::after{right:3px}
+.gm .cell .badge{position:absolute;top:-21px;font:700 12px var(--f-mono);color:var(--cream);padding:0 6px;white-space:nowrap}
+.gm .cell .volta{left:-1px;right:-1px;top:-18px;height:14px;border:1.5px solid var(--cell-line);border-bottom:0;font-size:11px;line-height:12px;padding:0 4px}
+.gm .cell .volta.v2{border-right:0}
+.gm .cell .times-badge{right:-6px;top:-20px}
+
+.gm .side{flex:0 1 230px;min-width:190px;display:flex;flex-direction:column;gap:10px}
+.gm .meas{font:400 64px/0.9 "Instrument Serif",serif;color:var(--cream);display:flex;align-items:baseline;gap:8px}
+.gm .meas small{font:700 11px var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.gm .check{font-size:13px;color:var(--muted)}
+.gm .stack{display:flex;flex-direction:column;gap:4px;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+.gm .stack input,.gm .stack select{text-transform:none;letter-spacing:0;font-family:var(--f-ui);font-size:14px;color:var(--cream)}
+.gm .help{font-size:13px;color:var(--muted);background:rgba(0,0,0,.25);border-radius:9px;padding:6px 10px}
+.gm .help summary{cursor:pointer;color:var(--brass);font-weight:600}
+.gm .help p{margin:8px 0}
+.gm kbd{font:700 11px var(--f-mono);background:#0e0a07;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--cream)}
+
+/* ---------- onglet structure ---------- */
+.gm .structure{display:grid;grid-template-columns:1fr 320px}
+.gm .flow-wrap{
+  padding:24px 24px 20px 64px;border-right:1px solid var(--line);min-width:0;
+  background-color:var(--sheet);border-radius:0 0 0 var(--radius);
+  background-image:
+    linear-gradient(90deg,transparent 43px,rgba(226,87,74,.55) 43px,rgba(226,87,74,.55) 45px,transparent 45px),
+    linear-gradient(var(--grid-a) 1px,transparent 1px),linear-gradient(var(--grid-b) 1px,transparent 1px);
+  background-size:100% 100%,100% 32px,100% 8px;display:flex;flex-direction:column;gap:20px;
+}
+.gm .flow{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:26px 10px;align-items:flex-start}
+.gm .flow li{display:flex;align-items:flex-start;gap:10px}
+.gm .flow li+li::before{content:"›";color:var(--muted);font-size:20px;line-height:34px}
+.gm .chip{
+  display:flex;flex-direction:column;align-items:center;gap:1px;border:0;background:none;padding:0;min-width:84px;
+  text-transform:none;letter-spacing:0;border-radius:0;font-size:inherit;color:inherit;font-family:var(--f-ui);cursor:pointer
+}
+.gm .chip .name{
+  border:1.5px solid var(--brass);background:var(--accent-soft);border-radius:10px;padding:5px 14px;
+  font-weight:600;white-space:nowrap;color:var(--cream);
+}
+.gm .chip .m{font:700 12px var(--f-mono);color:var(--brass)}
+.gm .chip .ref{font:italic 12px var(--f-ui);color:var(--muted);white-space:nowrap}
+.gm .chip[aria-current=true] .name{box-shadow:0 0 0 3px var(--marker)}
+.gm .empty{color:var(--muted);margin:0}
+.gm .struct-side{padding:16px;display:flex;flex-direction:column;gap:16px}
+.gm .card{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,.18);box-shadow:none}
+.gm .card h3{margin:0;font:400 24px "Instrument Serif",serif;color:var(--cream)}
+.gm .inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gm .inline.end{justify-content:flex-end}
+.gm .hint{font-size:13px;color:var(--muted);margin:0}
+.gm .gen{display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px 10px;align-items:center;font-size:14px}
+.gm #item-editor.disabled{opacity:.5;pointer-events:none}
+
+/* ---------- onglet morceaux ---------- */
+.gm .library{padding:20px 24px 28px}
+.gm .lib-search input{width:min(420px,100%);padding:9px 12px}
+.gm .lib-cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:18px}
+.gm .lib-col h2{margin:0 0 4px;font:400 28px "Instrument Serif",serif;color:var(--cream);text-transform:none;letter-spacing:0;display:block}
+.gm .lib-col .hint{margin:0 0 12px}
+.gm .lib-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.gm .lib-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 4px;border-bottom:1px solid var(--line)}
+.gm .lib-list li.current{background:linear-gradient(90deg,var(--accent-soft),transparent 70%);padding-left:10px}
+.gm .lib-list li.none{color:var(--muted);font-size:14px}
+.gm .lib-list .info{display:flex;flex-direction:column;min-width:0}
+.gm .lib-list .info strong{font:400 24px/1.15 "Instrument Serif",serif;color:var(--cream)}
+.gm .lib-list .info span{font-size:13px;color:var(--muted)}
+.gm .lib-list .acts{display:flex;align-items:center;gap:12px}
+.gm code{font-family:var(--f-mono);font-size:12px;background:#0e0a07;border-radius:4px;padding:0 4px}
+
+/* ---------- responsive ---------- */
+@media(max-width:900px){
+  .gm .grids,.gm .structure{grid-template-columns:1fr}
+  .gm .sections{border-right:0;border-bottom:1px solid var(--line)}
+  .gm .section-list{flex-direction:row;flex-wrap:wrap;flex:none}
+  .gm .section-list li button{width:auto}
+  .gm .flow-wrap{border-right:0;border-bottom:1px solid var(--line)}
+  .gm .sheet,.gm .flow-wrap{padding-left:54px}
+  .gm .cell{width:78px;height:66px}
+  .gm .cell .chord{font-size:21px}
+  .gm .cell .chord.small{font-size:15px}
+  .gm .cell .chord.tiny{font-size:12px}
+  .gm .lib-cols{grid-template-columns:1fr}
+  .gm .library{padding:16px}
+}
+@media(max-width:520px){
+  .gm .cell{width:64px;height:60px}
+  .gm .export{width:100%}
+  .gm .export .btn.primary{flex:1}
+}

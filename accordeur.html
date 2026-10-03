@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
+  gtag('js', new Date());
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="img/logoonglet.png">
+<link rel="apple-touch-icon" href="img/logoonglet.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15100c">
+<title>Accordeur basse et guitare en ligne gratuit (micro) | ScalaBass</title>
+<meta name="description" content="Accordeur chromatique gratuit pour basse (4, 5, 6 cordes) et guitare : détection automatique par le micro, accordages prédéfinis (drop D, DADGAD, open G…), note de référence réglable.">
+<meta name="keywords" content="accordeur basse, accordeur guitare, accordeur en ligne, accordeur chromatique, accordage basse 5 cordes, drop D, DADGAD">
+<link rel="canonical" href="https://scalabass.com/accordeur.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nav-tools.css">
+<link rel="stylesheet" href="outils.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Accordeur basse et guitare ScalaBass","url":"https://scalabass.com/accordeur.html","applicationCategory":"MusicApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript and a microphone","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":"fr"}
+</script>
+<style>
+.tuner{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px}
+@media(max-width:900px){.tuner{grid-template-columns:1fr}}
+.readout{display:grid;justify-items:center;gap:2px;margin-top:-6px}
+.note-big{font-family:"Instrument Serif",serif;font-size:clamp(78px,16vw,128px);line-height:.95;color:var(--cream);transition:color .15s,text-shadow .15s}
+.note-big small{font-size:.38em;color:var(--muted);margin-left:4px;vertical-align:.1em;font-family:"Space Mono",monospace}
+.hz{font-family:"Space Mono",monospace;font-size:13px;color:var(--muted);min-height:1.4em}
+.verdict{font-family:"Instrument Serif",serif;font-style:italic;font-size:24px;color:var(--muted);min-height:1.4em;text-align:center}
+.tuner.ok .note-big{color:var(--ok);text-shadow:0 0 36px rgba(127,210,122,.45)}
+.tuner.ok .verdict{color:var(--ok)}
+.tuner.near .verdict{color:var(--warn)}
+.tuner.far .verdict{color:var(--bad)}
+.gauge{width:100%;max-width:460px;margin:0 auto;display:block}
+.gauge .tick{stroke:var(--muted-2);stroke-width:2}
+.gauge .tick.big{stroke:var(--muted);stroke-width:3}
+.gauge text{fill:var(--muted);font-family:"Space Mono",monospace;font-size:11px;text-anchor:middle}
+.gauge .zone{fill:none;stroke:rgba(127,210,122,.55);stroke-width:14;stroke-linecap:butt}
+.gauge .rail{fill:none;stroke:#0a0705;stroke-width:14}
+#needle{transform-origin:200px 205px;transition:transform .14s cubic-bezier(.3,.7,.4,1),opacity .3s;opacity:.35}
+.tuner.live #needle{opacity:1}
+.gauge .needle-l{stroke:var(--brass);stroke-width:3;stroke-linecap:round}
+.tuner.ok .gauge .needle-l{stroke:var(--ok)}
+.gauge .hub{fill:#1a120a;stroke:var(--brass-dim);stroke-width:3}
+.fs{font-size:20px;fill:var(--muted)!important;font-size:18px!important}
+.strings{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.str{
+  position:relative;min-width:64px;padding:12px 10px 10px;border-radius:14px;cursor:pointer;
+  border:1.5px solid var(--line);background:radial-gradient(circle at 50% 20%,var(--panel-2),#0b0806);color:var(--cream);
+  font-family:"Space Mono",monospace;display:grid;justify-items:center;gap:2px;transition:border-color .15s,box-shadow .15s,transform .05s;touch-action:manipulation
+}
+.str:active{transform:scale(.96)}
+.str b{font-size:20px}
+.str small{font-size:10px;color:var(--muted-2);letter-spacing:.12em}
+.str.det{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass-dim),0 0 18px -4px rgba(var(--glow),.8)}
+.str.lock{border-color:#3fb6c9;box-shadow:0 0 0 1px #2a7886}
+.str.done::after{content:"✓";position:absolute;top:-8px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--ok);color:#06210a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.wave{width:100%;height:70px;display:block;border-radius:10px;background:#0a0705;border:1px solid var(--line)}
+.meter{height:6px;border-radius:6px;background:#0a0705;border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6fd27c,#e8b855,#e2724a);transition:width .08s}
+.msg{font-size:13px;color:var(--muted);min-height:1.5em}
+.msg.err{color:var(--bad)}
+.a4box{display:flex;align-items:center;gap:8px}
+.sbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0e0a07;color:var(--cream);font-family:"Space Mono",monospace;font-weight:700;cursor:pointer}
+.sbtn:hover{border-color:var(--brass)}
+.chk{display:inline-flex;align-items:center;gap:8px;font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--brass);width:16px;height:16px}
+.mini{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2)}
+.fields{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-end}
+</style>
+</head>
+<body data-tool="accordeur">
+<div class="wrap">
+<header>
+  <div class="logo-bar">
+    <div class="inst-bar" style="margin-bottom:0">
+      <button type="button" class="inst-btn bass-btn active" data-inst="bass">Basse</button>
+      <button type="button" class="inst-btn guit-btn" data-inst="guitar">Guitare</button>
+    </div>
+    <img id="site-logo" src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:block">
+  </div>
+  <div class="eyebrow">
+    <span class="site-name" id="site-name">ScalaBass</span>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html" class="nav-link">Manche</a>
+      <a href="gammes.html" class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      <a href="accords-basse.html" class="nav-link">Accords</a>
+      <a href="intervalles.html" class="nav-link">Intervalles</a>
+      <a href="cadences.html" class="nav-link">Cadences</a>
+      <a href="analyse.html" class="nav-link">Analyse</a>
+      <a href="quintes.html" class="nav-link">Tonalités</a>
+      <a href="metronome.html" class="nav-link active">Outils</a>
+    </nav>
+    <div class="header-tools">
+      <div class="htool-seg" id="notation-seg">
+        <button data-notation="en" class="on" style="min-width:72px">A B C</button>
+        <button data-notation="fr" style="min-width:72px">Do Ré Mi</button>
+      </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="lang-seg">
+        <button data-lang="fr" class="on" style="min-width:34px">FR</button>
+        <button data-lang="en" style="min-width:34px">EN</button>
+      </div>
+    </div>
+  </div>
+  <h1>Accordeur <em>chromatique</em></h1>
+  <p class="lede">Joue une corde : l'accordeur écoute ton micro (ordinateur, tablette ou smartphone), reconnaît la note et te dit s'il faut monter ou descendre. Mode automatique pour toutes les notes, ou accordage prédéfini pour ta basse ou ta guitare.</p>
+</header>
+
+<div class="tool-wrap">
+<section class="card" aria-label="Réglages de l'accordeur">
+  <div class="fields">
+    <div class="field"><span>Mode</span>
+      <div class="seg" id="mode"><button data-m="auto" class="on">Auto (toutes les notes)</button><button data-m="tuning">Accordage</button></div></div>
+    <label class="field" id="f-strings"><span>Cordes</span><select class="sel" id="strings"></select></label>
+    <label class="field" id="f-tuning"><span>Accordage</span><select class="sel" id="tuning" style="min-width:230px"></select></label>
+    <div class="field"><span>Diapason (La)</span>
+      <div class="a4box"><button type="button" class="sbtn" id="a4-minus" aria-label="Diapason moins">−</button><input class="num" id="a4" type="number" min="410" max="470" step="1" value="440" aria-label="Fréquence du La"><span class="mini">Hz</span><button type="button" class="sbtn" id="a4-plus" aria-label="Diapason plus">+</button></div></div>
+    <div class="field"><span>&nbsp;</span>
+      <button type="button" class="btn primary" id="mic" aria-pressed="false">Activer le micro</button></div>
+  </div>
+  <div class="msg" id="msg" role="status" aria-live="polite" style="margin-top:12px">Appuie sur « Activer le micro », autorise l'accès, puis pince une corde à vide.</div>
+</section>
+
+<div class="tuner" id="tuner">
+  <section class="card" aria-label="Indicateur d'accord">
+    <svg class="gauge" viewBox="0 0 400 235" role="img" aria-label="Aiguille d'accord, de −50 à +50 cents" id="gauge">
+      <path class="rail" id="rail"/>
+      <path class="zone" id="zone"/>
+      <g id="ticks"></g>
+      <text x="38" y="30" class="fs">♭</text><text x="362" y="30" class="fs">♯</text>
+      <g id="needle"><line class="needle-l" x1="200" y1="205" x2="200" y2="52"/></g>
+      <circle class="hub" cx="200" cy="205" r="11"/>
+    </svg>
+    <div class="readout">
+      <div class="note-big" id="note">—</div>
+      <div class="hz" id="hz">&nbsp;</div>
+      <div class="verdict" id="verdict">En attente d'un son…</div>
+    </div>
+    <div style="margin-top:14px"><div class="meter" aria-hidden="true"><i id="level"></i></div></div>
+  </section>
+
+  <section class="card" aria-label="Cordes">
+    <h2><span>Cordes</span><label class="chk" id="auto-str-l"><input type="checkbox" id="auto-str" checked> Détecter la corde</label></h2>
+    <div class="strings" id="strs"></div>
+    <p class="hint" id="str-hint" style="margin-top:14px;text-align:center">En mode Auto, l'accordeur reconnaît n'importe quelle note. Choisis « Accordage » pour viser les cordes de ton instrument.</p>
+    <div class="row" style="justify-content:center;margin-top:12px">
+      <button type="button" class="btn" id="play-ref">♪ Écouter la note</button>
+    </div>
+    <canvas class="wave" id="wave" width="600" height="140" style="margin-top:16px" aria-hidden="true"></canvas>
+  </section>
+</div>
+
+<section class="card"><div class="prose">
+  <h2>Accorder sa basse ou sa guitare au micro</h2>
+  <p>Active le micro et joue <strong>une seule corde à vide</strong>, sans trop forcer l'attaque. L'aiguille indique l'écart en <strong>cents</strong> (100 cents = un demi-ton) : elle devient verte quand tu es à moins de 5 cents de la note visée. Pour une basse 5 ou 6 cordes, choisis le nombre de cordes puis l'accordage. Les notes graves (Si grave d'une basse 5 cordes, environ 31 Hz) sont détectées grâce à un algorithme adapté aux basses fréquences.</p>
+  <p>Astuce : accorde toujours en <strong>montant</strong> vers la note. Si tu dépasses, redescends sous la note et remonte. Le son de référence te permet aussi d'accorder à l'oreille, mais coupe-le avant de jouer pour que le micro n'entende que ton instrument. Le son reste sur ton appareil : rien n'est enregistré ni envoyé.</p>
+</div></section>
+</div>
+</div><!-- /wrap -->
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy" id="footer-brand">© 2026 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    <strong>Éditeur</strong> : site personnel à but non lucratif. Conformément à l’article 6 III 2
+    de la loi n° 2004-575 du 21 juin 2004 (LCEN), l’éditeur non professionnel a choisi de ne pas
+    rendre publique son identité ; celle-ci est détenue par l’hébergeur, tenu au secret professionnel.<br>
+    <strong>Contact</strong> : contact@scalabass.com<br>
+    <strong>Hébergeur</strong> : GitHub, Inc. — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107,
+    États-Unis — <a href="https://github.com" rel="noopener">github.com</a><br>
+    <strong>Données personnelles</strong> : ScalaBass est gratuit, sans compte ni formulaire. Le site
+    utilise <strong>Google Analytics 4</strong> pour mesurer son audience : cet outil dépose des cookies
+    sur votre appareil et transmet des données de navigation à Google LLC. Aucune publicité, aucune
+    revente de données. Un bandeau vous demande votre accord avant tout dépôt, et votre choix reste modifiable
+    à tout moment depuis la <a href="/cookies.html">gestion des cookies</a>. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
+    votre navigateur via localStorage et ne quittent jamais votre appareil.<br>
+    <strong>Contenu</strong> : les gammes, accords et arpèges sont des données théoriques musicales,
+    non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
+  </div>
+</footer>
+
+<script src="music-core.js"></script>
+<script src="sb-audio.js"></script>
+<script src="sb-tools.js"></script>
+<script src="nav-tools.js" defer></script>
+<script src="tuner-dsp.js"></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const PC={C:0,'C#':1,Db:1,D:2,'D#':3,Eb:3,E:4,F:5,'F#':6,Gb:6,G:7,'G#':8,Ab:8,A:9,'A#':10,Bb:10,B:11};
+const SHARP=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function T(str){return str.split(' ').map(s=>{const m=s.match(/^([A-G][#b]?)(-?\d)$/);return {name:m[1],oct:+m[2],midi:(+m[2]+1)*12+PC[m[1]]};});}
+const TUNINGS={
+  bass:{
+    4:[['Standard (E A D G)','E1 A1 D2 G2'],['Drop D (D A D G)','D1 A1 D2 G2'],['Demi-ton plus bas (E♭ A♭ D♭ G♭)','Eb1 Ab1 Db2 Gb2'],['Ton plus bas (D G C F)','D1 G1 C2 F2'],['Drop C (C G C F)','C1 G1 C2 F2']],
+    5:[['Standard (B E A D G)','B0 E1 A1 D2 G2'],['Drop A (A E A D G)','A0 E1 A1 D2 G2'],['Corde aiguë (E A D G C)','E1 A1 D2 G2 C3']],
+    6:[['Standard (B E A D G C)','B0 E1 A1 D2 G2 C3']],
+  },
+  guitar:{
+    6:[['Standard (E A D G B E)','E2 A2 D3 G3 B3 E4'],['Drop D','D2 A2 D3 G3 B3 E4'],['DADGAD','D2 A2 D3 G3 A3 D4'],['Open G (D G D G B D)','D2 G2 D3 G3 B3 D4'],['Open D (D A D F♯ A D)','D2 A2 D3 F#3 A3 D4'],['Open E (E B E G♯ B E)','E2 B2 E3 G#3 B3 E4'],['Open A (E A E A C♯ E)','E2 A2 E3 A3 C#4 E4'],['Demi-ton plus bas (E♭ standard)','Eb2 Ab2 Db3 Gb3 Bb3 Eb4'],['Ton plus bas (D standard)','D2 G2 C3 F3 A3 D4'],['Drop C','C2 G2 C3 F3 A3 D4']],
+    7:[['Standard (B E A D G B E)','B1 E2 A2 D3 G3 B3 E4'],['Drop A','A1 E2 A2 D3 G3 B3 E4']],
+  },
+};
+const S=Object.assign({mode:'auto',a4:440,strings:{bass:4,guitar:6},tuning:{bass:{},guitar:{}},autoStr:true},store.get('sbtuner',{}));
+S.strings=Object.assign({bass:4,guitar:6},S.strings);S.tuning=Object.assign({bass:{},guitar:{}},S.tuning);
+function save(){store.set('sbtuner',S);}
+let inst='bass',lock=null,detIdx=null,tuned={};
+const nm=n=>SB.prettyNote(n);
+const freqOf=m=>S.a4*Math.pow(2,(m-69)/12);
+function curTuning(){
+  const list=TUNINGS[inst][S.strings[inst]];
+  const i=Math.min(S.tuning[inst][S.strings[inst]]||0,list.length-1);
+  return {list,i,notes:T(list[i][1])};
+}
+
+/* ---------------- jauge SVG ---------------- */
+const CX=200,CY=205,R=165;
+const pol=(r,a)=>[CX+r*Math.sin(a*Math.PI/180),CY-r*Math.cos(a*Math.PI/180)];
+const arc=(r,a0,a1)=>{const [x0,y0]=pol(r,a0),[x1,y1]=pol(r,a1);return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;};
+const ANG=c=>c/50*58;
+function buildGauge(){
+  $('#rail').setAttribute('d',arc(R,-62,62));
+  $('#zone').setAttribute('d',arc(R,ANG(-5),ANG(5)));
+  let h='';
+  for(let c=-50;c<=50;c+=10){
+    const big=c%50===0||c===0,[x0,y0]=pol(R-(big?20:14),ANG(c)),[x1,y1]=pol(R+(big?14:8),ANG(c));
+    h+=`<line class="tick${big?' big':''}" x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}"/>`;
+    if(c%25===0||c===0){const [tx,ty]=pol(R+30,ANG(c));h+=`<text x="${tx.toFixed(1)}" y="${(ty+4).toFixed(1)}">${c>0?'+'+c:c}</text>`;}
+  }
+  $('#ticks').innerHTML=h;
+}
+function needle(c){$('#needle').style.transform='rotate('+ANG(Math.max(-55,Math.min(55,c)))+'deg)';}
+
+/* ---------------- interface ---------------- */
+function fillTunings(){
+  const counts=Object.keys(TUNINGS[inst]);
+  $('#strings').innerHTML=counts.map(n=>`<option value="${n}">${n} cordes</option>`).join('');
+  $('#strings').value=S.strings[inst];
+  const {list,i}=curTuning();
+  $('#tuning').innerHTML=list.map((t,k)=>`<option value="${k}">${t[0]}</option>`).join('');
+  $('#tuning').value=i;
+}
+function buildStrings(){
+  const wrap=$('#strs');
+  if(S.mode!=='tuning'){wrap.innerHTML='';$('#str-hint').style.display='';$('#auto-str-l').style.visibility='hidden';$('#play-ref').style.display='none';return;}
+  $('#str-hint').style.display='none';$('#auto-str-l').style.visibility='visible';$('#play-ref').style.display='';
+  const {notes}=curTuning();
+  wrap.innerHTML=notes.map((n,i)=>`<button type="button" class="str" data-i="${i}" aria-label="Corde ${notes.length-i}, ${n.name}${n.oct}"><small>${notes.length-i}</small><b>${nm(n.name)}</b><small>${n.oct}</small></button>`).join('');
+  paintStrings();
+}
+function paintStrings(){
+  $$('.str').forEach(b=>{const i=+b.dataset.i;b.classList.toggle('det',i===detIdx);b.classList.toggle('lock',lock===i&&!S.autoStr);b.classList.toggle('done',!!tuned[i]);});
+}
+function paintMode(){
+  $$('#mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.mode));
+  const t=S.mode==='tuning';
+  $('#f-strings').style.display=t?'':'none';$('#f-tuning').style.display=t?'':'none';
+  buildStrings();
+}
+$('#mode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.mode=b.dataset.m;lock=null;detIdx=null;tuned={};paintMode();save();});
+$('#strings').addEventListener('change',e=>{S.strings[inst]=+e.target.value;S.tuning[inst][S.strings[inst]]=S.tuning[inst][S.strings[inst]]||0;fillTunings();tuned={};lock=null;buildStrings();save();});
+$('#tuning').addEventListener('change',e=>{S.tuning[inst][S.strings[inst]]=+e.target.value;tuned={};lock=null;buildStrings();save();});
+function setA4(v){S.a4=Math.max(410,Math.min(470,Math.round(v)));$('#a4').value=S.a4;save();}
+$('#a4').value=S.a4;
+$('#a4').addEventListener('change',e=>setA4(+e.target.value||440));
+$('#a4-minus').addEventListener('click',()=>setA4(S.a4-1));$('#a4-plus').addEventListener('click',()=>setA4(S.a4+1));
+$('#auto-str').checked=S.autoStr;
+$('#auto-str').addEventListener('change',e=>{S.autoStr=e.target.checked;if(S.autoStr)lock=null;paintStrings();save();});
+$('#strs').addEventListener('click',e=>{
+  const b=e.target.closest('.str');if(!b)return;
+  lock=+b.dataset.i;S.autoStr=false;$('#auto-str').checked=false;detIdx=lock;paintStrings();save();
+  playRef(lock);
+});
+function playRef(i){
+  const {notes}=curTuning();
+  if(i==null)i=lock!=null?lock:(detIdx!=null?detIdx:0);
+  muteUntil=performance.now()+2900;
+  SBA.ctx();SBA.resume().then(()=>SBA.tone(freqOf(notes[i].midi),2.6));
+}
+$('#play-ref').addEventListener('click',()=>playRef());
+window.onNotation=()=>{buildStrings();if(last)show(last);};
+window.onInstChange=i=>{inst=i;lock=null;detIdx=null;tuned={};fillTunings();paintMode();};
+
+/* ---------------- affichage de la mesure ---------------- */
+let last=null,muteUntil=0,lastHeard=0,inTuneSince=0;
+function setState(cls){const t=$('#tuner');t.classList.remove('ok','near','far');if(cls)t.classList.add(cls);}
+function show(r){
+  last=r;
+  $('#note').innerHTML=nm(r.name)+'<small>'+r.oct+'</small>';
+  $('#hz').textContent=r.f.toFixed(1)+' Hz  ·  cible '+r.target.toFixed(1)+' Hz  ·  '+(r.cents>0?'+':'')+r.cents.toFixed(0)+' cents';
+  needle(r.cents);
+  const a=Math.abs(r.cents);
+  if(a<=5){setState('ok');$('#verdict').textContent='Accordé';}
+  else if(r.cents<0){setState(a<=15?'near':'far');$('#verdict').textContent=a<=15?'Un peu bas — monte légèrement':'Trop bas — serre la corde';}
+  else{setState(a<=15?'near':'far');$('#verdict').textContent=a<=15?'Un peu haut — descends légèrement':'Trop haut — desserre la corde';}
+}
+function idle(){
+  last=null;$('#tuner').classList.remove('live');setState('');needle(0);
+  $('#note').textContent='—';$('#hz').innerHTML='&nbsp;';$('#verdict').textContent=listening?'Joue une corde…':'En attente d\'un son…';
+  detIdx=null;paintStrings();
+}
+
+/* ---------------- micro & détection ---------------- */
+let listening=false,stream=null,analyser=null,src=null,raf=0,tLast=0;
+const buf=new Float32Array(8192);
+const hist=[];
+const wave=$('#wave'),wc=wave.getContext('2d');
+function drawWave(on){
+  const w=wave.width,h=wave.height;wc.clearRect(0,0,w,h);
+  if(!on)return;
+  const cs=getComputedStyle(document.documentElement).getPropertyValue('--brass').trim()||'#d9a849';
+  wc.strokeStyle=cs;wc.lineWidth=2;wc.beginPath();
+  const step=Math.floor(2048/w*4)||1;
+  // on affiche ~2048 échantillons
+  for(let x=0;x<w;x++){const v=buf[Math.floor(x/w*2048)];const y=h/2-v*h*0.9;x?wc.lineTo(x,y):wc.moveTo(x,y);}
+  wc.stroke();
+}
+function range(){
+  if(S.mode==='tuning'){const n=curTuning().notes;return [freqOf(n[0].midi)*0.7,freqOf(n[n.length-1].midi)*1.8];}
+  return inst==='bass'?[26,700]:[60,1300];
+}
+function loop(ts){
+  if(!listening)return;
+  raf=requestAnimationFrame(loop);
+  if(ts-tLast<38)return;tLast=ts;
+  analyser.getFloatTimeDomainData(buf);
+  let sum=0;for(let i=0;i<buf.length;i+=2)sum+=buf[i]*buf[i];
+  const rms=Math.sqrt(sum/(buf.length/2));
+  $('#level').style.width=Math.min(100,rms*600)+'%';
+  const now=performance.now();
+  if(now<muteUntil){drawWave(false);return;}
+  drawWave(rms>0.004);
+  if(rms<0.006){ if(now-lastHeard>900&&last)idle(); return; }
+  const [mn,mx]=range();
+  const r=TunerDSP.yin(buf,SBA.ctx().sampleRate,mn,mx);
+  if(!r||r.prob<0.80)return;
+  hist.push(r.freq);if(hist.length>5)hist.shift();
+  const med=hist.slice().sort((a,b)=>a-b)[Math.floor(hist.length/2)];
+  if(Math.abs(1200*Math.log2(r.freq/med))>60&&hist.length>2){return;}   // saut isolé : ignoré
+  const f=hist.length>=3?med:r.freq;
+  lastHeard=now;
+  $('#tuner').classList.add('live');
+  let res;
+  if(S.mode==='tuning'){
+    const notes=curTuning().notes;
+    let idx;
+    if(!S.autoStr&&lock!=null)idx=lock;
+    else{let best=1e9;notes.forEach((n,i)=>{const d=Math.abs(Math.log2(f/freqOf(n.midi)));if(d<best){best=d;idx=i;}});}
+    const n=notes[idx],target=freqOf(n.midi);
+    res={f,target,name:n.name,oct:n.oct,cents:1200*Math.log2(f/target)};
+    if(detIdx!==idx){detIdx=idx;paintStrings();}
+    if(Math.abs(res.cents)<=5){if(!inTuneSince)inTuneSince=now;if(now-inTuneSince>800&&!tuned[idx]){tuned[idx]=true;paintStrings();}}else inTuneSince=0;
+  }else{
+    const m=69+12*Math.log2(f/S.a4),rm=Math.round(m);
+    const name=SHARP[((rm%12)+12)%12],oct=Math.floor(rm/12)-1;
+    res={f,target:freqOf(rm),name,oct,cents:(m-rm)*100};
+  }
+  show(res);
+}
+async function startMic(){
+  const msg=$('#msg');msg.className='msg';
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    msg.className='msg err';msg.textContent='Ton navigateur ne donne pas accès au micro (il faut une page sécurisée en https).';return;
+  }
+  try{
+    SBA.ctx();await SBA.resume();
+    stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1}});
+  }catch(e){
+    msg.className='msg err';
+    msg.textContent=(e&&e.name==='NotAllowedError')?'Accès au micro refusé. Autorise-le dans les réglages du navigateur (icône de cadenas à côté de l\'adresse) puis réessaie.':'Impossible d\'ouvrir le micro ('+(e&&e.name||'erreur')+').';
+    return;
+  }
+  const ctx=SBA.ctx();
+  src=ctx.createMediaStreamSource(stream);
+  analyser=ctx.createAnalyser();analyser.fftSize=8192;analyser.smoothingTimeConstant=0;
+  src.connect(analyser);
+  listening=true;hist.length=0;
+  $('#mic').textContent='Arrêter le micro';$('#mic').setAttribute('aria-pressed','true');
+  msg.textContent='Micro actif — joue une corde à vide.';
+  idle();raf=requestAnimationFrame(loop);
+}
+function stopMic(){
+  listening=false;cancelAnimationFrame(raf);
+  try{if(src)src.disconnect();}catch(e){}
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+  stream=null;src=null;analyser=null;
+  $('#mic').textContent='Activer le micro';$('#mic').setAttribute('aria-pressed','false');
+  $('#msg').className='msg';$('#msg').textContent='Micro arrêté.';
+  drawWave(false);$('#level').style.width='0';idle();
+}
+$('#mic').addEventListener('click',()=>listening?stopMic():startMic());
+window.addEventListener('pagehide',()=>{if(listening)stopMic();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&listening)stopMic();});
+
+/* ---------------- init ---------------- */
+buildGauge();
+SBT.init();       // déclenche onInstChange
+needle(0);
+window.__tuner={S,get:()=>({last,detIdx})};
+})();
+</script>
+<script src="/consent.js" defer></script>
+</body>
+</html>

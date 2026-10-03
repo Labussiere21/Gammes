@@ -73,3 +73,20 @@ Arpeggios are grouped by third type. Each entry: `{id, label, label_en, sub, iv[
 ## Deployment
 
 GitHub Pages, served from repo root. Push to `main` → live at `https://scalabass.com/`.
+
+## Outils (métronome, accordeur, grilles)
+
+Pages **partagées basse/guitare** (comme `cadences.html`) : `metronome.html`, `accordeur.html`, `grilles.html`.
+Le thème (laiton ou rouge) suit `sessionStorage`/`localStorage` `sbinst` (`bass` | `guitar`) ou `?inst=guitar`.
+
+| Fichier | Rôle |
+|---------|------|
+| `outils.css` | Styles communs des outils (cartes, curseurs, boutons ronds, thème guitare) — à charger après `style.css` |
+| `nav-tools.css` / `nav-tools.js` | Menu déroulant « Outils » de la navigation, présent sur **toutes** les pages (FR/EN, tactile) |
+| `sb-tools.js` | Coque des pages outils : bascule Basse/Guitare, nav, logo |
+| `sb-audio.js` | Moteur audio : horloge à anticipation, clics, batterie synthétisée, basse/guitare (soundfont + repli synthé) |
+| `tuner-dsp.js` | Détection de hauteur YIN (accordeur) |
+| `grilles/` | GrilleMaker intégré : `model.js`, `pdf.js`, `example.js`, `grilles.js`, `grilles.css`, jsPDF (chargé à la demande) |
+
+Ajouter une page outil : copier l'en-tête d'une page existante, ajouter le lien dans `TOOLS` de `sb-tools.js` ET dans le bloc `.nav-drop` des pages (voir `nav-tools.js`), puis l'URL dans `sitemap.xml`.
+Les pages SEO générées (`fr/…`, `en/…`) n'ont pas encore le menu Outils : l'ajouter dans les templates Jinja puis relancer les générateurs.
