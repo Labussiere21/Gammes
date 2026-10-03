@@ -359,15 +359,23 @@ function loop(ts){
   hist.push(r.freq);if(hist.length>5)hist.shift();
   const med=hist.slice().sort((a,b)=>a-b)[Math.floor(hist.length/2)];
   if(Math.abs(1200*Math.log2(r.freq/med))>60&&hist.length>2){return;}   // saut isolé : ignoré
-  const f=hist.length>=3?med:r.freq;
+  let f=hist.length>=3?med:r.freq;
   lastHeard=now;
+  /* micro qui coupe les graves : on a peut-être entendu un harmonique (Mi grave pris pour un Si) */
+  if(S.mode!=='tuning')f=TunerDSP.fixSub(buf,SBA.ctx().sampleRate,f,mn);
   $('#tuner').classList.add('live');
   let res;
   if(S.mode==='tuning'){
     const notes=curTuning().notes;
     let idx;
     if(!S.autoStr&&lock!=null)idx=lock;
-    else{let best=1e9;notes.forEach((n,i)=>{const d=Math.abs(Math.log2(f/freqOf(n.midi)));if(d<best){best=d;idx=i;}});}
+    else{
+      /* on compare aussi f aux harmoniques 2, 3, 4 de chaque corde (fondamentale faible sur les micros de PC/téléphone) */
+      let best=1e9,hh=1;
+      notes.forEach((n,i)=>{for(let h=1;h<=4;h++){const d=Math.abs(1200*Math.log2(f/(h*freqOf(n.midi))))+30*(h-1);if(d<best){best=d;idx=i;hh=h;}}});
+      f=f/hh;
+    }
+    if(S.autoStr===false&&lock!=null){const t0=freqOf(notes[idx].midi);let bh=1,bd=1e9;for(let h=1;h<=4;h++){const d=Math.abs(1200*Math.log2(f/(h*t0)))+30*(h-1);if(d<bd){bd=d;bh=h;}}f=f/bh;}
     const n=notes[idx],target=freqOf(n.midi);
     res={f,target,name:n.name,oct:n.oct,cents:1200*Math.log2(f/target)};
     if(detIdx!==idx){detIdx=idx;paintStrings();}

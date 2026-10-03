@@ -54,6 +54,38 @@
     }
     return { freq: fs / t2, prob: 1 - c[tau] };
   }
-  g.TunerDSP = { yin };
+  /* Fondamentale faible (micro de PC/téléphone qui coupe les graves) : YIN peut
+   * « s'accrocher » à un harmonique (ex. Mi grave 41,2 Hz → Si à 123,6 Hz = 3e harmonique).
+   * On teste si f est en réalité le m-ième harmonique de f/m : l'énergie doit alors
+   * exister aux fréquences f/m, 2f/m, … (série harmonique complète). */
+  function mag(x, sr, f) {
+    const n = x.length, w = 2 * Math.PI * f / sr, cw = 2 * Math.cos(w);
+    let s1 = 0, s2 = 0;
+    for (let i = 0; i < n; i++) {
+      const h = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (n - 1));
+      const s0 = x[i] * h + cw * s1 - s2; s2 = s1; s1 = s0;
+    }
+    return Math.sqrt(Math.max(0, s1 * s1 + s2 * s2 - cw * s1 * s2));
+  }
+  function fixSub(x, sr, f, minHz) {
+    const m0 = mag(x, sr, f);
+    if (m0 <= 0) return f;
+    for (const m of [4, 3, 2]) {          // on essaie d'abord le plus grand diviseur
+      const F = f / m;
+      if (F < minHz) continue;
+      let ok = true;
+      const mF = mag(x, sr, F);
+      if (mF < 0.05 * m0) ok = false;
+      for (let k = 2; ok && k < m; k++) if (mag(x, sr, F * k) < 0.12 * m0) ok = false;
+      if (ok) {
+        // affinage : le pic réel est proche de F ; on prend le meilleur parmi ±1,5 %
+        let bf = F, bm = mF;
+        for (let d = -0.015; d <= 0.0151; d += 0.003) { const v = mag(x, sr, F * (1 + d)); if (v > bm) { bm = v; bf = F * (1 + d); } }
+        return bf;
+      }
+    }
+    return f;
+  }
+  g.TunerDSP = { yin, fixSub };
   if (typeof module !== 'undefined') module.exports = g.TunerDSP;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -31,91 +31,107 @@
 {"@context":"https://schema.org","@type":"WebApplication","name":"Métronome et groove ScalaBass","url":"https://scalabass.com/metronome.html","applicationCategory":"MusicApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript and Web Audio","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":"fr"}
 </script>
 <style>
-/* ---------- métronome ---------- */
-.hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(16px,3vw,34px);align-items:center}
-@media(max-width:700px){.hero{grid-template-columns:1fr;justify-items:center}}
-.pend{position:relative;width:132px;height:210px;flex:none}
-.pend .base{position:absolute;left:50%;bottom:0;width:112px;height:46px;margin-left:-56px;background:linear-gradient(180deg,var(--wood-a),var(--wood-b));border:1px solid var(--line);border-radius:6px 6px 14px 14px;clip-path:polygon(18% 0,82% 0,100% 100%,0 100%);}
-.pend .arm{position:absolute;left:50%;bottom:34px;width:5px;height:166px;margin-left:-2.5px;border-radius:3px;background:linear-gradient(90deg,#cdb985,var(--brass),#8a6a2c);transform-origin:50% 100%;transform:rotate(-24deg);transition-property:transform;transition-timing-function:cubic-bezier(.42,.05,.58,.95)}
-.pend .wt{position:absolute;left:50%;margin-left:-13px;width:26px;height:20px;top:var(--wy,60px);border-radius:4px;background:linear-gradient(180deg,#f3dfae,var(--brass) 60%,#8a6a2c);border:1px solid #2a1c08;box-shadow:0 2px 6px rgba(0,0,0,.6)}
-.pend .pivot{position:absolute;left:50%;bottom:30px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a120a;border:2px solid var(--brass-dim);z-index:2}
-.bpm-box{display:grid;gap:10px;justify-items:center;min-width:0;width:100%}
-.bpm-line{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
-.bpm-in{
-  width:2.3em;text-align:center;font-family:"Instrument Serif",serif;font-size:clamp(64px,12vw,100px);line-height:.95;
-  color:var(--cream);background:transparent;border:0;border-bottom:1px dashed var(--line);padding:0;-moz-appearance:textfield;
-}
+/* ---------- métronome (v2) ---------- */
+[hidden]{display:none!important}
+.deck{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px clamp(20px,4vw,48px);align-items:center}
+@media(max-width:720px){.deck{grid-template-columns:1fr}.feelline .sel{min-width:0}}
+.tempo{display:grid;gap:10px;min-width:0}
+.tempo-top{display:flex;align-items:center;gap:clamp(8px,2vw,18px);flex-wrap:wrap}
+.bpm-in{width:2.3em;text-align:center;font-family:"Instrument Serif",serif;font-size:clamp(72px,13vw,112px);line-height:.95;color:var(--cream);background:transparent;border:0;padding:0;-moz-appearance:textfield}
 .bpm-in::-webkit-outer-spin-button,.bpm-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.bpm-in:focus{outline:none;border-bottom-color:var(--brass)}
-.bpm-unit{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;color:var(--muted-2);text-transform:uppercase;text-align:center}
-.tempo-name{font-family:"Instrument Serif",serif;font-style:italic;font-size:22px;color:var(--brass);min-height:1.3em;text-align:center}
-.step-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#0e0a07;color:var(--cream);font-family:"Space Mono",monospace;font-weight:700;font-size:13px;cursor:pointer;touch-action:manipulation;user-select:none}
+.bpm-in:focus{outline:none;text-shadow:0 0 24px rgba(var(--glow),.6)}
+.bpm-meta{display:grid;gap:2px}
+.bpm-unit{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;color:var(--muted-2)}
+.tempo-name{font-family:"Instrument Serif",serif;font-style:italic;font-size:24px;color:var(--brass);min-height:1.2em}
+.nudge{display:grid;grid-template-columns:repeat(2,44px);gap:6px;margin-left:auto}
+@media(max-width:420px){.nudge{margin-left:0}}
+.step-btn{height:44px;border-radius:12px;border:1px solid var(--line);background:#0e0a07;color:var(--cream);font-family:"Space Mono",monospace;font-weight:700;font-size:15px;cursor:pointer;touch-action:manipulation;user-select:none}
 .step-btn:hover{border-color:var(--brass)}
 .step-btn:active{transform:scale(.94)}
-.step-btn.sm{width:36px;height:36px;font-size:12px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.pill{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--muted);background:#0e0a07;border:1px solid var(--line);border-radius:20px;padding:4px 11px;cursor:pointer}
+.step-btn.sm{font-size:11px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--muted);background:#0e0a07;border:1px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer}
 .pill:hover{color:var(--cream);border-color:var(--brass-dim)}
 .pill .x{margin-left:6px;opacity:.6}
-.beats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 2px}
-.beat{
-  width:46px;height:46px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-family:"Space Mono",monospace;font-weight:700;font-size:14px;color:var(--muted);
-  background:#0e0a07;border:1.5px solid var(--line);transition:transform .08s,box-shadow .08s,background .08s;touch-action:manipulation
-}
-.beat[data-l="3"]{border-color:var(--brass);color:var(--cream);box-shadow:inset 0 0 0 4px rgba(var(--glow),.25)}
-.beat[data-l="2"]{border-color:var(--brass-dim);color:var(--cream)}
-.beat[data-l="1"]{border-style:solid;color:var(--muted)}
-.beat[data-l="0"]{border-style:dashed;opacity:.5}
-.beat.hit{background:var(--brass);color:var(--on-brass);border-color:var(--brass);transform:scale(1.14);box-shadow:0 0 22px -2px rgba(var(--glow),.9)}
-.beat.hit[data-l="0"]{background:#2a1e12;color:var(--cream);box-shadow:none}
-.mini{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2);text-align:center;min-height:1.4em}
-.bigplay{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;font-size:14px;border-radius:40px}
-.ctrl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
-@media(max-width:520px){.ctrl-grid{grid-template-columns:1fr}}
-.feelrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.feelline{display:grid;grid-template-columns:auto minmax(80px,1fr) auto;gap:12px;align-items:center;margin-top:2px}
+.feelline .sel{min-width:13em}
 .val{font-family:"Space Mono",monospace;font-size:12px;color:var(--cream);min-width:3.4em;text-align:right}
-.tr-grid{display:grid;grid-template-columns:repeat(3,auto);gap:10px 14px;align-items:center;justify-content:start;font-family:"Space Mono",monospace;font-size:12px;color:var(--muted)}
-.chk{display:inline-flex;align-items:center;gap:8px;font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);cursor:pointer}
-.chk input{accent-color:var(--brass);width:16px;height:16px}
+.transport{display:flex;flex-direction:column;align-items:center;gap:14px}
+@media(max-width:720px){.transport{flex-direction:row;justify-content:center;gap:22px}}
+.playbtn{width:112px;height:112px;border-radius:50%;border:0;cursor:pointer;background:var(--brass);color:var(--on-brass);font-size:40px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 7px rgba(var(--glow),.14),0 18px 36px -12px rgba(var(--glow),.75);transition:transform .08s;touch-action:manipulation}
+.playbtn:hover{filter:brightness(1.08)}.playbtn:active{transform:scale(.96)}
+.playbtn .pi{display:block;transform:translateX(3px)}
+.playbtn.on .pi{transform:none;font-size:34px}
+.tapbtn{min-width:112px;padding:12px 18px}
+.mini{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2);min-height:1.4em}
+.rt{text-align:center}
 
-/* ---------- groove ---------- */
-.mcard{
-  background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px;transition:border-color .15s,box-shadow .15s;
-}
-.mcard.active{border-color:#e8772e;box-shadow:0 0 0 1px #e8772e,0 0 26px -10px #e8772e}
-.mcard-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;color:var(--cream)}
-.mcard-h .acts{display:flex;gap:6px;flex-wrap:wrap}
-.tag{
-  font-family:"Space Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--brass);background:transparent;border:1px solid var(--brass-dim);border-radius:20px;padding:4px 12px;cursor:pointer;transition:.12s
-}
-.tag:hover{background:rgba(var(--glow),.14)}
-.tag.on{background:var(--brass);color:var(--on-brass);border-color:var(--brass)}
-.tag.quiet{color:var(--muted);border-color:var(--line)}
-.beatgrps{display:flex;gap:10px;flex-wrap:wrap}
-.bg{display:flex;gap:5px;padding:7px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.2)}
-.st{
-  width:clamp(30px,5.6vw,40px);height:clamp(30px,5.6vw,40px);border-radius:8px;cursor:pointer;
-  font-family:"Space Mono",monospace;font-weight:700;font-size:13px;color:var(--muted);
-  background:transparent;border:1px dashed #4a3a28;transition:transform .06s,background .1s;touch-action:manipulation;
-}
-html[data-inst="guitar"] .st{border-color:#4d2a34}
-.st:hover{color:var(--cream)}
-.st.on{
-  color:#fff;border:1px solid #000;border-top-color:#6d6d72;
-  background:linear-gradient(180deg,#8b8c93,#4d4e55 60%,#3d3e44);box-shadow:0 2px 0 #000,inset 0 1px 0 rgba(255,255,255,.2);
-}
-.st.cur{outline:2px solid #fff;outline-offset:1px;transform:translateY(-2px)}
-.colors .st[data-k="0"].on{background:linear-gradient(180deg,#e0b455,#a8791d)}
-.colors .st[data-k="1"].on{background:linear-gradient(180deg,#b78ad4,#6a3d8c)}
-.colors .st[data-k="2"].on{background:linear-gradient(180deg,#59c3d6,#1f7585)}
-.colors .st[data-k="3"].on{background:linear-gradient(180deg,#e8837a,#a8392e)}
-.colors .st[data-k="0"].on,.colors .st[data-k="1"].on,.colors .st[data-k="2"].on,.colors .st[data-k="3"].on{color:#0e0a07;border-top-color:rgba(255,255,255,.4)}
-.formulas{margin-top:10px;padding-top:9px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--muted);line-height:1.55}
-.formulas b{color:var(--cream)}
-.mlist{display:grid;gap:12px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px;border:1px solid var(--line);border-radius:16px;background:#0a0705}
+.tab{font-family:"Hanken Grotesk",sans-serif;font-weight:700;font-size:16px;color:var(--muted);background:transparent;border:0;border-radius:11px;padding:13px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.12s}
+.tab small{font-weight:500;font-size:12px;opacity:.8}
+.tab:hover{color:var(--cream)}
+.tab.on{background:var(--brass);color:var(--on-brass)}
+
+/* temps : la hauteur de la barre = la force de l'accent */
+.beats{display:flex;gap:clamp(6px,1.4vw,12px);align-items:flex-end;justify-content:center;min-height:96px;margin:4px 0 6px;flex-wrap:wrap}
+.beat{width:clamp(36px,9vw,60px);border-radius:12px;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;
+  font-family:"Space Mono",monospace;font-weight:700;font-size:14px;color:var(--cream);
+  background:rgba(var(--glow),.12);border:1.5px solid var(--brass-dim);transition:height .15s,background .06s,transform .06s;touch-action:manipulation}
+.beat[data-l="3"]{height:92px;background:rgba(var(--glow),.34);border-color:var(--brass)}
+.beat[data-l="2"]{height:68px}
+.beat[data-l="1"]{height:46px;color:var(--muted);background:rgba(var(--glow),.06)}
+.beat[data-l="0"]{height:24px;border-style:dashed;color:var(--muted-2);background:transparent;border-color:var(--line)}
+.beat.hit{background:var(--brass);color:var(--on-brass);border-color:var(--brass);box-shadow:0 0 24px -2px rgba(var(--glow),.9)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;border-radius:3px;background:var(--brass);vertical-align:bottom;margin-right:5px}
+
+.set-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px;margin-top:20px}
+@media(max-width:620px){.set-grid{grid-template-columns:1fr 1fr}.set-grid .field:first-child{grid-column:1/-1}}
+.set-grid .sel{width:100%}
+.num{width:5.2em}
+.tr-grid{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14px;color:var(--muted);margin-bottom:14px}
+.chk{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--brass);width:17px;height:17px}
+
+/* étapes du groove */
+.stepbox{display:grid;grid-template-columns:38px minmax(0,1fr);gap:14px;padding:18px 0;border-top:1px solid var(--line)}
+.stepbox:first-of-type{border-top:0;padding-top:4px}
+.stepnum{width:34px;height:34px;border-radius:50%;background:rgba(var(--glow),.18);border:1px solid var(--brass-dim);color:var(--cream);font-family:"Space Mono",monospace;font-weight:700;display:flex;align-items:center;justify-content:center}
+.stepbody h3{margin:5px 0 4px;font-size:17px;color:var(--cream);font-weight:700}
+.stepbody .hint{margin-bottom:12px}
 .fields{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-end}
+.togs{display:flex;gap:8px;flex-wrap:wrap}
+.tog{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14px;color:var(--muted);background:#0e0a07;border:1px solid var(--line);border-radius:30px;padding:8px 15px 8px 10px;cursor:pointer;transition:.12s}
+.tog .sw{width:30px;height:18px;border-radius:12px;background:#2a1e12;position:relative;transition:.15s;flex:none}
+.tog .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#7a6850;transition:.15s}
+.tog.on{color:var(--cream);border-color:var(--brass-dim)}
+.tog.on .sw{background:var(--brass)}
+.tog.on .sw::after{left:14px;background:#fff}
+.mlist{display:grid;gap:12px}
+.mcard{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;transition:border-color .15s,box-shadow .15s}
+.mcard.active{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass),0 0 26px -10px rgba(var(--glow),1)}
+.mcard-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;font-weight:700;color:var(--cream)}
+.mcard-h .acts{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:"Space Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:20px;padding:5px 11px;cursor:pointer;transition:.12s}
+.tag:hover{color:var(--cream);border-color:var(--brass-dim)}
+.tag.on{background:var(--brass);color:var(--on-brass);border-color:var(--brass)}
+.beatgrps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.2);position:relative}
+.bg-n{grid-column:1/-1;font-family:"Space Mono",monospace;font-size:10px;color:var(--muted-2);text-align:center;letter-spacing:.2em}
+.st{height:clamp(34px,6vw,44px);border-radius:7px;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted-2);background:transparent;border:1px solid var(--line);transition:transform .06s,background .1s;touch-action:manipulation;padding:0}
+.st:hover{color:var(--cream);border-color:var(--brass-dim)}
+.st.on{background:var(--brass);color:var(--on-brass);border-color:var(--brass);font-weight:700}
+.st.cur{outline:2px solid #fff;outline-offset:1px;transform:translateY(-2px)}
+.colors .st[data-k="1"].on{background:#b78ad4;border-color:#b78ad4;color:#160f08}
+.colors .st[data-k="2"].on{background:#59c3d6;border-color:#59c3d6;color:#0a1a1e}
+.colors .st[data-k="3"].on{background:#e8837a;border-color:#e8837a;color:#2a0c08}
+@media(max-width:560px){.beatgrps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+details.fm{margin-top:10px;font-size:12.5px;color:var(--muted)}
+details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
+.formulas{line-height:1.6;margin-top:6px}
+.formulas b{color:var(--cream)}
+.vols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 22px}
+@media(max-width:620px){.vols{grid-template-columns:1fr}}
 .seg button.sm{padding:6px 11px;font-size:12px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
@@ -156,50 +172,55 @@ html[data-inst="guitar"] .st{border-color:#4d2a34}
     </div>
   </div>
   <h1>Métronome &amp; <em>groove</em></h1>
-  <p class="lede">Un métronome précis (tempo, mesures, subdivisions, swing, entraîneur de tempo) et un générateur de rythmes de basse qui joue avec une batterie ou une guitare calée sur le tempo.</p>
+  <p class="lede">Règle le tempo, appuie sur le grand bouton. Passe en mode Groove pour jouer avec une batterie et une basse ou une guitare.</p>
 </header>
 
 <div class="tool-wrap">
 
-<!-- ======================= MÉTRONOME ======================= -->
-<section class="card" id="metro" aria-labelledby="h-metro">
-  <h2 id="h-metro"><span>Métronome</span><span class="mini" id="metro-info"></span></h2>
-
-  <div class="grid-2">
-    <div class="hero">
-      <div class="pend" aria-hidden="true">
-        <div class="arm" id="arm"><div class="wt" id="wt"></div></div>
-        <div class="pivot"></div><div class="base"></div>
-      </div>
-      <div class="bpm-box">
-        <div class="bpm-line">
-          <button type="button" class="step-btn sm" data-bpm="-5" aria-label="Moins 5">−5</button>
-          <button type="button" class="step-btn" data-bpm="-1" aria-label="Moins 1">−</button>
-          <input class="bpm-in" type="number" inputmode="numeric" min="20" max="300" value="90" aria-label="Tempo en battements par minute">
-          <button type="button" class="step-btn" data-bpm="1" aria-label="Plus 1">+</button>
-          <button type="button" class="step-btn sm" data-bpm="5" aria-label="Plus 5">+5</button>
-        </div>
-        <div class="bpm-unit">BPM</div>
-        <div class="tempo-name" id="tempo-name"></div>
-        <input class="rng bpm-rng" type="range" min="20" max="300" value="90" aria-label="Curseur de tempo">
-        <div class="chips" id="quick-bpm"></div>
+<!-- ======================= TABLEAU DE BORD ======================= -->
+<section class="card deck" aria-label="Tempo et lecture">
+  <div class="tempo">
+    <div class="tempo-top">
+      <input class="bpm-in" type="number" inputmode="numeric" min="20" max="300" value="90" aria-label="Tempo en battements par minute">
+      <div class="bpm-meta"><span class="bpm-unit">BPM</span><span class="tempo-name" id="tempo-name"></span></div>
+      <div class="nudge">
+        <button type="button" class="step-btn" data-bpm="-1" aria-label="Moins 1">−</button>
+        <button type="button" class="step-btn" data-bpm="1" aria-label="Plus 1">+</button>
+        <button type="button" class="step-btn sm" data-bpm="-5" aria-label="Moins 5">−5</button>
+        <button type="button" class="step-btn sm" data-bpm="5" aria-label="Plus 5">+5</button>
       </div>
     </div>
-
-    <div>
-      <div class="beats" id="beats" role="group" aria-label="Temps de la mesure (cliquer pour changer l'accent)"></div>
-      <div class="mini">Clique un temps pour changer son accent : fort · moyen · faible · muet</div>
-      <div class="row" style="justify-content:center;margin:16px 0 4px;gap:14px">
-        <button type="button" class="btn primary bigplay" id="metro-play" aria-pressed="false"><span id="metro-play-ico">▶</span><span id="metro-play-txt">Démarrer</span></button>
-        <button type="button" class="btn" id="tap">Tap tempo</button>
-      </div>
-      <div class="mini">Espace : démarrer / arrêter · ↑ ↓ : tempo · T : tap</div>
+    <input class="rng bpm-rng" type="range" min="20" max="300" value="90" aria-label="Curseur de tempo" style="margin:6px 0">
+    <div class="chips" id="quick-bpm"></div>
+    <div class="feelline">
+      <select class="sel feel-sel" aria-label="Feel (binaire, swing, shuffle)">
+        <option value="0">Feel : binaire</option><option value="35">Swing léger</option><option value="70">Swing</option><option value="100">Shuffle (triolets)</option><option value="-1">Perso</option>
+      </select>
+      <input class="rng swing-rng" type="range" min="0" max="100" value="0" aria-label="Quantité de swing" style="margin:0">
+      <span class="val swing-val">0 %</span>
     </div>
   </div>
+  <div class="transport">
+    <button type="button" class="playbtn" id="metro-play" aria-pressed="false" aria-label="Démarrer"><span class="pi" id="metro-play-ico">▶</span><span class="sr" id="metro-play-txt">Démarrer</span></button>
+    <div class="rt">
+      <button type="button" class="btn tapbtn" id="tap">Tap tempo</button>
+      <div class="mini" id="metro-info" style="margin-top:8px"></div>
+    </div>
+  </div>
+</section>
 
-  <div class="ctrl-grid" style="margin-top:22px">
-    <label class="field"><span>Mesure</span>
-      <select class="sel" id="sig"></select></label>
+<div class="tabs" role="tablist" aria-label="Mode">
+  <button type="button" class="tab on" role="tab" id="tab-metro" data-tab="metro" aria-selected="true">Métronome<small>un clic régulier, avec accents</small></button>
+  <button type="button" class="tab" role="tab" id="tab-groove" data-tab="groove" aria-selected="false">Groove<small>batterie + basse ou guitare</small></button>
+</div>
+
+<!-- ======================= MÉTRONOME ======================= -->
+<section class="card" id="metro" aria-label="Métronome">
+  <div class="beats" id="beats" role="group" aria-label="Temps de la mesure (toucher pour changer l'accent)"></div>
+  <div class="legend"><span>Touche un temps pour changer son accent :</span><span><i style="height:16px"></i>fort</span><span><i style="height:11px"></i>moyen</span><span><i style="height:7px"></i>faible</span><span><i style="height:3px"></i>muet</span></div>
+
+  <div class="set-grid">
+    <label class="field"><span>Mesure</span><select class="sel" id="sig"></select></label>
     <label class="field"><span>Subdivision</span>
       <select class="sel" id="sub">
         <option value="1">Noires (pulsation)</option>
@@ -207,129 +228,116 @@ html[data-inst="guitar"] .st{border-color:#4d2a34}
         <option value="3">Triolets (×3)</option>
         <option value="4">Doubles-croches (×4)</option>
       </select></label>
-    <label class="field"><span>Son du clic</span>
-      <select class="sel" id="kind"></select></label>
-    <div class="field"><span>Feel</span>
-      <div class="feelrow">
-        <select class="sel feel-sel" aria-label="Feel">
-          <option value="0">Binaire</option><option value="35">Swing léger</option><option value="70">Swing</option><option value="100">Shuffle (triolets)</option><option value="-1">Perso</option>
-        </select>
-        <input class="rng swing-rng" type="range" min="0" max="100" value="0" aria-label="Quantité de swing">
-        <span class="val swing-val">0 %</span>
-      </div></div>
-    <div class="vol field" style="grid-column:1/-1"><div class="vh"><span class="sub" style="margin:0">Volume du clic</span><span class="vv" id="v-click-val">60 %</span></div>
-      <input class="rng" id="v-click" type="range" min="0" max="100" value="60" aria-label="Volume du clic"></div>
+    <label class="field"><span>Son du clic</span><select class="sel" id="kind"></select></label>
   </div>
 
   <details class="more">
-    <summary>Entraîneur de tempo &amp; mesures muettes</summary>
-    <div class="tr-grid" style="margin-bottom:14px">
+    <summary>S'entraîner : accélérer, mesures muettes</summary>
+    <div class="tr-grid">
       <label class="chk"><input type="checkbox" id="tr-on"> Accélérer</label>
       <label class="chk">toutes les <input class="num" id="tr-every" type="number" min="1" max="64" value="4"> mesures</label>
       <label class="chk">de + <input class="num" id="tr-step" type="number" min="1" max="30" value="4"> BPM</label>
-      <span></span>
       <label class="chk">jusqu'à <input class="num" id="tr-max" type="number" min="30" max="300" value="160"> BPM</label>
-      <span></span>
     </div>
     <div class="tr-grid">
       <label class="chk"><input type="checkbox" id="sl-on"> Mesures muettes</label>
       <label class="chk">jouer <input class="num" id="sl-play" type="number" min="1" max="32" value="3"> mesures</label>
       <label class="chk">puis <input class="num" id="sl-mute" type="number" min="1" max="32" value="1"> en silence</label>
     </div>
-    <p class="hint" style="margin-top:10px">Idéal pour travailler un passage difficile en montant progressivement, ou pour vérifier que tu gardes bien le tempo seul pendant les mesures muettes.</p>
+    <p class="hint">Pour monter progressivement sur un passage difficile, ou vérifier que tu gardes le tempo tout seul pendant le silence.</p>
   </details>
 
   <details class="more">
-    <summary>Mes réglages</summary>
+    <summary>Mes réglages enregistrés</summary>
     <div class="row" style="margin-bottom:10px">
       <input class="txt" id="pre-name" placeholder="Nom (ex. Funk 96 BPM)" maxlength="28" style="min-width:200px" aria-label="Nom du réglage">
       <button type="button" class="btn sm" id="pre-save">Enregistrer</button>
     </div>
-    <div class="chips" id="presets" style="justify-content:flex-start"></div>
-    <p class="hint" id="pre-empty" style="margin-top:8px">Tes réglages (tempo, mesure, subdivision, accents) sont gardés dans ce navigateur.</p>
+    <div class="chips" id="presets"></div>
+    <p class="hint" id="pre-empty" style="margin-top:8px">Tempo, mesure, subdivision et accents sont gardés dans ce navigateur.</p>
   </details>
 </section>
 
 <!-- ======================= GROOVE ======================= -->
-<section class="card" id="groove" aria-labelledby="h-groove">
-  <h2 id="h-groove"><span>Groove de basse</span><span class="chip" id="snd-status" aria-live="polite"><i></i><span>Sons : prêts</span></span></h2>
-  <p class="hint" style="margin-bottom:16px">Dessine un rythme (4 temps × 4 doubles-croches) ou génère-en un, puis écoute-le avec le clic, une batterie et la basse ou la guitare, calés sur le tempo et le feel.</p>
-
-  <div class="sub">Lecture &amp; options</div>
-  <div class="knobs" id="knobs" style="margin-bottom:18px">
-    <button type="button" class="knob on" data-opt="click" aria-pressed="true"><i></i>Clic</button>
-    <button type="button" class="knob on" data-opt="drums" aria-pressed="true"><i></i>Batterie</button>
-    <button type="button" class="knob on" data-opt="notes" aria-pressed="true"><i></i>Notes</button>
-    <button type="button" class="knob" data-opt="solo" aria-pressed="false"><i></i>Solo</button>
-    <span class="knob-sep"></span>
-    <button type="button" class="knob play" id="g-play" aria-pressed="false"><i></i>Play</button>
-    <button type="button" class="knob" id="g-stop"><i></i>Stop</button>
-    <button type="button" class="knob hot" id="g-gen"><i></i>Générer</button>
-    <span class="knob-sep"></span>
-    <button type="button" class="knob alt" data-opt="octaves" aria-pressed="false"><i></i>Octaves</button>
-    <button type="button" class="knob alt" data-opt="colors" aria-pressed="false"><i></i>Couleurs</button>
-    <button type="button" class="knob alt" data-opt="precount" aria-pressed="false"><i></i>Précompte</button>
-    <span class="knob-sep"></span>
-    <button type="button" class="knob alt" data-opt="qr" aria-pressed="false"><i></i>Q / R</button>
-  </div>
-
-  <div class="fields" style="margin-bottom:18px">
-    <label class="field"><span>Modèle</span>
-      <select class="sel" id="g-model"></select></label>
-    <div class="field"><span>Mesures</span>
-      <div class="seg" id="g-count"><button data-n="1">1</button><button data-n="2">2</button><button data-n="4" class="on">4</button><button data-n="8">8</button></div></div>
-    <label class="field"><span>Densité</span>
-      <select class="sel" id="g-dens"><option value="sparse">Aéré</option><option value="medium">Moyen</option><option value="dense">Chargé</option><option value="mix">Mixte</option></select></label>
-    <label class="chk" style="padding-bottom:9px"><input type="checkbox" id="g-sync" checked> Syncopes</label>
-    <label class="field"><span>Batterie</span><select class="sel" id="g-style"></select></label>
-    <div class="field"><span>Instrument</span>
-      <div class="seg" id="g-inst"><button data-k="bass" class="on">Basse</button><button data-k="guitar">Guitare</button></div></div>
-    <label class="field"><span>Note de base</span><select class="sel" id="g-root"></select></label>
-    <label class="field" id="g-qual-f"><span>Accord</span>
-      <select class="sel" id="g-qual"><option value="maj">Majeur</option><option value="min">Mineur</option><option value="7">7e de dominante</option><option value="5">Quinte (power chord)</option></select></label>
-  </div>
-
-  <div class="mlist" id="measures"></div>
-
-  <div class="row sp" style="margin-top:12px">
-    <button type="button" class="btn sm" id="g-copy">Copier les formules</button>
-    <span class="hint">Clique une case pour l'allumer ou l'éteindre · « Boucle » isole une mesure</span>
-  </div>
-
-  <div class="grid-2" style="margin-top:22px;gap:22px">
-    <div>
-      <div class="sub">Tempo, feel &amp; volumes</div>
-      <div class="row" style="gap:10px;margin-bottom:6px">
-        <button type="button" class="step-btn sm" data-bpm="-1" aria-label="Moins 1">−</button>
-        <input class="num bpm-in-sm bpm-in" type="number" min="20" max="300" value="90" aria-label="Tempo" style="width:4.5em;font-size:22px;font-family:'Space Mono',monospace;border:1px solid var(--line);border-radius:9px;padding:6px 8px;background:#0e0a07">
-        <button type="button" class="step-btn sm" data-bpm="1" aria-label="Plus 1">+</button>
-        <span class="mini" style="text-align:left">BPM</span>
-      </div>
-      <input class="rng bpm-rng" type="range" min="20" max="300" value="90" aria-label="Tempo">
-      <div class="feelrow" style="margin-top:6px">
-        <select class="sel feel-sel" aria-label="Feel">
-          <option value="0">Binaire</option><option value="35">Swing léger</option><option value="70">Swing</option><option value="100">Shuffle (triolets)</option><option value="-1">Perso</option>
-        </select>
-        <input class="rng swing-rng" type="range" min="0" max="100" value="0" aria-label="Quantité de swing">
-        <span class="val swing-val">0 %</span>
-      </div>
+<section class="card" id="groove" aria-label="Groove" hidden>
+  <div class="stepbox"><div class="stepnum">1</div><div class="stepbody">
+    <h3>Choisis un rythme</h3>
+    <p class="hint">Prends un modèle tout fait ou clique sur « Générer » pour en tirer un au hasard.</p>
+    <div class="fields">
+      <label class="field"><span>Modèle</span><select class="sel" id="g-model"></select></label>
+      <div class="field"><span>Nombre de mesures</span>
+        <div class="seg" id="g-count"><button data-n="1">1</button><button data-n="2">2</button><button data-n="4" class="on">4</button><button data-n="8">8</button></div></div>
+      <button type="button" class="btn primary" id="g-gen">🎲 Générer</button>
     </div>
-    <div>
-      <div class="sub">Volumes</div>
-      <div class="ctrl-grid">
-        <div class="vol"><div class="vh"><span class="sub" style="margin:0">Clic</span><span class="vv" id="v-click2-val">60 %</span></div><input class="rng" id="v-click2" type="range" min="0" max="100" value="60" aria-label="Volume clic"></div>
-        <div class="vol"><div class="vh"><span class="sub" style="margin:0">Batterie</span><span class="vv" id="v-drums-val">60 %</span></div><input class="rng" id="v-drums" type="range" min="0" max="100" value="60" aria-label="Volume batterie"></div>
-        <div class="vol"><div class="vh"><span class="sub" style="margin:0">Notes</span><span class="vv" id="v-notes-val">70 %</span></div><input class="rng" id="v-notes" type="range" min="0" max="100" value="70" aria-label="Volume des notes"></div>
+    <details class="more" style="margin-top:14px">
+      <summary>Réglages du générateur</summary>
+      <div class="fields">
+        <label class="field"><span>Densité</span>
+          <select class="sel" id="g-dens"><option value="sparse">Aéré</option><option value="medium">Moyen</option><option value="dense">Chargé</option><option value="mix">Mixte</option></select></label>
+        <label class="chk" style="padding-bottom:9px"><input type="checkbox" id="g-sync" checked> Autoriser les syncopes</label>
       </div>
+    </details>
+  </div></div>
+
+  <div class="stepbox"><div class="stepnum">2</div><div class="stepbody">
+    <h3>Retouche la grille</h3>
+    <p class="hint">Chaque mesure = 4 temps × 4 subdivisions (1 e &amp; a). Clique une case pour jouer une note à cet endroit.</p>
+    <div class="mlist" id="measures"></div>
+    <div class="row sp" style="margin-top:12px">
+      <button type="button" class="btn sm" id="g-copy">Copier les formules</button>
+      <span class="hint" style="margin:0">« Boucle » : répète seulement cette mesure</span>
     </div>
-  </div>
+  </div></div>
+
+  <div class="stepbox"><div class="stepnum">3</div><div class="stepbody">
+    <h3>Choisis ce qui joue, puis écoute</h3>
+    <div class="togs" id="knobs" style="margin-bottom:16px">
+      <button type="button" class="tog on" data-opt="click" aria-pressed="true"><span class="sw"></span>Clic</button>
+      <button type="button" class="tog on" data-opt="drums" aria-pressed="true"><span class="sw"></span>Batterie</button>
+      <button type="button" class="tog on" data-opt="notes" aria-pressed="true"><span class="sw"></span>Instrument</button>
+    </div>
+    <div class="fields" style="margin-bottom:16px">
+      <div class="field"><span>Instrument</span>
+        <div class="seg" id="g-inst"><button data-k="bass" class="on">Basse</button><button data-k="guitar">Guitare</button></div></div>
+      <label class="field"><span>Batterie</span><select class="sel" id="g-style"></select></label>
+      <label class="field"><span>Note de base</span><select class="sel" id="g-root"></select></label>
+      <label class="field" id="g-qual-f"><span>Accord</span>
+        <select class="sel" id="g-qual"><option value="maj">Majeur</option><option value="min">Mineur</option><option value="7">7e de dominante</option><option value="5">Quinte (power chord)</option></select></label>
+    </div>
+    <div class="row" style="gap:14px">
+      <button type="button" class="btn primary bigplay" id="g-play" aria-pressed="false" style="padding:13px 26px;font-size:14px">▶ Écouter le groove</button>
+      <span class="chip" id="snd-status" aria-live="polite"><i></i><span>Sons : prêts</span></span>
+    </div>
+    <details class="more">
+      <summary>Plus d'options</summary>
+      <div class="togs" id="knobs2">
+        <button type="button" class="tog" data-opt="solo" aria-pressed="false"><span class="sw"></span>Solo (instrument seul)</button>
+        <button type="button" class="tog" data-opt="octaves" aria-pressed="false"><span class="sw"></span>Octaves</button>
+        <button type="button" class="tog" data-opt="colors" aria-pressed="false"><span class="sw"></span>Couleurs</button>
+        <button type="button" class="tog" data-opt="precount" aria-pressed="false"><span class="sw"></span>Précompte</button>
+        <button type="button" class="tog" data-opt="qr" aria-pressed="false"><span class="sw"></span>Question / réponse</button>
+      </div>
+    </details>
+  </div></div>
+</section>
+
+<section class="card">
+  <details class="more" style="border-top:0;margin-top:0;padding-top:0">
+    <summary>Volumes</summary>
+    <div class="vols">
+      <div class="vol"><div class="vh"><span class="sub" style="margin:0">Clic</span><span class="vv" id="v-click-val">60 %</span></div><input class="rng" id="v-click" type="range" min="0" max="100" value="60" aria-label="Volume du clic"></div>
+      <div class="vol"><div class="vh"><span class="sub" style="margin:0">Batterie</span><span class="vv" id="v-drums-val">60 %</span></div><input class="rng" id="v-drums" type="range" min="0" max="100" value="60" aria-label="Volume de la batterie"></div>
+      <div class="vol"><div class="vh"><span class="sub" style="margin:0">Instrument</span><span class="vv" id="v-notes-val">70 %</span></div><input class="rng" id="v-notes" type="range" min="0" max="100" value="70" aria-label="Volume de l'instrument"></div>
+    </div>
+  </details>
+  <p class="mini" style="margin-top:14px">Raccourcis : <kbd>Espace</kbd> démarrer / arrêter · <kbd>↑</kbd> <kbd>↓</kbd> tempo · <kbd>T</kbd> tap</p>
 </section>
 
 <section class="card">
   <div class="prose">
     <h2>Comment utiliser ce métronome</h2>
-    <p>Règle le <strong>tempo</strong> avec les boutons, le curseur, en tapant la valeur ou avec le <strong>tap tempo</strong>. Choisis ta <strong>mesure</strong> (2/4, 3/4, 4/4, 6/8, 7/8…) et clique chaque temps pour régler son accent. Active les <strong>subdivisions</strong> et le <strong>swing</strong> pour t'entraîner sur des feels ternaires.</p>
-    <p>Dans le <strong>groove</strong>, chaque mesure se lit en quatre temps de quatre doubles-croches. Les « formules » décrivent chaque temps (par exemple <em>-234 : départ retardé, trois doubles</em>), et la densité te dit si la mesure est aérée, moyenne ou chargée. Avec la batterie et la basse (ou la guitare), tu travailles ton placement et ta syncope sur un vrai accompagnement.</p>
+    <p>Règle le <strong>tempo</strong> avec les boutons, le curseur, en tapant la valeur ou avec le <strong>tap tempo</strong>, puis appuie sur le grand bouton. Dans l'onglet <strong>Métronome</strong>, choisis ta mesure (2/4, 3/4, 4/4, 6/8, 7/8…) et touche chaque temps pour régler son accent. Les subdivisions et le swing servent à t'entraîner sur des feels ternaires.</p>
+    <p>L'onglet <strong>Groove</strong> te laisse dessiner (ou générer) un rythme de basse sur 4 temps de 4 subdivisions, puis l'écouter avec une batterie ou une guitare calées sur le tempo. Les « formules » décrivent chaque temps (par exemple <em>-234 : départ retardé, trois doubles</em>).</p>
   </div>
 </section>
 </div>
@@ -406,8 +414,6 @@ function syncUI(){
   $$('.bpm-in').forEach(e=>{if(document.activeElement!==e)e.value=Math.round(S.bpm);});
   $$('.bpm-rng').forEach(e=>{e.value=S.bpm;setP(e);});
   $('#tempo-name').textContent=tempoName(S.bpm);
-  // position du poids du pendule : lent = haut, rapide = bas
-  $('#wt').style.setProperty('--wy',(18+(S.bpm-20)/280*110)+'px');
   const feel=[0,35,70,100].includes(S.swing)?String(S.swing):'-1';
   $$('.feel-sel').forEach(e=>e.value=feel);
   $$('.swing-rng').forEach(e=>{e.value=S.swing;setP(e);});
@@ -502,17 +508,14 @@ function bindVol(id,bus,key){
   return r;
 }
 const vClick=bindVol('#v-click','click','click');
-const vClick2=bindVol('#v-click2','click','click');
 const vDrums=bindVol('#v-drums','drums','drums');
 const vNotes=bindVol('#v-notes','bass','notes');
-// le curseur du clic existe en 2 exemplaires : on les garde synchronisés
-[[vClick,vClick2],[vClick2,vClick]].forEach(([a,b])=>a.addEventListener('input',()=>{b.value=a.value;b.dispatchEvent(new Event('input'));}));
 function applyNotesVol(){SBA.setVol('bass',vNotes.value/100);SBA.setVol('guitar',vNotes.value/100);}
 function applyVols(){SBA.setVol('click',vClick.value/100);SBA.setVol('drums',vDrums.value/100);applyNotesVol();}
 vNotes.addEventListener('input',applyNotesVol);
 
 /* ====================================================== TRANSPORT COMMUN */
-let running=false,mode=null,lastMode='metro',clock=null,t0=0,wake=null;
+let running=false,mode=null,tab=(store.get('sbmetro.tab','metro')==='groove'?'groove':'metro'),clock=null,t0=0,wake=null;
 function swingPos(k,n,spb,sw){
   const base=k*spb/n;
   if(k>=n||sw<=0)return base;
@@ -526,9 +529,9 @@ async function begin(which){
   SBA.ctx();                       // créé dans le geste utilisateur (iOS)
   await SBA.resume();
   applyVols();
-  mode=which;lastMode=which;running=true;t0=SBA.ctx().currentTime;
+  mode=which;running=true;t0=SBA.ctx().currentTime;
   try{if(navigator.wakeLock)wake=await navigator.wakeLock.request('screen');}catch(e){}
-  if(which==='metro'){clock=new SBA.Clock(metroStep);pendDir=-1;setArm(-1,0);}
+  if(which==='metro'){clock=new SBA.Clock(metroStep);}
   else{clock=new SBA.Clock(grooveStep);}
   clock.start(0.07);
   paintTransport();
@@ -541,23 +544,30 @@ function stopAll(){
   $$('.beat.hit').forEach(b=>b.classList.remove('hit'));
   $$('.st.cur').forEach(b=>b.classList.remove('cur'));
   $$('.mcard.active').forEach(b=>b.classList.remove('active'));
-  setArm(-1,0.25);
   $('#metro-info').textContent='';
   paintTransport();
 }
 function paintTransport(){
-  const m=running&&mode==='metro', g=running&&mode==='groove';
-  $('#metro-play').setAttribute('aria-pressed',m);
-  $('#metro-play-ico').textContent=m?'■':'▶';
-  $('#metro-play-txt').textContent=m?'Arrêter':'Démarrer';
-  $('#g-play').classList.toggle('on',g);$('#g-play').setAttribute('aria-pressed',g);
+  const on=running;
+  const p=$('#metro-play');p.setAttribute('aria-pressed',on);p.classList.toggle('on',on);p.setAttribute('aria-label',on?'Arrêter':'Démarrer');
+  $('#metro-play-ico').textContent=on?'■':'▶';
+  $('#metro-play-txt').textContent=on?'Arrêter':'Démarrer';
+  const g=$('#g-play');g.setAttribute('aria-pressed',on&&mode==='groove');g.textContent=(on&&mode==='groove')?'■ Arrêter':'▶ Écouter le groove';
 }
-
-/* ---------- pendule ---------- */
-let pendDir=-1;
-function setArm(dir,dur){
-  const a=$('#arm');a.style.transitionDuration=dur+'s';a.style.transform='rotate('+(dir*24)+'deg)';
+function pulse(level){
+  const p=$('#metro-play');if(!p||!p.animate||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const w=level>=3?26:level===2?18:12;
+  p.animate([{boxShadow:'0 0 0 7px rgba(var(--glow),.5),0 18px 36px -12px rgba(var(--glow),.75)'},{boxShadow:'0 0 0 '+w+'px rgba(var(--glow),0),0 18px 36px -12px rgba(var(--glow),.75)'}],{duration:420,easing:'ease-out'});
 }
+/* onglets */
+function setTab(t,persist){
+  const wasRunning=running;
+  tab=t;
+  ['metro','groove'].forEach(k=>{$('#'+k).hidden=(k!==t);const b=$('#tab-'+k);b.classList.toggle('on',k===t);b.setAttribute('aria-selected',k===t);});
+  if(persist)store.set('sbmetro.tab',t);
+  if(wasRunning){if(t==='groove'&&(G.opts.notes||G.opts.solo))SBA.loadInstrument(G.kind);begin(t);}
+}
+$$('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab,true)));
 
 /* ---------- métronome ---------- */
 function metroStep(i,t){
@@ -577,15 +587,19 @@ function metroStep(i,t){
     SBA.draw(t,()=>{
       const bs=$$('.beat');bs.forEach(b=>b.classList.remove('hit'));
       const el=bs[beat];if(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),Math.min(160,spb*500));}
-      pendDir=-pendDir;
-      setArm(pendDir,spb);
+      pulse(muted?0:S.accents[beat]);
       const el2=Math.max(0,SBA.ctx().currentTime-t0),mm=Math.floor(el2/60),ss=String(Math.floor(el2%60)).padStart(2,'0');
       $('#metro-info').textContent='Mesure '+(bar+1)+' · '+mm+':'+ss+(muted?' · silence':'');
     });
   }
   return swingPos(k+1,n,spb,S.swing)-swingPos(k,n,spb,S.swing);
 }
-$('#metro-play').addEventListener('click',()=>{running&&mode==='metro'?stopAll():begin('metro');});
+function toggle(){
+  if(running){stopAll();return;}
+  if(tab==='groove'&&(G.opts.notes||G.opts.solo))SBA.loadInstrument(G.kind);
+  begin(tab);
+}
+$('#metro-play').addEventListener('click',toggle);
 
 /* trainer / silent */
 const bindNum=(id,obj,key,mn,mx)=>{const e=$(id);e.value=obj[key];e.addEventListener('change',()=>{obj[key]=clamp(parseInt(e.value)||obj[key],mn,mx);e.value=obj[key];save();});};
@@ -685,10 +699,10 @@ function renderMeasures(){
     const c=document.createElement('div');c.className='mcard';c.dataset.m=mi;
     let groups='';
     for(let b=0;b<4;b++){
-      groups+='<div class="bg">';
+      groups+='<div class="bg"><div class="bg-n">'+(b+1)+'</div>';
       for(let k=0;k<4;k++){
         const i=b*4+k;
-        groups+=`<button type="button" class="st${m.steps[i]?' on':''}" data-i="${i}" data-k="${k}" aria-pressed="${!!m.steps[i]}" aria-label="Mesure ${mi+1}, temps ${b+1}, double ${k+1}">${k+1}</button>`;
+        groups+=`<button type="button" class="st${m.steps[i]?' on':''}" data-i="${i}" data-k="${k}" aria-pressed="${!!m.steps[i]}" aria-label="Mesure ${mi+1}, temps ${b+1}, double ${k+1}">${['',  'e','&','a'][k]||(b+1)}</button>`;
       }
       groups+='</div>';
     }
@@ -698,7 +712,7 @@ function renderMeasures(){
       <button type="button" class="tag${m.lock?' on':''}" data-a="lock" aria-pressed="${!!m.lock}">Verrou</button>
       <button type="button" class="tag${G.loop===mi?' on':''}" data-a="loop" aria-pressed="${G.loop===mi}">Boucle</button></span></div>
       <div class="beatgrps">${groups}</div>
-      <div class="formulas"><div><b>Formules :</b> ${d.html}</div><div><b>Densité :</b> ${d.n}/16 — <b>Profil :</b> ${d.profile}</div></div>`;
+      <details class="fm"><summary>Formules · ${d.n}/16 · ${d.profile}</summary><div class="formulas"><div><b>Formules :</b> ${d.html}</div><div><b>Densité :</b> ${d.n}/16 — <b>Profil :</b> ${d.profile}</div></div></details>`;
     wrap.appendChild(c);
   });
 }
@@ -707,6 +721,7 @@ function refreshCard(mi){
   c.querySelectorAll('.st').forEach(b=>{const on=!!m.steps[+b.dataset.i];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
   const d=describe(m.steps);
   c.querySelector('.formulas').innerHTML=`<div><b>Formules :</b> ${d.html}</div><div><b>Densité :</b> ${d.n}/16 — <b>Profil :</b> ${d.profile}</div>`;
+  c.querySelector('.fm summary').textContent='Formules · '+d.n+'/16 · '+d.profile;
 }
 $('#measures').addEventListener('click',e=>{
   const card=e.target.closest('.mcard');if(!card)return;
@@ -756,21 +771,15 @@ $('#g-model').addEventListener('change',e=>{
 
 /* options (boutons ronds) */
 function paintOpts(){
-  $$('#knobs [data-opt]').forEach(b=>{const on=!!G.opts[b.dataset.opt];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
+  $$('[data-opt]').forEach(b=>{const on=!!G.opts[b.dataset.opt];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
   $('#measures').classList.toggle('colors',G.opts.colors);
 }
-$('#knobs').addEventListener('click',e=>{
+document.addEventListener('click',e=>{
   const b=e.target.closest('[data-opt]');if(!b)return;
   const k=b.dataset.opt;G.opts[k]=!G.opts[k];
-  if(k==='solo'&&G.opts.solo){/* solo = seulement les notes */}
-  paintOpts();save();
+  paintOpts();if(k==='colors')renderMeasures();save();
 });
-$('#g-play').addEventListener('click',()=>{
-  if(running&&mode==='groove'){stopAll();return;}
-  if(G.opts.notes||G.opts.solo)SBA.loadInstrument(G.kind);
-  begin('groove');
-});
-$('#g-stop').addEventListener('click',stopAll);
+$('#g-play').addEventListener('click',toggle);
 
 /* style / instrument / note de base */
 $('#g-style').innerHTML=Object.entries(SBA.DRUM_STYLES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
@@ -829,7 +838,7 @@ function grooveStep(i,t){
   if(i<pre){
     if(k===0){
       SBA.click(t,beat===0?3:2,S.kind,false);
-      SBA.draw(t,()=>{$('#metro-info').textContent='Précompte '+(beat+1);$$('.mcard.active').forEach(c=>c.classList.remove('active'));});
+      SBA.draw(t,()=>{pulse(beat===0?3:2);$('#metro-info').textContent='Précompte '+(beat+1);$$('.mcard.active').forEach(c=>c.classList.remove('active'));});
     }
     return dur;
   }
@@ -850,7 +859,8 @@ function grooveStep(i,t){
     const card=$('.mcard[data-m="'+mi+'"]');if(card)card.classList.add('active');
     $$('.st.cur').forEach(x=>x.classList.remove('cur'));
     const cell=card&&card.querySelector('.st[data-i="'+s+'"]');if(cell)cell.classList.add('cur');
-    if(s===0)$('#metro-info').textContent='';
+    if(s===0)$('#metro-info').textContent='Mesure '+(bar+1);
+    if(k===0)pulse(s===0?3:2);
   });
   return dur;
 }
@@ -859,7 +869,7 @@ function grooveStep(i,t){
 document.addEventListener('keydown',e=>{
   const tag=(e.target.tagName||'').toLowerCase();
   if(['input','select','textarea'].includes(tag)||e.target.isContentEditable)return;
-  if(e.code==='Space'&&tag!=='button'){e.preventDefault();running?stopAll():begin(lastMode);}
+  if(e.code==='Space'&&tag!=='button'){e.preventDefault();toggle();}
   else if(e.key==='ArrowUp'){e.preventDefault();setBpm(S.bpm+(e.shiftKey?5:1));}
   else if(e.key==='ArrowDown'){e.preventDefault();setBpm(S.bpm-(e.shiftKey?5:1));}
   else if((e.key==='t'||e.key==='T')&&!e.ctrlKey&&!e.metaKey)tap();
@@ -877,7 +887,7 @@ $('#sub').value=S.sub;$('#kind').value=S.kind;
 if(!Array.isArray(S.accents)||S.accents.length!==S.num)S.accents=defAccents(S.num,S.den);
 setSig(S.num,S.den,true);
 syncUI();renderPresets();buildRoots();paintOpts();paintInst();
-setMeasureCount(G.count);
+setMeasureCount(G.count);setTab(tab,false);paintTransport();
 $('#g-model').value=G.model||'';
 window.__sb={S,G};   // pour les tests
 })();
