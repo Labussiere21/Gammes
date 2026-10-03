@@ -11,7 +11,9 @@
   display:none;flex-direction:column;gap:2px;padding:4px;
   background:#0e0a07;border:1px solid var(--line,#3a2c1e);border-radius:8px;box-shadow:0 18px 40px -12px rgba(0,0,0,.9);
 }
+.nav-menu::before{content:"";position:absolute;left:-10px;right:-10px;top:-14px;height:14px}
 .nav-menu .nav-link{display:block}
+.nav-drop:hover>.nav-link{color:var(--cream,#f4e7d0)}
 .nav-drop:hover>.nav-menu,.nav-drop:focus-within>.nav-menu,.nav-drop.open>.nav-menu{display:flex}
 @media(max-width:760px){
   /* la barre défile horizontalement : le menu est donc positionné en « fixed » par nav-tools.js */
