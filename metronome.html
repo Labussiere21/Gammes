@@ -33,8 +33,15 @@
 <style>
 /* ---------- métronome (v2) ---------- */
 [hidden]{display:none!important}
-.deck{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px clamp(20px,4vw,48px);align-items:center}
-@media(max-width:720px){.deck{grid-template-columns:1fr}.feelline .sel{min-width:0}}
+.deck{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:22px clamp(16px,3vw,40px);align-items:center}
+.pend{position:relative;width:120px;height:196px;flex:none}
+.pend .base{position:absolute;left:50%;bottom:0;width:104px;height:42px;margin-left:-52px;background:linear-gradient(180deg,var(--wood-a),var(--wood-b));border:1px solid var(--line);border-radius:6px 6px 14px 14px;clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.pend .arm{position:absolute;left:50%;bottom:32px;width:5px;height:154px;margin-left:-2.5px;border-radius:3px;background:linear-gradient(90deg,#e6d3a3,var(--brass),var(--brass-dim));transform-origin:50% 100%;transform:rotate(-24deg);transition-property:transform;transition-timing-function:cubic-bezier(.42,.05,.58,.95)}
+.pend .wt{position:absolute;left:50%;margin-left:-13px;width:26px;height:20px;top:var(--wy,60px);border-radius:4px;background:linear-gradient(180deg,#f6e6bd,var(--brass) 60%,var(--brass-dim));border:1px solid #2a1c08;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+.pend .pivot{position:absolute;left:50%;bottom:28px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#1a120a;border:2px solid var(--brass-dim);z-index:2}
+@media(max-width:900px){.deck{grid-template-columns:auto minmax(0,1fr)}.transport{grid-column:1/-1}.pend{width:96px;height:160px}.pend .arm{height:124px}}
+@media(max-width:560px){.deck{grid-template-columns:1fr}.pend{margin:0 auto}}
+@media(max-width:720px){.feelline .sel{min-width:0}}
 .tempo{display:grid;gap:10px;min-width:0}
 .tempo-top{display:flex;align-items:center;gap:clamp(8px,2vw,18px);flex-wrap:wrap}
 .bpm-in{width:2.3em;text-align:center;font-family:"Instrument Serif",serif;font-size:clamp(72px,13vw,112px);line-height:.95;color:var(--cream);background:transparent;border:0;padding:0;-moz-appearance:textfield}
@@ -172,13 +179,14 @@ details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
     </div>
   </div>
   <h1>Métronome &amp; <em>groove</em></h1>
-  <p class="lede">Règle le tempo, appuie sur le grand bouton. Passe en mode Groove pour jouer avec une batterie et une basse ou une guitare.</p>
+  <p class="lede" data-en="Set the tempo and press the big button. Switch to Groove mode to play along with drums and a bass or guitar.">Règle le tempo, appuie sur le grand bouton. Passe en mode Groove pour jouer avec une batterie et une basse ou une guitare.</p>
 </header>
 
 <div class="tool-wrap">
 
 <!-- ======================= TABLEAU DE BORD ======================= -->
 <section class="card deck" aria-label="Tempo et lecture">
+  <div class="pend" aria-hidden="true"><div class="arm" id="arm"><div class="wt" id="wt"></div></div><div class="pivot"></div><div class="base"></div></div>
   <div class="tempo">
     <div class="tempo-top">
       <input class="bpm-in" type="number" inputmode="numeric" min="20" max="300" value="90" aria-label="Tempo en battements par minute">
@@ -244,7 +252,7 @@ details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
       <label class="chk">jouer <input class="num" id="sl-play" type="number" min="1" max="32" value="3"> mesures</label>
       <label class="chk">puis <input class="num" id="sl-mute" type="number" min="1" max="32" value="1"> en silence</label>
     </div>
-    <p class="hint">Pour monter progressivement sur un passage difficile, ou vérifier que tu gardes le tempo tout seul pendant le silence.</p>
+    <p class="hint" data-en="To build up gradually on a difficult passage, or to check that you keep the tempo on your own during the silent bars.">Pour monter progressivement sur un passage difficile, ou vérifier que tu gardes le tempo tout seul pendant le silence.</p>
   </details>
 
   <details class="more">
@@ -262,11 +270,11 @@ details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
 <section class="card" id="groove" aria-label="Groove" hidden>
   <div class="stepbox"><div class="stepnum">1</div><div class="stepbody">
     <h3>Choisis un rythme</h3>
-    <p class="hint">Prends un modèle tout fait ou clique sur « Générer » pour en tirer un au hasard.</p>
+    <p class="hint" data-en="Pick a ready-made pattern or hit “Generate” to draw a random one.">Prends un modèle tout fait ou clique sur « Générer » pour en tirer un au hasard.</p>
     <div class="fields">
       <label class="field"><span>Modèle</span><select class="sel" id="g-model"></select></label>
       <div class="field"><span>Nombre de mesures</span>
-        <div class="seg" id="g-count"><button data-n="1">1</button><button data-n="2">2</button><button data-n="4" class="on">4</button><button data-n="8">8</button></div></div>
+        <div class="seg" id="g-count"><button data-n="1" class="on">1</button><button data-n="2">2</button><button data-n="4">4</button><button data-n="8">8</button></div></div>
       <button type="button" class="btn primary" id="g-gen">🎲 Générer</button>
     </div>
     <details class="more" style="margin-top:14px">
@@ -281,7 +289,7 @@ details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
 
   <div class="stepbox"><div class="stepnum">2</div><div class="stepbody">
     <h3>Retouche la grille</h3>
-    <p class="hint">Chaque mesure = 4 temps × 4 subdivisions (1 e &amp; a). Clique une case pour jouer une note à cet endroit.</p>
+    <p class="hint" data-en="Each bar = 4 beats × 4 subdivisions (1 e &amp; a). Click a cell to play a note at that spot.">Chaque mesure = 4 temps × 4 subdivisions (1 e &amp; a). Clique une case pour jouer une note à cet endroit.</p>
     <div class="mlist" id="measures"></div>
     <div class="row sp" style="margin-top:12px">
       <button type="button" class="btn sm" id="g-copy">Copier les formules</button>
@@ -330,14 +338,14 @@ details.fm>summary{cursor:pointer;color:var(--muted-2);font-size:12px}
       <div class="vol"><div class="vh"><span class="sub" style="margin:0">Instrument</span><span class="vv" id="v-notes-val">70 %</span></div><input class="rng" id="v-notes" type="range" min="0" max="100" value="70" aria-label="Volume de l'instrument"></div>
     </div>
   </details>
-  <p class="mini" style="margin-top:14px">Raccourcis : <kbd>Espace</kbd> démarrer / arrêter · <kbd>↑</kbd> <kbd>↓</kbd> tempo · <kbd>T</kbd> tap</p>
+  <p class="mini" style="margin-top:14px" data-en="Shortcuts: <kbd>Space</kbd> start / stop · <kbd>↑</kbd> <kbd>↓</kbd> tempo · <kbd>T</kbd> tap">Raccourcis : <kbd>Espace</kbd> démarrer / arrêter · <kbd>↑</kbd> <kbd>↓</kbd> tempo · <kbd>T</kbd> tap</p>
 </section>
 
 <section class="card">
   <div class="prose">
     <h2>Comment utiliser ce métronome</h2>
-    <p>Règle le <strong>tempo</strong> avec les boutons, le curseur, en tapant la valeur ou avec le <strong>tap tempo</strong>, puis appuie sur le grand bouton. Dans l'onglet <strong>Métronome</strong>, choisis ta mesure (2/4, 3/4, 4/4, 6/8, 7/8…) et touche chaque temps pour régler son accent. Les subdivisions et le swing servent à t'entraîner sur des feels ternaires.</p>
-    <p>L'onglet <strong>Groove</strong> te laisse dessiner (ou générer) un rythme de basse sur 4 temps de 4 subdivisions, puis l'écouter avec une batterie ou une guitare calées sur le tempo. Les « formules » décrivent chaque temps (par exemple <em>-234 : départ retardé, trois doubles</em>).</p>
+    <p data-en="Set the <strong>tempo</strong> with the buttons, the slider, by typing the value or with <strong>tap tempo</strong>, then press the big button. In the <strong>Metronome</strong> tab, pick your time signature (2/4, 3/4, 4/4, 6/8, 7/8…) and tap each beat to set its accent. Subdivisions and swing let you practise ternary feels.">Règle le <strong>tempo</strong> avec les boutons, le curseur, en tapant la valeur ou avec le <strong>tap tempo</strong>, puis appuie sur le grand bouton. Dans l'onglet <strong>Métronome</strong>, choisis ta mesure (2/4, 3/4, 4/4, 6/8, 7/8…) et touche chaque temps pour régler son accent. Les subdivisions et le swing servent à t'entraîner sur des feels ternaires.</p>
+    <p data-en="The <strong>Groove</strong> tab lets you draw (or generate) a bass rhythm over 4 beats of 4 subdivisions, then hear it with drums or a guitar locked to the tempo. The “formulas” describe each beat (for example <em>-234: delayed start, three sixteenths</em>).">L'onglet <strong>Groove</strong> te laisse dessiner (ou générer) un rythme de basse sur 4 temps de 4 subdivisions, puis l'écouter avec une batterie ou une guitare calées sur le tempo. Les « formules » décrivent chaque temps (par exemple <em>-234 : départ retardé, trois doubles</em>).</p>
   </div>
 </section>
 </div>
@@ -386,8 +394,70 @@ const store={
   get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 };
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2400);}
+function toast(m){const t=$('#toast');t.textContent=T(m);t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2400);}
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+/* ====================================================== TRADUCTION FR/EN */
+const EN={
+'Basse':'Bass','Guitare':'Guitar','Tempo et lecture':'Tempo and playback','Tempo en battements par minute':'Tempo in beats per minute',
+'Moins 1':'Minus 1','Plus 1':'Plus 1','Moins 5':'Minus 5','Plus 5':'Plus 5','Curseur de tempo':'Tempo slider',
+'Feel (binaire, swing, shuffle)':'Feel (straight, swing, shuffle)','Feel : binaire':'Feel: straight','Swing léger':'Light swing','Swing':'Swing','Shuffle (triolets)':'Shuffle (triplets)','Perso':'Custom',
+'Quantité de swing':'Swing amount','Démarrer':'Start','Arrêter':'Stop','Tap tempo':'Tap tempo','Mode':'Mode',
+'Métronome':'Metronome','un clic régulier, avec accents':'a steady click, with accents','Groove':'Groove','batterie + basse ou guitare':'drums + bass or guitar',
+"Temps de la mesure (toucher pour changer l'accent)":'Beats of the bar (tap to change the accent)',
+"Touche un temps pour changer son accent :":'Tap a beat to change its accent:','fort':'strong','moyen':'medium','faible':'weak','muet':'muted',
+'Mesure':'Bar','Subdivision':'Subdivision','Noires (pulsation)':'Quarter notes (pulse)','Croches (×2)':'Eighth notes (×2)','Triolets (×3)':'Triplets (×3)','Doubles-croches (×4)':'Sixteenth notes (×4)','Son du clic':'Click sound',
+"S'entraîner : accélérer, mesures muettes":'Practise: speed up, silent bars','Accélérer':'Speed up','toutes les':'every','mesures':'bars','de +':'by +','jusqu\'à':'up to','Mesures muettes':'Silent bars','jouer':'play','puis':'then','en silence':'silent',
+'Mes réglages enregistrés':'My saved settings','Nom (ex. Funk 96 BPM)':'Name (e.g. Funk 96 BPM)','Nom du réglage':'Setting name','Enregistrer':'Save',
+'Tempo, mesure, subdivision et accents sont gardés dans ce navigateur.':'Tempo, time signature, subdivision and accents are kept in this browser.',
+'Choisis un rythme':'Pick a rhythm','Modèle':'Pattern','Nombre de mesures':'Number of bars','🎲 Générer':'🎲 Generate','Générer':'Generate','Réglages du générateur':'Generator settings',
+'Densité':'Density','Aéré':'Sparse','Moyen':'Medium','Chargé':'Busy','Mixte':'Mixed','Autoriser les syncopes':'Allow syncopation',
+'Retouche la grille':'Edit the grid','Copier les formules':'Copy the formulas','« Boucle » : répète seulement cette mesure':'“Loop”: repeat only this bar',
+'Choisis ce qui joue, puis écoute':'Choose what plays, then listen','Clic':'Click','Batterie':'Drums','Instrument':'Instrument','Note de base':'Root note','Accord':'Chord',
+'Majeur':'Major','Mineur':'Minor','7e de dominante':'Dominant 7th','Quinte (power chord)':'Fifth (power chord)','Écouter le groove':'Play the groove','Sons : prêts':'Sounds: ready',
+"Plus d'options":'More options','Solo (instrument seul)':'Solo (instrument only)','Octaves':'Octaves','Couleurs':'Colours','Précompte':'Count-in','Question / réponse':'Call / response',
+'Volumes':'Volumes','Volume du clic':'Click volume','Volume de la batterie':'Drums volume',"Volume de l'instrument":'Instrument volume','Comment utiliser ce métronome':'How to use this metronome',
+'Échantillons réels':'Real samples','Chargement des sons…':'Loading sounds…','Sons synthétisés (hors ligne)':'Synthesised sounds (offline)',
+'Mesures':'Bars',
+'Bois':'Wood','Bip':'Beep','Clave':'Clave','Cloche':'Bell','Charley':'Hi-hat','Rock':'Rock','Pop':'Pop','Funk':'Funk','Disco':'Disco','Reggae':'Reggae','Blues shuffle':'Blues shuffle',
+'Figures rythmiques':'Rhythmic figures','Styles':'Styles','— Aucun (à moi) —':'— None (mine) —','Blanches':'Half notes','Noires':'Quarter notes','Noire pointée + croche':'Dotted quarter + eighth','Croches':'Eighth notes',
+'Contretemps (croches off-beat)':'Off-beat eighths','Syncope (croche · noire · croche)':'Syncopation (eighth · quarter · eighth)','Syncopette (double · croche · double)':'Syncopette (16th · 8th · 16th)',
+'Croche pointée + double':'Dotted eighth + sixteenth','Double + croche pointée':'Sixteenth + dotted eighth','Croche + 2 doubles':'Eighth + two sixteenths','2 doubles + croche':'Two sixteenths + eighth','Doubles-croches':'Sixteenth notes',
+'Disco (octaves)':'Disco (octaves)','Funk syncopé':'Syncopated funk','Rock pompé':'Driving rock','Tresillo (3+3+2)':'Tresillo (3+3+2)','Habanera':'Habanera',
+'silence':'silent','Précompte':'Count-in','Temps':'Beat','accent':'accent','temps':'beat','double':'sixteenth','Régénérer':'Regenerate','Vider':'Clear','Verrou':'Lock','Boucle':'Loop','Formules':'Formulas','Profil':'Profile','Supprimer':'Delete',
+'blanche':'half','noire':'quarter','Une blanche (deux temps)':'A half note (two beats)','Une noire simple':'A plain quarter note','Une double sur':'A sixteenth on','Doubles sur':'Sixteenths on','et':'and',
+'aéré':'sparse','moyen':'medium','chargé':'busy','syncopé':'syncopated','carré':'straight',
+'Quatre doubles':'Four sixteenths','Départ retardé, trois doubles':'Delayed start, three sixteenths','Doubles sur 1, 2 et 4':'Sixteenths on 1, 2 and 4','Attaque sur la dernière double':'Hit on the last sixteenth',
+'Doubles sur 3 et 4':'Sixteenths on 3 and 4','Trois doubles puis silence':'Three sixteenths then rest','Doubles sur 1, 3 et 4':'Sixteenths on 1, 3 and 4','Deux croches':'Two eighths','Doubles sur 1 et 4':'Sixteenths on 1 and 4',
+'Une croche en contretemps':'An off-beat eighth','Une seule double sur 2':'A single sixteenth on 2','Doubles sur 2 et 4':'Sixteenths on 2 and 4','Deux doubles':'Two sixteenths','Deux doubles centrales':'Two middle sixteenths',
+'Réglage enregistré':'Setting saved','Formules copiées':'Formulas copied','Réglage':'Setting','Groove à':'Groove at','Copie ce texte :':'Copy this text:',
+};
+const lang=()=>{try{return localStorage.getItem('sblang')||'fr';}catch(e){return 'fr';}};
+const T=s=>(lang()==='en'&&EN[s])||s;
+const DYN='#measures,#presets,#beats,#quick-bpm,#metro-info,#snd-status,#kind,#g-style,#g-model,#g-root,#toast,.tempo-name';
+function translateDom(){
+  const en=lang()==='en',root=document.querySelector('.wrap');
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const nodes=[];
+  while((n=w.nextNode()))nodes.push(n);
+  nodes.forEach(n=>{
+    const el=n.parentElement;if(!el||el.closest(DYN)||el.closest('[data-en]')||el.closest('#notation-seg,#lang-seg,#site-nav'))return;
+    const raw=n.nodeValue,t=raw.trim().replace(/\s+/g,' ');
+    if(n.__fr===undefined){if(!t||!EN[t])return;n.__fr=raw;}
+    n.nodeValue=en?raw.replace(raw.trim(),EN[n.__fr.trim().replace(/\s+/g,' ')]||n.__fr.trim()):n.__fr;
+  });
+  root.querySelectorAll('[aria-label],[placeholder]').forEach(el=>{
+    if(el.closest(DYN))return;
+    ['aria-label','placeholder'].forEach(a=>{
+      const k='fr'+a.replace('aria-label','Aria').replace('placeholder','Ph');if(!el.hasAttribute(a))return;
+      if(el.dataset[k]===undefined){const v=el.getAttribute(a);if(!EN[v])return;el.dataset[k]=v;}
+      el.setAttribute(a,en?(EN[el.dataset[k]]||el.dataset[k]):el.dataset[k]);
+    });
+  });
+  root.querySelectorAll('[data-en]').forEach(el=>{
+    if(el.dataset.fr===undefined)el.dataset.fr=el.innerHTML;
+    el.innerHTML=en?el.dataset.en:el.dataset.fr;
+  });
+  document.documentElement.lang=en?'en':'fr';
+}
 
 /* ====================================================== ÉTAT */
 const S=Object.assign({
@@ -397,13 +467,15 @@ const S=Object.assign({
 },store.get('sbmetro',{}));
 const G=Object.assign({
   opts:{click:true,drums:true,notes:true,solo:false,octaves:false,colors:false,precount:false,qr:false},
-  count:4,dens:'medium',sync:true,style:'rock',kind:'bass',root:9,qual:'maj',model:'',
+  count:1,dens:'medium',sync:true,style:'rock',kind:'bass',root:9,qual:'maj',model:'',
   loop:-1,measures:null,
 },store.get('sbmetro.g',{}));
 const emptyM=()=>({steps:Array(16).fill(0),lock:false});
 if(!Array.isArray(G.measures)||!G.measures.length){G.measures=[emptyM(),emptyM(),emptyM(),emptyM()];}
 G.measures.forEach(m=>{if(!Array.isArray(m.steps)||m.steps.length!==16)m.steps=Array(16).fill(0);});
 S.bpm=clamp(+S.bpm||90,20,300);
+if(!G.v2){G.v2=1;G.count=1;}  // par défaut : une seule mesure
+while(G.measures.length>G.count)G.measures.pop();
 function save(){store.set('sbmetro',S);store.set('sbmetro.g',G);}
 
 /* ====================================================== TEMPO */
@@ -414,6 +486,7 @@ function syncUI(){
   $$('.bpm-in').forEach(e=>{if(document.activeElement!==e)e.value=Math.round(S.bpm);});
   $$('.bpm-rng').forEach(e=>{e.value=S.bpm;setP(e);});
   $('#tempo-name').textContent=tempoName(S.bpm);
+  $('#wt').style.setProperty('--wy',(16+(S.bpm-20)/280*104)+'px');
   const feel=[0,35,70,100].includes(S.swing)?String(S.swing):'-1';
   $$('.feel-sel').forEach(e=>e.value=feel);
   $$('.swing-rng').forEach(e=>{e.value=S.swing;setP(e);});
@@ -476,7 +549,8 @@ function setSig(num,den,keep){
 }
 $('#sig').addEventListener('change',e=>{const [n,d]=e.target.value.split('/').map(Number);setSig(n,d,false);});
 $('#sub').addEventListener('change',e=>{S.sub=+e.target.value;save();});
-$('#kind').innerHTML=Object.entries(SBA.CLICK_KINDS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
+function buildKinds(){$('#kind').innerHTML=Object.entries(SBA.CLICK_KINDS).map(([k,l])=>`<option value="${k}">${T(l)}</option>`).join('');$('#kind').value=S.kind;}
+buildKinds();
 $('#kind').addEventListener('change',e=>{S.kind=e.target.value;save();if(running)return;SBA.ctx();SBA.resume().then(()=>SBA.click(SBA.ctx().currentTime+.02,3,S.kind));});
 
 function buildBeats(){
@@ -484,7 +558,7 @@ function buildBeats(){
   for(let i=0;i<S.num;i++){
     const b=document.createElement('button');b.type='button';b.className='beat';b.dataset.l=S.accents[i];b.dataset.i=i;
     b.textContent=i+1;
-    b.setAttribute('aria-label','Temps '+(i+1)+', accent '+['muet','faible','moyen','fort'][S.accents[i]]);
+    b.setAttribute('aria-label',T('Temps')+' '+(i+1)+', '+T('accent')+' '+T(['muet','faible','moyen','fort'][S.accents[i]]));
     wrap.appendChild(b);
   }
 }
@@ -493,7 +567,7 @@ $('#beats').addEventListener('click',e=>{
   const i=+b.dataset.i;const l=S.accents[i];
   S.accents[i]=l===3?2:l===2?1:l===1?0:3;
   b.dataset.l=S.accents[i];
-  b.setAttribute('aria-label','Temps '+(i+1)+', accent '+['muet','faible','moyen','fort'][S.accents[i]]);
+  b.setAttribute('aria-label',T('Temps')+' '+(i+1)+', '+T('accent')+' '+T(['muet','faible','moyen','fort'][S.accents[i]]));
   save();
   if(!running){SBA.ctx();SBA.resume().then(()=>SBA.click(SBA.ctx().currentTime+.02,S.accents[i]||1,S.kind));}
 });
@@ -531,6 +605,7 @@ async function begin(which){
   applyVols();
   mode=which;running=true;t0=SBA.ctx().currentTime;
   try{if(navigator.wakeLock)wake=await navigator.wakeLock.request('screen');}catch(e){}
+  pendDir=-1;setArm(-1,0);
   if(which==='metro'){clock=new SBA.Clock(metroStep);}
   else{clock=new SBA.Clock(grooveStep);}
   clock.start(0.07);
@@ -541,6 +616,7 @@ function stopAll(){
   SBA.clearDraw();
   running=false;mode=null;
   if(wake){try{wake.release();}catch(e){}wake=null;}
+  setArm(-1,0.25);
   $$('.beat.hit').forEach(b=>b.classList.remove('hit'));
   $$('.st.cur').forEach(b=>b.classList.remove('cur'));
   $$('.mcard.active').forEach(b=>b.classList.remove('active'));
@@ -549,11 +625,14 @@ function stopAll(){
 }
 function paintTransport(){
   const on=running;
-  const p=$('#metro-play');p.setAttribute('aria-pressed',on);p.classList.toggle('on',on);p.setAttribute('aria-label',on?'Arrêter':'Démarrer');
+  const p=$('#metro-play');p.setAttribute('aria-pressed',on);p.classList.toggle('on',on);p.setAttribute('aria-label',T(on?'Arrêter':'Démarrer'));
   $('#metro-play-ico').textContent=on?'■':'▶';
-  $('#metro-play-txt').textContent=on?'Arrêter':'Démarrer';
-  const g=$('#g-play');g.setAttribute('aria-pressed',on&&mode==='groove');g.textContent=(on&&mode==='groove')?'■ Arrêter':'▶ Écouter le groove';
+  $('#metro-play-txt').textContent=T(on?'Arrêter':'Démarrer');
+  const g=$('#g-play');g.setAttribute('aria-pressed',on&&mode==='groove');g.textContent=(on&&mode==='groove')?'■ '+T('Arrêter'):'▶ '+T('Écouter le groove');
 }
+let pendDir=-1;
+function setArm(dir,dur){const a=$('#arm');a.style.transitionDuration=dur+'s';a.style.transform='rotate('+(dir*24)+'deg)';}
+function swingArm(spb){pendDir=-pendDir;setArm(pendDir,spb);}
 function pulse(level){
   const p=$('#metro-play');if(!p||!p.animate||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const w=level>=3?26:level===2?18:12;
@@ -587,9 +666,9 @@ function metroStep(i,t){
     SBA.draw(t,()=>{
       const bs=$$('.beat');bs.forEach(b=>b.classList.remove('hit'));
       const el=bs[beat];if(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),Math.min(160,spb*500));}
-      pulse(muted?0:S.accents[beat]);
+      pulse(muted?0:S.accents[beat]);swingArm(spb);
       const el2=Math.max(0,SBA.ctx().currentTime-t0),mm=Math.floor(el2/60),ss=String(Math.floor(el2%60)).padStart(2,'0');
-      $('#metro-info').textContent='Mesure '+(bar+1)+' · '+mm+':'+ss+(muted?' · silence':'');
+      $('#metro-info').textContent=T('Mesure')+' '+(bar+1)+' · '+mm+':'+ss+(muted?' · '+T('silence'):'');
     });
   }
   return swingPos(k+1,n,spb,S.swing)-swingPos(k,n,spb,S.swing);
@@ -610,11 +689,11 @@ bindChk('#sl-on',S.sl,'on');bindNum('#sl-play',S.sl,'play',1,32);bindNum('#sl-mu
 /* réglages perso */
 function renderPresets(){
   const list=store.get('sbmetro.presets',[]);
-  $('#presets').innerHTML=list.map((p,i)=>`<span class="pill" data-p="${i}" role="button" tabindex="0">${p.name.replace(/</g,'&lt;')} · ${p.bpm} · ${p.num}/${p.den}<span class="x" data-del="${i}" aria-label="Supprimer">×</span></span>`).join('');
+  $('#presets').innerHTML=list.map((p,i)=>`<span class="pill" data-p="${i}" role="button" tabindex="0">${p.name.replace(/</g,'&lt;')} · ${p.bpm} · ${p.num}/${p.den}<span class="x" data-del="${i}" aria-label="${T('Supprimer')}">×</span></span>`).join('');
   $('#pre-empty').style.display=list.length?'none':'';
 }
 $('#pre-save').addEventListener('click',()=>{
-  const name=($('#pre-name').value||'').trim()||('Réglage '+S.bpm);
+  const name=($('#pre-name').value||'').trim()||(T('Réglage')+' '+S.bpm);
   const list=store.get('sbmetro.presets',[]);
   list.push({name,bpm:S.bpm,num:S.num,den:S.den,sub:S.sub,accents:S.accents.slice(),kind:S.kind,swing:S.swing});
   store.set('sbmetro.presets',list.slice(-24));$('#pre-name').value='';renderPresets();toast('Réglage enregistré');
@@ -642,14 +721,27 @@ const BANK={
   medium:[['1-3-',3],['1-34',2],['12-4',2],['--34',2],['1--4',2],['-2-4',1],['123-',1],['1---',1]],
   dense:[['1234',3],['-234',3],['12-4',2],['1-34',2],['123-',2],['--34',1]],
 };
+const FIG='Figures rythmiques', STY='Styles';
 const MODELS={
   '':{label:'— Aucun (à moi) —'},
-  croches:{label:'Croches (rock)',m:[['1-3-','1-3-','1-3-','1-3-']]},
-  noires:{label:'Noires',m:[['1---','1---','1---','1---']]},
-  disco:{label:'Disco (octaves)',octaves:true,style:'disco',m:[['1-3-','1-3-','1-3-','1-3-']]},
-  funk:{label:'Funk syncopé',style:'funk',m:[['1--4','--34','1---','-2-4'],['1--4','--3-','1-34','----']]},
-  reggae:{label:'Reggae',style:'reggae',m:[['1---','---4','1---','--3-']]},
-  rock:{label:'Rock pompé',style:'rock',m:[['1-3-','1-3-','1-3-','1-34']]},
+  blanches:{g:FIG,label:'Blanches',m:[['1---','----','1---','----']]},
+  noires:{g:FIG,label:'Noires',m:[['1---','1---','1---','1---']]},
+  noirepointee:{g:FIG,label:'Noire pointée + croche',m:[['1---','--3-','1---','--3-']]},
+  croches:{g:FIG,label:'Croches',m:[['1-3-','1-3-','1-3-','1-3-']]},
+  contretemps:{g:FIG,label:'Contretemps (croches off-beat)',m:[['--3-','--3-','--3-','--3-']]},
+  syncope:{g:FIG,label:'Syncope (croche · noire · croche)',m:[['1-3-','--3-','1-3-','--3-']]},
+  syncopette:{g:FIG,label:'Syncopette (double · croche · double)',m:[['12-4','12-4','12-4','12-4']]},
+  crochepointee:{g:FIG,label:'Croche pointée + double',m:[['1--4','1--4','1--4','1--4']]},
+  doublepointee:{g:FIG,label:'Double + croche pointée',m:[['12--','12--','12--','12--']]},
+  dactyle:{g:FIG,label:'Croche + 2 doubles',m:[['1-34','1-34','1-34','1-34']]},
+  anapeste:{g:FIG,label:'2 doubles + croche',m:[['123-','123-','123-','123-']]},
+  doubles:{g:FIG,label:'Doubles-croches',m:[['1234','1234','1234','1234']]},
+  disco:{g:STY,label:'Disco (octaves)',octaves:true,style:'disco',m:[['1-3-','1-3-','1-3-','1-3-']]},
+  funk:{g:STY,label:'Funk syncopé',style:'funk',m:[['1--4','--34','1---','-2-4'],['1--4','--3-','1-34','----']]},
+  reggae:{g:STY,label:'Reggae',style:'reggae',m:[['1---','---4','1---','--3-']]},
+  rock:{g:STY,label:'Rock pompé',style:'rock',m:[['1-3-','1-3-','1-3-','1-34']]},
+  tresillo:{g:STY,label:'Tresillo (3+3+2)',m:[['1---','--3-','----','1---']]},
+  habanera:{g:STY,label:'Habanera',m:[['1--4','1-3-','1--4','1-3-']]},
 };
 function patOf(steps,b){return [0,1,2,3].map(k=>steps[b*4+k]?String(k+1):'-').join('');}
 function stepsOf(pats){return pats.join('').split('').map((c,i)=>c!=='-'?1:0);}
@@ -672,11 +764,11 @@ function describe(steps){
     if(p==='----')return '<b>—</b>';
     if(p==='1---'){
       const nxt=pats[b+1];
-      if(nxt==='----'&&b%2===0&&b<3)return '<b>blanche</b> : Une blanche (deux temps)';
-      return '<b>noire</b> : Une noire simple';
+      if(nxt==='----'&&b%2===0&&b<3)return '<b>'+T('blanche')+'</b> : '+T('Une blanche (deux temps)');
+      return '<b>'+T('noire')+'</b> : '+T('Une noire simple');
     }
-    let d=DESC[p];
-    if(!d){const idx=[...p].filter(c=>c!=='-');d=idx.length===1?'Une double sur '+idx[0]:'Doubles sur '+idx.slice(0,-1).join(', ')+' et '+idx[idx.length-1];}
+    let d=DESC[p]?T(DESC[p]):null;
+    if(!d){const idx=[...p].filter(c=>c!=='-');d=idx.length===1?T('Une double sur')+' '+idx[0]:T('Doubles sur')+' '+idx.slice(0,-1).join(', ')+' '+T('et')+' '+idx[idx.length-1];}
     return '<b>'+p+'</b> : '+d;
   });
   const n=steps.filter(Boolean).length;
@@ -686,8 +778,8 @@ function describe(steps){
     if(!s0&&[1,2,3].some(k=>steps[b*4+k]))sync=true;
     if(steps[b*4+3]&&b<3&&!steps[(b+1)*4])sync=true;
   }
-  const dens=n<=6?'aéré':n<=10?'moyen':'chargé';
-  return {html:items.join(' | '),n,profile:(sync?'syncopé':'carré')+', '+dens};
+  const dens=T(n<=6?'aéré':n<=10?'moyen':'chargé');
+  return {html:items.join(' | '),n,profile:T(sync?'syncopé':'carré')+', '+dens};
 }
 
 /* ====================================================== GROOVE : rendu */
@@ -702,17 +794,17 @@ function renderMeasures(){
       groups+='<div class="bg"><div class="bg-n">'+(b+1)+'</div>';
       for(let k=0;k<4;k++){
         const i=b*4+k;
-        groups+=`<button type="button" class="st${m.steps[i]?' on':''}" data-i="${i}" data-k="${k}" aria-pressed="${!!m.steps[i]}" aria-label="Mesure ${mi+1}, temps ${b+1}, double ${k+1}">${['',  'e','&','a'][k]||(b+1)}</button>`;
+        groups+=`<button type="button" class="st${m.steps[i]?' on':''}" data-i="${i}" data-k="${k}" aria-pressed="${!!m.steps[i]}" aria-label="${T('Mesure')} ${mi+1}, ${T('temps')} ${b+1}, ${T('double')} ${k+1}">${['',  'e','&','a'][k]||(b+1)}</button>`;
       }
       groups+='</div>';
     }
-    c.innerHTML=`<div class="mcard-h"><span>Mesure ${mi+1}</span><span class="acts">
-      <button type="button" class="tag quiet" data-a="regen">Régénérer</button>
-      <button type="button" class="tag quiet" data-a="clear">Vider</button>
-      <button type="button" class="tag${m.lock?' on':''}" data-a="lock" aria-pressed="${!!m.lock}">Verrou</button>
-      <button type="button" class="tag${G.loop===mi?' on':''}" data-a="loop" aria-pressed="${G.loop===mi}">Boucle</button></span></div>
+    c.innerHTML=`<div class="mcard-h"><span>${T('Mesure')} ${mi+1}</span><span class="acts">
+      <button type="button" class="tag quiet" data-a="regen">${T('Régénérer')}</button>
+      <button type="button" class="tag quiet" data-a="clear">${T('Vider')}</button>
+      <button type="button" class="tag${m.lock?' on':''}" data-a="lock" aria-pressed="${!!m.lock}">${T('Verrou')}</button>
+      <button type="button" class="tag${G.loop===mi?' on':''}" data-a="loop" aria-pressed="${G.loop===mi}">${T('Boucle')}</button></span></div>
       <div class="beatgrps">${groups}</div>
-      <details class="fm"><summary>Formules · ${d.n}/16 · ${d.profile}</summary><div class="formulas"><div><b>Formules :</b> ${d.html}</div><div><b>Densité :</b> ${d.n}/16 — <b>Profil :</b> ${d.profile}</div></div></details>`;
+      <details class="fm"><summary>${T('Formules')} · ${d.n}/16 · ${d.profile}</summary><div class="formulas"><div><b>${T('Formules')} :</b> ${d.html}</div><div><b>${T('Densité')} :</b> ${d.n}/16 — <b>${T('Profil')} :</b> ${d.profile}</div></div></details>`;
     wrap.appendChild(c);
   });
 }
@@ -720,8 +812,8 @@ function refreshCard(mi){
   const m=G.measures[mi],c=$('.mcard[data-m="'+mi+'"]');if(!c)return;
   c.querySelectorAll('.st').forEach(b=>{const on=!!m.steps[+b.dataset.i];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
   const d=describe(m.steps);
-  c.querySelector('.formulas').innerHTML=`<div><b>Formules :</b> ${d.html}</div><div><b>Densité :</b> ${d.n}/16 — <b>Profil :</b> ${d.profile}</div>`;
-  c.querySelector('.fm summary').textContent='Formules · '+d.n+'/16 · '+d.profile;
+  c.querySelector('.formulas').innerHTML=`<div><b>${T('Formules')} :</b> ${d.html}</div><div><b>${T('Densité')} :</b> ${d.n}/16 — <b>${T('Profil')} :</b> ${d.profile}</div>`;
+  c.querySelector('.fm summary').textContent=T('Formules')+' · '+d.n+'/16 · '+d.profile;
 }
 $('#measures').addEventListener('click',e=>{
   const card=e.target.closest('.mcard');if(!card)return;
@@ -760,7 +852,13 @@ function generate(){
 $('#g-gen').addEventListener('click',generate);
 
 /* modèles */
-$('#g-model').innerHTML=Object.entries(MODELS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+function buildModels(){
+  let h='',cur='';
+  Object.entries(MODELS).forEach(([k,v])=>{const g=v.g||'';if(g!==cur){if(cur)h+='</optgroup>';if(g)h+='<optgroup label="'+T(g)+'">';cur=g;}h+=`<option value="${k}">${T(v.label)}</option>`;});
+  if(cur)h+='</optgroup>';
+  $('#g-model').innerHTML=h;$('#g-model').value=G.model||'';
+}
+buildModels();
 $('#g-model').addEventListener('change',e=>{
   const key=e.target.value;G.model=key;const md=MODELS[key];if(!md||!md.m)return;
   G.measures.forEach((m,i)=>{if(!m.lock)m.steps=stepsOf(md.m[i%md.m.length]);});
@@ -782,8 +880,8 @@ document.addEventListener('click',e=>{
 $('#g-play').addEventListener('click',toggle);
 
 /* style / instrument / note de base */
-$('#g-style').innerHTML=Object.entries(SBA.DRUM_STYLES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
-$('#g-style').value=G.style;
+function buildStyles(){$('#g-style').innerHTML=Object.entries(SBA.DRUM_STYLES).map(([k,v])=>`<option value="${k}">${T(v.label)}</option>`).join('');$('#g-style').value=G.style;}
+buildStyles();
 $('#g-style').addEventListener('change',e=>{
   G.style=e.target.value;const st=SBA.DRUM_STYLES[G.style];
   if(st&&st.swing!=null)setSwing(st.swing);
@@ -806,13 +904,17 @@ function buildRoots(){
 }
 $('#g-root').addEventListener('change',e=>{G.root=+e.target.value;save();});
 $('#g-qual').value=G.qual;$('#g-qual').addEventListener('change',e=>{G.qual=e.target.value;save();});
-window.onNotation=buildRoots;
+function applyLang(){
+  translateDom();buildKinds();buildStyles();buildModels();buildRoots();
+  buildBeats();renderMeasures();renderPresets();updateStatus();paintTransport();syncUI();
+}
+window.onNotation=applyLang;
 
 /* statut des sons */
 function updateStatus(){
   const s=SBA.status[G.kind]||(window.Soundfont?'idle':'synth');
   const chip=$('#snd-status');chip.className='chip'+(s==='ready'?' ok':s==='loading'?' load':s==='synth'?' warn':'');
-  const label=s==='ready'?'Échantillons réels':s==='loading'?'Chargement des sons…':s==='synth'?'Sons synthétisés (hors ligne)':'Sons : prêts';
+  const label=T(s==='ready'?'Échantillons réels':s==='loading'?'Chargement des sons…':s==='synth'?'Sons synthétisés (hors ligne)':'Sons : prêts');
   chip.querySelector('span').textContent=label;
 }
 SBA.onStatus=(k,s)=>{if(k===G.kind)updateStatus();};
@@ -838,7 +940,7 @@ function grooveStep(i,t){
   if(i<pre){
     if(k===0){
       SBA.click(t,beat===0?3:2,S.kind,false);
-      SBA.draw(t,()=>{pulse(beat===0?3:2);$('#metro-info').textContent='Précompte '+(beat+1);$$('.mcard.active').forEach(c=>c.classList.remove('active'));});
+      SBA.draw(t,()=>{pulse(beat===0?3:2);swingArm(spb);$('#metro-info').textContent=T('Précompte')+' '+(beat+1);$$('.mcard.active').forEach(c=>c.classList.remove('active'));});
     }
     return dur;
   }
@@ -859,8 +961,8 @@ function grooveStep(i,t){
     const card=$('.mcard[data-m="'+mi+'"]');if(card)card.classList.add('active');
     $$('.st.cur').forEach(x=>x.classList.remove('cur'));
     const cell=card&&card.querySelector('.st[data-i="'+s+'"]');if(cell)cell.classList.add('cur');
-    if(s===0)$('#metro-info').textContent='Mesure '+(bar+1);
-    if(k===0)pulse(s===0?3:2);
+    if(s===0)$('#metro-info').textContent=T('Mesure')+' '+(bar+1);
+    if(k===0){pulse(s===0?3:2);swingArm(spb);}
   });
   return dur;
 }
@@ -875,8 +977,8 @@ document.addEventListener('keydown',e=>{
   else if((e.key==='t'||e.key==='T')&&!e.ctrlKey&&!e.metaKey)tap();
 });
 $('#g-copy').addEventListener('click',async()=>{
-  const txt='Groove à '+S.bpm+' BPM\n'+G.measures.map((m,i)=>'Mesure '+(i+1)+' : '+[0,1,2,3].map(b=>patOf(m.steps,b)).join(' | ')).join('\n');
-  try{await navigator.clipboard.writeText(txt);toast('Formules copiées');}catch(e){window.prompt('Copie ce texte :',txt);}
+  const txt=T('Groove à')+' '+S.bpm+' BPM\n'+G.measures.map((m,i)=>T('Mesure')+' '+(i+1)+' : '+[0,1,2,3].map(b=>patOf(m.steps,b)).join(' | ')).join('\n');
+  try{await navigator.clipboard.writeText(txt);toast('Formules copiées');}catch(e){window.prompt(T('Copie ce texte :'),txt);}
 });
 window.addEventListener('pagehide',()=>{save();});
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&running&&navigator.wakeLock&&!wake){navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{});} });
@@ -887,7 +989,7 @@ $('#sub').value=S.sub;$('#kind').value=S.kind;
 if(!Array.isArray(S.accents)||S.accents.length!==S.num)S.accents=defAccents(S.num,S.den);
 setSig(S.num,S.den,true);
 syncUI();renderPresets();buildRoots();paintOpts();paintInst();
-setMeasureCount(G.count);setTab(tab,false);paintTransport();
+setMeasureCount(G.count);setTab(tab,false);paintTransport();applyLang();
 $('#g-model').value=G.model||'';
 window.__sb={S,G};   // pour les tests
 })();
