@@ -6,11 +6,15 @@
 (function () {
   'use strict';
   var PAIRS = [['Outils', 'Tools'], ['Métronome', 'Metronome'], ['Accordeur', 'Tuner'], ['Grilles', 'Chord charts']];
+  var URLS = [['metronome.html', '/en/metronome/'], ['accordeur.html', '/en/tuner/'], ['grilles.html', '/en/chord-charts/']];
   function lang() { try { return localStorage.getItem('sblang') || 'fr'; } catch (e) { return 'fr'; } }
   function translate() {
     var en = lang() === 'en';
     document.querySelectorAll('.nav-drop a').forEach(function (a) {
       PAIRS.forEach(function (p) { if (a.textContent === p[en ? 0 : 1]) a.textContent = p[en ? 1 : 0]; });
+      var h = a.getAttribute('href') || '', q = '', i = h.indexOf('?');
+      if (i >= 0) { q = h.slice(i); h = h.slice(0, i); }
+      URLS.forEach(function (u) { if (h === u[0] || h === u[1] || h === '/' + u[0]) a.setAttribute('href', (en ? u[1] : u[0]) + q); });
     });
   }
   function place(d) {

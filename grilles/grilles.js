@@ -14,10 +14,117 @@
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   const clone = o => JSON.parse(JSON.stringify(o));
 
+  /* ====================================================== TRADUCTION FR/EN */
+  // Dictionnaire de l'interface, fusionné dans M.EN pour que model.js et pdf.js le voient aussi.
+  Object.assign(M.EN, {
+    "Basse": "Bass", "Guitare": "Guitar",
+    "Titre du morceau": "Song title", "Titre": "Title", "Artiste": "Artist", "Tonalité": "Key", "Tempo": "Tempo",
+    "Note de fin": "End note", "ex. Fin sur Dm": "e.g. End on Dm",
+    "Orientation du PDF": "PDF orientation", "Portrait": "Portrait", "Paysage": "Landscape",
+    "Copier le lien": "Copy link", "Aperçu": "Preview", "Télécharger le PDF": "Download PDF",
+    "Grilles": "Charts", "Structure": "Structure", "Morceaux": "Songs",
+    "Nouveau morceau": "New song", "Ouvrir un .grille": "Open a .grille file", "Enregistrer en .grille": "Save as .grille",
+    "Type de section": "Section type", "Ajouter": "Add", "Dupliquer": "Duplicate", "Supprimer": "Delete",
+    "Monter": "Move up", "Descendre": "Move down",
+    "Section": "Section", "N°": "No.", "Nom perso": "Custom name", "ex. Refrain de fin": "e.g. Final chorus",
+    "Cellules / ligne": "Bars per row", "Lignes": "Rows",
+    "Actions sur la case sélectionnée": "Actions on the selected bar",
+    "Début de reprise": "Start of repeat", "Début reprise": "Repeat start",
+    "Fin de reprise": "End of repeat", "Fin reprise": "Repeat end", "Répéter ×": "Repeat ×",
+    "Case 1.": "1st ending", "Case 2.": "2nd ending",
+    "Même mesure que la précédente": "Same bar as the previous one", "Même mesure": "Same bar", "Vider la case": "Clear bar",
+    "mesures": "bars", "Calcul auto": "Auto count", "Mesures (manuel)": "Bars (manual)",
+    "Commentaire": "Comment", "imprimé sous la grille": "printed under the chart",
+    "Type de partie": "Part type", "Ajouter une partie": "Add a part", "Renuméroter": "Renumber",
+    "Partie sélectionnée": "Selected part", "Grille jouée": "Chart played", "Mesures de la grille": "Chart's bar count",
+    "Mesures": "Bars", "Note": "Note", "ex. fin sur Dm": "e.g. end on Dm",
+    "Avancer": "Move earlier", "Reculer": "Move later", "Retirer": "Remove",
+    "Générer la structure": "Generate the structure", "Générer": "Generate",
+    "Chercher un titre ou un artiste": "Search by title or artist", "Chercher un morceau": "Search for a song",
+    "Sur cet appareil": "On this device", "Exemples": "Examples",
+    // dynamique
+    "Ligne {0}, mesure {1}": "Row {0}, bar {1}", "indication": "cue", "Indication ligne {0}, mesure {1}": "Cue, row {0}, bar {1}",
+    "Stockage du navigateur plein : enregistre tes morceaux en .grille.": "Browser storage is full: save your songs as .grille files.",
+    "Des cases remplies vont être supprimées. Continuer ?": "Some filled bars will be deleted. Continue?",
+    "{0} créé à partir de {1}": "{0} created from {1}",
+    "Supprimer la grille « {0} » ?": "Delete the chart “{0}”?",
+    "sans grille": "no chart", "(aucune)": "(none)",
+    "Remplacer la structure actuelle ?": "Replace the current structure?",
+    "{0} parties générées": "{0} parts generated",
+    "Ajoute au moins une grille avant d'exporter.": "Add at least one chart before exporting.",
+    "Impossible de charger le module PDF.": "Unable to load the PDF module.",
+    "PDF téléchargé : {0}": "PDF downloaded: {0}",
+    "Autorise les fenêtres pop-up pour voir l'aperçu.": "Allow pop-up windows to see the preview.",
+    "Fichier .grille enregistré": ".grille file saved",
+    "« {0} » ouvert": "“{0}” opened",
+    "Ce fichier n'est pas un .grille valide.": "This file is not a valid .grille file.",
+    "{0} parties": "{0} parts", "modifié le {0}": "edited {0}", "{0}  (en cours)": "{0}  (current)",
+    "Ouvrir": "Open", "{0} (copie)": "{0} (copy)",
+    "Aucun morceau ne correspond à la recherche.": "No song matches your search.",
+    "Aucun morceau pour l'instant.": "No songs yet.",
+    "Supprimer « {0} » de cet appareil ? Cette action est définitive.": "Delete “{0}” from this device? This cannot be undone.",
+    "« {0} » supprimé": "“{0}” deleted",
+    "Aucun exemple ne correspond à la recherche.": "No example matches your search.",
+    "en {0}": "in {0}", "Ouvrir une copie": "Open a copy",
+    "« {0} » était déjà dans tes morceaux": "“{0}” was already in your songs",
+    "« {0} » ajouté à tes morceaux": "“{0}” added to your songs",
+    "Lien copié : la personne qui l'ouvre récupère ce morceau.": "Link copied: whoever opens it gets this song.",
+    "Copie ce lien :": "Copy this link:", "Morceau": "Song", "Morceau partagé": "Shared song",
+    "Ce lien de partage est incomplet ou abîmé.": "This share link is incomplete or damaged.",
+    "Nouveau morceau. Le précédent reste dans l'onglet Morceaux.": "New song. The previous one stays in the Songs tab.",
+    // textes de l'exemple intégré (appliqués seulement à la copie créée en anglais)
+    "Refrain de fin": "Final chorus", "Solo guitare": "Guitar solo", "syncopé": "syncopated", "Fin sur Dm": "End on Dm"
+  });
+  const T = M.T, F = M.F, isEn = () => M.lang() === "en";
+  const TITLE_EN = "Free chord chart maker (PDF export) | ScalaBass";
+  // conteneurs reconstruits par le code (exclus du parcours, retraduits via T() dans applyLang)
+  const DYN = "#section-list,#grid,#flow,#i-grid,#new-type,#s-type,#item-type,#gen,#lib-local,#lib-online,#ie-title,#t-total,#m-value";
+  const ATTRS = [["aria-label", "frAria"], ["placeholder", "frPh"], ["title", "frTitle"]];
+  function translateDom() {
+    const en = isEn(), EN = M.EN, root = document.querySelector(".wrap");
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; const nodes = [];
+    while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(n => {
+      const el = n.parentElement;
+      if (!el || el.closest(DYN) || el.closest("[data-en]") || el.closest("#notation-seg,#lang-seg,#site-nav")) return;
+      const raw = n.nodeValue, t = raw.trim().replace(/\s+/g, " ");
+      if (n.__fr === undefined) { if (!t || !EN[t]) return; n.__fr = raw; }
+      const fr = n.__fr.trim();
+      n.nodeValue = en ? n.__fr.replace(fr, EN[fr.replace(/\s+/g, " ")] || fr) : n.__fr;
+    });
+    root.querySelectorAll("[aria-label],[placeholder],[title]").forEach(el => {
+      if (el.closest("#grid,#notation-seg,#lang-seg,#site-nav")) return;   // cases de la grille : voir applyLang
+      ATTRS.forEach(([a, k]) => {
+        if (!el.hasAttribute(a)) return;
+        if (el.dataset[k] === undefined) { const v = el.getAttribute(a); if (!EN[v]) return; el.dataset[k] = v; }
+        el.setAttribute(a, en ? (EN[el.dataset[k]] || el.dataset[k]) : el.dataset[k]);
+      });
+    });
+    root.querySelectorAll("[data-en]").forEach(el => {
+      if (el.dataset.fr === undefined) el.dataset.fr = el.innerHTML;
+      el.innerHTML = en ? el.dataset.en : el.dataset.fr;
+    });
+    const tt = document.querySelector("title");
+    if (tt) { if (tt.dataset.fr === undefined) tt.dataset.fr = tt.textContent; tt.textContent = en ? TITLE_EN : tt.dataset.fr; }
+    document.documentElement.lang = en ? "en" : "fr";
+  }
+  /** Copie de l'exemple intégré dans la langue active (n'affecte jamais un morceau déjà enregistré). */
+  function localExample() {
+    const ex = clone(G.EXAMPLE);
+    if (!isEn()) return ex;
+    ["notes"].forEach(k => { ex[k] = T(ex[k] || ""); });
+    ex.sections.forEach(s => {
+      s.label = T(s.label || ""); s.comment = T(s.comment || "");
+      s.rows.forEach(r => r.forEach(c => { c.note = T(c.note || ""); }));
+    });
+    ex.structure.forEach(it => { it.label = T(it.label || ""); it.note = T(it.note || ""); });
+    return ex;
+  }
+
   // --------------------------------------------------------------- persistance
   function writeLib() {
     try { localStorage.setItem(LIB, JSON.stringify(lib)); }
-    catch (e) { toast("Stockage du navigateur plein : enregistre tes morceaux en .grille."); }
+    catch (e) { toast(T("Stockage du navigateur plein : enregistre tes morceaux en .grille.")); }
   }
   let saveTimer = null;
   function persist() {
@@ -68,7 +175,7 @@
     toast._t = setTimeout(() => t.classList.remove("show"), 2600);
   }
 
-  const fileBase = () => (state.song.title.trim() || "grille").replace(/[\\/:*?"<>|]+/g, "-");
+  const fileBase = () => (state.song.title.trim() || T("grille")).replace(/[\\/:*?"<>|]+/g, "-");
   const cur = () => state.song.sections[state.sec] || null;
   const changed = () => { persist(); refreshCounts(); };
 
@@ -133,7 +240,7 @@
       b.setAttribute("aria-current", String(i === state.sec));
       b.innerHTML = `<span></span><small></small>`;
       b.firstChild.textContent = M.sectionName(s);
-      b.lastChild.textContent = `${M.sectionMeasures(s)} M`;
+      b.lastChild.textContent = M.meas(M.sectionMeasures(s));
       b.addEventListener("click", () => { state.sec = i; state.sel = [0, 0]; renderSectionList(); renderEditor(); });
       li.appendChild(b);
       ol.appendChild(li);
@@ -145,7 +252,7 @@
     state.song.sections.forEach((s, i) => {
       if (!items[i]) return;
       items[i].firstChild.textContent = M.sectionName(s);
-      items[i].lastChild.textContent = `${M.sectionMeasures(s)} M`;
+      items[i].lastChild.textContent = M.meas(M.sectionMeasures(s));
     });
     const s = cur();
     if (s) {
@@ -154,7 +261,7 @@
       if (s.measures_auto !== false) $("#m-manual").value = M.computeMeasures(s);
     }
     const total = state.song.structure.reduce((a, it) => a + M.itemMeasures(state.song, it), 0);
-    $("#t-total").textContent = state.song.structure.length ? `${total} M` : "";
+    $("#t-total").textContent = state.song.structure.length ? M.meas(total) : "";
   }
 
   // --------------------------------------------------------------- éditeur de grille
@@ -214,14 +321,14 @@
         const chord = document.createElement("input");
         chord.className = "chord";
         chord.value = c.chord;
-        chord.setAttribute("aria-label", `Ligne ${r + 1}, mesure ${k + 1}`);
+        chord.setAttribute("aria-label", F("Ligne {0}, mesure {1}", r + 1, k + 1));
         chord.autocomplete = "off"; chord.spellcheck = false;
         chord.setAttribute("autocapitalize", "characters");
         const note = document.createElement("input");
         note.className = "note";
         note.value = c.note;
-        note.placeholder = "indication";
-        note.setAttribute("aria-label", `Indication ligne ${r + 1}, mesure ${k + 1}`);
+        note.placeholder = T("indication");
+        note.setAttribute("aria-label", F("Indication ligne {0}, mesure {1}", r + 1, k + 1));
         el.append(chord, note);
         decorate(el, c);
         chordClass(chord);
@@ -300,7 +407,7 @@
     const rows = Math.max(1, Math.min(24, parseInt($("#s-rows").value) || s.rows.length));
     const lost = s.rows.slice(rows).some(r => r.some(c => !M.cellIsEmpty(c))) ||
       s.rows.some(r => r.slice(cols).some(c => !M.cellIsEmpty(c)));
-    if (lost && !confirm("Des cases remplies vont être supprimées. Continuer ?")) {
+    if (lost && !confirm(T("Des cases remplies vont être supprimées. Continuer ?"))) {
       $("#s-cols").value = s.cols; $("#s-rows").value = s.rows.length; return;
     }
     M.resizeSection(s, cols, rows);
@@ -328,12 +435,12 @@
     state.song.sections.splice(state.sec + 1, 0, d);
     state.sec++;
     renderSectionList(); renderEditor(); changed();
-    toast(`${M.sectionName(d)} créé à partir de ${M.sectionName(s)}`);
+    toast(F("{0} créé à partir de {1}", M.sectionName(d), M.sectionName(s)));
   }
 
   function delSection() {
     const s = cur(); if (!s) return;
-    if (!confirm(`Supprimer la grille « ${M.sectionName(s)} » ?`)) return;
+    if (!confirm(F("Supprimer la grille « {0} » ?", M.sectionName(s)))) return;
     state.song.structure.forEach(it => { if (it.grid === s.id) it.grid = ""; });
     state.song.sections.splice(state.sec, 1);
     state.sec = Math.min(state.sec, state.song.sections.length - 1);
@@ -373,10 +480,10 @@
       const name = M.itemName(it);
       const sec = M.findSection(S, it.grid);
       const ref = sec ? M.sectionName(sec) : "";
-      const extra = [ref && ref !== name ? `= ${ref}` : (sec ? "" : "sans grille"), (it.note || "").trim()].filter(Boolean).join(" · ");
+      const extra = [ref && ref !== name ? `= ${ref}` : (sec ? "" : T("sans grille")), (it.note || "").trim()].filter(Boolean).join(" · ");
       b.innerHTML = `<span class="name"></span><span class="m"></span><span class="ref"></span>`;
       b.children[0].textContent = name;
-      b.children[1].textContent = `${M.itemMeasures(S, it)} M`;
+      b.children[1].textContent = M.meas(M.itemMeasures(S, it));
       b.children[2].textContent = extra;
       b.addEventListener("click", () => { state.item = i; renderStructure(); });
       li.appendChild(b);
@@ -384,7 +491,7 @@
     });
 
     const sel = $("#i-grid");
-    sel.innerHTML = `<option value="">(aucune)</option>` +
+    sel.innerHTML = `<option value="">${T("(aucune)")}</option>` +
       S.sections.map(s => `<option value="${s.id}"></option>`).join("");
     S.sections.forEach((s, i) => { sel.options[i + 1].textContent = M.sectionName(s); });
 
@@ -399,7 +506,7 @@
       $("#i-meas").disabled = it.measures_auto !== false && !!it.grid;
       $("#i-note").value = it.note || "";
     } else {
-      $("#ie-title").textContent = "Partie sélectionnée";
+      $("#ie-title").textContent = T("Partie sélectionnée");
     }
     refreshCounts();
   }
@@ -447,11 +554,11 @@
   function generate() {
     const counts = {};
     $$("#gen input").forEach(i => counts[i.dataset.type] = parseInt(i.value) || 0);
-    if (state.song.structure.length && !confirm("Remplacer la structure actuelle ?")) return;
+    if (state.song.structure.length && !confirm(T("Remplacer la structure actuelle ?"))) return;
     state.song.structure = M.generateStructure(state.song, counts);
     state.item = state.song.structure.length ? 0 : -1;
     renderStructure(); changed();
-    toast(`${state.song.structure.length} parties générées`);
+    toast(F("{0} parties générées", state.song.structure.length));
   }
 
   // --------------------------------------------------------------- PDF & fichiers
@@ -468,16 +575,16 @@
   }
   async function makePdf(song) {
     song = song || state.song;
-    if (!song.sections.length) { toast("Ajoute au moins une grille avant d'exporter."); return null; }
-    try { await ensurePdf(); } catch (e) { toast("Impossible de charger le module PDF."); return null; }
+    if (!song.sections.length) { toast(T("Ajoute au moins une grille avant d'exporter.")); return null; }
+    try { await ensurePdf(); } catch (e) { toast(T("Impossible de charger le module PDF.")); return null; }
     return G.PDF.render(song, state.orient);
   }
 
   async function exportPdf() {
     const doc = await makePdf(); if (!doc) return;
-    const name = `${fileBase()} - ${state.orient === "landscape" ? "paysage" : "portrait"}.pdf`;
+    const name = `${fileBase()} - ${T(state.orient === "landscape" ? "paysage" : "portrait")}.pdf`;
     doc.save(name);
-    toast(`PDF téléchargé : ${name}`);
+    toast(F("PDF téléchargé : {0}", name));
   }
 
   async function previewPdf() {
@@ -485,13 +592,13 @@
     const doc = await makePdf();
     if (!doc) { if (w) w.close(); return; }
     const url = doc.output("bloburl");
-    if (w) w.location.href = url; else toast("Autorise les fenêtres pop-up pour voir l'aperçu.");
+    if (w) w.location.href = url; else toast(T("Autorise les fenêtres pop-up pour voir l'aperçu."));
   }
 
   function saveFile() {
     const blob = new Blob([JSON.stringify(state.song, null, 1)], { type: "application/json" });
     download(blob, `${fileBase()}.grille`);
-    toast("Fichier .grille enregistré");
+    toast(T("Fichier .grille enregistré"));
   }
 
   function openFile(file) {
@@ -500,9 +607,9 @@
       try {
         addAndOpen(M.normalize(JSON.parse(rd.result)));
         setTab("grids");
-        toast(`« ${state.song.title || file.name} » ouvert`);
+        toast(F("« {0} » ouvert", state.song.title || file.name));
       } catch (e) {
-        toast("Ce fichier n'est pas un .grille valide.");
+        toast(T("Ce fichier n'est pas un .grille valide."));
       }
     };
     rd.readAsText(file);
@@ -510,7 +617,7 @@
 
 
   // --------------------------------------------------------------- morceaux : sur cet appareil
-  const fmtDate = t => new Date(t).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const fmtDate = t => new Date(t).toLocaleDateString(isEn() ? "en-GB" : "fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const filterText = () => $("#lib-filter").value.trim().toLowerCase();
   const matches = (title, artist) => { const f = filterText(); return !f || `${title} ${artist}`.toLowerCase().includes(f); };
 
@@ -541,30 +648,30 @@
     let shown = 0;
     ids.forEach(id => {
       const { song, updated } = lib.songs[id];
-      const title = (song.title || "").trim() || "Sans titre";
+      const title = (song.title || "").trim() || T("Sans titre");
       if (!matches(title, song.artist || "")) return;
       shown++;
-      const meta = [song.artist, `${(song.structure || []).length} parties`, `modifié le ${fmtDate(updated)}`].filter(Boolean).join("  ·  ");
+      const meta = [song.artist, F("{0} parties", (song.structure || []).length), F("modifié le {0}", fmtDate(updated))].filter(Boolean).join("  ·  ");
       const cur = id === state.id;
-      ul.appendChild(libRow(title + (cur ? "  (en cours)" : ""), meta, [
-        ["Ouvrir", () => { loadSong(M.normalize(clone(lib.songs[id].song)), id); setTab("grids"); }, "btn small"],
-        ["Dupliquer", () => {
-          const c = clone(lib.songs[id].song); c.title = `${c.title || "Sans titre"} (copie)`;
+      ul.appendChild(libRow(cur ? F("{0}  (en cours)", title) : title, meta, [
+        [T("Ouvrir"), () => { loadSong(M.normalize(clone(lib.songs[id].song)), id); setTab("grids"); }, "btn small"],
+        [T("Dupliquer"), () => {
+          const c = clone(lib.songs[id].song); c.title = F("{0} (copie)", c.title || T("Sans titre"));
           const nid = uid(); lib.songs[nid] = { song: c, updated: Date.now() }; writeLib(); renderLocal();
         }],
-        ["Supprimer", () => deleteLocal(id), "link danger"],
+        [T("Supprimer"), () => deleteLocal(id), "link danger"],
       ], cur));
     });
     if (!shown) {
       const li = document.createElement("li"); li.className = "none";
-      li.textContent = ids.length ? "Aucun morceau ne correspond à la recherche." : "Aucun morceau pour l'instant.";
+      li.textContent = T(ids.length ? "Aucun morceau ne correspond à la recherche." : "Aucun morceau pour l'instant.");
       ul.appendChild(li);
     }
   }
 
   function deleteLocal(id) {
-    const title = lib.songs[id].song.title || "Sans titre";
-    if (!confirm(`Supprimer « ${title} » de cet appareil ? Cette action est définitive.`)) return;
+    const title = lib.songs[id].song.title || T("Sans titre");
+    if (!confirm(F("Supprimer « {0} » de cet appareil ? Cette action est définitive.", title))) return;
     delete lib.songs[id];
     if (id === state.id) {
       const next = Object.keys(lib.songs).sort((a, b) => lib.songs[b].updated - lib.songs[a].updated)[0];
@@ -573,7 +680,7 @@
     }
     writeLib();
     renderLocal();
-    toast(`« ${title} » supprimé`);
+    toast(F("« {0} » supprimé", title));
   }
 
   // --------------------------------------------------------------- morceaux : exemples intégrés
@@ -583,19 +690,19 @@
     const ex = G.EXAMPLE;
     if (!matches(ex.title, ex.artist)) {
       const li = document.createElement("li"); li.className = "none";
-      li.textContent = "Aucun exemple ne correspond à la recherche.";
+      li.textContent = T("Aucun exemple ne correspond à la recherche.");
       ul.appendChild(li); return;
     }
-    const meta = [ex.artist, ex.key && `en ${ex.key}`, `${ex.structure.length} parties`].filter(Boolean).join("  ·  ");
+    const meta = [ex.artist, ex.key && F("en {0}", ex.key), F("{0} parties", ex.structure.length)].filter(Boolean).join("  ·  ");
     ul.appendChild(libRow(ex.title, meta, [
-      ["Ouvrir une copie", () => {
-        const dup = addAndOpen(M.normalize(clone(ex)));
+      [T("Ouvrir une copie"), () => {
+        const dup = addAndOpen(M.normalize(localExample()));
         setTab("grids");
-        toast(dup ? `« ${ex.title} » était déjà dans tes morceaux` : `« ${ex.title} » ajouté à tes morceaux`);
+        toast(F(dup ? "« {0} » était déjà dans tes morceaux" : "« {0} » ajouté à tes morceaux", ex.title));
       }, "btn small"],
       ["PDF", async () => {
-        const doc = await makePdf(M.normalize(clone(ex)));
-        if (doc) doc.save(`${ex.title} - ${state.orient === "landscape" ? "paysage" : "portrait"}.pdf`);
+        const doc = await makePdf(M.normalize(localExample()));
+        if (doc) doc.save(`${ex.title} - ${T(state.orient === "landscape" ? "paysage" : "portrait")}.pdf`);
       }],
     ]));
   }
@@ -624,9 +731,9 @@
     const url = await shareLink();
     try {
       await navigator.clipboard.writeText(url);
-      toast("Lien copié : la personne qui l'ouvre récupère ce morceau.");
+      toast(T("Lien copié : la personne qui l'ouvre récupère ce morceau."));
     } catch (e) {
-      prompt("Copie ce lien :", url);
+      prompt(T("Copie ce lien :"), url);
     }
   }
   async function readShareHash() {
@@ -637,9 +744,9 @@
       if (h[0] === "g") bytes = await pipe(bytes, DecompressionStream);
       const song = M.normalize(JSON.parse(new TextDecoder().decode(bytes)));
       const dup = addAndOpen(song);
-      toast(dup ? `« ${song.title || "Morceau"} » était déjà dans tes morceaux` : `« ${song.title || "Morceau partagé"} » ajouté à tes morceaux`);
+      toast(dup ? F("« {0} » était déjà dans tes morceaux", song.title || T("Morceau")) : F("« {0} » ajouté à tes morceaux", song.title || T("Morceau partagé")));
     } catch (e) {
-      toast("Ce lien de partage est incomplet ou abîmé.");
+      toast(T("Ce lien de partage est incomplet ou abîmé."));
     }
     history.replaceState(null, "", location.pathname + location.search);
     return true;
@@ -647,8 +754,7 @@
 
   // --------------------------------------------------------------- init
   function init() {
-    const opts = M.SECTION_TYPES.map(t => `<option>${t}</option>`).join("");
-    ["#new-type", "#s-type", "#item-type"].forEach(s => { $(s).innerHTML = opts; });
+    fillTypes();
     $("#new-type").value = "Couplet"; $("#item-type").value = "Couplet";
 
     const gen = $("#gen");
@@ -656,7 +762,7 @@
     M.SECTION_TYPES.forEach(t => {
       const id = "g-" + t.replace(/\W/g, "");
       const lab = document.createElement("label");
-      lab.htmlFor = id; lab.textContent = t;
+      lab.htmlFor = id; lab.textContent = T(t);
       const inp = document.createElement("input");
       inp.type = "number"; inp.min = 0; inp.max = 12; inp.value = def[t] || 0;
       inp.id = id; inp.dataset.type = t;
@@ -680,7 +786,7 @@
       loadSong(M.defaultSong());
       setTab("grids");
       $("#f-title").focus();
-      toast("Nouveau morceau. Le précédent reste dans l'onglet Morceaux.");
+      toast(T("Nouveau morceau. Le précédent reste dans l'onglet Morceaux."));
     });
     $("#b-share").addEventListener("click", copyShare);
     $("#lib-filter").addEventListener("input", () => { renderLocal(); renderExamples(); });
@@ -732,9 +838,37 @@
     setOrient(state.orient);
     const cur = lib.current && lib.songs[lib.current];
     if (cur) loadSong(M.normalize(clone(cur.song)), lib.current);
-    else loadSong(M.normalize(clone(G.EXAMPLE)));
+    else loadSong(M.normalize(localExample()));
     setTab(state.tab);
+    applyLang();
+    window.onNotation = applyLang;
     readShareHash().then(ok => ok && setTab("grids"));
+  }
+
+  /* listes de types : la valeur reste le nom français (format .grille), seul le libellé est traduit */
+  function fillTypes() {
+    ["#new-type", "#s-type", "#item-type"].forEach(sel => {
+      const el = $(sel), v = el.value;
+      el.innerHTML = M.SECTION_TYPES.map(t => `<option value="${t}">${T(t)}</option>`).join("");
+      if (v) el.value = v;
+    });
+  }
+
+  /* bascule FR/EN : retraduit le statique et reconstruit le dynamique depuis l'état (rien n'est perdu) */
+  function applyLang() {
+    translateDom();
+    fillTypes();
+    const s = cur(); if (s) $("#s-type").value = s.type;
+    $$("#gen label").forEach(l => { const i = document.getElementById(l.htmlFor); if (i) l.textContent = T(i.dataset.type); });
+    $$("#grid .cell").forEach(el => {
+      const r = +el.dataset.r + 1, k = +el.dataset.c + 1, note = el.querySelector(".note");
+      el.querySelector(".chord").setAttribute("aria-label", F("Ligne {0}, mesure {1}", r, k));
+      note.placeholder = T("indication");
+      note.setAttribute("aria-label", F("Indication ligne {0}, mesure {1}", r, k));
+    });
+    renderSectionList();
+    renderStructure();
+    renderLocal(); renderExamples();
   }
 
   document.addEventListener("DOMContentLoaded", init);

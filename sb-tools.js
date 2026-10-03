@@ -27,7 +27,8 @@
     'Cadences': 'Cadences', 'Analyse': 'Analyse', 'Tonalités': 'Key Index',
     'Outils': 'Tools', 'Métronome': 'Metronome', 'Accordeur': 'Tuner', 'Grilles': 'Chord charts',
   };
-  const TOOLS = [['metronome.html', 'Métronome'], ['accordeur.html', 'Accordeur'], ['grilles.html', 'Grilles']];
+  const TOOLS = [['metronome.html', 'Métronome', '/en/metronome/', 'metronome'], ['accordeur.html', 'Accordeur', '/en/tuner/', 'accordeur'], ['grilles.html', 'Grilles', '/en/chord-charts/', 'grilles']];
+  const thref = t => lang() === 'en' ? t[2] : t[0];
   const BRAND = { bass: 'ScalaBass', guitar: 'ScalaSix' };
   const LOGO = { bass: 'img/logobasse.png', guitar: 'img/logoguitare.png' };
 
@@ -53,12 +54,13 @@
       nav.appendChild(a);
     });
     const drop = document.createElement('div'); drop.className = 'nav-drop';
-    const top = document.createElement('a'); top.href = TOOLS[0][0]; top.className = 'nav-link active'; top.textContent = tr('Outils');
+    const top = document.createElement('a'); top.href = thref(TOOLS[0]); top.className = 'nav-link active'; top.textContent = tr('Outils');
     top.setAttribute('aria-haspopup', 'true');
     drop.appendChild(top);
     const menu = document.createElement('div'); menu.className = 'nav-menu';
-    TOOLS.forEach(([href, label]) => {
-      const a = document.createElement('a'); a.href = href; a.className = 'nav-link' + (href.startsWith(page()) ? ' active' : '');
+    TOOLS.forEach(t => {
+      const label = t[1];
+      const a = document.createElement('a'); a.href = thref(t); a.className = 'nav-link' + (t[3] === page() ? ' active' : '');
       a.textContent = tr(label); menu.appendChild(a);
     });
     drop.appendChild(menu); nav.appendChild(drop);
@@ -92,5 +94,12 @@
     buildNav();
     if (typeof g.onNotation === 'function') g.onNotation();
   };
+  /* l'URL fixe la langue (métronome.html ↔ /en/metronome/…) : changer de langue = changer de page */
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('#lang-seg [data-lang]'); if (!b) return;
+    const alt = document.querySelector('link[rel="alternate"][hreflang="' + b.dataset.lang + '"]'); if (!alt) return;
+    const u = new URL(alt.getAttribute('href'), location.href);
+    if (u.pathname !== location.pathname) setTimeout(() => { location.href = u.pathname + location.search + location.hash; }, 0);
+  });
   g.SBT = SBT;
 })(window);
