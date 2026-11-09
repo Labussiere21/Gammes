@@ -19,3 +19,6 @@ ressources/
 *.txt
 !robots.txt
 Capture d'*.png
+
+# --- Projet GrilleMaker (appli de bureau, builds PyInstaller) : hors site ---
+Generateur de grilles/
