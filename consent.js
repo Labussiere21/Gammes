@@ -92,7 +92,20 @@
     if (!document.getElementById('sb-consent')) build();
   };
 
+  // Bandeau seulement pour les visiteurs europeens (fuseau Europe/*).
+  // La protection legale ne depend PAS de ce test : Google applique
+  // 'denied' par defaut aux IP europeennes (parametre region dans le <head>).
+  function inEurope() {
+    try {
+      var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (!tz) return true;
+      return tz.indexOf('Europe/') === 0 ||
+        /^Atlantic\/(Canary|Madeira|Azores|Reykjavik|Faroe)$/.test(tz);
+    } catch (e) { return true; }
+  }
+
   if (stored()) return;               // choix deja exprime
+  if (!inEurope()) return;            // hors Europe : mesure active, pas de bandeau
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', build);
   } else {
