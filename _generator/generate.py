@@ -480,6 +480,81 @@ def scale_slug(scale_id):
     return scale_id.replace('_','-')
 
 # ---------------------------------------------------------------------------
+# SEO : autres noms et gammes proches
+# ---------------------------------------------------------------------------
+# Noms courants absents de SCALE_DEFS. Les gammes de SCALE_DEFS qui ont
+# exactement les memes intervalles sont ajoutees automatiquement.
+SCALE_ALT_NAMES = {
+    "major":       (["Ionien"],               ["Ionian"]),
+    "minor":       (["Éolien"],               ["Aeolian"]),
+    "melodic":     (["Mineure jazz"],         ["Jazz Minor"]),
+    "altered":     (["Super locrien"],        ["Super Locrian"]),
+    "dim":         (["Octatonique"],          ["Octatonic"]),
+    "dim_ht":      (["Octatonique"],          ["Octatonic"]),
+    "phryg_dom":   (["Phrygien espagnol"],    ["Spanish Phrygian"]),
+    "double_harm": (["Byzantine"],            ["Byzantine"]),
+    "arabic":      (["Majeure locrienne"],    ["Major Locrian"]),
+    "hung_min":    (["Tzigane mineure"],      ["Gypsy Minor"]),
+    "whole_tone":  (["Gamme par tons"],       ["Whole Tone"]),
+}
+
+def _label(sc, lang):
+    return sc["label"] if lang == "fr" else sc.get("label_en", sc["label"])
+
+def scale_aliases(scale, lang):
+    """Autres noms de la gamme : noms usuels + gammes aux memes intervalles."""
+    own = _label(scale, lang).lower()
+    names = list(SCALE_ALT_NAMES.get(scale["id"], ([], []))[0 if lang == "fr" else 1])
+    for sc in SCALE_DEFS:
+        if sc["id"] != scale["id"] and sc["iv"] == scale["iv"]:
+            names.append(_label(sc, lang))
+    out = []
+    for n in names:
+        if n.lower() != own and n.lower() not in [o.lower() for o in out]:
+            out.append(n)
+    return out
+
+def related_scales(scale, lang, limit=8):
+    """Gammes proches (meme tonique) : memes notes d'abord, puis meme groupe et meme famille."""
+    same = [sc for sc in SCALE_DEFS if sc["id"] != scale["id"] and sc["iv"] == scale["iv"]]
+    near = [sc for sc in SCALE_DEFS if sc["id"] != scale["id"] and sc not in same
+            and sc["group"] == scale["group"] and sc["fam"] == scale["fam"]]
+    rest = [sc for sc in SCALE_DEFS if sc["id"] != scale["id"] and sc not in same and sc not in near
+            and sc["group"] == scale["group"]]
+    picked = (same + near + rest)[:limit]
+    return [{"label": _label(sc, lang), "slug": scale_slug(sc["id"]),
+             "same_notes": sc in same} for sc in picked]
+
+def seo_scale(root_name, scale, lang, instrument, notes_str, ivstr):
+    """Titre, meta description et titre OG d'une page gamme.
+    Titre court (< 60 car.) centre sur la requete ; les notes vont dans la meta."""
+    label = _label(scale, lang)
+    al = scale_aliases(scale, lang)
+    if lang == "fr":
+        inst = "à la basse" if instrument == "bass" else "à la guitare"
+        title = f"Gamme de {root_name} {label} {inst} : notes et tablature"
+        if len(title) > 65:
+            title = f"Gamme de {root_name} {label} {inst}"
+        aka = f", aussi appelée {', '.join(n[0].lower() + n[1:] for n in al[:2])}" if al else ""
+        meta = (f"Gamme de {root_name} {label} {inst}{aka} : {notes_str}. "
+                f"Intervalles {ivstr}. Tablature, positions sur le manche et accords de la gamme.")
+        og = f"Gamme de {root_name} {label} — {'Basse' if instrument == 'bass' else 'Guitare'}"
+    else:
+        inst = "for Bass" if instrument == "bass" else "for Guitar"
+        title = f"{root_name} {label} Scale {inst} – Notes, Tab & Fretboard"
+        if len(title) > 65:
+            title = f"{root_name} {label} Scale {inst} – Notes & Tab"
+        aka = f" (also called {', '.join(al[:2])})" if al else ""
+        meta = (f"{root_name} {label} scale {inst.lower()}{aka}: {notes_str}. "
+                f"Intervals {ivstr}. Tab, fretboard positions and scale chords.")
+        og = f"{root_name} {label} Scale — {'Bass' if instrument == 'bass' else 'Guitar'}"
+    return {"ui_title": title, "ui_meta_desc": meta, "ui_og_title": og, "aliases": al,
+            "related_scales": related_scales(scale, lang),
+            "ui_aka": ("Aussi appelée" if lang == "fr" else "Also called"),
+            "ui_related": (f"Gammes proches en {root_name}" if lang == "fr" else f"Related scales in {root_name}"),
+            "ui_same_notes": ("mêmes notes" if lang == "fr" else "same notes")}
+
+# ---------------------------------------------------------------------------
 # GÉNÉRATION
 # ---------------------------------------------------------------------------
 def main():
@@ -534,8 +609,6 @@ def main():
                 "nav_roots":   [{"name": r["fr"],   "slug": r["slug"]}    for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/fr/gammes",
                 # UI FR
-                "ui_title":         f"Gamme de {root['fr']} {scale['label']} pour basse — {notes_str}",
-                "ui_meta_desc":     f"Gamme de {root['fr']} {scale['label']} pour basse 4 cordes : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Intervalles : {ivstr}. Positions sur le manche, tablature interactive.",
                 "ui_h1":            f"Gamme de {root['fr']} {scale['label']}",
                 "ui_bass":          "Basse 4 cordes",
                 "ui_family":        f"famille {'majeure' if scale['fam']=='maj' else 'mineure'}",
@@ -550,13 +623,13 @@ def main():
                 "ui_cta_btn":       "Explorer dans ScalaBass →",
                 "ui_other_keys":    "Même gamme dans d'autres toniques",
                 "ui_all_scales":    "Toutes les gammes",
-                "ui_og_title":      f"Gamme {root['fr']} {scale['label']} — Basse",
                 "ui_og_desc":       f"{root['fr']} {scale['label']} : {notes_str}",
                 "ui_schema_head":   f"Gamme de {root['fr']} {scale['label']} pour basse",
                 "ui_schema_desc":   f"{root['fr']} {scale['label']} pour basse 4 cordes : {notes_str}. Intervalles : {ivstr}.",
             }
             out_dir_fr = OUT_ROOT_FR / root["slug"] / slug_s
             out_dir_fr.mkdir(parents=True, exist_ok=True)
+            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'bass', notes_str, ivstr))
             (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             pages_fr.append(page_url_fr)
 
@@ -588,8 +661,6 @@ def main():
                 "nav_roots":   [{"name": r["name"], "slug": r["slug_en"]} for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/en/scales",
                 # UI EN
-                "ui_title":        f"{root['name']} {scale.get('label_en', scale['label'])} Scale for Bass — {notes_str_en}",
-                "ui_meta_desc":    f"{root['name']} {scale.get('label_en', scale['label'])} scale for 4-string bass: {notes_str_en}. {n_notes} note{'s' if n_notes>1 else ''}. Intervals: {ivstr}. Fretboard positions, interactive tablature.",
                 "ui_h1":           f"{root['name']} {scale.get('label_en', scale['label'])} Scale",
                 "ui_bass":         "4-string bass",
                 "ui_family":       f"{'major' if scale['fam']=='maj' else 'minor'} family",
@@ -604,13 +675,13 @@ def main():
                 "ui_cta_btn":      "Explore in ScalaBass →",
                 "ui_other_keys":   "Same scale in other keys",
                 "ui_all_scales":   "All scales",
-                "ui_og_title":     f"{root['name']} {scale.get('label_en', scale['label'])} Scale — Bass",
                 "ui_og_desc":      f"{root['name']} {scale.get('label_en', scale['label'])}: {notes_str_en}",
                 "ui_schema_head":  f"{root['name']} {scale.get('label_en', scale['label'])} scale for bass",
                 "ui_schema_desc":  f"{root['name']} {scale.get('label_en', scale['label'])} for 4-string bass: {notes_str_en}. Intervals: {ivstr}.",
             }
             out_dir_en = OUT_ROOT_EN / root["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
+            ctx_en.update(seo_scale(root['name'], scale, 'en', 'bass', notes_str_en, ivstr))
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
             pages_en.append(page_url_en)
 
@@ -658,8 +729,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["fr"],   "slug": r["slug"]}    for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/fr/gammes",
-                "ui_title":         f"Gamme de {eroot['fr']} {scale['label']} pour basse — {notes_str}",
-                "ui_meta_desc":     f"Gamme de {eroot['fr']} {scale['label']} pour basse : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Intervalles : {ivstr}.",
                 "ui_h1":            f"Gamme de {eroot['fr']} {scale['label']}",
                 "ui_bass":          "Basse 4 cordes",
                 "ui_family":        f"famille {'majeure' if scale['fam']=='maj' else 'mineure'}",
@@ -674,13 +743,13 @@ def main():
                 "ui_cta_btn":       "Explorer dans ScalaBass →",
                 "ui_other_keys":    "Même gamme dans d'autres toniques",
                 "ui_all_scales":    "Toutes les gammes",
-                "ui_og_title":      f"Gamme {eroot['fr']} {scale['label']} — Basse",
                 "ui_og_desc":       f"{eroot['fr']} {scale['label']} : {notes_str}",
                 "ui_schema_head":   f"Gamme de {eroot['fr']} {scale['label']} pour basse",
                 "ui_schema_desc":   f"{eroot['fr']} {scale['label']} pour basse : {notes_str}. Intervalles : {ivstr}.",
             }
             out_dir_fr = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir_fr.mkdir(parents=True, exist_ok=True)
+            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'bass', notes_str, ivstr))
             (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             # Page enharmonique : canonique vers la page principale, donc PAS
             # dans le sitemap (on ne soumet que des URLs canoniques).
@@ -712,8 +781,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["name"], "slug": r["slug_en"]} for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/en/scales",
-                "ui_title":        f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale for Bass — {notes_str_en}",
-                "ui_meta_desc":    f"{eroot['name']} {scale.get('label_en', scale['label'])} scale for bass: {notes_str_en}. {n_notes} note{'s' if n_notes>1 else ''}. Intervals: {ivstr}.",
                 "ui_h1":           f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale",
                 "ui_bass":         "4-string bass",
                 "ui_family":       f"{'major' if scale['fam']=='maj' else 'minor'} family",
@@ -728,13 +795,13 @@ def main():
                 "ui_cta_btn":      "Explore in ScalaBass →",
                 "ui_other_keys":   "Same scale in other keys",
                 "ui_all_scales":   "All scales",
-                "ui_og_title":     f"{eroot['name']} {scale.get('label_en', scale['label'])} Scale — Bass",
                 "ui_og_desc":      f"{eroot['name']} {scale.get('label_en', scale['label'])}: {notes_str_en}",
                 "ui_schema_head":  f"{eroot['name']} {scale.get('label_en', scale['label'])} scale for bass",
                 "ui_schema_desc":  f"{eroot['name']} {scale.get('label_en', scale['label'])} for bass: {notes_str_en}. Intervals: {ivstr}.",
             }
             out_dir_en = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
+            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'bass', notes_str_en, ivstr))
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
 
     # ---- Hub FR ----

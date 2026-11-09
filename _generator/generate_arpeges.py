@@ -407,7 +407,7 @@ def gen_hub(out_root, lang_code, pages_list, base_url_path, app_url, accent,
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){{dataLayer.push(arguments);}}
-  gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500}});
+  gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'}});gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']}});
   try{{ if(localStorage.getItem('sbconsent')==='granted'){{ gtag('consent','update',{{'analytics_storage':'granted'}}); }} }}catch(e){{}}
   gtag('js', new Date());
   gtag('config', 'G-D2K9X05BCG');
@@ -524,7 +524,7 @@ def main():
 
     ui_bass_fr = {
         "notes_secondary_label": "Notation anglaise",
-        "title_tmpl":  "Arpège {name} basse — {notes} | ScalaBass",
+        "title_tmpl":  "Arpège {name} à la basse : notes et positions",
         "meta_tmpl":   "Arpège {name} à la basse électrique : {notes}. {n} notes. Positions, intervalles, appli interactive.",
         "h1_tmpl":     "Arpège {name} à la basse",
         "symbol":      "Symbole",
@@ -539,7 +539,7 @@ def main():
     }
     ui_bass_en = {
         "notes_secondary_label": "Solfège",
-        "title_tmpl":  "{name} Bass Arpeggio — {notes} | ScalaBass",
+        "title_tmpl":  "{name} Bass Arpeggio – Notes & Positions",
         "meta_tmpl":   "{name} bass arpeggio: {notes}. {n} notes. Positions, intervals, interactive app.",
         "h1_tmpl":     "{name} Bass Arpeggio",
         "symbol":      "Symbol",
@@ -600,7 +600,7 @@ def main():
 
     ui_guit_fr = {
         "notes_secondary_label": "Notation anglaise",
-        "title_tmpl":  "Arpège {name} guitare — {notes} | ScalaSix",
+        "title_tmpl":  "Arpège {name} à la guitare : notes et positions",
         "meta_tmpl":   "Arpège {name} à la guitare 6 cordes : {notes}. {n} notes. Positions, sweep picking, appli interactive.",
         "h1_tmpl":     "Arpège {name} à la guitare",
         "symbol":      "Symbole",
@@ -615,7 +615,7 @@ def main():
     }
     ui_guit_en = {
         "notes_secondary_label": "Solfège",
-        "title_tmpl":  "{name} Guitar Arpeggio — {notes} | ScalaSix",
+        "title_tmpl":  "{name} Guitar Arpeggio – Notes & Positions",
         "meta_tmpl":   "{name} guitar arpeggio: {notes}. {n} notes. Positions, sweep picking, interactive app.",
         "h1_tmpl":     "{name} Guitar Arpeggio",
         "symbol":      "Symbol",

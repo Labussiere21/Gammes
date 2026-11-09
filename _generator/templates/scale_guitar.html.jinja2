@@ -87,6 +87,8 @@
     .page-nav{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px}
     .page-nav a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--muted)}
     .page-nav a:hover{color:var(--text);text-decoration:none}
+    .page-nav.related{margin-top:16px;padding-top:0;border-top:0}
+    .sub.aka{margin-top:-20px}
     .page-nav .active{border-color:rgba(196,16,44,.4);color:var(--brass)}
   </style>
 </head>
@@ -119,6 +121,9 @@
     &nbsp;·&nbsp; {{ n_notes }} note{{ 's' if n_notes > 1 else '' }}
     &nbsp;·&nbsp; {{ ui_family }}
   </p>
+  {%- if aliases %}
+  <p class="sub aka">{{ ui_aka }} : {{ aliases|join(', ') }}</p>
+  {%- endif %}
 
   <h2>{{ ui_notes }}</h2>
   <div class="notes-row">
@@ -187,6 +192,15 @@
     <p>{{ ui_cta_text | safe }}</p>
     <a class="cta-btn" href="{{ app_link }}">{{ ui_cta_btn }}</a>
   </div>
+
+  {%- if related_scales %}
+  <h2 style="margin-top:40px">{{ ui_related }}</h2>
+  <div class="page-nav related">
+    {%- for r in related_scales %}
+    <a href="{{ nav_base }}/{{ root.slug if lang == 'fr' else root.slug_en }}/{{ r.slug }}/">{{ r.label }}{% if r.same_notes %} <small>({{ ui_same_notes }})</small>{% endif %}</a>
+    {%- endfor %}
+  </div>
+  {%- endif %}
 
   <h2 style="margin-top:40px">{{ ui_other_keys }}</h2>
   <div class="page-nav">

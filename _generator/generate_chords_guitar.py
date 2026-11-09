@@ -20,6 +20,15 @@ from jinja2 import Environment, FileSystemLoader
 sys.path.insert(0, str(Path(__file__).parent))
 from generate import ROOTS, ENHARMONIC_ROOTS
 
+_SYM_SPECIAL = {"+": "aug", "+Δ7": "maj7#5", "7+": "7#5", "°": "dim", "°7": "dim7", "ø7": "m7b5"}
+
+def ascii_sym(sym):
+    """Symbole tel qu'on le tape dans Google : Δ7 -> maj7, ♯ -> #, ♭ -> b."""
+    if sym in _SYM_SPECIAL:
+        return _SYM_SPECIAL[sym]
+    return sym.replace("Δ", "maj").replace("♯", "#").replace("♭", "b")
+
+
 # ---------------------------------------------------------------------------
 # CONFIG
 # ---------------------------------------------------------------------------
@@ -394,8 +403,9 @@ def _gen_page(tpl, chord, group, root, cslug, lang, out_root, pages_list,
             "BASE_URL": BASE_URL,
             "nav_roots": nav_roots_fr,
             "nav_base": f"{BASE_URL}/fr/accords-guitare",
-            "ui_title": f"Accord {chord_name_full} guitare — {notes_str} | ScalaBass",
-            "ui_meta_desc": f"Accord {chord_name_full} à la guitare : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Diagrammes, positions sur le manche, système CAGED. Appli interactive.",
+            "ui_title": (f"Accord {chord_name_full} à la guitare : diagrammes et doigtés"
+                         if len(chord_name_full) <= 26 else f"Accord {chord_name_full} à la guitare : diagrammes"),
+            "ui_meta_desc": f"Accord {root_display_fr}{ascii_sym(chord['sym'])} ({chord_name_full}) à la guitare : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Diagrammes, positions sur le manche, système CAGED. Appli interactive.",
             "ui_h1": f"Accord de {chord_name_full} à la guitare",
             "ui_symbol": "Symbole",
             "ui_notes": "Notes de l'accord",
@@ -438,8 +448,8 @@ def _gen_page(tpl, chord, group, root, cslug, lang, out_root, pages_list,
             "BASE_URL": BASE_URL,
             "nav_roots": nav_roots_en,
             "nav_base": f"{BASE_URL}/en/chords-guitar",
-            "ui_title": f"{chord_name_full} Guitar Chord — {notes_str} | ScalaBass",
-            "ui_meta_desc": f"{chord_name_full} guitar chord: {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Chord diagrams, CAGED positions, interactive fretboard.",
+            "ui_title": f"{root_display_en}{ascii_sym(chord['sym'])} Guitar Chord ({chord_label}): Diagrams & Fingerings",
+            "ui_meta_desc": f"{root_display_en}{ascii_sym(chord['sym'])} ({chord_name_full}) guitar chord: {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Chord diagrams, CAGED positions, interactive fretboard.",
             "ui_h1": f"{chord_name_full} Guitar Chord",
             "ui_symbol": "Symbol",
             "ui_notes": "Chord Notes",
@@ -507,7 +517,7 @@ def gen_hub(out_root, lang, pages_list):
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){{dataLayer.push(arguments);}}
-  gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500}});
+  gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'}});gtag('consent','default',{{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']}});
   try{{ if(localStorage.getItem('sbconsent')==='granted'){{ gtag('consent','update',{{'analytics_storage':'granted'}}); }} }}catch(e){{}}
   gtag('js', new Date());
   gtag('config', 'G-D2K9X05BCG');

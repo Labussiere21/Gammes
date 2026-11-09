@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from generate import (
     ROOTS, ENHARMONIC_ROOTS, SCALE_DEFS,
     build_scale, build_triads, fr_note, pretty,
-    interval_str, scale_slug, pc_of,
+    interval_str, scale_slug, pc_of, seo_scale,
 )
 
 # ---------------------------------------------------------------------------
@@ -403,8 +403,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["fr"],   "slug": r["slug"]}    for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/fr/gammes-guitare",
-                "ui_title":         f"Gamme de {root['fr']} {scale['label']} guitare — {notes_str}",
-                "ui_meta_desc":     f"Gamme de {root['fr']} {scale['label']} pour guitare 6 cordes : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Intervalles : {ivstr}. Positions sur le manche, manche interactif.",
                 "ui_h1":            f"Gamme de {root['fr']} {scale['label']} à la guitare",
                 "ui_instrument":    "Guitare 6 cordes",
                 "ui_family":        f"famille {'majeure' if scale['fam']=='maj' else 'mineure'}",
@@ -419,13 +417,13 @@ def main():
                 "ui_cta_btn":       "Explorer dans ScalaBass →",
                 "ui_other_keys":    "Même gamme dans d'autres toniques",
                 "ui_all_scales":    "Toutes les gammes guitare",
-                "ui_og_title":      f"Gamme {root['fr']} {scale['label']} — Guitare",
                 "ui_og_desc":       f"{root['fr']} {scale['label']} guitare : {notes_str}",
                 "ui_schema_head":   f"Gamme de {root['fr']} {scale['label']} pour guitare",
                 "ui_schema_desc":   f"{root['fr']} {scale['label']} pour guitare 6 cordes : {notes_str}. Intervalles : {ivstr}.",
             }
             out_dir = OUT_ROOT_FR / root["slug"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
+            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'guitar', notes_str, ivstr))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             pages_fr.append(page_url_fr)
 
@@ -456,8 +454,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["name"], "slug": r["slug_en"]} for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/en/scales-guitar",
-                "ui_title":        f"{root['name']} {scale.get('label_en', scale['label'])} Guitar Scale — {notes_str_en}",
-                "ui_meta_desc":    f"{root['name']} {scale.get('label_en', scale['label'])} scale for 6-string guitar: {notes_str_en}. {n_notes} note{'s' if n_notes>1 else ''}. Intervals: {ivstr}. Fretboard positions, interactive tab.",
                 "ui_h1":           f"{root['name']} {scale.get('label_en', scale['label'])} Guitar Scale",
                 "ui_instrument":   "6-string guitar",
                 "ui_family":       f"{'major' if scale['fam']=='maj' else 'minor'} family",
@@ -472,13 +468,13 @@ def main():
                 "ui_cta_btn":      "Explore in ScalaBass →",
                 "ui_other_keys":   "Same scale in other keys",
                 "ui_all_scales":   "All guitar scales",
-                "ui_og_title":     f"{root['name']} {scale.get('label_en', scale['label'])} Guitar Scale",
                 "ui_og_desc":      f"{root['name']} {scale.get('label_en', scale['label'])} guitar: {notes_str_en}",
                 "ui_schema_head":  f"{root['name']} {scale.get('label_en', scale['label'])} guitar scale",
                 "ui_schema_desc":  f"{root['name']} {scale.get('label_en', scale['label'])} for 6-string guitar: {notes_str_en}. Intervals: {ivstr}.",
             }
             out_dir = OUT_ROOT_EN / root["slug_en"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
+            ctx_en.update(seo_scale(root['name'], scale, 'en', 'guitar', notes_str_en, ivstr))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
             pages_en.append(page_url_en)
 
@@ -526,8 +522,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["fr"],   "slug": r["slug"]}    for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/fr/gammes-guitare",
-                "ui_title":         f"Gamme de {eroot['fr']} {scale['label']} guitare — {notes_str}",
-                "ui_meta_desc":     f"Gamme de {eroot['fr']} {scale['label']} pour guitare : {notes_str}. {n_notes} note{'s' if n_notes>1 else ''}. Intervalles : {ivstr}.",
                 "ui_h1":            f"Gamme de {eroot['fr']} {scale['label']} à la guitare",
                 "ui_instrument":    "Guitare 6 cordes",
                 "ui_family":        f"famille {'majeure' if scale['fam']=='maj' else 'mineure'}",
@@ -542,13 +536,13 @@ def main():
                 "ui_cta_btn":       "Explorer dans ScalaBass →",
                 "ui_other_keys":    "Même gamme dans d'autres toniques",
                 "ui_all_scales":    "Toutes les gammes guitare",
-                "ui_og_title":      f"Gamme {eroot['fr']} {scale['label']} — Guitare",
                 "ui_og_desc":       f"{eroot['fr']} {scale['label']} guitare : {notes_str}",
                 "ui_schema_head":   f"Gamme de {eroot['fr']} {scale['label']} pour guitare",
                 "ui_schema_desc":   f"{eroot['fr']} {scale['label']} pour guitare : {notes_str}. Intervalles : {ivstr}.",
             }
             out_dir = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
+            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'guitar', notes_str, ivstr))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             # Page enharmonique : canonique vers la page principale, donc PAS
             # dans le sitemap (on ne soumet que des URLs canoniques).
@@ -580,8 +574,6 @@ def main():
                 "BASE_URL":    BASE_URL,
                 "nav_roots":   [{"name": r["name"], "slug": r["slug_en"]} for r in ROOTS],
                 "nav_base":    f"{BASE_URL}/en/scales-guitar",
-                "ui_title":        f"{eroot['name']} {scale.get('label_en', scale['label'])} Guitar Scale — {notes_str_en}",
-                "ui_meta_desc":    f"{eroot['name']} {scale.get('label_en', scale['label'])} guitar scale: {notes_str_en}. {n_notes} note{'s' if n_notes>1 else ''}. Intervals: {ivstr}.",
                 "ui_h1":           f"{eroot['name']} {scale.get('label_en', scale['label'])} Guitar Scale",
                 "ui_instrument":   "6-string guitar",
                 "ui_family":       f"{'major' if scale['fam']=='maj' else 'minor'} family",
@@ -596,13 +588,13 @@ def main():
                 "ui_cta_btn":      "Explore in ScalaBass →",
                 "ui_other_keys":   "Same scale in other keys",
                 "ui_all_scales":   "All guitar scales",
-                "ui_og_title":     f"{eroot['name']} {scale.get('label_en', scale['label'])} Guitar Scale",
                 "ui_og_desc":      f"{eroot['name']} {scale.get('label_en', scale['label'])} guitar: {notes_str_en}",
                 "ui_schema_head":  f"{eroot['name']} {scale.get('label_en', scale['label'])} guitar scale",
                 "ui_schema_desc":  f"{eroot['name']} {scale.get('label_en', scale['label'])} for guitar: {notes_str_en}. Intervals: {ivstr}.",
             }
             out_dir = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
+            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'guitar', notes_str_en, ivstr))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
 
     # ---- Hub FR ----
