@@ -1,0 +1,37 @@
+    .topnav .sep{flex:1}
+    .topnav .tools{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .topnav .tools span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+    .formula{display:flex;flex-wrap:wrap;gap:6px;font-family:"Space Mono",monospace}
+    .formula b{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:14px;color:var(--text)}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .fb-wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px 4px}
+    .fb{display:block;min-width:640px;width:100%;height:auto}
+    .fb-fret{stroke:#4a4a5c;stroke-width:1.5}.fb-nut{stroke:#c8c8d8;stroke-width:4}
+    .fb-str{stroke:#8a8aa0}.fb-in{fill:#34343f}
+    .fb-num,.fb-sn{fill:var(--muted);font:11px "Space Mono",monospace;text-anchor:middle}.fb-sn{text-anchor:start}
+    .fb-note circle{fill:#2d2d38;stroke:#9a9ab0;stroke-width:1.2}.fb-note text{fill:var(--text)}
+    .fb-root circle{fill:var(--brass);stroke:var(--brass)}.fb-root text{fill:{{ '#fff' if instrument == 'guitar' else '#1a1a20' }};font-weight:700}
+    .fb-t,.fb-t3{font:10px "Segoe UI",system-ui,sans-serif;text-anchor:middle}.fb-t3{font-size:8px}
+    pre.tab{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:14px/1.45 "Space Mono",Consolas,monospace;color:var(--text);overflow-x:auto}
+    .play{margin-top:12px;background:none;border:1px solid var(--brass);color:var(--brass);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer}
+    .play:hover,.play.on{background:var(--brass);color:{{ '#fff' if instrument == 'guitar' else '#1a1a20' }}}
+    .practice{padding-left:22px;color:#c8c8d8;font-size:14px}.practice li{margin-bottom:8px}
+    .note-text{color:#c8c8d8;font-size:14px;margin-bottom:10px}
+    .see-also{display:flex;flex-wrap:wrap;gap:8px}
+    .see-also a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:13px}
+    .diagrams{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+    .diagrams figure{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center}
+    .diagrams figcaption{font-size:12px;color:var(--muted);margin-top:4px}
+    .diagrams figcaption code{display:block;font-family:"Space Mono",monospace;color:var(--text);font-size:12px}
+    .cd{width:100%;max-width:170px;height:auto}
+    .cd-fret,.cd-str{stroke:#6a6a80;stroke-width:1.2}.cd-nut{stroke:#d8d8e4;stroke-width:4}
+    .cd-dot{fill:#d8d8e4}.cd-dot.cd-r{fill:var(--brass)}
+    .cd-open{fill:none;stroke:#d8d8e4;stroke-width:1.5}.cd-open.cd-r{stroke:var(--brass);stroke-width:2.5}
+    .cd-barre{fill:#d8d8e4;opacity:.55}
+    .cd-mk,.cd-base,.cd-nn,.cd-fg{font:11px "Segoe UI",system-ui,sans-serif;text-anchor:middle;fill:var(--muted)}
+    .cd-fg{fill:#1a1a20;font-weight:700;font-size:10px}.cd-base{fill:var(--text);font-weight:700}.cd-nn{font-size:9.5px}
+    .play.sm{margin-top:6px;padding:4px 12px;font-size:12px}
+    .site-foot{border-top:1px solid var(--line);margin-top:56px;padding:22px 24px 40px;font-size:13px;color:var(--muted)}
+    .site-foot div{max-width:860px;margin:0 auto 10px;display:flex;flex-wrap:wrap;gap:6px 16px}
+    .site-foot a{color:var(--muted)}.site-foot a:hover{color:var(--text)}
+    .site-foot strong{color:var(--text);font-weight:600}

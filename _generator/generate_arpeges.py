@@ -296,9 +296,12 @@ def _gen_one(tpl, inst, lang_code, out_root, base_url_path, app_url,
     root_fr_name  = root.get("fr", root.get("name", ""))
     root_en_name  = root.get("name", "")
 
-    notes_primary   = arp_notes(root["pc"], arp["iv"], lang_code)
-    notes_secondary = arp_notes(root["pc"], arp["iv"], 'en' if lang_code == 'fr' else 'fr')
-    notes_wr        = arp_notes_with_roles(root["pc"], arp["iv"], lang_code)
+    # Orthographe correcte des notes (Ré majeur = Ré – Fa♯ – La) : sb_common
+    import sb_common
+    _rn = sb_common.root_ascii(root)
+    notes_primary   = sb_common.chord_notes(_rn, arp["iv"], lang_code)
+    notes_secondary = sb_common.chord_notes(_rn, arp["iv"], 'en' if lang_code == 'fr' else 'fr')
+    notes_wr        = sb_common.chord_notes_with_roles(_rn, arp["iv"], lang_code)
     notes_str       = " – ".join(notes_primary)
 
     desc = desc_dict.get(arp["id"], "")
@@ -359,6 +362,16 @@ def _gen_one(tpl, inst, lang_code, out_root, base_url_path, app_url,
         "ui_schema_desc": f"{arp_name_full} : {notes_str}.",
     }
 
+    ctx["instrument"] = inst
+    ctx.update(sb_common.site_nav(lang_code, inst))
+    ctx["ui_brand"] = brand
+    ctx.update(sb_common.arp_extras(root, arp, lang_code, inst, arp_name_full))
+    _hub = f"{BASE_URL}/{base_url_path}/"
+    _can = root.get("canonical_slug" if lang_code == 'fr' else "canonical_slug_en", root_slug) if is_enharmonic else root_slug
+    ctx["breadcrumb_ld"] = sb_common.breadcrumb_ld([
+        ("ScalaBass", BASE_URL + "/"), (ui["all_arps"], _hub),
+        (arp_name_full, f"{_hub}{_can}/{slug}/")])
+
     out_dir = out_root / root_slug / slug
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(tpl.render(**ctx), encoding="utf-8")
@@ -416,9 +429,16 @@ def gen_hub(out_root, lang_code, pages_list, base_url_path, app_url, accent,
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{h1} — Diagrammes et positions | {brand}</title>
+  <title>{h1}{" : notes, manche et tablatures" if lang_code == 'fr' else ": notes, fretboard and tabs"} | {brand}</title>
   <meta name="description" content="{desc_meta}">
   <link rel="canonical" href="{hub_url}">
+  <link rel="alternate" hreflang="fr" href="{BASE_URL}/{base_url_path.replace("en/", "fr/").replace("arpeggios-bass", "arpeges-basse").replace("arpeggios-guitar", "arpeges-guitare")}/">
+  <link rel="alternate" hreflang="en" href="{BASE_URL}/{base_url_path.replace("fr/", "en/").replace("arpeges-basse", "arpeggios-bass").replace("arpeges-guitare", "arpeggios-guitar")}/">
+  <meta property="og:title" content="{h1}">
+  <meta property="og:description" content="{desc_meta}">
+  <meta property="og:url" content="{hub_url}">
+  <meta property="og:image" content="{BASE_URL}/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
   <style>
     :root{{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:{accent}}}
     *{{box-sizing:border-box;margin:0;padding:0}}
@@ -483,8 +503,8 @@ def update_sitemap(pages_bass_fr, pages_bass_en, pages_guit_fr, pages_guit_en):
     all_urls = kept + pages_bass_fr + pages_bass_en + pages_guit_fr + pages_guit_en
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for url in all_urls:
-        lines.append(f'  <url><loc>{url}</loc></url>')
+    import sb_common, datetime
+    lines += sb_common.sitemap_lines(all_urls, datetime.date.today().isoformat())
     lines.append('</urlset>')
     sitemap_path.write_text('\n'.join(lines) + '\n', encoding="utf-8")
 

@@ -17,6 +17,14 @@
 <link rel="apple-touch-icon" href="img/logoonglet.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Accords de basse : power, triade, 7e | ScalaBass</title>
+<meta property="og:title" content="Accords de basse : power, triade, 7e | ScalaBass">
+<meta property="og:description" content="Accords de basse électrique 4 cordes : diagrammes de positions pour dyades, triades, accords de 7e. Lecture audio, degrés, doigtés.">
+<meta property="og:url" content="https://scalabass.com/accords-basse.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://scalabass.com/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Accords de basse : power, triade, 7e", "description": "Accords de basse électrique 4 cordes : diagrammes de positions pour dyades, triades, accords de 7e. Lecture audio, degrés, doigtés.", "url": "https://scalabass.com/accords-basse.html", "applicationCategory": "MusicApplication", "operatingSystem": "Web", "inLanguage": "fr", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "publisher": {"@type": "Organization", "name": "ScalaBass", "url": "https://scalabass.com/"}}</script>
 <meta name="description" content="Accords de basse électrique 4 cordes : diagrammes de positions pour dyades, triades, accords de 7e. Lecture audio, degrés, doigtés.">
 <link rel="canonical" href="https://scalabass.com/accords-basse.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -301,7 +309,7 @@ h1 em{font-style:italic;color:var(--brass)}
       <a href="analyse.html"       class="nav-link">Analyse</a>
       <a href="quintes.html"       class="nav-link">Tonalités</a>
     
-      <div class="nav-drop"><a href="metronome.html" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html" class="nav-link">Métronome</a><a href="accordeur.html" class="nav-link">Accordeur</a><a href="grilles.html" class="nav-link">Grilles</a></div></div>
+      <div class="nav-drop"><a href="metronome.html" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html" class="nav-link">Métronome</a><a href="accordeur.html" class="nav-link">Accordeur</a><a href="grilles.html" class="nav-link">Grilles</a><a href="notes-manche.htmlNone" class="nav-link">Notes du manche</a><a href="oreille.htmlNone" class="nav-link">Oreille</a></div></div>
       </nav>
     <div class="header-tools">
       <div class="htool-seg" id="notation-seg">
@@ -545,29 +553,32 @@ function renderFamilyHint(){
 }
 
 function updateI18n(){
-  document.getElementById('lbl-tonique').textContent=t('lbl_tonique');
-  document.getElementById('lbl-note').textContent=t('lbl_note');
-  document.getElementById('btn-deg').textContent=t('lbl_deg');
-  document.getElementById('btn-note').textContent=t('lbl_note_btn');
-  document.getElementById('btn-dgt').textContent=t('lbl_dgt');
-  document.getElementById('btn-right').textContent=t('lbl_droitier');
-  document.getElementById('btn-left').textContent=t('lbl_gaucher');
-  document.getElementById('fb-btn-note').textContent=t('lbl_note_btn');
-  document.getElementById('fb-btn-deg').textContent=t('lbl_deg');
-  document.getElementById('fb-btn-dgt').textContent=t('lbl_dgt');
-  document.getElementById('fb-btn-right').textContent=t('lbl_droitier');
-  document.getElementById('fb-btn-left').textContent=t('lbl_gaucher');
-  document.getElementById('lbl-sur-manche').textContent=t('lbl_sur_manche');
-  document.getElementById('lbl-afficher').textContent=t('lbl_afficher');
-  document.getElementById('lbl-cordes').textContent=t('lbl_cordes');
-  document.getElementById('lbl-cases').textContent=t('lbl_cases');
-  document.getElementById('lbl-main').textContent=t('lbl_main');
-  document.getElementById('lbl-position').textContent=t('lbl_position');
+  // Un identifiant absent ne doit pas interrompre le rendu (c'était le cas).
+  const _set=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=t(k);};
+  _set('lbl-tonique','lbl_tonique');
+  _set('lbl-note','lbl_note');
+  _set('btn-deg','lbl_deg');
+  _set('btn-note','lbl_note_btn');
+  _set('btn-dgt','lbl_dgt');
+  _set('btn-right','lbl_droitier');
+  _set('btn-left','lbl_gaucher');
+  _set('fb-btn-note','lbl_note_btn');
+  _set('fb-btn-deg','lbl_deg');
+  _set('fb-btn-dgt','lbl_dgt');
+  _set('fb-btn-right','lbl_droitier');
+  _set('fb-btn-left','lbl_gaucher');
+  _set('lbl-sur-manche','lbl_sur_manche');
+  _set('lbl-afficher','lbl_afficher');
+  _set('lbl-cordes','lbl_cordes');
+  _set('lbl-cases','lbl_cases');
+  _set('lbl-main','lbl_main');
+  _set('lbl-position','lbl_position');
   const pb=document.getElementById('play-all-btn');
   if(!pb.classList.contains('playing'))pb.textContent=t('lbl_jouer');
   document.getElementById('diagrams-title').textContent=t('lbl_positions');
   document.getElementById('lede-text').textContent=t('lbl_lede');
-  document.title=state.lang==='en'?'Bass Chords — ScalaBass':'Accords de Basse — ScalaBass';
+  window.__sbT=window.__sbT||document.title;
+  document.title=state.lang==='en'?'Bass Chords: power chords, triads, 7ths | ScalaBass':window.__sbT;
   renderFamilyHint();
 }
 

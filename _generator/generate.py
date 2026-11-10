@@ -2,8 +2,8 @@
 """
 ScalaBass — Générateur de pages statiques SEO
 ==============================================
-Génère fr/gammes/{note}/{gamme}/index.html  (72 gammes × 12 toniques = 864 pages FR)
-Génère en/scales/{note}/{gamme}/index.html  (72 gammes × 12 toniques = 864 pages EN)
+Génère fr/gammes/{note}/{gamme}/index.html  (98 gammes × 12 toniques = 1176 pages FR)
+Génère en/scales/{note}/{gamme}/index.html  (98 gammes × 12 toniques = 1176 pages EN)
 Génère fr/gammes/index.html (hub FR)
 Génère en/scales/index.html (hub EN)
 Génère sitemap.xml
@@ -79,25 +79,25 @@ SCALE_DEFS = [
     {"id":"penta_maj",       "label":"Pentatonique majeure",   "label_en":"Major Pentatonic",       "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,4,5],       "iv":[0,2,4,7,9]},
     {"id":"blues_min",       "label":"Blues mineure",          "label_en":"Minor Blues",            "sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"min","ls":[0,2,3,4,4,6],     "iv":[0,3,5,6,7,10]},
     {"id":"blues_maj",       "label":"Blues majeure",          "label_en":"Major Blues",            "sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,2,4,5],     "iv":[0,2,3,4,7,9]},
-    {"id":"penta_dom",       "label":"Pentatonique dominante", "label_en":"Dominant Pentatonic",    "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,4,5],       "iv":[0,2,4,7,10]},
+    {"id":"penta_dom",       "label":"Pentatonique dominante", "label_en":"Dominant Pentatonic",    "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,4,6],       "iv":[0,2,4,7,10]},
     {"id":"penta_min6",      "label":"Pentatonique mineure 6", "label_en":"Minor 6 Pentatonic",     "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"min","ls":[0,2,3,5,6],       "iv":[0,3,5,9,10]},
     {"id":"penta_sus",       "label":"Pentatonique sus",       "label_en":"Sus Pentatonic",         "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,3,4,6],       "iv":[0,2,5,7,10]},
-    {"id":"blues_dom",       "label":"Blues dominante",        "label_en":"Dominant Blues",         "sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5],     "iv":[0,2,4,6,7,10]},
+    {"id":"blues_dom",       "label":"Blues dominante",        "label_en":"Dominant Blues",         "sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,3,4,6],     "iv":[0,2,4,6,7,10]},
     {"id":"blues_hex",       "label":"Blues hexatonique",      "label_en":"Hexatonic Blues",        "sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"min","ls":[0,1,2,3,4,6],     "iv":[0,2,3,5,7,10]},
     {"id":"penta_maj7",      "label":"Pentatonique majeure 7", "label_en":"Major 7 Pentatonic",     "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,4,6],       "iv":[0,2,4,7,11]},
     {"id":"penta_min_lead",  "label":"Pentatonique min. guidage","label_en":"Minor Lead Pentatonic","sub":"6 notes",             "sub_en":"6 notes",             "group":1,"diat":False,"fam":"min","ls":[0,2,3,4,6,6],     "iv":[0,3,5,7,10,11]},
     {"id":"boogie",          "label":"Rock'n'Roll / Boogie",   "label_en":"Rock'n'Roll / Boogie",   "sub":"7 notes",             "sub_en":"7 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,2,4,5,6],   "iv":[0,2,3,4,7,9,10]},
     {"id":"penta_majb2",     "label":"Pentatonique maj. b2",   "label_en":"Major b2 Pentatonic",    "sub":"5 notes",             "sub_en":"5 notes",             "group":1,"diat":False,"fam":"maj","ls":[0,1,2,4,5],       "iv":[0,1,4,7,9]},
     {"id":"dim",             "label":"Diminuée T-½T",          "label_en":"Diminished (W-H)",       "sub":"8 notes, symétrique", "sub_en":"8 notes, symmetric",  "group":1,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,5,6], "iv":[0,2,3,5,6,8,9,11]},
-    {"id":"dim_ht",          "label":"Diminuée ½T-T",          "label_en":"Diminished (H-W)",       "sub":"8 notes, symétrique", "sub_en":"8 notes, symmetric",  "group":1,"diat":False,"fam":"min","ls":[0,0,1,2,3,4,5,6], "iv":[0,1,3,4,6,7,9,10]},
+    {"id":"dim_ht",          "label":"Diminuée ½T-T",          "label_en":"Diminished (H-W)",       "sub":"8 notes, symétrique", "sub_en":"8 notes, symmetric",  "group":1,"diat":False,"fam":"maj","ls":[0,1,2,2,3,4,5,6], "iv":[0,1,3,4,6,7,9,10]},
     {"id":"half_dim",        "label":"Demi-diminuée",          "label_en":"Half Diminished",        "sub":"= Locrien ♮2",           "sub_en":"= Locrian ♮2",           "group":1,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],   "iv":[0,2,3,5,6,8,10]},
-    {"id":"whole_tone",      "label":"Par ton",                "label_en":"Whole Tone",             "sub":"6 notes, symétrique", "sub_en":"6 notes, symmetric",  "group":1,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5],     "iv":[0,2,4,6,8,10]},
+    {"id":"whole_tone",      "label":"Par tons",                "label_en":"Whole Tone",             "sub":"6 notes, symétrique", "sub_en":"6 notes, symmetric",  "group":1,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5],     "iv":[0,2,4,6,8,10]},
     {"id":"aug_hex",         "label":"Hexatonique augmentée",  "label_en":"Augmented Hexatonic",    "sub":"6 notes, symétrique", "sub_en":"6 notes, symmetric",  "group":1,"diat":False,"fam":"maj","ls":[0,2,2,4,5,6],     "iv":[0,3,4,7,8,11]},
     {"id":"chromatic",       "label":"Chromatique",            "label_en":"Chromatic",              "sub":"12 notes",            "sub_en":"12 notes",            "group":1,"diat":False,"fam":"maj","ls":[0,1,1,2,2,3,4,4,5,5,6,6], "iv":list(range(12))},
     # GROUPE 2 — MODES JAZZ
     {"id":"phryg_dom",       "label":"Phrygien dominant",      "label_en":"Phrygian Dominant",      "sub":"Mode V harm.",         "sub_en":"Mode V harm.",        "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,10]},
     {"id":"lydian_dom",      "label":"Lydien dominant",        "label_en":"Lydian Dominant",        "sub":"Mode IV mél.",         "sub_en":"Mode IV mel.",        "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,6,7,9,10]},
-    {"id":"altered",         "label":"Altérée",                "label_en":"Altered",                "sub":"Mode VII mél.",        "sub_en":"Mode VII mel.",       "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,4,5,6],"iv":[0,1,3,4,6,8,10]},
+    {"id":"altered",         "label":"Altérée",                "label_en":"Altered",                "sub":"Mode VII mél.",        "sub_en":"Mode VII mel.",       "group":2,"diat":False,"fam":"maj","ls":[0,1,2,2,4,5,6],"iv":[0,1,3,4,6,8,10]},
     {"id":"locrian_s2",      "label":"Locrien #2",             "label_en":"Locrian #2",             "sub":"Mode VI mél.",         "sub_en":"Mode VI mel.",        "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,5,6,8,10]},
     {"id":"lydian_aug",      "label":"Lydien augmenté",        "label_en":"Lydian Augmented",       "sub":"Mode III mél.",        "sub_en":"Mode III mel.",       "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,6,8,9,11]},
     {"id":"mixo_b6",         "label":"Mixolydien b6",          "label_en":"Mixolydian b6",          "sub":"Mode V mél.",          "sub_en":"Mode V mel.",         "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,5,7,8,10]},
@@ -109,26 +109,26 @@ SCALE_DEFS = [
     {"id":"superlocrian_bb7","label":"Super Locrien bb7",      "label_en":"Super Locrian bb7",      "sub":"Mode VII harm.",       "sub_en":"Mode VII harm.",      "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,4,6,8,9]},
     {"id":"bebop_maj",       "label":"Bebop majeure",          "label_en":"Bebop Major",            "sub":"8 notes (#5)",         "sub_en":"8 notes (#5)",        "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,4,5,6],"iv":[0,2,4,5,7,8,9,11]},
     {"id":"bebop_dom",       "label":"Bebop dominante",        "label_en":"Bebop Dominant",         "sub":"8 notes",              "sub_en":"8 notes",             "group":2,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6,6],"iv":[0,2,4,5,7,9,10,11]},
-    {"id":"bebop_min",       "label":"Bebop mineure",          "label_en":"Bebop Minor",            "sub":"8 notes",              "sub_en":"8 notes",             "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,3,4,5,6],"iv":[0,2,3,4,5,7,9,10]},
+    {"id":"bebop_min",       "label":"Bebop mineure",          "label_en":"Bebop Minor",            "sub":"8 notes",              "sub_en":"8 notes",             "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,3,4,5,6],"iv":[0,2,3,4,5,7,9,10]},
     # GROUPE 3 — EXOTIQUES
     {"id":"double_harm",     "label":"Double harmonique",      "label_en":"Double Harmonic",        "sub":"Byzantine / Tsigane",  "sub_en":"Byzantine / Gypsy",   "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,11]},
     {"id":"hung_min",        "label":"Mineure hongroise",      "label_en":"Hungarian Minor",        "sub":"Gypsy minor",          "sub_en":"Gypsy minor",         "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,6,7,8,11]},
     {"id":"hung_maj",        "label":"Majeure hongroise",      "label_en":"Hungarian Major",        "sub":"Hungarian major",      "sub_en":"Hungarian major",     "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,3,4,6,7,9,10]},
-    {"id":"gypsy_maj",       "label":"Tzigane majeure",        "label_en":"Gypsy Major",            "sub":"Gypsy major",          "sub_en":"Gypsy major",         "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,10]},
+    {"id":"gypsy_maj",       "label":"Gitane espagnole",        "label_en":"Spanish Gypsy",            "sub":"= Phrygien dominant",          "sub_en":"= Phrygian dominant",         "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,10]},
     {"id":"romanian_min",    "label":"Mineure roumaine",       "label_en":"Romanian Minor",         "sub":"Dorien #4",            "sub_en":"Dorian #4",           "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,6,7,9,10]},
-    {"id":"persian",         "label":"Persane",                "label_en":"Persian",                "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,6,8,11]},
+    {"id":"persian",         "label":"Persane",                "label_en":"Persian",                "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,6,8,11]},
     {"id":"arabic",          "label":"Arabe",                  "label_en":"Arabic",                 "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,5,6,8,10]},
     {"id":"enigmatic",       "label":"Enigmatique",            "label_en":"Enigmatic",              "sub":"Verdi",                "sub_en":"Verdi",               "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,6,8,10,11]},
-    {"id":"napolitaine_maj", "label":"Napolitaine majeure",    "label_en":"Neapolitan Major",       "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,5,7,9,11]},
+    {"id":"napolitaine_maj", "label":"Napolitaine majeure",    "label_en":"Neapolitan Major",       "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,5,7,9,11]},
     {"id":"napolitaine_min", "label":"Napolitaine mineure",    "label_en":"Neapolitan Minor",       "sub":"Exotique",             "sub_en":"Exotic",              "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,5,7,8,11]},
     {"id":"prometheus",      "label":"Prometheus",             "label_en":"Prometheus",             "sub":"Scriabine",            "sub_en":"Scriabin",            "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,5,6],   "iv":[0,2,4,6,9,10]},
     {"id":"overtone",        "label":"Acoustique (Overtone)",  "label_en":"Overtone",               "sub":"= Lydien dominant",    "sub_en":"= Lydian dominant",   "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,6,7,9,10]},
-    {"id":"hijaz",           "label":"Hijaz",                  "label_en":"Hijaz",                  "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,10]},
-    {"id":"hijaz_kar",       "label":"Hijaz Kar",              "label_en":"Hijaz Kar",              "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,11]},
+    {"id":"hijaz",           "label":"Hijaz",                  "label_en":"Hijaz",                  "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,10]},
+    {"id":"hijaz_kar",       "label":"Hijaz Kar",              "label_en":"Hijaz Kar",              "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,1,4,5,7,8,11]},
     {"id":"bayati",          "label":"Bayati",                 "label_en":"Bayati",                 "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,5,7,8,10]},
     {"id":"nahawand",        "label":"Nahawand",               "label_en":"Nahawand",               "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,5,7,8,11]},
     {"id":"rast",            "label":"Rast",                   "label_en":"Rast",                   "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],"iv":[0,2,4,5,7,9,10]},
-    {"id":"nikriz",          "label":"Nikriz",                 "label_en":"Nikriz",                 "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,6,7,8,10]},
+    {"id":"nikriz",          "label":"Nikriz",                 "label_en":"Nikriz",                 "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,2,3,6,7,9,10]},
     {"id":"saba",            "label":"Saba",                   "label_en":"Saba",                   "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,4,7,8,10]},
     {"id":"kurd",            "label":"Kurd",                   "label_en":"Kurd",                   "sub":"Maqam",                "sub_en":"Maqam",               "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],"iv":[0,1,3,5,7,8,10]},
     {"id":"hirajoshi",       "label":"Hirajoshi",              "label_en":"Hirajoshi",              "sub":"Japonaise, 5 notes",   "sub_en":"Japanese, 5 notes",   "group":3,"diat":False,"fam":"min","ls":[0,1,2,4,5],     "iv":[0,2,3,7,8]},
@@ -143,7 +143,7 @@ SCALE_DEFS = [
     {"id":"harmonic_maj",    "label":"Majeure harmonique",     "label_en":"Harmonic major",         "sub":"♭6",                 "sub_en":"♭6",                "group":2,"diat":True, "fam":"maj","ls":[0,1,2,3,4,5,6],  "iv":[0,2,4,5,7,8,11]},
     {"id":"bebop_dorian",    "label":"Bebop dorienne",         "label_en":"Bebop Dorian",           "sub":"8 notes",             "sub_en":"8 notes",            "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,3,4,5,6],"iv":[0,2,3,4,5,7,9,10]},
     {"id":"spanish_8",       "label":"Espagnole 8 tons",       "label_en":"8-Tone Spanish",         "sub":"8 notes",             "sub_en":"8 notes",            "group":2,"diat":False,"fam":"min","ls":[0,1,2,2,3,4,5,6],"iv":[0,1,3,4,5,6,8,10]},
-    {"id":"oriental",        "label":"Orientale",              "label_en":"Oriental",               "sub":"Exotique",            "sub_en":"Exotic",             "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6],  "iv":[0,1,4,5,6,9,10]},
+    {"id":"oriental",        "label":"Orientale",              "label_en":"Oriental",               "sub":"Exotique",            "sub_en":"Exotic",             "group":3,"diat":False,"fam":"maj","ls":[0,1,2,3,4,5,6],  "iv":[0,1,4,5,6,9,10]},
     {"id":"dorian_b5", "label":"Dorien ♭5", "label_en":"Dorian ♭5", "sub":"Mode II maj. harm.", "sub_en":"Mode II harm. maj.", "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6], "iv":[0,2,3,5,6,9,10]},
     {"id":"phrygian_b4", "label":"Phrygien ♭4", "label_en":"Phrygian ♭4", "sub":"Mode III maj. harm.", "sub_en":"Mode III harm. maj.", "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6], "iv":[0,1,3,4,7,8,10]},
     {"id":"lydian_b3", "label":"Lydien ♭3", "label_en":"Lydian ♭3", "sub":"Mode IV maj. harm.", "sub_en":"Mode IV harm. maj.", "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6], "iv":[0,2,3,6,7,9,11]},
@@ -165,7 +165,7 @@ SCALE_DEFS = [
     {"id":"bebop_harm_min", "label":"Bebop mineure harmonique", "label_en":"Bebop harmonic minor", "sub":"8 notes", "sub_en":"8 notes", "group":2,"diat":False,"fam":"min","ls":[0,1,2,3,4,5,6,6], "iv":[0,2,3,5,7,8,10,11]},
     {"id":"man_gong", "label":"Man Gong", "label_en":"Man Gong", "sub":"Pentatonique", "sub_en":"Pentatonic", "group":1,"diat":False,"fam":"min","ls":[0,2,3,5,6], "iv":[0,3,5,8,10]},
     {"id":"pelog", "label":"Pelog balinais", "label_en":"Balinese Pelog", "sub":"Pentatonique", "sub_en":"Pentatonic", "group":3,"diat":False,"fam":"min","ls":[0,1,2,4,5], "iv":[0,1,3,7,8]},
-    {"id":"algerian", "label":"Algérienne", "label_en":"Algerian", "sub":"8 notes", "sub_en":"8 notes", "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,4,4,5,6], "iv":[0,2,3,5,6,7,8,11]},
+    {"id":"algerian", "label":"Algérienne", "label_en":"Algerian", "sub":"8 notes", "sub_en":"8 notes", "group":3,"diat":False,"fam":"min","ls":[0,1,2,3,3,4,5,6], "iv":[0,2,3,5,6,7,8,11]},
 ]
 
 # ---------------------------------------------------------------------------
@@ -223,7 +223,7 @@ SCALE_DESCS = {
     "dim":          "La gamme diminuée T-½T (alternance ton/demi-ton) est une gamme symétrique de 8 notes. Sa périodicité de 3 demi-tons lui confère une ambiguïté tonale totale — elle sonne identiquement depuis 4 fondamentales différentes. Très utilisée en jazz sur les accords diminués et les dominantes b9.",
     "dim_ht":       "La gamme diminuée ½T-T (alternance demi-ton/ton) est la version inversée de la gamme diminuée. Elle sonne également sur les accords diminués et dominants b9, avec un caractère encore plus tendu du fait du demi-ton initial.",
     "half_dim":     "Le mode VI de la mineure mélodique : le locrien avec la 2nde majeure. C'est la gamme de référence sur les accords demi-diminués (iiø7) en jazz, préférée au locrien dont le b2 heurte la fondamentale. Sa b5 crée une tension immédiate qui demande résolution.",
-    "whole_tone":   "La gamme par ton (6 notes, alternance de tons entiers) est entièrement symétrique — elle n'a que 2 versions enharmoniques pour les 12 toniques. Son ambiguïté harmonique totale (pas de demi-tons, pas de dominante claire) crée un effet onirique et flottant très utilisé par Debussy et dans le jazz fusion.",
+    "whole_tone":   "La gamme par tons (6 notes, alternance de tons entiers) est entièrement symétrique — elle n'a que 2 versions enharmoniques pour les 12 toniques. Son ambiguïté harmonique totale (pas de demi-tons, pas de dominante claire) crée un effet onirique et flottant très utilisé par Debussy et dans le jazz fusion.",
     "aug_hex":      "La gamme hexatonique augmentée est une gamme symétrique de 6 notes basée sur deux triades augmentées. Elle définit parfaitement les accords augmentés et crée des couleurs très colorées et instables. Utilisée dans le jazz moderne et la musique contemporaine.",
     "chromatic":    "La gamme chromatique contient les 12 demi-tons de l'octave. Bien qu'elle ne soit pas une 'gamme' au sens harmonique, elle est fondamentale pour les passages chromatiques, les chromatic runs et les notes de passage. À la basse, les approches chromatiques (encadrements) sont un outil expressif essentiel.",
     "phryg_dom":    "Le phrygien dominant (mode V de la gamme mineure harmonique) combine la 2nde mineure du phrygien avec une 3ce majeure. C'est la gamme du flamenco, du metal extrême et de la musique orientale. Sa tension dramatique en fait une couleur immédiatement reconnaissable.",
@@ -243,11 +243,11 @@ SCALE_DESCS = {
     "bebop_min":    "La gamme bebop mineure ajoute une 3ce majeure entre la 3ce mineure et la 4te, créant une gamme de 8 notes. Cette note chromatique de passage permet des lignes bebop fluides sur les accords mineurs. Elle est au cœur du langage d'improvisation jazz en mineur.",
     "double_harm":  "La gamme double harmonique (byzantine ou tsigane) contient deux secondes augmentées, ce qui lui donne un caractère extrêmement expressif et dramatique. On la retrouve dans la musique des Balkans, la musique arabe classique et le metal progressif. Ses intervalles larges la rendent difficile mais très expressive à la basse.",
     "hung_min":     "La gamme mineure hongroise (Gypsy minor) est caractérisée par une #4 entre sa b3 et sa #4, créant une seconde augmentée très caractéristique. C'est la gamme traditionnelle des Roms d'Europe centrale, présente dans la musique tsigane, le flamenco tardif et certains styles de metal.",
-    "hung_maj":     "La gamme majeure hongroise possède une 3ce mineure entre le 2e et 3e degrés, créant un son exotique dans un contexte majoritaire. Utilisée dans la musique folklorique d'Europe centrale et dans le jazz expérimental.",
+    "hung_maj":     "La gamme majeure hongroise possède une 3ce mineure entre le 2e et 3e degrés, créant un son exotique dans un contexte majeur. Utilisée dans la musique folklorique d'Europe centrale et dans le jazz expérimental.",
     "gypsy_maj":    "La gamme tzigane majeure (Gypsy major) est une gamme exotique avec une b2 et une #4, donnant un caractère oriental intense. Très présente dans la musique Romani et dans les improvisations de Django Reinhardt.",
     "romanian_min": "La gamme mineure roumaine est une variante du dorien avec une 4te augmentée (#4). Ce mélange de couleur dorienne et d'intervalle augmenté lui donne un caractère folk d'Europe de l'Est très distinctif. Utilisée dans la musique traditionnelle roumaine, grecque et turque.",
     "persian":      "La gamme persane est l'une des gammes les plus dissonantes, avec une b2, une #3, une b5 et une b6. Malgré son nom, elle est plus proche d'une construction théorique que d'une gamme réellement utilisée en Iran. Son caractère exotique extrême la rend intéressante pour les couleurs musicales insolites.",
-    "arabic":       "La gamme arabe est une variante de la gamme par ton avec une 4te juste et une b6. Elle capture certaines couleurs de la musique du Moyen-Orient et est utilisée dans le jazz et la musique fusion à des fins d'exotisme sonore.",
+    "arabic":       "La gamme arabe est une variante de la gamme par tons avec une 4te juste et une b6. Elle capture certaines couleurs de la musique du Moyen-Orient et est utilisée dans le jazz et la musique fusion à des fins d'exotisme sonore.",
     "enigmatic":    "La gamme énigmatique (de Verdi) est une gamme de 7 notes construite artificiellement pour sa complexité harmonique. Avec sa b2, sa #3, ses #5 et #6, elle génère des harmonies très insolites et difficiles à intégrer dans un contexte tonal classique.",
     "napolitaine_maj": "La gamme napolitaine majeure est une gamme majeure avec une 2nde mineure. Son b2 lui donne un caractère sombre et expressif inhabituel pour une gamme majeure. Elle est utilisée dans la musique classique napolitaine du 18e siècle et dans le jazz expérimental.",
     "napolitaine_min": "La gamme napolitaine mineure (ou mineure avec b2 et b6) est une gamme très expressive avec deux altérations bémols. Son caractère dramatique et mélancolique la rend présente dans la musique classique, le flamenco et le jazz modal.",
@@ -266,7 +266,7 @@ SCALE_DESCS = {
     "kumoi":        "La gamme Kumoi est une pentatonique japonaise douce avec une 3ce mineure et une 6te majeure. Son caractère mélancolique mais moins sombre que Hirajoshi en fait un outil expressif pour les compositeurs cherchant une couleur japonaise accessible.",
     "iwato":        "La gamme Iwato est une pentatonique japonaise très dissonante, avec deux demi-tons consécutifs (b2-b5). Son instabilité inhérente est utilisée pour créer des moments de grande tension dans la musique traditionnelle japonaise et la musique contemporaine.",
     "yo":           "La gamme Yo est la pentatonique majeure japonaise standard, utilisée dans la musique traditionnelle japonaise profane (chansons populaires, musique festive). Plus lumineuse que les autres gammes japonaises, elle se rapproche de la pentatonique majeure occidentale.",
-    "bhairav":      "Le raga Bhairav est l'un des ragas les plus importants de la musique classique indienne. Joué traditionnellement au lever du soleil, il exprime la sérénité matinale grâce à ses deux bémols (b2 et b6) dans un contexte majoritaire. Sa couleur unique influence de nombreux musiciens de world music et de jazz.",
+    "bhairav":      "Le raga Bhairav est l'un des ragas les plus importants de la musique classique indienne. Joué traditionnellement au lever du soleil, il exprime la sérénité matinale grâce à ses deux bémols (b2 et b6) dans un contexte majeur. Sa couleur unique influence de nombreux musiciens de world music et de jazz.",
     "todi":         "Le raga Todi est l'un des ragas les plus complexes et expressifs de la musique hindoustanie. Avec ses b2, b3, #4 et b6, il crée une atmosphère profondément mélancolique et introspective. Joué en fin de matinée, il est considéré comme l'un des ragas les plus difficiles à maîtriser.",
     "kafi":         "Le raga Kafi est approximativement équivalent au mode dorien occidental. Très versatile dans la musique indienne, il peut être joué à toute heure et dans des contextes festifs comme sérieux. Sa proximité avec le dorien en fait un pont accessible entre la théorie musicale indienne et occidentale.",
     "kalyan":       "Le raga Kalyan est l'équivalent indien du mode lydien. Joué traditionnellement au coucher du soleil, il exprime un sentiment d'aspiration et de beauté sereine. Sa #4 caractéristique est au centre de nombreuses compositions de la musique classique indienne du nord.",
@@ -458,7 +458,19 @@ def build_triads(root, ls, iv, lang='fr'):
         i3 = (tpc-rpc+12)%12; i5 = (fpc-rpc+12)%12
         quality_en = TRIAD_Q.get((i3,i5), None)
         if not quality_en:
-            triads.append({'roman':DEG_ROMAN[i],'name':pretty(r)+'?','quality':'—'})
+            # Empilement qui n'est pas une triade classique (gammes exotiques) :
+            # on le nomme par ce qu'il contient plutot que d'afficher un "?".
+            odd = {(4,6):('(♭5)','Majeur ♭5','Major ♭5'), (3,8):('m(♯5)','mineur ♯5','minor ♯5'),
+                   (2,7):('sus2','sus2','sus2'), (5,7):('sus4','sus4','sus4'),
+                   (2,6):('sus2(♭5)','sus2 ♭5','sus2 ♭5'), (5,8):('sus4(♯5)','sus4 ♯5','sus4 ♯5'),
+                   (4,5):('(sus4, sans 5te)','tierce et quarte','third and fourth'),
+                   (2,5):('(2, 4)','seconde et quarte','second and fourth')}.get((i3,i5))
+            nn = fr_note(r) if lang != 'en' else pretty(r)
+            if odd:
+                triads.append({'roman':DEG_ROMAN[i],'name':nn+odd[0],'quality':odd[1] if lang != 'en' else odd[2]})
+            else:
+                triads.append({'roman':DEG_ROMAN[i],'name':nn,
+                               'quality':('hors triades classiques' if lang != 'en' else 'not a standard triad')})
             continue
         if lang == 'en':
             suf  = TRIAD_SUFS_EN[quality_en]
@@ -525,7 +537,7 @@ def related_scales(scale, lang, limit=8):
     return [{"label": _label(sc, lang), "slug": scale_slug(sc["id"]),
              "same_notes": sc in same} for sc in picked]
 
-def seo_scale(root_name, scale, lang, instrument, notes_str, ivstr):
+def seo_scale(root_name, scale, lang, instrument, notes_str, ivstr, root=None):
     """Titre, meta description et titre OG d'une page gamme.
     Titre court (< 60 car.) centre sur la requete ; les notes vont dans la meta."""
     label = _label(scale, lang)
@@ -538,6 +550,11 @@ def seo_scale(root_name, scale, lang, instrument, notes_str, ivstr):
         aka = f", aussi appelée {', '.join(n[0].lower() + n[1:] for n in al[:2])}" if al else ""
         meta = (f"Gamme de {root_name} {label} {inst}{aka} : {notes_str}. "
                 f"Intervalles {ivstr}. Tablature, positions sur le manche et accords de la gamme.")
+        if len(meta) > 160:   # coupé par Google au-delà : on garde les notes, on retire le détail des intervalles
+            meta = (f"Gamme de {root_name} {label} {inst}{aka} : {notes_str}. "
+                    f"Manche, tablature, accords et conseils de travail.")
+        if len(meta) > 160:
+            meta = f"Gamme de {root_name} {label} {inst} : {notes_str}. Manche, tablature et accords."
         og = f"Gamme de {root_name} {label} — {'Basse' if instrument == 'bass' else 'Guitare'}"
     else:
         inst = "for Bass" if instrument == "bass" else "for Guitar"
@@ -547,12 +564,45 @@ def seo_scale(root_name, scale, lang, instrument, notes_str, ivstr):
         aka = f" (also called {', '.join(al[:2])})" if al else ""
         meta = (f"{root_name} {label} scale {inst.lower()}{aka}: {notes_str}. "
                 f"Intervals {ivstr}. Tab, fretboard positions and scale chords.")
+        if len(meta) > 160:
+            meta = (f"{root_name} {label} scale {inst.lower()}{aka}: {notes_str}. "
+                    f"Fretboard, tab, chords and practice tips.")
+        if len(meta) > 160:
+            meta = f"{root_name} {label} scale {inst.lower()}: {notes_str}. Fretboard, tab and chords."
         og = f"{root_name} {label} Scale — {'Bass' if instrument == 'bass' else 'Guitar'}"
-    return {"ui_title": title, "ui_meta_desc": meta, "ui_og_title": og, "aliases": al,
+    out = {"ui_title": title, "ui_meta_desc": meta, "ui_og_title": og, "aliases": al,
             "related_scales": related_scales(scale, lang),
             "ui_aka": ("Aussi appelée" if lang == "fr" else "Also called"),
             "ui_related": (f"Gammes proches en {root_name}" if lang == "fr" else f"Related scales in {root_name}"),
-            "ui_same_notes": ("mêmes notes" if lang == "fr" else "same notes")}
+            "ui_same_notes": ("mêmes notes" if lang == "fr" else "same notes"),
+            "instrument": instrument}
+    if root is not None:
+        import sb_common, scale_notes
+        notes_raw = build_scale(root["name"], scale["ls"], scale["iv"])
+        out.update(sb_common.site_nav(lang, instrument))
+        out.update(sb_common.scale_extras(root, scale, lang, instrument, notes_raw, label))
+        # Description : texte corrige s'il existe ; a defaut, pour la guitare,
+        # la description generale plutot que le texte generique du groupe.
+        fixed = scale_notes.corrected_desc(scale["id"], lang)
+        if not fixed and instrument == "guitar":
+            import generate_guitar as _gg
+            own = (_gg.SCALE_DESCS_GUITAR_FR if lang == "fr" else _gg.SCALE_DESCS_GUITAR_EN)
+            if scale["id"] not in own:
+                fixed = (SCALE_DESCS if lang == "fr" else SCALE_DESCS_EN).get(scale["id"])
+        if fixed:
+            out["desc"] = fixed
+        sec = sb_common.SECTION[(instrument, lang)][0]
+        hub = f"{BASE_URL}/{sec}/"
+        hub_name = {("bass","fr"):"Gammes de basse", ("bass","en"):"Bass scales",
+                    ("guitar","fr"):"Gammes de guitare", ("guitar","en"):"Guitar scales"}[(instrument, lang)]
+        own_slug = root.get("canonical_slug" if lang == "fr" else "canonical_slug_en",
+                            root["slug"] if lang == "fr" else root["slug_en"])
+        out["breadcrumb_ld"] = sb_common.breadcrumb_ld([
+            ("ScalaBass", BASE_URL + "/"), (hub_name, hub),
+            (f"{root_name} {label}", f"{hub}{own_slug}/{scale_slug(scale['id'])}/")])
+        out["hub_name"] = hub_name
+        out["formula_str"] = " ".join(out["formula"])
+    return out
 
 # ---------------------------------------------------------------------------
 # GÉNÉRATION
@@ -629,7 +679,7 @@ def main():
             }
             out_dir_fr = OUT_ROOT_FR / root["slug"] / slug_s
             out_dir_fr.mkdir(parents=True, exist_ok=True)
-            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'bass', notes_str, ivstr))
+            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'bass', notes_str, ivstr, root=root))
             (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             pages_fr.append(page_url_fr)
 
@@ -681,7 +731,7 @@ def main():
             }
             out_dir_en = OUT_ROOT_EN / root["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
-            ctx_en.update(seo_scale(root['name'], scale, 'en', 'bass', notes_str_en, ivstr))
+            ctx_en.update(seo_scale(root['name'], scale, 'en', 'bass', notes_str_en, ivstr, root=root))
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
             pages_en.append(page_url_en)
 
@@ -749,7 +799,7 @@ def main():
             }
             out_dir_fr = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir_fr.mkdir(parents=True, exist_ok=True)
-            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'bass', notes_str, ivstr))
+            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'bass', notes_str, ivstr, root=eroot))
             (out_dir_fr / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             # Page enharmonique : canonique vers la page principale, donc PAS
             # dans le sitemap (on ne soumet que des URLs canoniques).
@@ -801,7 +851,7 @@ def main():
             }
             out_dir_en = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir_en.mkdir(parents=True, exist_ok=True)
-            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'bass', notes_str_en, ivstr))
+            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'bass', notes_str_en, ivstr, root=eroot))
             (out_dir_en / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
 
     # ---- Hub FR ----
@@ -813,6 +863,9 @@ def main():
         "BASE_URL": BASE_URL,
         "scale_slug": scale_slug,
     }
+    import sb_common
+    hub_ctx_fr.setdefault('lang', 'fr')
+    hub_ctx_fr.update(sb_common.site_nav(hub_ctx_fr['lang'], 'bass'))
     (OUT_ROOT_FR / "index.html").write_text(hub_fr_tpl.render(**hub_ctx_fr), encoding="utf-8")
     pages_fr.append(f"{BASE_URL}/fr/gammes/")
 
@@ -826,6 +879,9 @@ def main():
         "scale_slug": scale_slug,
         "lang": "en",
     }
+    import sb_common
+    hub_ctx_en.setdefault('lang', 'en')
+    hub_ctx_en.update(sb_common.site_nav(hub_ctx_en['lang'], 'bass'))
     (OUT_ROOT_EN / "index.html").write_text(hub_fr_tpl.render(**hub_ctx_en), encoding="utf-8")
     pages_en.append(f"{BASE_URL}/en/scales/")
 
@@ -847,8 +903,8 @@ def write_sitemap(pages_fr, pages_en):
     all_urls = kept + pages_fr + pages_en
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for url in all_urls:
-        lines.append(f'  <url><loc>{url}</loc></url>')
+    import sb_common, datetime
+    lines += sb_common.sitemap_lines(all_urls, datetime.date.today().isoformat())
     lines.append('</urlset>')
     sitemap_path.write_text('\n'.join(lines) + '\n', encoding="utf-8")
 

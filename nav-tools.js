@@ -5,8 +5,8 @@
  * ================================================================ */
 (function () {
   'use strict';
-  var PAIRS = [['Outils', 'Tools'], ['Métronome', 'Metronome'], ['Accordeur', 'Tuner'], ['Grilles', 'Chord charts']];
-  var URLS = [['metronome.html', '/en/metronome/'], ['accordeur.html', '/en/tuner/'], ['grilles.html', '/en/chord-charts/']];
+  var PAIRS = [['Outils', 'Tools'], ['Métronome', 'Metronome'], ['Accordeur', 'Tuner'], ['Grilles', 'Chord charts'], ['Notes du manche', 'Fretboard trainer'], ['Oreille', 'Ear training']];
+  var URLS = [['metronome.html', '/en/metronome/'], ['accordeur.html', '/en/tuner/'], ['grilles.html', '/en/chord-charts/'], ['notes-manche.html', '/en/fretboard-trainer/'], ['oreille.html', '/en/ear-training/']];
   function lang() { try { return localStorage.getItem('sblang') || 'fr'; } catch (e) { return 'fr'; } }
   function translate() {
     var en = lang() === 'en';

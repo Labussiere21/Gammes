@@ -358,9 +358,12 @@ def _gen_page(tpl, chord, group, root, cslug, lang, out_root, pages_list,
     desc = CHORD_DESC_FR.get(chord["id"], "") if lang == 'fr' else CHORD_DESC_EN.get(chord["id"], "")
     positions_hint = POSITIONS_HINT_FR.get(chord["id"]) if lang == 'fr' else POSITIONS_HINT_EN.get(chord["id"])
 
-    notes_primary   = chord_notes(root["pc"], chord["iv"], lang)
-    notes_secondary = chord_notes(root["pc"], chord["iv"], 'en' if lang == 'fr' else 'fr')
-    notes_wr        = chord_notes_with_roles(root["pc"], chord["iv"], lang)
+    # Orthographe et role corrects de chaque note (♭5 ou ♯11, 6 ou 13…) : sb_common
+    import sb_common
+    _rn = sb_common.root_ascii(root)
+    notes_primary   = sb_common.chord_notes(_rn, chord["iv"], lang)
+    notes_secondary = sb_common.chord_notes(_rn, chord["iv"], 'en' if lang == 'fr' else 'fr')
+    notes_wr        = sb_common.chord_notes_with_roles(_rn, chord["iv"], lang)
     notes_str       = " – ".join(notes_primary)
 
     # Substitution des placeholders {root} et {notes} dans les descriptions
@@ -467,6 +470,14 @@ def _gen_page(tpl, chord, group, root, cslug, lang, out_root, pages_list,
         }
         out_dir = out_root / root_slug_en / cslug
 
+    ctx["instrument"] = "guitar"
+    ctx.update(sb_common.site_nav(lang, "guitar"))
+    ctx.update(sb_common.chord_extras(root, chord, lang, chord_name_full))
+    _hub = f"{BASE_URL}/{'fr/accords-guitare' if lang == 'fr' else 'en/chords-guitar'}/"
+    ctx["breadcrumb_ld"] = sb_common.breadcrumb_ld([
+        ("ScalaBass", BASE_URL + "/"),
+        ("Accords de guitare" if lang == 'fr' else "Guitar chords", _hub),
+        (chord_name_full, canonical_url)])
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(tpl.render(**ctx), encoding="utf-8")
     # Page enharmonique : canonique vers la page principale, donc pas dans le
@@ -599,8 +610,8 @@ def update_sitemap(pages_fr, pages_en):
     all_urls = kept + pages_fr + pages_en
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for url in all_urls:
-        lines.append(f'  <url><loc>{url}</loc></url>')
+    import sb_common, datetime
+    lines += sb_common.sitemap_lines(all_urls, datetime.date.today().isoformat())
     lines.append('</urlset>')
     sitemap_path.write_text('\n'.join(lines) + '\n', encoding="utf-8")
 

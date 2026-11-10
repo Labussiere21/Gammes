@@ -1,0 +1,9 @@
+<footer class="site-foot">
+  <div><strong>ScalaBass</strong> {{ ui_footer }}</div>
+  <div>{% for name, href in nav_sections %}<a href="{{ href }}">{{ name }}</a>{% endfor %}</div>
+  <div>{% for name, href in nav_tools %}<a href="{{ href }}">{{ name }}</a>{% endfor %}
+    <a href="{{ alt_url_en if lang == 'fr' else alt_url_fr }}" hreflang="{{ 'en' if lang == 'fr' else 'fr' }}">{{ 'English' if lang == 'fr' else 'Français' }}</a>
+    <a href="{{ BASE_URL }}/cookies.html">Cookies</a></div>
+</footer>
+<script src="/seo-play.js" defer></script>
+<script src="/consent.js" defer></script>

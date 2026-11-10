@@ -444,7 +444,7 @@
         <a href="analyse-guitare.html"     class="nav-link">Analyse</a>
         <a href="tonalites-guitare.html"   class="nav-link">Tonalités</a>
       
-        <div class="nav-drop"><a href="metronome.html?inst=guitar" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html?inst=guitar" class="nav-link">Métronome</a><a href="accordeur.html?inst=guitar" class="nav-link">Accordeur</a><a href="grilles.html?inst=guitar" class="nav-link">Grilles</a></div></div>
+        <div class="nav-drop"><a href="metronome.html?inst=guitar" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html?inst=guitar" class="nav-link">Métronome</a><a href="accordeur.html?inst=guitar" class="nav-link">Accordeur</a><a href="grilles.html?inst=guitar" class="nav-link">Grilles</a><a href="notes-manche.html?inst=guitar" class="nav-link">Notes du manche</a><a href="oreille.html?inst=guitar" class="nav-link">Oreille</a></div></div>
       </nav>
     <div class="header-tools" style="margin-left:auto">
       <div class="htool-seg" id="notation-seg">
@@ -1509,7 +1509,7 @@ function updateI18n(){
   document.querySelectorAll('.nav-link').forEach(a=>{const h=a.getAttribute('href');if(nm[h])a.textContent=nm[h];});
   // Éléments data-i18n
   if(typeof t==='function') document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v&&v!==el.dataset.i18n)el.textContent=v;});
-  if(typeof t==='function') document.title=t('doc_title');
+  /* Le titre SEO de la page reste en place en français ; il n'est remplacé qu'en anglais. */ (function(){window.__sbT=window.__sbT||document.title;var en=false;try{en=localStorage.getItem('sblang')==='en';}catch(e){}document.title=(en&&typeof t==='function')?t('doc_title'):window.__sbT;})();
 }
 
 function render(){updateI18n();buildPiano();buildMobileControls();buildGenreTabs();syncUI();buildCadencesGrid();renderResult();}

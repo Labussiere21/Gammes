@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
 <head>
-<!-- Google tag (gtag.js) -->
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'});gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
-  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
-  gtag('js', new Date());
-  gtag('config', 'G-D2K9X05BCG');
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+{% include '_gtag.jinja2' %}
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +15,7 @@
   <meta property="og:description" content="{{ ui_og_desc }}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="{{ page_url }}">
+{% include '_meta_common.jinja2' %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -31,11 +23,15 @@
     "headline": "{{ ui_schema_head }}",
     "description": "{{ ui_schema_desc }}",
     "url": "{{ page_url }}",
-    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+    "inLanguage": "{{ lang }}",
+    "image": "{{ og_image }}",
+    "mainEntityOfPage": "{{ canonical_url }}",
+    "author": { "@type": "Organization", "name": "ScalaBass", "url": "{{ BASE_URL }}/" },
+    "publisher": { "@type": "Organization", "name": "ScalaBass", "logo": { "@type": "ImageObject", "url": "{{ BASE_URL }}/favicon.png" } }
   }
   </script>
   <style>
-    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:#c8a840;--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:{{ '#c4102c' if instrument == 'guitar' else '#c8a840' }};--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
     a{color:var(--brass);text-decoration:none}
@@ -58,18 +54,18 @@
 
     .notes-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
     .note-pill{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:var(--brass)}
-    .note-pill.root{border-color:var(--brass);background:var(--brass)18;color:var(--brass)}
+    .note-pill.root{border-color:var(--brass);background:rgba(128,128,128,.12);color:var(--brass)}
 
     .iv-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:"Space Mono",monospace;font-size:13px}
     .iv-note{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;color:var(--text)}
     .iv-sep{color:var(--muted);font-size:11px;padding:0 2px}
-    .iv-label{color:var(--green);background:var(--green)15;border:1px solid var(--green)44;border-radius:5px;padding:2px 7px;font-size:11px}
-    .iv-label.ht{color:var(--red);background:var(--red)12;border-color:var(--red)44}
-    .iv-label.aug{color:var(--blue);background:var(--blue)12;border-color:var(--blue)44}
+    .iv-label{color:var(--green);background:rgba(96,200,160,.12);border:1px solid rgba(96,200,160,.3);border-radius:5px;padding:2px 7px;font-size:11px}
+    .iv-label.ht{color:var(--red);background:rgba(232,80,58,.1);border-color:rgba(232,80,58,.3)}
+    .iv-label.aug{color:var(--blue);background:rgba(69,163,217,.1);border-color:rgba(69,163,217,.3)}
 
     .triad-table{width:100%;border-collapse:collapse;font-size:14px}
     .triad-table th{text-align:left;padding:6px 10px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
-    .triad-table td{padding:7px 10px;border-bottom:1px solid var(--line)88}
+    .triad-table td{padding:7px 10px;border-bottom:1px solid rgba(51,51,64,.7)}
     .triad-table tr:last-child td{border-bottom:none}
     .roman{font-family:"Space Mono",monospace;font-weight:700;color:var(--brass)}
     .q-maj{color:var(--green)}
@@ -79,32 +75,25 @@
 
     .desc-block{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;line-height:1.7;color:#c8c8d8;font-size:14px}
 
-    .cta-block{margin-top:40px;background:var(--panel);border:1px solid var(--brass)44;border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .cta-block{margin-top:40px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .cta-block p{font-size:14px;color:var(--muted);max-width:420px}
-    .cta-btn{display:inline-block;background:var(--brass);color:#1a1a20;font-weight:700;font-size:14px;padding:10px 22px;border-radius:8px;text-decoration:none;white-space:nowrap}
-    .cta-btn:hover{background:#e0b840;text-decoration:none}
+    .cta-btn{display:inline-block;background:var(--brass);color:{{ '#fff' if instrument == 'guitar' else '#1a1a20' }};font-weight:700;font-size:14px;padding:10px 22px;border-radius:8px;text-decoration:none;white-space:nowrap}
+    .cta-btn:hover{filter:brightness(1.12);text-decoration:none}
 
     .page-nav{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px}
     .page-nav a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--muted)}
     .page-nav a:hover{color:var(--text);text-decoration:none}
     .page-nav.related{margin-top:16px;padding-top:0;border-top:0}
     .sub.aka{margin-top:-20px}
-    .page-nav .active{border-color:var(--brass)55;color:var(--brass)}
-  </style>
+    .page-nav .active{border-color:var(--brass);color:var(--brass)}
+{% include '_css_common.jinja2' %}  </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <span class="logo">ScalaBass</span>
-  <a href="{{ BASE_URL }}/">Manche</a>
-  <a href="{{ BASE_URL }}/gammes.html">Gammes</a>
-  <a href="{{ BASE_URL }}/intervalles.html">Intervalles</a>
-  <a href="{{ BASE_URL }}/cadences.html">Cadences</a>
-  <a href="{{ BASE_URL }}/arpeges-basse.html">Arpèges</a>
-</nav>
+{% include '_nav.jinja2' %}
 
 <div class="breadcrumb">
-  <a href="{{ nav_base }}/">{{ ui_all_scales }}</a>
+  <a href="{{ nav_base }}/">{{ hub_name or ui_all_scales }}</a>
   {% if lang == 'fr' %}
   &rsaquo; {{ root.fr }}
   {% else %}
@@ -116,9 +105,9 @@
 <main>
   <h1>{{ ui_h1 }}</h1>
   <p class="sub">
-    {{ ui_bass }}
+    {{ ui_instrument or ui_bass }}
     {%- if sub %} &nbsp;·&nbsp; {{ sub }}{% endif %}
-    &nbsp;·&nbsp; {{ n_notes }} note{{ 's' if n_notes > 1 else '' }}
+    {%- if not sub or 'notes' not in sub %} &nbsp;·&nbsp; {{ n_notes }} note{{ 's' if n_notes > 1 else '' }}{% endif %}
     &nbsp;·&nbsp; {{ ui_family }}
   </p>
   {%- if aliases %}
@@ -134,6 +123,19 @@
   <p style="font-size:12px;color:var(--muted);margin-top:6px">
     {{ notes_secondary_label }} : {{ notes_secondary | join(' – ') }}
   </p>
+
+  <h2>{{ ui_formula }}</h2>
+  <div class="formula">{% for d in formula %}<b>{{ d }}</b>{% endfor %}</div>
+  <p class="hint">{{ ui_formula_hint }}</p>
+
+  <h2>{{ ui_fb_title }}</h2>
+  <div class="fb-wrap">{{ fretboard }}</div>
+  <p class="hint">{{ ui_fb_hint }}</p>
+
+  <h2>{{ ui_tab_title }}</h2>
+  <pre class="tab">{{ tab }}</pre>
+  <p class="hint">{{ tab_caption }}</p>
+  <button class="play" type="button" data-play="{{ play_midi }}" data-inst="{{ instrument }}">▶ {{ ui_listen }}</button>
 
   <h2>{{ ui_ivstruct }}</h2>
   <div class="iv-row">
@@ -185,8 +187,37 @@
   </table>
   {% endif %}
 
+  {% if sevenths %}
+  <h2>{{ ui_sev_title }}</h2>
+  <table class="triad-table">
+    <thead><tr><th>{{ ui_degree }}</th><th>{{ ui_chord }}</th><th>{{ ui_quality }}</th></tr></thead>
+    <tbody>
+      {% for t in sevenths %}
+      <tr><td class="roman">{{ t.roman }}</td><td><strong>{{ t.name }}</strong></td><td>{{ t.quality }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
   <h2>{{ ui_about }}</h2>
   <div class="desc-block">{{ desc }}</div>
+
+  <h2>{{ ui_tonic_title }}</h2>
+  <p class="note-text">{{ ui_tonic_text }}</p>
+  {% if char_text %}<p class="note-text">{{ char_text }}</p>{% endif %}
+  {% if parent %}<p class="note-text">{{ parent.text }} <a href="{{ parent.href }}">{{ parent.link }} →</a></p>{% endif %}
+
+  <h2>{{ ui_practice_title }}</h2>
+  <ol class="practice">
+    {% for step in practice %}<li>{{ step }}</li>
+    {% endfor %}
+  </ol>
+
+  <h2>{{ ui_see_also }}</h2>
+  <div class="see-also">
+    {% for l in cross_links %}<a href="{{ l.href }}">{{ l.text }}</a>
+    {% endfor %}
+  </div>
 
   <div class="cta-block">
     <p>{{ ui_cta_text | safe }}</p>
@@ -211,6 +242,6 @@
   </div>
 
 </main>
-<script src="/consent.js" defer></script>
+{% include '_footer.jinja2' %}
 </body>
 </html>

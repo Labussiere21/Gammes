@@ -17,6 +17,15 @@
 <link rel="apple-touch-icon" href="img/logoonglet.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Accords de guitare : tous les accords et positions | ScalaSix</title>
+<link rel="canonical" href="https://scalabass.com/accords-guitare.html">
+<meta property="og:title" content="Accords de guitare : tous les accords et positions | ScalaSix">
+<meta property="og:description" content="Tous les accords de guitare sur le manche : triades, 7ème, 9ème, 11ème, 13ème, renversements, accords altérés. Diagrammes interactifs, audio, toutes les positions.">
+<meta property="og:url" content="https://scalabass.com/accords-guitare.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://scalabass.com/og-image.png">
+<meta property="og:site_name" content="ScalaBass">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Accords de guitare : tous les accords et positions", "description": "Tous les accords de guitare sur le manche : triades, 7ème, 9ème, 11ème, 13ème, renversements, accords altérés. Diagrammes interactifs, audio, toutes les positions.", "url": "https://scalabass.com/accords-guitare.html", "applicationCategory": "MusicApplication", "operatingSystem": "Web", "inLanguage": "fr", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "publisher": {"@type": "Organization", "name": "ScalaBass", "url": "https://scalabass.com/"}}</script>
 <meta name="description" content="Tous les accords de guitare sur le manche : triades, 7ème, 9ème, 11ème, 13ème, renversements, accords altérés. Diagrammes interactifs, audio, toutes les positions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -546,7 +555,7 @@ h1 em{font-style:italic; color:var(--brass)}
         <a href="analyse-guitare.html" class="nav-link">Analyse</a>
         <a href="tonalites-guitare.html" class="nav-link">Tonalités</a>
       
-        <div class="nav-drop"><a href="metronome.html?inst=guitar" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html?inst=guitar" class="nav-link">Métronome</a><a href="accordeur.html?inst=guitar" class="nav-link">Accordeur</a><a href="grilles.html?inst=guitar" class="nav-link">Grilles</a></div></div>
+        <div class="nav-drop"><a href="metronome.html?inst=guitar" class="nav-link">Outils</a><div class="nav-menu"><a href="metronome.html?inst=guitar" class="nav-link">Métronome</a><a href="accordeur.html?inst=guitar" class="nav-link">Accordeur</a><a href="grilles.html?inst=guitar" class="nav-link">Grilles</a><a href="notes-manche.html?inst=guitar" class="nav-link">Notes du manche</a><a href="oreille.html?inst=guitar" class="nav-link">Oreille</a></div></div>
       </nav>
       <div class="header-tools">
         <div class="htool-seg" id="notation-seg">
@@ -776,7 +785,8 @@ function t(k){ return (_TR[currentLang()]||_TR.fr)[k]||k; }
 
 function updateI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n); });
-  document.title = currentLang()==='en' ? 'Guitar Chords — ScalaSix' : 'Accords Guitare — ScalaSix';
+  window.__sbT=window.__sbT||document.title;
+  document.title = currentLang()==='en' ? 'Guitar Chords: every chord and position | ScalaSix' : window.__sbT;
   document.querySelector('.lede').textContent = t('lbl_lede');
 }
 
@@ -937,7 +947,8 @@ function dbGetPositions(rootPc, chordId) {
   if(typeof GUITAR_CHORDS_DB==='undefined') return [];
   const suffix = ID_TO_SUFFIX[chordId]; if(!suffix) return [];
   const key = PC_TO_DBKEY[rootPc%12]; if(!key) return [];
-  const list = GUITAR_CHORDS_DB.chords[key]; if(!list) return [];
+  // La base nomme ses entrées 'Csharp' / 'Fsharp' : sans ce repli, Do♯ et Fa♯ n'avaient aucune position vérifiée.
+  const list = GUITAR_CHORDS_DB.chords[key] || GUITAR_CHORDS_DB.chords[key.replace('#','sharp')]; if(!list) return [];
   const entry = list.find(c => c.suffix === suffix);
   return entry ? entry.positions : [];
 }
@@ -1207,6 +1218,87 @@ const SPECIALS = {
   '7_69':     [[3,2,0,2,0,0]],           // G6/9 (320200)
   '9_69':     [[null,0,2,2,0,2]],        // A6/9 (x02202)
 };
+/* Positions calculées et vérifiées note par note (tierce, septième, extensions
+   altérées, fondamentale à la basse, 4 doigts) pour les accords que ni la base
+   ni les gabarits ne couvrent : 13♯11, 13♭9, accords altérés.
+   Produit par _generator/sb_common.py:find_voicings. */
+Object.entries({
+  '0_13b9':[[null, 3, 2, 3, 2, 5]],
+  '1_13b9':[[null, 4, 0, 3, 0, 1]],
+  '2_13b9':[[null, 5, 4, 5, 4, 7]],
+  '3_13b9':[[null, 6, 5, 6, 5, 8]],
+  '4_13b9':[[0, 4, 0, 1, 0, 1], [null, 7, 6, 7, 6, 9]],
+  '5_13b9':[[1, 0, 0, 2, 4, 2], [null, 8, 7, 8, 7, 10]],
+  '6_13b9':[[2, 1, 1, 0, 2, 0], [null, 9, 8, 9, 8, 11]],
+  '7_13b9':[[3, 2, 3, 1, 0, 0], [null, 10, 9, 10, 9, 12]],
+  '8_13b9':[[null, 11, 10, 11, 10, 13]],
+  '9_13b9':[[null, 0, 4, 3, 2, 3]],
+  '10_13b9':[[null, 1, 0, 0, 0, 4]],
+  '11_13b9':[[null, 2, 1, 2, 1, 4]],
+  '0_13s11':[[null, 3, 4, 3, 5, 5], [8, 9, 8, 9, 10, 8]],
+  '1_13s11':[[null, 4, 3, 3, 0, 3], [9, 10, 9, 10, 11, 9]],
+  '2_13s11':[[null, 5, 6, 5, 7, 7], [10, 11, 10, 11, 12, 10]],
+  '3_13s11':[[null, 6, 7, 6, 8, 8], [11, 12, 11, 12, 13, 11]],
+  '4_13s11':[[0, 4, 0, 3, 0, 4], [null, 7, 8, 7, 9, 9]],
+  '5_13s11':[[1, 0, 0, 4, 4, null], [null, 8, 9, 8, 10, 10]],
+  '6_13s11':[[2, 3, 2, 3, 4, 2], [null, 9, 10, 9, 11, 11]],
+  '7_13s11':[[3, 4, 3, 0, 0, 0], [null, 10, 11, 10, 12, 12]],
+  '8_13s11':[[4, 5, 4, 5, 6, 4], [null, 11, 12, 11, 13, 13]],
+  '9_13s11':[[null, 0, 1, 0, 2, 2], [5, 6, 5, 6, 7, 5]],
+  '10_13s11':[[null, 1, 2, 0, 3, 4], [6, 7, 6, 7, 8, 6]],
+  '11_13s11':[[null, 2, 3, 2, 4, 4], [7, 8, 7, 8, 9, 7]],
+  '1_7alt':[[null, 4, 0, 2, 0, 1], [9, 8, 7, 7, 10, 7]],
+  '6_7alt':[[2, 1, 0, 0, 3, 0], [null, 9, 8, 9, 8, 10]],
+  '0_7b9b5':[[null, 3, 2, 3, 2, 2]],
+  '1_7b9b5':[[null, 4, 0, 0, 0, 1]],
+  '2_7b9b5':[[null, 5, 4, 5, 4, 4]],
+  '3_7b9b5':[[null, 6, 5, 6, 5, 5]],
+  '4_7b9b5':[[0, 1, 0, 1, 3, 1], [null, 7, 6, 7, 6, 6]],
+  '5_7b9b5':[[1, 0, 1, 2, 0, 2], [null, 8, 7, 8, 7, 7]],
+  '6_7b9b5':[[2, 1, 2, 0, 1, 0], [null, 9, 8, 9, 8, 8]],
+  '7_7b9b5':[[3, 4, 3, 0, 0, 4], [null, 10, 9, 10, 9, 9]],
+  '8_7b9b5':[[4, 0, 0, 1, 1, 2], [null, 11, 10, 11, 10, 10]],
+  '9_7b9b5':[[null, 0, 1, 3, 2, 3], [null, 12, 11, 12, 11, 11]],
+  '10_7b9b5':[[null, 1, 0, 1, 0, 0], [null, 13, 12, 13, 12, 12]],
+  '11_7b9b5':[[null, 2, 1, 2, 1, 1]],
+  '0_7b9s5':[[null, 3, 2, 3, 2, 4], [8, 7, 6, 6, 9, 6]],
+  '1_7b9s5':[[null, 4, 0, 2, 0, 1], [9, 8, 7, 7, 10, 7]],
+  '2_7b9s5':[[null, 5, 4, 5, 4, 6], [10, 9, 8, 8, 11, 8]],
+  '3_7b9s5':[[null, 6, 5, 6, 5, 7], [11, 10, 9, 9, 12, 9]],
+  '4_7b9s5':[[0, 3, 0, 1, 3, 1], [null, 7, 6, 7, 6, 8], [12, 11, 10, 10, 13, 10]],
+  '5_7b9s5':[[null, 8, 7, 8, 7, 9]],
+  '6_7b9s5':[[2, 1, 0, 0, 3, 0], [null, 9, 8, 9, 8, 10]],
+  '7_7b9s5':[[3, 2, 1, 1, 4, 1], [null, 10, 9, 10, 9, 11]],
+  '8_7b9s5':[[4, 0, 4, 2, 1, 0], [null, 11, 10, 11, 10, 12]],
+  '9_7b9s5':[[5, 4, 3, 3, 6, 3], [null, 12, 11, 12, 11, 13]],
+  '10_7b9s5':[[null, 1, 0, 1, 0, 2], [6, 5, 4, 4, 7, 4]],
+  '11_7b9s5':[[null, 2, 1, 2, 1, 3], [7, 6, 5, 5, 8, 5]],
+  '0_7s9b5':[[null, 3, 4, 3, 4, 0]],
+  '1_7s9b5':[[null, 4, 3, 0, 0, 0]],
+  '2_7s9b5':[[null, 5, 4, 5, 6, 4]],
+  '3_7s9b5':[[null, 6, 5, 6, 7, 5]],
+  '4_7s9b5':[[0, 1, 0, 0, 3, 4], [null, 7, 6, 7, 8, 6]],
+  '5_7s9b5':[[1, 0, 1, 1, 0, null], [null, 8, 7, 8, 9, 7]],
+  '6_7s9b5':[[2, 0, 4, 3, 1, 0], [null, 9, 8, 9, 10, 8]],
+  '7_7s9b5':[[3, 4, 3, 3, 0, null], [null, 10, 9, 10, 11, 9]],
+  '8_7s9b5':[[4, 3, 0, 1, 0, 2], [null, 11, 10, 11, 12, 10]],
+  '9_7s9b5':[[null, 12, 11, 12, 13, 11]],
+  '10_7s9b5':[[null, 1, 0, 1, 2, 0]],
+  '11_7s9b5':[[null, 2, 0, 2, 4, 1]],
+  '0_7s9s5':[[8, 6, 6, 9, 9, 6]],
+  '1_7s9s5':[[null, 4, 3, 2, 0, 0], [9, 7, 7, 10, 10, 7]],
+  '2_7s9s5':[[10, 8, 8, 11, 11, 8]],
+  '3_7s9s5':[[11, 9, 9, 12, 12, 9]],
+  '4_7s9s5':[[0, 3, 0, 0, 3, 4], [12, 10, 10, 13, 13, 10]],
+  '5_7s9s5':[[1, 0, 1, 1, 2, null]],
+  '6_7s9s5':[[2, 0, 0, 3, 3, 0]],
+  '7_7s9s5':[[3, 1, 1, 0, 0, 1]],
+  '8_7s9s5':[[4, 3, 4, 1, 0, 0]],
+  '9_7s9s5':[[5, 3, 3, 6, 6, 3]],
+  '10_7s9s5':[[null, 1, 0, 1, 2, 2], [6, 4, 4, 7, 7, 4]],
+  '11_7s9s5':[[null, 2, 0, 2, 4, 3], [7, 5, 5, 8, 8, 5]],
+}).forEach(([k,v])=>{ SPECIALS[k]=(SPECIALS[k]||[]).concat(v); });
+
 
 // Convert fret array to voicing object array
 function arrToVoicing(fa, rootPc, intervals) {
@@ -1291,11 +1383,21 @@ function faValid(fa, rootPc, intervals) {
   // Si l'accord a une 11e (intervalle 5 ou 6), elle DOIT être jouée
   if (intervals.includes(5) && !played.has((rootPc+5)%12)) return false;
   if (intervals.includes(6) && !played.has((rootPc+6)%12)) return false;
-  // Si l'accord a une 9e (intervalle 1, 2 ou 3) et est un accord complexe (>4 notes)
-  if ((intervals.includes(2)||intervals.includes(1)||intervals.includes(3)) && intervals.length>4) {
-    const hasExt=played.has((rootPc+1)%12)||played.has((rootPc+2)%12)||played.has((rootPc+3)%12);
-    if (!hasExt) return false;
-  }
+  // --- NOTES QUI DÉFINISSENT L'ACCORD ---
+  // Une position sans tierce ou sans septième n'est pas l'accord annoncé :
+  // elle est refusée, d'où qu'elle vienne (base ou recherche automatique).
+  const has=i=>played.has((rootPc+i)%12), inC=i=>intervals.includes(i);
+  const is11 = inC(5) && inC(4) && (inC(10)||inC(11));   // 11e : la tierce majeure peut être omise
+  if (inC(4) && !is11 && !has(4)) return false;          // tierce majeure
+  if (inC(3) && !inC(4) && !has(3)) return false;        // tierce mineure (3 = ♯9 si la tierce majeure est là)
+  if (inC(10) && !has(10)) return false;                 // septième mineure
+  if (inC(11) && !has(11)) return false;                 // septième majeure
+  if (inC(8) && !inC(7) && !has(8)) return false;        // quinte augmentée
+  // Neuvièmes altérées (♭9, ♯9) : toujours jouées. Neuvième juste : exigée dans
+  // les accords de 5 sons ; au-delà (11e, 13e) elle peut être sous-entendue.
+  if (inC(1) && !has(1)) return false;
+  if (inC(3) && inC(4) && !has(3)) return false;
+  if (inC(2) && intervals.length===5 && !has(2)) return false;
 
   return count>=3 && hasRoot && played.size>=Math.min(intervals.length,3);
 }
@@ -1896,7 +1998,8 @@ function findAllVoicings(rootPc, intervals, ct) {
   if(!(isExtended&&db_pos.length)){
     for(const cw of CAGED_WINDOWS){
       const[wMin,wMax]=cw.winFn(rootPc);
-      addV(findVoicingInWindow(rootPc,intervals,wMin,wMax),fills);
+      const fv=findVoicingInWindow(rootPc,intervals,wMin,wMax);
+      if(fv&&faValid(fv.map(x=>x===null?null:x.f),rootPc,intervals,ct))addV(fv,fills);
     }
   }
   return{db_pos,specials,e_sh,a_sh,g_sh,c_sh,d_sh,fills};

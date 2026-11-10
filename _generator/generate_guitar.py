@@ -2,8 +2,8 @@
 """
 ScalaBass — Générateur de pages statiques SEO — Guitare
 ========================================================
-Génère fr/gammes-guitare/{note}/{gamme}/index.html  (72 gammes × 17 toniques = ~1224 pages FR)
-Génère en/scales-guitar/{note}/{gamme}/index.html   (72 gammes × 17 toniques = ~1224 pages EN)
+Génère fr/gammes-guitare/{note}/{gamme}/index.html  (98 gammes × 17 toniques = 1666 pages FR)
+Génère en/scales-guitar/{note}/{gamme}/index.html   (98 gammes × 17 toniques = 1666 pages EN)
 Génère fr/gammes-guitare/index.html (hub FR)
 Génère en/scales-guitar/index.html  (hub EN)
 Met à jour sitemap.xml (sans toucher aux pages basse)
@@ -54,7 +54,7 @@ SCALE_DESCS_GUITAR_FR = {
     "lydian":
         "Le mode lydien avec sa 4te augmentée sonne rêveur et éthéré à la guitare. Steve Vai et Joe Satriani l'ont élevé au rang de signature sonore dans la fusion et le rock instrumental. Il sonne parfaitement sur les accords Maj7#11 et crée des atmosphères flottantes très utilisées dans la musique de film. Sur le manche, sa #4 est facile à repérer par rapport à la gamme majeure standard.",
     "mixolydian":
-        "Le mode mixolydien est le son du rock, du blues et de la country à la guitare. Sa b7 sur fond majoreur lui donne la chaleur du blues sans l'obscurité du mineur. Les riffs de Brown Sugar (Rolling Stones), Sweet Home Alabama (Lynyrd Skynyrd) et Born to Run (Springsteen) en découlent directement. Sur les accords dominants, il est l'outil de référence des guitaristes de blues et de rock.",
+        "Le mode mixolydien est le son du rock, du blues et de la country à la guitare. Sa b7 sur fond majeur lui donne la chaleur du blues sans l'obscurité du mineur. Les riffs de Brown Sugar (Rolling Stones), Sweet Home Alabama (Lynyrd Skynyrd) et Born to Run (Springsteen) en découlent directement. Sur les accords dominants, il est l'outil de référence des guitaristes de blues et de rock.",
     "locrian":
         "Le mode locrien, avec sa 5te diminuée, est rarement utilisé à l'état pur à la guitare. On le trouve principalement dans le métal extrême (pour les riffs sur accord iiø) et dans l'improvisation jazz sur les accords demi-diminués. Son instabilité inhérente peut être exploitée de façon créative dans les passages de transition vers une résolution tonale.",
     "penta_min":
@@ -74,7 +74,7 @@ SCALE_DESCS_GUITAR_FR = {
     "blues_dom":
         "La gamme blues dominante enrichit la pentatonique dominante avec le triton. Elle sonne avec une tension maximale sur les accords V7 altérés et les dominantes substitution tritonique. Les guitaristes de jazz-blues (Robben Ford, Larry Carlton) l'utilisent pour créer des tensions expressives avant la résolution.",
     "blues_hex":
-        "La gamme blues hexatonique enrichit la pentatonique mineure avec la 2nde majeure, ajoutant une couleur dorian. Elle est très populaire dans le blues-rock moderne et l'alternative rock pour des lignes plus sophistiquées que la pentatonique pure, tout en restant accessible sur le manche.",
+        "La gamme blues hexatonique enrichit la pentatonique mineure avec la 2nde majeure, ajoutant une couleur dorienne. Elle est très populaire dans le blues-rock moderne et l'alternative rock pour des lignes plus sophistiquées que la pentatonique pure, tout en restant accessible sur le manche.",
     "penta_maj7":
         "La pentatonique majeure 7 remplace la 7ème mineure habituelle par la 7ème majeure, donnant une couleur jazz douce et élégante. À la guitare, elle sonne parfaitement sur les accords Maj7 et CMaj9. Les guitaristes de jazz (Pat Metheny, Lenny Breau) l'utilisent pour des phrases fluides et raffinées sur les accords majeurs avec septième.",
     "penta_min_lead":
@@ -90,7 +90,7 @@ SCALE_DESCS_GUITAR_FR = {
     "half_dim":
         "La gamme demi-diminuée (= Locrien) s'utilise sur les accords iiø7 dans les cadences jazz ii-V-i en mineur. À la guitare, elle est présente dans les progressions de jazz standard (Autumn Leaves, All The Things You Are). Sa b5 crée une tension qui demande immédiatement résolution vers la dominante.",
     "whole_tone":
-        "La gamme par ton est entièrement symétrique — seulement deux versions pour les 12 toniques. À la guitare, ses positions sont très régulières et faciles à visualiser. Trey Anastasio (Phish) et Frank Zappa l'exploitent pour des effets flottants et onirique. Elle sonne parfaitement sur les accords augmentés et les dominantes #5.",
+        "La gamme par ton est entièrement symétrique — seulement deux versions pour les 12 toniques. À la guitare, ses positions sont très régulières et faciles à visualiser. Trey Anastasio (Phish) et Frank Zappa l'exploitent pour des effets flottants et oniriques. Elle sonne parfaitement sur les accords augmentés et les dominantes #5.",
     "aug_hex":
         "La gamme hexatonique augmentée est basée sur deux triades augmentées et crée des couleurs très colorées. À la guitare, ses positions symétriques permettent des passages techniques très impressionnants. Utilisée dans le jazz moderne et la composition contemporaine pour des effets de couleur inhabituels.",
     "chromatic":
@@ -108,7 +108,7 @@ SCALE_DESCS_GUITAR_FR = {
     "mixo_b6":
         "Le mixolydien b6 mélange chaleur du mixolydien et obscurité mineure. À la guitare, il crée des atmosphères mystérieuses sur les accords dominants. Utilisé dans le jazz et les musiques de film, il offre une alternative colorée au mixolydien standard pour les V7 avec couleur modal.",
     "dorian_b2":
-        "Le dorien b2 (= phrygien #6) mélange la 2nde mineure du phrygien avec l'ouverture de la 6te majeure dorienne. À la guitare, il crée des couleurs inattendues et sophistiquées sur les accords mineurs. Utilisé dans le jazz modal et la fusion pour des phrases qui surprennent l'oreille habitée aux modes standards.",
+        "Le dorien b2 (= phrygien #6) mélange la 2nde mineure du phrygien avec l'ouverture de la 6te majeure dorienne. À la guitare, il crée des couleurs inattendues et sophistiquées sur les accords mineurs. Utilisé dans le jazz modal et la fusion pour des phrases qui surprennent l'oreille habituée aux modes standards.",
     "locrian6":
         "Le locrien nat.6 adoucit l'instabilité du locrien grâce à sa 6te majeure naturelle. À la guitare, certains jazzmen préfèrent ce mode pour improviser sur les accords iiø7, sa 6te naturelle permettant des mouvements mélodiques moins tendus que le locrien pur tout en maintenant l'atmosphère du mode.",
     "ionian_s5":
@@ -140,7 +140,7 @@ SCALE_DESCS_GUITAR_FR = {
     "arabic":
         "La gamme arabe est une variante de la gamme par ton qui capture certaines couleurs de la musique orientale. À la guitare, elle est utilisée dans la world-fusion et le jazz pour créer des ambiances du Moyen-Orient. Ses positions sur le manche sont relativement accessibles grâce à sa symétrie partielle.",
     "enigmatic":
-        "La gamme énigmatique de Verdi est une construction théorique aux harmonies très complexes. À la guitare, elle crée des ambiances très insolites difficiles à ancrer dans un contexte tonal standard. Certains compositeurs de rock progressif et de metal avant-gardiste l'exploitent pour son caractère imprévisible et désorienta.",
+        "La gamme énigmatique de Verdi est une construction théorique aux harmonies très complexes. À la guitare, elle crée des ambiances très insolites difficiles à ancrer dans un contexte tonal standard. Certains compositeurs de rock progressif et de metal avant-gardiste l'exploitent pour son caractère imprévisible et déroutant.",
     "napolitaine_maj":
         "La gamme napolitaine majeure (majeure avec b2) donne à la guitare un caractère sombre et expressif inhabituel pour un contexte majeur. Elle est utilisée dans la musique classique napolitaine et dans certains styles de jazz modal pour des progressions Iusual et Maj7 avec couleur phrygienne.",
     "napolitaine_min":
@@ -176,7 +176,7 @@ SCALE_DESCS_GUITAR_FR = {
     "yo":
         "La gamme Yo est la pentatonique majeure japonaise, plus lumineuse que les autres gammes de la tradition japonaise. À la guitare, elle sonne de façon naturelle et accessible, se rapprochant de la pentatonique majeure occidentale. Idéale pour introduire une couleur japonaise subtile dans des solos ou compositions.",
     "bhairav":
-        "Le raga Bhairav crée une atmosphère de sérénité matinale à la guitare. Sa b2 et sa b6 dans un contexte majoritaire lui donnent une couleur unique très expressive. John McLaughlin (Shakti) et les guitaristes de world-fusion l'exploitent pour des compositions qui marient les traditions musicales indiennes et occidentales.",
+        "Le raga Bhairav crée une atmosphère de sérénité matinale à la guitare. Sa b2 et sa b6 dans un contexte majeur lui donnent une couleur unique très expressive. John McLaughlin (Shakti) et les guitaristes de world-fusion l'exploitent pour des compositions qui marient les traditions musicales indiennes et occidentales.",
     "todi":
         "Le raga Todi est l'un des ragas les plus complexes et expressifs de la musique indienne classique. À la guitare, ses b2, b3, #4 et b6 créent des tensions inhabituelles qui demandent une grande maîtrise. John McLaughlin y revient régulièrement dans ses compositions fusion pour créer des atmosphères méditatives intenses.",
     "kafi":
@@ -423,7 +423,7 @@ def main():
             }
             out_dir = OUT_ROOT_FR / root["slug"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
-            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'guitar', notes_str, ivstr))
+            ctx_fr.update(seo_scale(root['fr'], scale, 'fr', 'guitar', notes_str, ivstr, root=root))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             pages_fr.append(page_url_fr)
 
@@ -474,7 +474,7 @@ def main():
             }
             out_dir = OUT_ROOT_EN / root["slug_en"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
-            ctx_en.update(seo_scale(root['name'], scale, 'en', 'guitar', notes_str_en, ivstr))
+            ctx_en.update(seo_scale(root['name'], scale, 'en', 'guitar', notes_str_en, ivstr, root=root))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
             pages_en.append(page_url_en)
 
@@ -542,7 +542,7 @@ def main():
             }
             out_dir = OUT_ROOT_FR / eroot["slug"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
-            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'guitar', notes_str, ivstr))
+            ctx_fr.update(seo_scale(eroot['fr'], scale, 'fr', 'guitar', notes_str, ivstr, root=eroot))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_fr), encoding="utf-8")
             # Page enharmonique : canonique vers la page principale, donc PAS
             # dans le sitemap (on ne soumet que des URLs canoniques).
@@ -594,7 +594,7 @@ def main():
             }
             out_dir = OUT_ROOT_EN / eroot["slug_en"] / slug_s
             out_dir.mkdir(parents=True, exist_ok=True)
-            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'guitar', notes_str_en, ivstr))
+            ctx_en.update(seo_scale(eroot['name'], scale, 'en', 'guitar', notes_str_en, ivstr, root=eroot))
             (out_dir / "index.html").write_text(scale_tpl.render(**ctx_en), encoding="utf-8")
 
     # ---- Hub FR ----
@@ -608,6 +608,9 @@ def main():
         "hub_base":   f"{BASE_URL}/fr/gammes-guitare",
         "hub_url":    f"{BASE_URL}/fr/gammes-guitare/",
     }
+    import sb_common
+    hub_ctx_fr.setdefault('lang', 'fr')
+    hub_ctx_fr.update(sb_common.site_nav(hub_ctx_fr['lang'], 'guitar'))
     (OUT_ROOT_FR / "index.html").write_text(hub_tpl.render(**hub_ctx_fr), encoding="utf-8")
     pages_fr.append(f"{BASE_URL}/fr/gammes-guitare/")
 
@@ -622,6 +625,9 @@ def main():
         "hub_base":   f"{BASE_URL}/en/scales-guitar",
         "hub_url":    f"{BASE_URL}/en/scales-guitar/",
     }
+    import sb_common
+    hub_ctx_en.setdefault('lang', 'en')
+    hub_ctx_en.update(sb_common.site_nav(hub_ctx_en['lang'], 'guitar'))
     (OUT_ROOT_EN / "index.html").write_text(hub_tpl.render(**hub_ctx_en), encoding="utf-8")
     pages_en.append(f"{BASE_URL}/en/scales-guitar/")
 
@@ -650,8 +656,8 @@ def update_sitemap(pages_fr, pages_en):
     all_urls = kept + pages_fr + pages_en
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for url in all_urls:
-        lines.append(f'  <url><loc>{url}</loc></url>')
+    import sb_common, datetime
+    lines += sb_common.sitemap_lines(all_urls, datetime.date.today().isoformat())
     lines.append('</urlset>')
     sitemap_path.write_text('\n'.join(lines) + '\n', encoding="utf-8")
 

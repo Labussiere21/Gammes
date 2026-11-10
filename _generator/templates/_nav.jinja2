@@ -1,0 +1,8 @@
+<nav class="topnav">
+  <a class="logo" href="{{ BASE_URL }}/{{ 'manche-guitare.html' if instrument == 'guitar' else '' }}">{{ ui_brand }}</a>
+  {% for name, href in nav_main %}<a href="{{ href }}">{{ name }}</a>
+  {% endfor %}<span class="sep"></span>
+  <span class="tools"><span>{{ ui_tools }}</span>
+  {% for name, href in nav_tools %}<a href="{{ href }}">{{ name }}</a>
+  {% endfor %}</span>
+</nav>

@@ -1,24 +1,49 @@
 <!DOCTYPE html>
-<html lang="fr">
+{#- Page index d'une section de gammes. Bilingue et commune basse / guitare :
+    tout découle de `lang` et de `hub_url`. -#}
+{%- set lang = lang | default('fr') -%}
+{%- set hub_url = hub_url | default(BASE_URL ~ "/fr/gammes/") -%}
+{%- set hub_base = hub_base | default(hub_url.rstrip('/')) -%}
+{%- set instrument = 'guitar' if 'guit' in hub_url else 'bass' -%}
+{%- set fr = lang == 'fr' -%}
+{%- set g = instrument == 'guitar' -%}
+{%- set n = scales | length -%}
+{%- set alt_url_fr = BASE_URL ~ ('/fr/gammes-guitare/' if g else '/fr/gammes/') -%}
+{%- set alt_url_en = BASE_URL ~ ('/en/scales-guitar/' if g else '/en/scales/') -%}
+{%- if fr -%}
+  {%- set ui_title = ('Gammes de guitare' if g else 'Gammes de basse') ~ ' : les ' ~ n ~ ' gammes dans les 12 tonalités' -%}
+  {%- set ui_h1 = 'Toutes les gammes pour ' ~ ('guitare' if g else 'basse') -%}
+  {%- set ui_desc = 'Les ' ~ n ~ ' gammes pour ' ~ ('guitare' if g else 'basse') ~ ' dans les 12 tonalités : majeure, mineures, modes, pentatoniques, blues, modes jazz et gammes du monde. Notes, formule, manche, tablature et accords.' -%}
+  {%- set ui_intro = n ~ ' gammes dans 12 tonalités. Pour chacune : les notes, la formule en degrés, toutes les positions sur le manche, une tablature à jouer, les accords de la gamme et des conseils pour la travailler.' -%}
+{%- else -%}
+  {%- set ui_title = ('Guitar scales' if g else 'Bass scales') ~ ': all ' ~ n ~ ' scales in 12 keys' -%}
+  {%- set ui_h1 = 'All scales for ' ~ ('guitar' if g else 'bass') -%}
+  {%- set ui_desc = 'All ' ~ n ~ ' scales for ' ~ ('guitar' if g else 'bass') ~ ' in 12 keys: major, minor, modes, pentatonics, blues, jazz modes and world scales. Notes, formula, fretboard, tab and chords.' -%}
+  {%- set ui_intro = n ~ ' scales in 12 keys. For each one: the notes, the degree formula, every position on the fretboard, a tab to play, the chords of the scale and practice tips.' -%}
+{%- endif -%}
+{%- set ui_og_title = ui_title -%}
+{%- set ui_og_desc = ui_desc -%}
+<html lang="{{ lang }}">
 <head>
-<!-- Google tag (gtag.js) -->
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'});gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
-  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
-  gtag('js', new Date());
-  gtag('config', 'G-D2K9X05BCG');
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
-
+{% include '_gtag.jinja2' %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Gammes pour basse — 72 gammes × 12 toniques | ScalaBass</title>
-  <meta name="description" content="Toutes les gammes pour basse 4 cordes : gamme majeure, mineure, pentatoniques, blues, modes jazz, gammes exotiques. 864 pages avec notes, intervalles et positions sur le manche.">
-  <link rel="canonical" href="{{ hub_url | default(BASE_URL ~ "/fr/gammes/") }}">
+  <title>{{ ui_title }} | {{ ui_brand }}</title>
+  <meta name="description" content="{{ ui_desc }}">
+  <link rel="canonical" href="{{ hub_url }}">
+  <link rel="alternate" hreflang="fr" href="{{ alt_url_fr }}">
+  <link rel="alternate" hreflang="en" href="{{ alt_url_en }}">
+  <link rel="alternate" hreflang="x-default" href="{{ alt_url_fr }}">
+  <meta property="og:title" content="{{ ui_title }}">
+  <meta property="og:description" content="{{ ui_desc }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ hub_url }}">
+{% include '_meta_common.jinja2' %}
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CollectionPage","name":"{{ ui_title }}","description":"{{ ui_desc }}","url":"{{ hub_url }}","inLanguage":"{{ lang }}","isPartOf":{"@type":"WebSite","name":"ScalaBass","url":"{{ BASE_URL }}/"}}
+  </script>
   <style>
-    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:#c8a840}
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--brass:{{ '#c4102c' if g else '#c8a840' }}}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6}
     a{color:var(--brass);text-decoration:none}
@@ -28,47 +53,42 @@
     .topnav a{color:var(--muted);font-size:13px}
     main{max-width:980px;margin:0 auto;padding:28px 24px 64px}
     h1{font-size:clamp(20px,3.5vw,30px);font-weight:700;margin-bottom:8px}
-    .intro{color:var(--muted);font-size:14px;max-width:640px;margin-bottom:36px}
+    .intro{color:var(--muted);font-size:14px;max-width:680px;margin-bottom:18px}
+    .jump{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+    .jump a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--text)}
     h2{font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:5px}
     .scale-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:16px}
     .scale-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
-    .scale-card .name{font-weight:600;font-size:13px;margin-bottom:6px}
+    .scale-card .name{font-weight:600;font-size:13px;margin-bottom:2px}
     .scale-card .sub{font-size:11px;color:var(--muted);margin-bottom:8px}
     .roots-row{display:flex;flex-wrap:wrap;gap:4px}
     .roots-row a{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 7px}
-    .roots-row a:hover{color:var(--brass);text-decoration:none;border-color:var(--brass)44}
-    .group-labels{0:"Modes diatoniques",1:"Pentatoniques & Blues",2:"Modes jazz",3:"Gammes exotiques"}
-  </style>
+    .roots-row a:hover{color:var(--brass);text-decoration:none;border-color:var(--brass)}
+{% include '_css_common.jinja2' %}  </style>
 </head>
 <body>
-<nav class="topnav">
-  <span class="logo">ScalaBass</span>
-  <a href="{{ BASE_URL }}/">Manche</a>
-  <a href="{{ BASE_URL }}/gammes.html">Gammes</a>
-  <a href="{{ BASE_URL }}/intervalles.html">Intervalles</a>
-  <a href="{{ BASE_URL }}/cadences.html">Cadences</a>
-  <a href="{{ BASE_URL }}/arpeges-basse.html">Arpèges</a>
-</nav>
+{% include '_nav.jinja2' %}
 <main>
-  <h1>Toutes les gammes pour basse</h1>
-  <p class="intro">{{ scales|length }} gammes × 12 toniques = {{ scales|length * 12 }} pages. Notes, intervalles, accords et positions sur le manche pour chaque combinaison.</p>
+  <h1>{{ ui_h1 }}</h1>
+  <p class="intro">{{ ui_intro }}</p>
 
   {% set groups = [
-    (0, "Modes diatoniques (7 notes)"),
-    (1, "Pentatoniques, Blues & Symétriques"),
-    (2, "Modes dérivés & Jazz"),
-    (3, "Gammes exotiques"),
+    (0, "Gamme majeure, mineures et modes" if fr else "Major, minor scales and modes"),
+    (1, "Pentatoniques, blues et gammes symétriques" if fr else "Pentatonic, blues and symmetric scales"),
+    (2, "Modes jazz et gammes bebop" if fr else "Jazz modes and bebop scales"),
+    (3, "Gammes du monde" if fr else "World scales"),
   ] %}
+  <div class="jump">{% for gid, glabel in groups %}<a href="#g{{ gid }}">{{ glabel }}</a>{% endfor %}</div>
   {% for gid, glabel in groups %}
-  <h2>{{ glabel }}</h2>
+  <h2 id="g{{ gid }}">{{ glabel }}</h2>
   <div class="scale-grid">
     {% for scale in scales if scale.group == gid %}
     <div class="scale-card">
-      <div class="name">{{ scale.label }}</div>
-      {% if scale.sub %}<div class="sub">{{ scale.sub }}</div>{% endif %}
+      <div class="name">{{ scale.label if fr else scale.label_en }}</div>
+      <div class="sub">{{ (scale.sub if fr else scale.sub_en) or ' ' }}</div>
       <div class="roots-row">
         {% for r in roots %}
-        <a href="{{ BASE_URL }}/fr/gammes/{{ r.slug }}/{{ scale_slug(scale.id) }}/">{{ r.fr }}</a>
+        <a href="{{ hub_base }}/{{ r.slug if fr else r.slug_en }}/{{ scale_slug(scale.id) }}/" title="{{ ('Gamme de ' ~ r.fr ~ ' ' ~ scale.label) if fr else (r.name ~ ' ' ~ scale.label_en ~ ' scale') }}">{{ r.fr if fr else r.name }}</a>
         {% endfor %}
       </div>
     </div>
@@ -76,6 +96,6 @@
   </div>
   {% endfor %}
 </main>
-<script src="/consent.js" defer></script>
+{% include '_footer.jinja2' %}
 </body>
 </html>

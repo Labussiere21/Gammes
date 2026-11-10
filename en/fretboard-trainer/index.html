@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'});gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
+  gtag('js', new Date());
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+
+<meta charset="UTF-8">
+<base href="/">
+<script data-sb-lang>try{localStorage.setItem('sblang','en')}catch(e){}</script>
+<link rel="icon" type="image/png" href="img/logoonglet.png">
+<link rel="apple-touch-icon" href="img/logoonglet.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15100c">
+<title data-fr="Apprendre les notes du manche (basse et guitare) : entraîneur gratuit | ScalaBass">Fretboard note trainer for bass and guitar (free) | ScalaBass</title>
+<meta name="description" content="Free trainer to learn the notes on the bass or guitar fretboard: find the note you are asked for or name the one that lights up, string by string, frets 0 to 12, with score and a 60-second timer.">
+<meta name="keywords" content="fretboard trainer, learn fretboard notes, bass fretboard notes, guitar fretboard notes, fretboard memorization, note trainer">
+<link rel="canonical" href="https://scalabass.com/en/fretboard-trainer/">
+<link rel="alternate" hreflang="fr" href="https://scalabass.com/notes-manche.html">
+<link rel="alternate" hreflang="en" href="https://scalabass.com/en/fretboard-trainer/">
+<link rel="alternate" hreflang="x-default" href="https://scalabass.com/notes-manche.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:title" content="Fretboard note trainer for bass and guitar (free) | ScalaBass">
+<meta property="og:description" content="Free trainer to learn the notes on the bass or guitar fretboard: find the note you are asked for or name the one that lights up, string by string, frets 0 to 12, with score and a 60-second timer.">
+<meta property="og:url" content="https://scalabass.com/en/fretboard-trainer/">
+<meta property="og:image" content="https://scalabass.com/og-image.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fretboard note trainer for bass and guitar (free) | ScalaBass">
+<meta name="twitter:description" content="Free trainer to learn the notes on the bass or guitar fretboard: find the note you are asked for or name the one that lights up, string by string, frets 0 to 12, with score and a 60-second timer.">
+<meta name="twitter:image" content="https://scalabass.com/og-image.png">
+<script type="application/ld+json">
+[{"@context": "https://schema.org", "@type": "WebApplication", "name": "ScalaBass fretboard note trainer", "url": "https://scalabass.com/en/fretboard-trainer/", "description": "Free trainer to learn the notes on the bass or guitar fretboard: find the note you are asked for or name the one that lights up, string by string, frets 0 to 12, with score and a 60-second timer.", "applicationCategory": "MusicApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "inLanguage": "en", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "publisher": {"@type": "Organization", "name": "ScalaBass", "url": "https://scalabass.com/"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ScalaBass", "item": "https://scalabass.com/"}, {"@type": "ListItem", "position": 2, "name": "Fretboard trainer", "item": "https://scalabass.com/en/fretboard-trainer/"}]}]
+</script>
+
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nav-tools.css">
+<link rel="stylesheet" href="outils.css">
+<style>
+.quiz{display:grid;gap:16px}
+.prompt{font-family:"Instrument Serif",serif;font-size:clamp(28px,5vw,44px);line-height:1.1;color:var(--cream);text-align:center;min-height:1.2em}
+.prompt b{color:var(--brass);font-weight:400;font-style:italic}
+.fbx{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#0a0705;padding:10px 6px 2px}
+.fbx svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.fbx .fret{stroke:#4a3a2a;stroke-width:2}.fbx .nut{stroke:#d9cdb8;stroke-width:5}
+.fbx .str{stroke:#a89a84}.fbx .inlay{fill:#241a12}
+.fbx .num,.fbx .sn{fill:var(--muted);font:11px "Space Mono",monospace;text-anchor:middle}
+.fbx .cell{fill:transparent;cursor:pointer}
+.fbx .cell:hover{fill:rgba(var(--glow),.14)}
+.fbx.locked .cell{cursor:default}.fbx.locked .cell:hover{fill:transparent}
+.fbx .dot circle{fill:var(--brass);stroke:var(--brass)}
+.fbx .dot text{fill:#160f08;font:700 11px "Hanken Grotesk",sans-serif;text-anchor:middle}
+html[data-inst="guitar"] .fbx .dot text{fill:#fff}
+.fbx .dot.ok circle{fill:var(--ok);stroke:var(--ok)}.fbx .dot.ko circle{fill:var(--bad);stroke:var(--bad)}
+.fbx .dot.ask circle{fill:var(--brass)}.fbx .srow{stroke:var(--brass);stroke-width:3;opacity:.9}
+.answers{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.answers button{min-width:64px;padding:12px 10px;border-radius:12px;border:1.5px solid var(--line);background:#0e0a07;color:var(--cream);font-family:"Space Mono",monospace;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.answers button:hover{border-color:var(--brass)}
+.answers button.ok{background:var(--ok);border-color:var(--ok);color:#06210a}
+.answers button.ko{background:var(--bad);border-color:var(--bad);color:#fff}
+.answers button.off{opacity:.35}
+.score{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;font-family:"Space Mono",monospace;font-size:13px;color:var(--muted)}
+.score b{color:var(--cream);font-size:18px;margin-left:6px}
+.fb-msg{text-align:center;min-height:1.5em;font-size:15px;color:var(--muted)}
+.fb-msg.ok{color:var(--ok)}.fb-msg.ko{color:var(--bad)}
+.fields{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-end}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#0e0a07;color:var(--muted);font-family:"Space Mono",monospace;font-size:12px;cursor:pointer}
+.chips button.on{border-color:var(--brass);color:var(--cream);background:rgba(var(--glow),.16)}
+.review{font-size:13px;color:var(--muted);text-align:center}
+.bigplay{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body data-tool="notes-manche">
+<div class="wrap">
+<header>
+  <div class="logo-bar">
+    <div class="inst-bar" style="margin-bottom:0">
+      <button type="button" class="inst-btn bass-btn active" data-inst="bass">Basse</button>
+      <button type="button" class="inst-btn guit-btn" data-inst="guitar">Guitare</button>
+    </div>
+    <img id="site-logo" src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:block">
+  </div>
+  <div class="eyebrow">
+    <span class="site-name" id="site-name">ScalaBass</span>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html" class="nav-link">Manche</a>
+      <a href="gammes.html" class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      <a href="accords-basse.html" class="nav-link">Accords</a>
+      <a href="intervalles.html" class="nav-link">Intervalles</a>
+      <a href="cadences.html" class="nav-link">Cadences</a>
+      <a href="analyse.html" class="nav-link">Analyse</a>
+      <a href="quintes.html" class="nav-link">Tonalités</a>
+      <a href="metronome.html" class="nav-link active">Outils</a>
+    </nav>
+    <div class="header-tools">
+      <div class="htool-seg" id="notation-seg">
+        <button data-notation="en" class="on" style="min-width:72px">A B C</button>
+        <button data-notation="fr" style="min-width:72px">Do Ré Mi</button>
+      </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="lang-seg">
+        <button data-lang="fr" class="on" style="min-width:34px">FR</button>
+        <button data-lang="en" style="min-width:34px">EN</button>
+      </div>
+    </div>
+  </div>
+  <h1 data-en="Fretboard <em>note trainer</em>" data-fr="Les notes &lt;em&gt;du manche&lt;/em&gt;">Fretboard <em>note trainer</em></h1>
+  <p class="lede" data-en="A trainer to memorise every note on the bass or guitar fretboard: find the note you are asked for, or name the one that lights up, string by string, with score and timer." data-fr="Un entraîneur pour connaître par cœur toutes les notes du manche de basse ou de guitare : trouve la note demandée ou nomme celle qui s&#x27;allume, corde par corde, avec score et chrono.">A trainer to memorise every note on the bass or guitar fretboard: find the note you are asked for, or name the one that lights up, string by string, with score and timer.</p>
+</header>
+
+<div class="tool-wrap">
+<section class="card" aria-label="Réglages">
+  <div class="fields">
+    <div class="field"><span data-en="Exercise" data-fr="Exercice">Exercise</span>
+      <div class="seg" id="mode"><button data-m="find" class="on" data-en="Find the note" data-fr="Trouver la note">Find the note</button><button data-m="name" data-en="Name the note" data-fr="Nommer la note">Name the note</button></div></div>
+    <div class="field"><span data-en="Frets" data-fr="Cases">Frets</span>
+      <div class="seg" id="range"><button data-r="5" class="on">0 – 5</button><button data-r="9">0 – 9</button><button data-r="12">0 – 12</button></div></div>
+    <div class="field"><span data-en="Notes" data-fr="Notes">Notes</span>
+      <div class="seg" id="acc"><button data-a="nat" class="on" data-en="Naturals" data-fr="Naturelles">Naturals</button><button data-a="all" data-en="All 12" data-fr="Les 12">All 12</button></div></div>
+    <div class="field"><span data-en="Strings" data-fr="Cordes">Strings</span><div class="chips" id="strings"></div></div>
+    <div class="field"><span data-en="Session" data-fr="Séance">Session</span>
+      <div class="seg" id="timer"><button data-t="0" class="on" data-en="Free" data-fr="Libre">Free</button><button data-t="60">60 s</button></div></div>
+    <div class="field"><span>&nbsp;</span><button type="button" class="btn primary" id="start" data-en="Start" data-fr="Démarrer">Start</button></div>
+  </div>
+</section>
+
+<section class="card quiz" aria-live="polite">
+  <div class="prompt" id="prompt" data-en="Press Start" data-fr="Appuie sur Démarrer">Press Start</div>
+  <div class="fbx locked" id="fbx"></div>
+  <div class="answers" id="answers" hidden></div>
+  <div class="fb-msg" id="msg"></div>
+  <div class="score">
+    <span><span data-en="Correct" data-fr="Justes">Correct</span><b id="s-ok">0</b></span>
+    <span><span data-en="Errors" data-fr="Erreurs">Errors</span><b id="s-ko">0</b></span>
+    <span><span data-en="Streak" data-fr="Série">Streak</span><b id="s-streak">0</b></span>
+    <span><span data-en="Avg. time" data-fr="Temps moyen">Avg. time</span><b id="s-time">–</b></span>
+    <span><span data-en="Best (60 s)" data-fr="Record (60 s)">Best (60 s)</span><b id="s-best">–</b></span>
+    <span id="s-left-w" hidden><span data-en="Time left" data-fr="Reste">Time left</span><b id="s-left">60</b></span>
+  </div>
+  <div class="review" id="review"></div>
+</section>
+
+<section class="card"><div class="prose">
+  <h2 data-en="Learning the notes on the fretboard" data-fr="Apprendre les notes du manche">Learning the notes on the fretboard</h2>
+  <p data-en="Knowing where every note is on the neck is what lets you find a root instantly, read a chord chart and move a scale or an arpeggio to any key. This trainer asks you one note at a time: either you find it on a given string, or a position lights up and you name it." data-fr="Savoir où se trouve chaque note sur le manche, c&#x27;est ce qui permet de trouver une fondamentale sans chercher, de lire une grille d&#x27;accords et de déplacer une gamme ou un arpège dans n&#x27;importe quelle tonalité. Cet entraîneur te pose une note à la fois : soit tu la trouves sur une corde donnée, soit une position s&#x27;allume et tu la nommes.">Knowing where every note is on the neck is what lets you find a root instantly, read a chord chart and move a scale or an arpeggio to any key. This trainer asks you one note at a time: either you find it on a given string, or a position lights up and you name it.</p>
+  <h2 data-en="A method that works" data-fr="Une méthode qui marche">A method that works</h2>
+  <p data-en="Start with the natural notes on frets 0 to 5, one string at a time. On every string, the open note comes back at the 12th fret, and there is only a half step between E and F and between B and C: those two pairs are your landmarks. Then add strings, widen to fret 12, and only then switch on the sharps and flats, which are simply the frets in between." data-fr="Commence par les notes naturelles, cases 0 à 5, une seule corde à la fois. Sur chaque corde, la note à vide revient à la 12ᵉ case, et il n&#x27;y a qu&#x27;un demi-ton entre Mi et Fa et entre Si et Do : ces deux paires sont tes repères. Ajoute ensuite des cordes, élargis jusqu&#x27;à la 12ᵉ case, et active seulement après les dièses et bémols, qui sont simplement les cases intermédiaires.">Start with the natural notes on frets 0 to 5, one string at a time. On every string, the open note comes back at the 12th fret, and there is only a half step between E and F and between B and C: those two pairs are your landmarks. Then add strings, widen to fret 12, and only then switch on the sharps and flats, which are simply the frets in between.</p>
+  <p data-en="Five minutes a day beats an hour once a week. Use the 60-second session to measure your progress: when you reach about thirty correct answers a minute on the whole neck, the notes have become reflexes." data-fr="Cinq minutes par jour valent mieux qu&#x27;une heure par semaine. Utilise la séance de 60 secondes pour mesurer tes progrès : quand tu atteins une trentaine de bonnes réponses par minute sur tout le manche, les notes sont devenues des réflexes.">Five minutes a day beats an hour once a week. Use the 60-second session to measure your progress: when you reach about thirty correct answers a minute on the whole neck, the notes have become reflexes.</p>
+  <h2 data-en="Octave shapes" data-fr="Les formes d&#x27;octave">Octave shapes</h2>
+  <p data-en="Once you know a note on one string, octaves give you the others: two strings up and two frets up is the same note one octave higher (three frets when you cross the B string on guitar). From the E string you get the D string, from the A string the G string." data-fr="Dès que tu connais une note sur une corde, les octaves te donnent les autres : deux cordes plus haut et deux cases plus loin, c&#x27;est la même note à l&#x27;octave (trois cases quand on franchit la corde de Si à la guitare). La corde de Mi te donne ainsi la corde de Ré, la corde de La celle de Sol.">Once you know a note on one string, octaves give you the others: two strings up and two frets up is the same note one octave higher (three frets when you cross the B string on guitar). From the E string you get the D string, from the A string the G string.</p>
+</div></section>
+</div>
+</div><!-- /wrap -->
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy" id="footer-brand">© 2026 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    <strong>Éditeur</strong> : site personnel à but non lucratif. Conformément à l’article 6 III 2
+    de la loi n° 2004-575 du 21 juin 2004 (LCEN), l’éditeur non professionnel a choisi de ne pas
+    rendre publique son identité ; celle-ci est détenue par l’hébergeur, tenu au secret professionnel.<br>
+    <strong>Contact</strong> : contact@scalabass.com<br>
+    <strong>Hébergeur</strong> : GitHub, Inc. — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107,
+    États-Unis — <a href="https://github.com" rel="noopener">github.com</a><br>
+    <strong>Données personnelles</strong> : ScalaBass est gratuit, sans compte ni formulaire. Le site
+    utilise <strong>Google Analytics 4</strong> pour mesurer son audience : cet outil dépose des cookies
+    sur votre appareil et transmet des données de navigation à Google LLC. Aucune publicité, aucune
+    revente de données. Un bandeau vous demande votre accord avant tout dépôt, et votre choix reste modifiable
+    à tout moment depuis la <a href="/cookies.html">gestion des cookies</a>. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
+    votre navigateur via localStorage et ne quittent jamais votre appareil.<br>
+    <strong>Contenu</strong> : les gammes, accords et arpèges sont des données théoriques musicales,
+    non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
+  </div>
+</footer>
+
+<script src="music-core.js"></script>
+<script src="sb-tools.js"></script>
+<script src="nav-tools.js" defer></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const EN=document.documentElement.lang==='en';
+const T=(fr,en)=>EN?en:fr;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const TUN={bass:[28,33,38,43],guitar:[40,45,50,55,59,64]};
+const L_EN=['C','D','E','F','G','A','B'], L_FR=['Do','Ré','Mi','Fa','Sol','La','Si'];
+const NAT=[0,2,4,5,7,9,11];
+const fr=()=>{try{return (localStorage.getItem('sbnot')||'en')==='fr';}catch(e){return false;}};
+function names(pc){ // toutes les écritures d'une hauteur
+  const L=fr()?L_FR:L_EN, i=NAT.indexOf(pc);
+  if(i>=0) return [L[i]];
+  return [L[NAT.indexOf(pc-1)]+'♯', L[NAT.indexOf(pc+1)]+'♭'];
+}
+const label=pc=>names(pc).join(' / ');
+const strName=s=>{const pc=open()[s]%12;return names(pc)[0];};
+let inst='bass', st={mode:'find',range:5,acc:'nat',timer:0,strings:null};
+let run=false, q=null, t0=0, ok=0, ko=0, streak=0, times=[], left=0, tick=null, miss={};
+const open=()=>TUN[inst];
+const nStr=()=>open().length;
+
+/* ---------- audio ---------- */
+let ac=null;
+function beep(m){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    if(!ac) ac=new AC(); if(ac.state==='suspended') ac.resume();
+    const t=ac.currentTime+0.01, o=ac.createOscillator(), o2=ac.createOscillator(), g=ac.createGain(), f=ac.createBiquadFilter(), mx=ac.createGain();
+    const hz=440*Math.pow(2,(m-69)/12);
+    o.type='triangle'; o2.type='sawtooth'; o.frequency.value=hz; o2.frequency.value=hz; mx.gain.value=inst==='bass'?0.14:0.2;
+    f.type='lowpass'; f.frequency.setValueAtTime(inst==='bass'?1100:2600,t); f.frequency.exponentialRampToValueAtTime(400,t+0.7);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.3,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
+    o.connect(f); o2.connect(mx); mx.connect(f); f.connect(g); g.connect(ac.destination);
+    o.start(t); o2.start(t); o.stop(t+0.85); o2.stop(t+0.85);
+  }catch(e){}
+}
+
+/* ---------- manche ---------- */
+const NS='http://www.w3.org/2000/svg';
+const G={L:44,T:20,FW:56,SH:30};
+const el=(n,a,txt)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;};
+const yS=s=>G.T+(nStr()-1-s)*G.SH, xF=f=>f===0?G.L-16:G.L+f*G.FW-G.FW/2;
+function draw(){
+  const n=nStr(), N=st.range, W=G.L+N*G.FW+14, H=G.T+(n-1)*G.SH+32;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':T('Manche','Fretboard'),style:`max-width:${Math.round(W*1.7)}px;min-width:${Math.min(620,Math.round(W*0.9))}px;margin:0 auto`});
+  [3,5,7,9].filter(f=>f<=N).forEach(f=>svg.appendChild(el('circle',{cx:G.L+f*G.FW-G.FW/2,cy:G.T+(n-1)*G.SH/2,r:6,class:'inlay'})));
+  if(N>=12){[-1,1].forEach(d=>svg.appendChild(el('circle',{cx:G.L+12*G.FW-G.FW/2,cy:G.T+(n-1)*G.SH/2+d*G.SH,r:6,class:'inlay'})));}
+  for(let f=0;f<=N;f++){
+    svg.appendChild(el('line',{x1:G.L+f*G.FW,y1:G.T,x2:G.L+f*G.FW,y2:G.T+(n-1)*G.SH,class:f?'fret':'nut'}));
+    if(f) svg.appendChild(el('text',{x:G.L+f*G.FW-G.FW/2,y:H-6,class:'num'},f));
+  }
+  for(let s=0;s<n;s++){
+    svg.appendChild(el('line',{x1:G.L,y1:yS(s),x2:G.L+N*G.FW,y2:yS(s),class:'str','stroke-width':1+(n-1-s)*0.4,'data-row':s}));
+    svg.appendChild(el('text',{x:10,y:yS(s)+4,class:'sn'},strName(s)));
+  }
+  const layer=el('g',{id:'dots'}); svg.appendChild(layer);
+  for(let s=0;s<n;s++) for(let f=0;f<=N;f++){
+    const x=f===0?G.L-30:G.L+(f-1)*G.FW, w=f===0?28:G.FW;
+    svg.appendChild(el('rect',{x:x,y:yS(s)-G.SH/2,width:w,height:G.SH,class:'cell','data-s':s,'data-f':f}));
+  }
+  const box=$('#fbx'); box.innerHTML=''; box.appendChild(svg);
+}
+function dot(s,f,cls,txt){
+  const g=el('g',{class:'dot '+(cls||'')});
+  g.appendChild(el('circle',{cx:xF(f),cy:yS(s),r:12}));
+  if(txt) g.appendChild(el('text',{x:xF(f),y:yS(s)+4},txt));
+  $('#dots').appendChild(g);
+}
+function clearDots(){const d=$('#dots'); if(d) d.innerHTML=''; $$('#fbx .str').forEach(l=>l.classList.remove('srow'));}
+
+/* ---------- questions ---------- */
+function pool(){
+  const out=[];
+  st.strings.forEach((on,s)=>{ if(!on) return;
+    for(let f=0;f<=st.range;f++){const pc=(open()[s]+f)%12; if(st.acc==='all'||NAT.includes(pc)) out.push({s,f,pc});}});
+  return out;
+}
+function next(){
+  const p=pool(); if(!p.length){ $('#prompt').textContent=T('Choisis au moins une corde','Pick at least one string'); return; }
+  let c; do{ c=p[Math.floor(Math.random()*p.length)]; }while(p.length>3 && q && c.s===q.s && c.f===q.f);
+  q=c; q.done=false; t0=performance.now();
+  clearDots(); $('#msg').textContent=''; $('#msg').className='fb-msg';
+  const nm=names(q.pc), shown=nm[Math.floor(Math.random()*nm.length)];
+  if(st.mode==='find'){
+    q.shown=shown;
+    $('#prompt').innerHTML=T(`Trouve <b>${shown}</b> sur la corde de <b>${strName(q.s)}</b>`,`Find <b>${shown}</b> on the <b>${strName(q.s)}</b> string`);
+    const row=$(`#fbx .str[data-row="${q.s}"]`); if(row) row.classList.add('srow');
+    $('#fbx').classList.remove('locked');
+  }else{
+    $('#prompt').textContent=T('Quelle est cette note ?','What is this note?');
+    dot(q.s,q.f,'ask','?'); $('#fbx').classList.add('locked');
+    $$('#answers button').forEach(b=>b.className='');
+  }
+}
+function answer(good, s, f){
+  if(!run||!q||q.done) return;
+  q.done=true;
+  const dt=(performance.now()-t0)/1000;
+  beep(open()[q.s]+q.f);
+  clearDots();
+  dot(q.s,q.f,'ok',names(q.pc)[0]);
+  if(good){ ok++; streak++; times.push(dt); $('#msg').className='fb-msg ok';
+    $('#msg').textContent=T('Juste !','Correct!')+' '+label(q.pc)+T(' — corde de ',' — ')+strName(q.s)+T(', case ',EN?' string, fret ':'')+q.f; }
+  else{ ko++; streak=0; const k=label(q.pc); miss[k]=(miss[k]||0)+1;
+    if(s!=null) dot(s,f,'ko',names((open()[s]+f)%12)[0]);
+    $('#msg').className='fb-msg ko';
+    $('#msg').textContent=T('Non : ','No: ')+label(q.pc)+T(' est case ',' is at fret ')+q.f+T(' sur la corde de ',' on the ')+strName(q.s)+(EN?' string':''); }
+  stats();
+  setTimeout(()=>{ if(run) next(); }, good?520:1500);
+}
+function stats(){
+  $('#s-ok').textContent=ok; $('#s-ko').textContent=ko; $('#s-streak').textContent=streak;
+  $('#s-time').textContent=times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' s':'–';
+  const b=store.get('sb_notes_best_'+inst,0); $('#s-best').textContent=b||'–';
+  const m=Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,4).map(e=>e[0]);
+  $('#review').textContent=m.length?T('À revoir : ','To review: ')+m.join(', '):'';
+}
+function stop(done){
+  run=false; clearInterval(tick); $('#start').textContent=T('Démarrer','Start'); $('#fbx').classList.add('locked');
+  if(done){
+    const b=store.get('sb_notes_best_'+inst,0);
+    if(ok>b) store.set('sb_notes_best_'+inst,ok);
+    $('#prompt').innerHTML=T(`Terminé : <b>${ok}</b> bonnes réponses en 60 s`,`Time's up: <b>${ok}</b> correct in 60 s`)+(ok>b&&b?T(' — nouveau record !',' — new best!'):'');
+    stats();
+  }
+}
+function start(){
+  if(run){ stop(false); $('#prompt').textContent=T('Appuie sur Démarrer','Press Start'); clearDots(); return; }
+  ok=ko=streak=0; times=[]; miss={}; run=true; stats();
+  $('#start').textContent=T('Arrêter','Stop');
+  $('#s-left-w').hidden=!st.timer;
+  if(st.timer){ left=st.timer; $('#s-left').textContent=left;
+    tick=setInterval(()=>{ left--; $('#s-left').textContent=left; if(left<=0) stop(true); },1000); }
+  next();
+}
+
+/* ---------- interface ---------- */
+function buildStrings(){
+  const box=$('#strings'); box.innerHTML='';
+  if(!st.strings||st.strings.length!==nStr()) st.strings=open().map(()=>true);
+  open().forEach((m,s)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=strName(s); b.className=st.strings[s]?'on':'';
+    b.onclick=()=>{ st.strings[s]=!st.strings[s]; b.classList.toggle('on',st.strings[s]); save(); }; box.appendChild(b); });
+}
+function buildAnswers(){
+  const box=$('#answers'); box.innerHTML=''; box.hidden=st.mode!=='name';
+  const pcs=st.acc==='all'?[0,1,2,3,4,5,6,7,8,9,10,11]:NAT;
+  pcs.forEach(pc=>{ const b=document.createElement('button'); b.type='button'; b.textContent=label(pc);
+    b.onclick=()=>{ if(!run||!q||q.done||st.mode!=='name') return; const good=pc===q.pc; b.className=good?'ok':'ko';
+      if(!good){ const r=$$('#answers button')[pcs.indexOf(q.pc)]; if(r) r.className='ok'; } answer(good,null,null); };
+    box.appendChild(b); });
+}
+function seg(id,key,attr,num){
+  $$('#'+id+' button').forEach(b=>{
+    b.classList.toggle('on',String(st[key])===b.dataset[attr]);
+    b.onclick=()=>{ st[key]=num?+b.dataset[attr]:b.dataset[attr]; $$('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); save(); rebuild(); };
+  });
+}
+function save(){ store.set('sb_notes_cfg',{mode:st.mode,range:st.range,acc:st.acc,timer:st.timer}); }
+function rebuild(){ if(run) stop(false); draw(); buildStrings(); buildAnswers(); clearDots(); $('#prompt').textContent=T('Appuie sur Démarrer','Press Start'); $('#msg').textContent=''; stats(); }
+$('#fbx').addEventListener('click',e=>{
+  const c=e.target.closest('.cell'); if(!c||!run||!q||q.done||st.mode!=='find') return;
+  const s=+c.dataset.s, f=+c.dataset.f;
+  if(s!==q.s){ $('#msg').className='fb-msg'; $('#msg').textContent=T('Reste sur la corde de ','Stay on the ')+strName(q.s)+(EN?' string':''); return; }
+  answer(f===q.f || ((open()[s]+f)%12===q.pc), s, f);
+});
+$('#start').addEventListener('click',start);
+Object.assign(st,store.get('sb_notes_cfg',{}));
+window.onInstChange=i=>{ inst=i; st.strings=null; rebuild(); };
+window.onNotation=()=>rebuild();
+seg('mode','mode','m'); seg('range','range','r',true); seg('acc','acc','a'); seg('timer','timer','t',true);
+if(window.SBT) SBT.init(); else rebuild();
+})();
+</script>
+<script src="/consent.js" defer></script>
+</body>
+</html>

@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
 <head>
-<!-- Google tag (gtag.js) -->
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'});gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
-  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
-  gtag('js', new Date());
-  gtag('config', 'G-D2K9X05BCG');
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+{% include '_gtag.jinja2' %}
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +15,7 @@
   <meta property="og:description" content="{{ ui_og_desc }}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="{{ page_url }}">
+{% include '_meta_common.jinja2' %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -31,11 +23,15 @@
     "headline": "{{ ui_schema_head }}",
     "description": "{{ ui_schema_desc }}",
     "url": "{{ page_url }}",
-    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+    "inLanguage": "{{ lang }}",
+    "image": "{{ og_image }}",
+    "mainEntityOfPage": "{{ canonical_url }}",
+    "author": { "@type": "Organization", "name": "ScalaBass", "url": "{{ BASE_URL }}/" },
+    "publisher": { "@type": "Organization", "name": "ScalaBass", "logo": { "@type": "ImageObject", "url": "{{ BASE_URL }}/favicon.png" } }
   }
   </script>
   <style>
-    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:{{ accent }};--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:{{ accent }};--brass:var(--accent);--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
     a{color:var(--accent);text-decoration:none}
@@ -78,16 +74,11 @@
     .related-arps .rc-list{display:flex;flex-wrap:wrap;gap:6px}
     .related-arps .rc-list a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 12px;font-size:13px;color:var(--muted);font-family:monospace}
     .related-arps .rc-list a:hover{color:var(--text);text-decoration:none}
-  </style>
+{% include '_css_common.jinja2' %}  </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <span class="logo">{{ ui_brand }}</span>
-  {% for lnk in nav_links %}
-  <a href="{{ lnk.url }}">{{ lnk.label }}</a>
-  {% endfor %}
-</nav>
+{% include '_nav.jinja2' %}
 
 <div class="breadcrumb">
   <a href="{{ nav_base }}/">{{ ui_all_arps }}</a>
@@ -136,8 +127,23 @@
     {% endfor %}
   </div>
 
+  <h2>{{ ui_fb_title }}</h2>
+  <div class="fb-wrap">{{ fretboard }}</div>
+  <p class="hint">{{ ui_fb_hint }}</p>
+
+  <h2>{{ ui_tab_title }}</h2>
+  <pre class="tab">{{ tab }}</pre>
+  <p class="hint">{{ tab_caption }}</p>
+  <button class="play" type="button" data-play="{{ play_midi }}" data-inst="{{ instrument }}">▶ {{ ui_listen }}</button>
+
   <h2>{{ ui_about }}</h2>
   <div class="desc-block">{{ desc }}</div>
+
+  <h2>{{ ui_practice_title }}</h2>
+  <ol class="practice">
+    {% for step in practice %}<li>{{ step }}</li>
+    {% endfor %}
+  </ol>
 
   <div class="cta-block">
     <p>{{ ui_cta_text | safe }}</p>
@@ -164,6 +170,6 @@
   </div>
 
 </main>
-<script src="/consent.js" defer></script>
+{% include '_footer.jinja2' %}
 </body>
 </html>

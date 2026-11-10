@@ -12,6 +12,9 @@ pip install -r _generator/requirements.txt
 python _generator/generate.py               # bass scales  → fr/gammes/ + en/scales/
 python _generator/generate_guitar.py        # guitar scales → fr/gammes-guitare/ + en/scales-guitar/
 python _generator/generate_chords_guitar.py # guitar chords → fr/accords-guitare/ + en/chords-guitar/
+python _generator/generate_arpeges.py       # arpeggios     → fr/arpeges-{basse,guitare}/ + en/arpeggios-{bass,guitar}/
+python _generator/build_outils_en.py        # tool pages    → <head> FR + en/metronome/, en/tuner/, en/chord-charts/, en/fretboard-trainer/, en/ear-training/
+python _generator/audit_theory.py           # read-only theory check (scales, chord spelling, chord positions)
 ```
 
 Each generator appends its URLs to `sitemap.xml` without touching sections owned by other generators (identified by URL prefix). Run them independently; do not chain.
@@ -89,4 +92,27 @@ Le thème (laiton ou rouge) suit `sessionStorage`/`localStorage` `sbinst` (`bass
 | `grilles/` | GrilleMaker intégré : `model.js`, `pdf.js`, `example.js`, `grilles.js`, `grilles.css`, jsPDF (chargé à la demande) |
 
 Ajouter une page outil : copier l'en-tête d'une page existante, ajouter le lien dans `TOOLS` de `sb-tools.js` ET dans le bloc `.nav-drop` des pages (voir `nav-tools.js`), puis l'URL dans `sitemap.xml`.
-Les pages SEO générées (`fr/…`, `en/…`) n'ont pas encore le menu Outils : l'ajouter dans les templates Jinja puis relancer les générateurs.
+Les pages SEO générées (`fr/…`, `en/…`) reçoivent la navigation, les liens Outils et le pied de page depuis `sb_common.site_nav()` et les fragments `_nav.jinja2` / `_footer.jinja2` : ajouter un outil = une ligne dans `site_nav()`.
+
+Outils d'entraînement : `notes-manche.html` (notes du manche) et `oreille.html` (intervalles, accords, gammes). Synthèse Web Audio intégrée, aucune dépendance.
+
+## Contenu pédagogique des pages générées (`_generator/sb_common.py`)
+
+Module commun aux quatre générateurs. Tout y est calculé à partir des intervalles :
+
+| Fonction | Rôle |
+|----------|------|
+| `chord_roles` / `chord_spelling` | Rôle (♭5 ou ♯11, 6 ou 13…) et orthographe des notes d'accords et d'arpèges (Ré majeur = Ré Fa♯ La) |
+| `scale_extras` | Formule en degrés, manche SVG, tablature, accords de 7e, gamme mère, notes caractéristiques, conseils de travail, liens croisés |
+| `arp_extras` / `chord_extras` | Manche + tablature des arpèges ; diagrammes d'accords SVG |
+| `chord_voicings` | Positions de `chords-db.js` filtrées par `voicing_ok` (notes de l'accord uniquement, tierce et 7e présentes, fondamentale à la basse), complétées par `find_voicings` |
+| `site_nav`, `breadcrumb_ld`, `sitemap_lines` | Navigation, fil d'Ariane JSON-LD, sitemap avec `lastmod` |
+
+`scale_notes.py` contient les descriptions de gammes corrigées (prioritaires sur `SCALE_DESCS*`).
+`seo-play.js` (racine) : lecture audio des boutons `[data-play]` des pages générées.
+
+Règles à respecter :
+- `chords-db.js` : les clés de `chords` sont `Csharp` / `Fsharp` (pas `C#` / `F#`).
+- Une position d'accord n'est jamais affichée sans passer par `voicing_ok` (Python) ou `faValid` (appli).
+- Les applis ne remplacent pas le `<title>` en français ; `gammes*.html?root=…&scale=…` désigne comme canonique la page générée correspondante.
+- Après toute modification de gammes ou d'accords : `python _generator/audit_theory.py`, puis relancer les générateurs.

@@ -15,27 +15,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>B Augmented Guitar Arpeggio – Notes &amp; Positions</title>
-  <meta name="description" content="B Augmented guitar arpeggio: B – Eb – G. 3 notes. Positions, sweep picking, interactive app.">
+  <meta name="description" content="B Augmented guitar arpeggio: B – D♯ – G. 3 notes. Positions, sweep picking, interactive app.">
   <link rel="canonical" href="https://scalabass.com/en/arpeggios-guitar/b/aug/">
   <link rel="alternate" hreflang="fr" href="https://scalabass.com/fr/arpeges-guitare/si/aug/">
   <link rel="alternate" hreflang="en" href="https://scalabass.com/en/arpeggios-guitar/b/aug/">
   <link rel="alternate" hreflang="x-default" href="https://scalabass.com/fr/arpeges-guitare/si/aug/">
   <meta property="og:title" content="B Augmented — ScalaSix">
-  <meta property="og:description" content="B Augmented : B – Eb – G">
+  <meta property="og:description" content="B Augmented : B – D♯ – G">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://scalabass.com/en/arpeggios-guitar/b/aug/">
+  <meta property="og:image" content="https://scalabass.com/og-image.png">
+  <meta property="og:site_name" content="ScalaBass">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="B Augmented — ScalaSix">
+  <meta name="twitter:description" content="B Augmented : B – D♯ – G">
+  <meta name="twitter:image" content="https://scalabass.com/og-image.png">
+  <meta name="theme-color" content="#1a1a20">
+  <link rel="icon" href="/favicon.png">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ScalaBass", "item": "https://scalabass.com/"}, {"@type": "ListItem", "position": 2, "name": "All guitar arpeggios", "item": "https://scalabass.com/en/arpeggios-guitar/"}, {"@type": "ListItem", "position": 3, "name": "B Augmented", "item": "https://scalabass.com/en/arpeggios-guitar/b/aug/"}]}</script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "B Augmented",
-    "description": "B Augmented : B – Eb – G.",
+    "description": "B Augmented : B – D♯ – G.",
     "url": "https://scalabass.com/en/arpeggios-guitar/b/aug/",
-    "publisher": { "@type": "Organization", "name": "ScalaBass" }
+    "inLanguage": "en",
+    "image": "https://scalabass.com/og-image.png",
+    "mainEntityOfPage": "https://scalabass.com/en/arpeggios-guitar/b/aug/",
+    "author": { "@type": "Organization", "name": "ScalaBass", "url": "https://scalabass.com/" },
+    "publisher": { "@type": "Organization", "name": "ScalaBass", "logo": { "@type": "ImageObject", "url": "https://scalabass.com/favicon.png" } }
   }
   </script>
   <style>
-    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:#bf1828;--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
+    :root{--bg:#1a1a20;--panel:#23232b;--line:#333340;--text:#e8e8f0;--muted:#8888a0;--accent:#bf1828;--brass:var(--accent);--green:#60c8a0;--blue:#45a3d9;--red:#e8503a}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
     a{color:var(--accent);text-decoration:none}
@@ -78,23 +92,62 @@
     .related-arps .rc-list{display:flex;flex-wrap:wrap;gap:6px}
     .related-arps .rc-list a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 12px;font-size:13px;color:var(--muted);font-family:monospace}
     .related-arps .rc-list a:hover{color:var(--text);text-decoration:none}
-  </style>
+    .topnav .sep{flex:1}
+    .topnav .tools{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .topnav .tools span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+    .formula{display:flex;flex-wrap:wrap;gap:6px;font-family:"Space Mono",monospace}
+    .formula b{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:14px;color:var(--text)}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .fb-wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px 4px}
+    .fb{display:block;min-width:640px;width:100%;height:auto}
+    .fb-fret{stroke:#4a4a5c;stroke-width:1.5}.fb-nut{stroke:#c8c8d8;stroke-width:4}
+    .fb-str{stroke:#8a8aa0}.fb-in{fill:#34343f}
+    .fb-num,.fb-sn{fill:var(--muted);font:11px "Space Mono",monospace;text-anchor:middle}.fb-sn{text-anchor:start}
+    .fb-note circle{fill:#2d2d38;stroke:#9a9ab0;stroke-width:1.2}.fb-note text{fill:var(--text)}
+    .fb-root circle{fill:var(--brass);stroke:var(--brass)}.fb-root text{fill:#fff;font-weight:700}
+    .fb-t,.fb-t3{font:10px "Segoe UI",system-ui,sans-serif;text-anchor:middle}.fb-t3{font-size:8px}
+    pre.tab{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:14px/1.45 "Space Mono",Consolas,monospace;color:var(--text);overflow-x:auto}
+    .play{margin-top:12px;background:none;border:1px solid var(--brass);color:var(--brass);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer}
+    .play:hover,.play.on{background:var(--brass);color:#fff}
+    .practice{padding-left:22px;color:#c8c8d8;font-size:14px}.practice li{margin-bottom:8px}
+    .note-text{color:#c8c8d8;font-size:14px;margin-bottom:10px}
+    .see-also{display:flex;flex-wrap:wrap;gap:8px}
+    .see-also a{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:13px}
+    .diagrams{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+    .diagrams figure{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center}
+    .diagrams figcaption{font-size:12px;color:var(--muted);margin-top:4px}
+    .diagrams figcaption code{display:block;font-family:"Space Mono",monospace;color:var(--text);font-size:12px}
+    .cd{width:100%;max-width:170px;height:auto}
+    .cd-fret,.cd-str{stroke:#6a6a80;stroke-width:1.2}.cd-nut{stroke:#d8d8e4;stroke-width:4}
+    .cd-dot{fill:#d8d8e4}.cd-dot.cd-r{fill:var(--brass)}
+    .cd-open{fill:none;stroke:#d8d8e4;stroke-width:1.5}.cd-open.cd-r{stroke:var(--brass);stroke-width:2.5}
+    .cd-barre{fill:#d8d8e4;opacity:.55}
+    .cd-mk,.cd-base,.cd-nn,.cd-fg{font:11px "Segoe UI",system-ui,sans-serif;text-anchor:middle;fill:var(--muted)}
+    .cd-fg{fill:#1a1a20;font-weight:700;font-size:10px}.cd-base{fill:var(--text);font-weight:700}.cd-nn{font-size:9.5px}
+    .play.sm{margin-top:6px;padding:4px 12px;font-size:12px}
+    .site-foot{border-top:1px solid var(--line);margin-top:56px;padding:22px 24px 40px;font-size:13px;color:var(--muted)}
+    .site-foot div{max-width:860px;margin:0 auto 10px;display:flex;flex-wrap:wrap;gap:6px 16px}
+    .site-foot a{color:var(--muted)}.site-foot a:hover{color:var(--text)}
+    .site-foot strong{color:var(--text);font-weight:600}  </style>
 </head>
 <body>
 
 <nav class="topnav">
-  <span class="logo">ScalaSix</span>
-  
+  <a class="logo" href="https://scalabass.com/manche-guitare.html">ScalaSix</a>
   <a href="https://scalabass.com/manche-guitare.html">Fretboard</a>
-  
   <a href="https://scalabass.com/gammes-guitare.html">Scales</a>
-  
   <a href="https://scalabass.com/arpeges-guitare.html">Arpeggios</a>
-  
   <a href="https://scalabass.com/accords-guitare.html">Chords</a>
-  
   <a href="https://scalabass.com/intervalles-guitare.html">Intervals</a>
-  
+  <a href="https://scalabass.com/cadences-guitare.html">Progressions</a>
+  <span class="sep"></span>
+  <span class="tools"><span>Tools</span>
+  <a href="https://scalabass.com/en/metronome/">Metronome</a>
+  <a href="https://scalabass.com/en/tuner/">Tuner</a>
+  <a href="https://scalabass.com/en/chord-charts/">Chord charts</a>
+  <a href="https://scalabass.com/en/fretboard-trainer/">Fretboard trainer</a>
+  <a href="https://scalabass.com/en/ear-training/">Ear training</a>
+  </span>
 </nav>
 
 <div class="breadcrumb">
@@ -123,7 +176,7 @@
     </div>
     
     <div class="note-pill">
-      <span class="nn">Eb</span>
+      <span class="nn">D♯</span>
       <span class="nr">3</span>
     </div>
     
@@ -134,7 +187,7 @@
     
   </div>
   <p style="font-size:12px;color:var(--muted);margin-top:4px">
-    Solfège : Si – Mib – Sol
+    Solfège : Si – Ré♯ – Sol
   </p>
 
   <h2>Arpeggio Structure</h2>
@@ -147,7 +200,7 @@
     
     
     
-    <span class="ivn">Eb</span>
+    <span class="ivn">D♯</span>
     
     
     <span class="ivl lg">2T</span>
@@ -159,8 +212,31 @@
     
   </div>
 
+  <h2>B Augmented arpeggio on the guitar fretboard</h2>
+  <div class="fb-wrap"><svg class="fb" viewBox="0 0 752 196" role="img" aria-label="B Augmented arpeggio on the guitar fretboard, frets 0 to 12" xmlns="http://www.w3.org/2000/svg"><title>B Augmented arpeggio on the guitar fretboard, frets 0 to 12</title><circle cx="185.0" cy="92.0" r="5" class="fb-in"/><circle cx="301.0" cy="92.0" r="5" class="fb-in"/><circle cx="417.0" cy="92.0" r="5" class="fb-in"/><circle cx="533.0" cy="92.0" r="5" class="fb-in"/><circle cx="707.0" cy="64.0" r="5" class="fb-in"/><circle cx="707.0" cy="120.0" r="5" class="fb-in"/><line x1="40" y1="22" x2="40" y2="162" class="fb-nut"/><line x1="98" y1="22" x2="98" y2="162" class="fb-fret"/><text x="69.0" y="190" class="fb-num">1</text><line x1="156" y1="22" x2="156" y2="162" class="fb-fret"/><text x="127.0" y="190" class="fb-num">2</text><line x1="214" y1="22" x2="214" y2="162" class="fb-fret"/><text x="185.0" y="190" class="fb-num">3</text><line x1="272" y1="22" x2="272" y2="162" class="fb-fret"/><text x="243.0" y="190" class="fb-num">4</text><line x1="330" y1="22" x2="330" y2="162" class="fb-fret"/><text x="301.0" y="190" class="fb-num">5</text><line x1="388" y1="22" x2="388" y2="162" class="fb-fret"/><text x="359.0" y="190" class="fb-num">6</text><line x1="446" y1="22" x2="446" y2="162" class="fb-fret"/><text x="417.0" y="190" class="fb-num">7</text><line x1="504" y1="22" x2="504" y2="162" class="fb-fret"/><text x="475.0" y="190" class="fb-num">8</text><line x1="562" y1="22" x2="562" y2="162" class="fb-fret"/><text x="533.0" y="190" class="fb-num">9</text><line x1="620" y1="22" x2="620" y2="162" class="fb-fret"/><text x="591.0" y="190" class="fb-num">10</text><line x1="678" y1="22" x2="678" y2="162" class="fb-fret"/><text x="649.0" y="190" class="fb-num">11</text><line x1="736" y1="22" x2="736" y2="162" class="fb-fret"/><text x="707.0" y="190" class="fb-num">12</text><line x1="40" y1="162" x2="736" y2="162" class="fb-str" stroke-width="2.75"/><text x="6" y="166" class="fb-sn">E</text><line x1="40" y1="134" x2="736" y2="134" class="fb-str" stroke-width="2.40"/><text x="6" y="138" class="fb-sn">A</text><line x1="40" y1="106" x2="736" y2="106" class="fb-str" stroke-width="2.05"/><text x="6" y="110" class="fb-sn">D</text><line x1="40" y1="78" x2="736" y2="78" class="fb-str" stroke-width="1.70"/><text x="6" y="82" class="fb-sn">G</text><line x1="40" y1="50" x2="736" y2="50" class="fb-str" stroke-width="1.35"/><text x="6" y="54" class="fb-sn">B</text><line x1="40" y1="22" x2="736" y2="22" class="fb-str" stroke-width="1.00"/><text x="6" y="26" class="fb-sn">e</text><g class="fb-note"><circle cx="185.0" cy="162" r="11"/><text x="185.0" y="165.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="417.0" cy="162" r="11"/><text x="417.0" y="165.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="649.0" cy="162" r="11"/><text x="649.0" y="165.5" class="fb-t">D♯</text></g><g class="fb-root"><circle cx="127.0" cy="134" r="11"/><text x="127.0" y="137.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="359.0" cy="134" r="11"/><text x="359.0" y="137.5" class="fb-t">D♯</text></g><g class="fb-note"><circle cx="591.0" cy="134" r="11"/><text x="591.0" y="137.5" class="fb-t">G</text></g><g class="fb-note"><circle cx="69.0" cy="106" r="11"/><text x="69.0" y="109.5" class="fb-t">D♯</text></g><g class="fb-note"><circle cx="301.0" cy="106" r="11"/><text x="301.0" y="109.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="533.0" cy="106" r="11"/><text x="533.0" y="109.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="27" cy="78" r="11"/><text x="27" y="81.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="243.0" cy="78" r="11"/><text x="243.0" y="81.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="475.0" cy="78" r="11"/><text x="475.0" y="81.5" class="fb-t">D♯</text></g><g class="fb-note"><circle cx="707.0" cy="78" r="11"/><text x="707.0" y="81.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="27" cy="50" r="11"/><text x="27" y="53.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="243.0" cy="50" r="11"/><text x="243.0" y="53.5" class="fb-t">D♯</text></g><g class="fb-note"><circle cx="475.0" cy="50" r="11"/><text x="475.0" y="53.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="707.0" cy="50" r="11"/><text x="707.0" y="53.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="185.0" cy="22" r="11"/><text x="185.0" y="25.5" class="fb-t">G</text></g><g class="fb-root"><circle cx="417.0" cy="22" r="11"/><text x="417.0" y="25.5" class="fb-t">B</text></g><g class="fb-note"><circle cx="649.0" cy="22" r="11"/><text x="649.0" y="25.5" class="fb-t">D♯</text></g></svg></div>
+  <p class="hint">The root is highlighted. Standard tuning, frets 0 to 12.</p>
+
+  <h2>Tab</h2>
+  <pre class="tab">e|--------------7-|
+B|------------8---|
+G|----------8-----|
+D|--------9-------|
+A|---6-10---------|
+E|-7--------------|</pre>
+  <p class="hint">One playable position, frets 6 to 10. Go up then back down, one note per beat.</p>
+  <button class="play" type="button" data-play="47,51,55,59,63,67,71" data-inst="guitar">▶ Play the arpeggio</button>
+
   <h2>About this arpeggio</h2>
   <div class="desc-block">The augmented arpeggio replaces the fifth with an augmented fifth, creating a symmetric, mysterious color. Its unique geometry — one shape covers 3 tonics — simplifies learning. Very expressive for chromatic transitions and tension effects in jazz and film music.</div>
+
+  <h2>How to practise this arpeggio</h2>
+  <ol class="practice">
+    <li>First find the root (B) all over the neck: it is your anchor.</li>
+    <li>Play the arpeggio up and down slowly, naming the role of each note (R, 3, ♯5).</li>
+    <li>Over a chord chart, switch arpeggio on every chord while keeping your hand in the same area: your solos will follow the harmony instead of sitting in one scale.</li>
+    <li>Add approach notes: a semitone below each arpeggio note, just before the beat.</li>
+    
+  </ol>
 
   <div class="cta-block">
     <p>See all fretboard positions for <strong>B Augmented</strong> in the interactive ScalaSix app.</p>
@@ -220,6 +296,14 @@
   </div>
 
 </main>
+<footer class="site-foot">
+  <div><strong>ScalaBass</strong> Free, no sign-up. Music theory for bass players and guitarists.</div>
+  <div><a href="https://scalabass.com/en/scales/">Bass scales</a><a href="https://scalabass.com/en/scales-guitar/">Guitar scales</a><a href="https://scalabass.com/en/arpeggios-bass/">Bass arpeggios</a><a href="https://scalabass.com/en/arpeggios-guitar/">Guitar arpeggios</a><a href="https://scalabass.com/en/chords-guitar/">Guitar chords</a></div>
+  <div><a href="https://scalabass.com/en/metronome/">Metronome</a><a href="https://scalabass.com/en/tuner/">Tuner</a><a href="https://scalabass.com/en/chord-charts/">Chord charts</a><a href="https://scalabass.com/en/fretboard-trainer/">Fretboard trainer</a><a href="https://scalabass.com/en/ear-training/">Ear training</a>
+    <a href="https://scalabass.com/fr/arpeges-guitare/si/aug/" hreflang="fr">Français</a>
+    <a href="https://scalabass.com/cookies.html">Cookies</a></div>
+</footer>
+<script src="/seo-play.js" defer></script>
 <script src="/consent.js" defer></script>
 </body>
 </html>

@@ -48,6 +48,26 @@ TOOLS = [
     k_en="chord chart maker, chord chart generator, chord chart PDF, song structure, lead sheet, bass chord chart, guitar chord chart",
     n_en="ScalaBass chord chart maker", b_en="Chord charts",
     req="Requires JavaScript"),
+  dict(fr='notes-manche.html', en='en/fretboard-trainer/',
+    t_fr="Apprendre les notes du manche (basse et guitare) : entraîneur gratuit | ScalaBass",
+    d_fr="Entraîneur gratuit pour apprendre les notes du manche de basse ou de guitare : trouve la note demandée ou nomme celle qui s'allume, corde par corde, cases 0 à 12, avec score et chrono de 60 secondes.",
+    k_fr="notes du manche, apprendre les notes du manche, notes manche basse, notes manche guitare, exercice notes guitare, mémoriser le manche",
+    n_fr="Entraîneur de notes du manche ScalaBass", b_fr="Notes du manche",
+    t_en="Fretboard note trainer for bass and guitar (free) | ScalaBass",
+    d_en="Free trainer to learn the notes on the bass or guitar fretboard: find the note you are asked for or name the one that lights up, string by string, frets 0 to 12, with score and a 60-second timer.",
+    k_en="fretboard trainer, learn fretboard notes, bass fretboard notes, guitar fretboard notes, fretboard memorization, note trainer",
+    n_en="ScalaBass fretboard note trainer", b_en="Fretboard trainer",
+    req="Requires JavaScript"),
+  dict(fr='oreille.html', en='en/ear-training/',
+    t_fr="Entraînement de l'oreille : intervalles, accords, gammes (gratuit) | ScalaBass",
+    d_fr="Entraîneur d'oreille gratuit pour bassistes et guitaristes : reconnais les intervalles (montants, descendants, harmoniques), les accords et les gammes. Explication après chaque réponse.",
+    k_fr="entraînement oreille, ear training, reconnaître les intervalles, oreille relative, reconnaître les accords, exercice intervalles",
+    n_fr="Entraîneur d'oreille ScalaBass", b_fr="Entraîneur d'oreille",
+    t_en="Ear training: intervals, chords and scales (free) | ScalaBass",
+    d_en="Free ear trainer for bass and guitar players: recognise intervals (ascending, descending, harmonic), chords and scales. An explanation follows every answer.",
+    k_en="ear training, interval ear training, relative pitch, chord recognition, scale recognition, ear trainer online",
+    n_en="ScalaBass ear trainer", b_en="Ear training",
+    req="Requires JavaScript and Web Audio"),
 ]
 
 A = lambda s: html.escape(s, quote=True)
@@ -109,7 +129,7 @@ def rewrite_head(src, t, lang):
         '<meta charset="UTF-8">\n<script data-sb-lang>try{localStorage.setItem(\'sblang\',\'%s\')}catch(e){}</script>' % lang, 1)
     return src
 
-DATA_EN_RE = re.compile(r'<(p|h1|h2|h3|span|small|summary|li)\b([^>]*?)\sdata-en="([^"]*)"([^>]*)>(.*?)</\1>', re.S)
+DATA_EN_RE = re.compile(r'<(p|h1|h2|h3|span|small|summary|li|button|div)\b([^>]*?)\sdata-en="([^"]*)"([^>]*)>(.*?)</\1>', re.S)
 
 def to_en(src, t):
     src = rewrite_head(src, t, 'en')

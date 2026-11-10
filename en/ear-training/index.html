@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'granted'});gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','wait_for_update':500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
+  try{ if(localStorage.getItem('sbconsent')==='granted'){ gtag('consent','update',{'analytics_storage':'granted'}); } }catch(e){}
+  gtag('js', new Date());
+  gtag('config', 'G-D2K9X05BCG');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D2K9X05BCG"></script>
+
+<meta charset="UTF-8">
+<base href="/">
+<script data-sb-lang>try{localStorage.setItem('sblang','en')}catch(e){}</script>
+<link rel="icon" type="image/png" href="img/logoonglet.png">
+<link rel="apple-touch-icon" href="img/logoonglet.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15100c">
+<title data-fr="Entraînement de l&#x27;oreille : intervalles, accords, gammes (gratuit) | ScalaBass">Ear training: intervals, chords and scales (free) | ScalaBass</title>
+<meta name="description" content="Free ear trainer for bass and guitar players: recognise intervals (ascending, descending, harmonic), chords and scales. An explanation follows every answer.">
+<meta name="keywords" content="ear training, interval ear training, relative pitch, chord recognition, scale recognition, ear trainer online">
+<link rel="canonical" href="https://scalabass.com/en/ear-training/">
+<link rel="alternate" hreflang="fr" href="https://scalabass.com/oreille.html">
+<link rel="alternate" hreflang="en" href="https://scalabass.com/en/ear-training/">
+<link rel="alternate" hreflang="x-default" href="https://scalabass.com/oreille.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ScalaBass">
+<meta property="og:title" content="Ear training: intervals, chords and scales (free) | ScalaBass">
+<meta property="og:description" content="Free ear trainer for bass and guitar players: recognise intervals (ascending, descending, harmonic), chords and scales. An explanation follows every answer.">
+<meta property="og:url" content="https://scalabass.com/en/ear-training/">
+<meta property="og:image" content="https://scalabass.com/og-image.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ear training: intervals, chords and scales (free) | ScalaBass">
+<meta name="twitter:description" content="Free ear trainer for bass and guitar players: recognise intervals (ascending, descending, harmonic), chords and scales. An explanation follows every answer.">
+<meta name="twitter:image" content="https://scalabass.com/og-image.png">
+<script type="application/ld+json">
+[{"@context": "https://schema.org", "@type": "WebApplication", "name": "ScalaBass ear trainer", "url": "https://scalabass.com/en/ear-training/", "description": "Free ear trainer for bass and guitar players: recognise intervals (ascending, descending, harmonic), chords and scales. An explanation follows every answer.", "applicationCategory": "MusicApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript and Web Audio", "isAccessibleForFree": true, "inLanguage": "en", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "publisher": {"@type": "Organization", "name": "ScalaBass", "url": "https://scalabass.com/"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ScalaBass", "item": "https://scalabass.com/"}, {"@type": "ListItem", "position": 2, "name": "Ear training", "item": "https://scalabass.com/en/ear-training/"}]}]
+</script>
+
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nav-tools.css">
+<link rel="stylesheet" href="outils.css">
+<style>
+.quiz{display:grid;gap:16px}
+.prompt{font-family:"Instrument Serif",serif;font-size:clamp(28px,5vw,44px);line-height:1.1;color:var(--cream);text-align:center;min-height:1.2em}
+.prompt b{color:var(--brass);font-weight:400;font-style:italic}
+.fbx{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#0a0705;padding:10px 6px 2px}
+.fbx svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.fbx .fret{stroke:#4a3a2a;stroke-width:2}.fbx .nut{stroke:#d9cdb8;stroke-width:5}
+.fbx .str{stroke:#a89a84}.fbx .inlay{fill:#241a12}
+.fbx .num,.fbx .sn{fill:var(--muted);font:11px "Space Mono",monospace;text-anchor:middle}
+.fbx .cell{fill:transparent;cursor:pointer}
+.fbx .cell:hover{fill:rgba(var(--glow),.14)}
+.fbx.locked .cell{cursor:default}.fbx.locked .cell:hover{fill:transparent}
+.fbx .dot circle{fill:var(--brass);stroke:var(--brass)}
+.fbx .dot text{fill:#160f08;font:700 11px "Hanken Grotesk",sans-serif;text-anchor:middle}
+html[data-inst="guitar"] .fbx .dot text{fill:#fff}
+.fbx .dot.ok circle{fill:var(--ok);stroke:var(--ok)}.fbx .dot.ko circle{fill:var(--bad);stroke:var(--bad)}
+.fbx .dot.ask circle{fill:var(--brass)}.fbx .srow{stroke:var(--brass);stroke-width:3;opacity:.9}
+.answers{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.answers button{min-width:64px;padding:12px 10px;border-radius:12px;border:1.5px solid var(--line);background:#0e0a07;color:var(--cream);font-family:"Space Mono",monospace;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.answers button:hover{border-color:var(--brass)}
+.answers button.ok{background:var(--ok);border-color:var(--ok);color:#06210a}
+.answers button.ko{background:var(--bad);border-color:var(--bad);color:#fff}
+.answers button.off{opacity:.35}
+.score{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;font-family:"Space Mono",monospace;font-size:13px;color:var(--muted)}
+.score b{color:var(--cream);font-size:18px;margin-left:6px}
+.fb-msg{text-align:center;min-height:1.5em;font-size:15px;color:var(--muted)}
+.fb-msg.ok{color:var(--ok)}.fb-msg.ko{color:var(--bad)}
+.fields{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-end}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#0e0a07;color:var(--muted);font-family:"Space Mono",monospace;font-size:12px;cursor:pointer}
+.chips button.on{border-color:var(--brass);color:var(--cream);background:rgba(var(--glow),.16)}
+.review{font-size:13px;color:var(--muted);text-align:center}
+.bigplay{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body data-tool="oreille">
+<div class="wrap">
+<header>
+  <div class="logo-bar">
+    <div class="inst-bar" style="margin-bottom:0">
+      <button type="button" class="inst-btn bass-btn active" data-inst="bass">Basse</button>
+      <button type="button" class="inst-btn guit-btn" data-inst="guitar">Guitare</button>
+    </div>
+    <img id="site-logo" src="img/logobasse.png" alt="ScalaBass" style="height:80px;display:block">
+  </div>
+  <div class="eyebrow">
+    <span class="site-name" id="site-name">ScalaBass</span>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html" class="nav-link">Manche</a>
+      <a href="gammes.html" class="nav-link">Gammes</a>
+      <a href="arpeges-basse.html" class="nav-link">Arpèges</a>
+      <a href="accords-basse.html" class="nav-link">Accords</a>
+      <a href="intervalles.html" class="nav-link">Intervalles</a>
+      <a href="cadences.html" class="nav-link">Cadences</a>
+      <a href="analyse.html" class="nav-link">Analyse</a>
+      <a href="quintes.html" class="nav-link">Tonalités</a>
+      <a href="metronome.html" class="nav-link active">Outils</a>
+    </nav>
+    <div class="header-tools">
+      <div class="htool-seg" id="notation-seg">
+        <button data-notation="en" class="on" style="min-width:72px">A B C</button>
+        <button data-notation="fr" style="min-width:72px">Do Ré Mi</button>
+      </div>
+      <div class="htool-divider"></div>
+      <div class="htool-seg" id="lang-seg">
+        <button data-lang="fr" class="on" style="min-width:34px">FR</button>
+        <button data-lang="en" style="min-width:34px">EN</button>
+      </div>
+    </div>
+  </div>
+  <h1 data-en="Ear <em>trainer</em>" data-fr="Entraîneur &lt;em&gt;d&#x27;oreille&lt;/em&gt;">Ear <em>trainer</em></h1>
+  <p class="lede" data-en="Learn to recognise intervals, chords and scales by ear. Choose what to work on, listen, answer: an explanation follows every answer." data-fr="Apprends à reconnaître à l&#x27;oreille les intervalles, les accords et les gammes. Tu choisis ce que tu travailles, tu écoutes, tu réponds : l&#x27;explication suit chaque réponse.">Learn to recognise intervals, chords and scales by ear. Choose what to work on, listen, answer: an explanation follows every answer.</p>
+</header>
+
+<div class="tool-wrap">
+<section class="card" aria-label="Réglages">
+  <div class="fields">
+    <div class="field"><span data-en="Exercise" data-fr="Exercice">Exercise</span>
+      <div class="seg" id="mode"><button data-m="iv" class="on" data-en="Intervals" data-fr="Intervalles">Intervals</button><button data-m="ch" data-en="Chords" data-fr="Accords">Chords</button><button data-m="sc" data-en="Scales" data-fr="Gammes">Scales</button></div></div>
+    <div class="field" id="f-dir"><span data-en="Playback" data-fr="Lecture">Playback</span>
+      <div class="seg" id="dir"><button data-d="up" class="on" data-en="Ascending" data-fr="Montant">Ascending</button><button data-d="down" data-en="Descending" data-fr="Descendant">Descending</button><button data-d="harm" data-en="Together" data-fr="Ensemble">Together</button></div></div>
+    <div class="field"><span data-en="Root" data-fr="Fondamentale">Root</span>
+      <div class="seg" id="rootm"><button data-k="rand" class="on" data-en="Random" data-fr="Aléatoire">Random</button><button data-k="fix" data-en="Always C" data-fr="Toujours Do">Always C</button></div></div>
+  </div>
+  <div class="field" style="margin-top:14px"><span data-en="What to recognise (tap to switch on or off)" data-fr="À reconnaître (touche pour activer ou non)">What to recognise (tap to switch on or off)</span><div class="chips" id="items"></div></div>
+</section>
+
+<section class="card quiz" aria-live="polite">
+  <div class="prompt" id="prompt" data-en="Listen, then answer" data-fr="Écoute, puis réponds">Listen, then answer</div>
+  <div class="bigplay">
+    <button type="button" class="btn primary" id="play" data-en="▶ New question" data-fr="▶ Nouvelle question">▶ New question</button>
+    <button type="button" class="btn" id="again" disabled data-en="↻ Listen again" data-fr="↻ Réécouter">↻ Listen again</button>
+  </div>
+  <div class="answers" id="answers"></div>
+  <div class="fb-msg" id="msg"></div>
+  <div class="score">
+    <span><span data-en="Correct" data-fr="Justes">Correct</span><b id="s-ok">0</b></span>
+    <span><span data-en="Errors" data-fr="Erreurs">Errors</span><b id="s-ko">0</b></span>
+    <span><span data-en="Streak" data-fr="Série">Streak</span><b id="s-streak">0</b></span>
+    <span><span data-en="Best streak" data-fr="Meilleure série">Best streak</span><b id="s-best">–</b></span>
+  </div>
+  <div class="review" id="review"></div>
+</section>
+
+<section class="card"><div class="prose">
+  <h2 data-en="Why train your ear" data-fr="Pourquoi travailler son oreille">Why train your ear</h2>
+  <p data-en="Recognising an interval or a chord by ear is what lets you pick up a bass line, find the chords of a song and hear in advance what you are about to play. It is a skill that is built with short, regular sessions, exactly like technique." data-fr="Reconnaître un intervalle ou un accord à l&#x27;oreille, c&#x27;est ce qui permet de relever une ligne de basse, de retrouver les accords d&#x27;un morceau et d&#x27;entendre à l&#x27;avance ce qu&#x27;on va jouer. C&#x27;est une compétence qui se construit par séances courtes et régulières, exactement comme la technique.">Recognising an interval or a chord by ear is what lets you pick up a bass line, find the chords of a song and hear in advance what you are about to play. It is a skill that is built with short, regular sessions, exactly like technique.</p>
+  <h2 data-en="How to progress" data-fr="Comment progresser">How to progress</h2>
+  <p data-en="Start with few choices: the octave, the perfect fifth and the major third, ascending. When you get nine out of ten, add one interval at a time. The semitone count is shown after each answer: the perfect fourth is 5 semitones, the fifth 7, the octave 12. Sing the second note before answering; the voice is the best link between the ear and the instrument." data-fr="Commence avec peu de choix : l&#x27;octave, la quinte juste et la tierce majeure, en montant. Quand tu réussis neuf fois sur dix, ajoute un intervalle à la fois. Le nombre de demi-tons est rappelé après chaque réponse : la quarte juste en compte 5, la quinte 7, l&#x27;octave 12. Chante la deuxième note avant de répondre ; la voix est le meilleur lien entre l&#x27;oreille et l&#x27;instrument.">Start with few choices: the octave, the perfect fifth and the major third, ascending. When you get nine out of ten, add one interval at a time. The semitone count is shown after each answer: the perfect fourth is 5 semitones, the fifth 7, the octave 12. Sing the second note before answering; the voice is the best link between the ear and the instrument.</p>
+  <p data-en="Then move on to descending intervals and to notes played together, which are harder. For chords, first tell major from minor, then add diminished and augmented, and finally the seventh chords. For scales, listen for the third first (major or minor), then for the note that gives the colour: the major sixth of Dorian, the minor seventh of Mixolydian." data-fr="Passe ensuite aux intervalles descendants puis aux notes jouées ensemble, plus difficiles. Pour les accords, distingue d&#x27;abord majeur et mineur, ajoute diminué et augmenté, puis les accords de septième. Pour les gammes, écoute d&#x27;abord la tierce (majeure ou mineure), puis la note qui donne la couleur : la sixte majeure du dorien, la septième mineure du mixolydien.">Then move on to descending intervals and to notes played together, which are harder. For chords, first tell major from minor, then add diminished and augmented, and finally the seventh chords. For scales, listen for the third first (major or minor), then for the note that gives the colour: the major sixth of Dorian, the minor seventh of Mixolydian.</p>
+  <p data-en="With a fixed root (always C) you compare colours on the same note: easier. With a random root you train relative hearing, the one you really use when playing." data-fr="Avec une fondamentale fixe (toujours Do) tu compares les couleurs sur la même note : c&#x27;est plus facile. Avec une fondamentale aléatoire tu travailles l&#x27;oreille relative, celle qui sert vraiment en jouant.">With a fixed root (always C) you compare colours on the same note: easier. With a random root you train relative hearing, the one you really use when playing.</p>
+</div></section>
+</div>
+</div><!-- /wrap -->
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-copy" id="footer-brand">© 2026 ScalaBass</span>
+    <div class="footer-links">
+      <a href="mailto:contact@scalabass.com">contact@scalabass.com</a>
+      <span class="footer-sep">·</span>
+      <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
+    </div>
+  </div>
+  <div class="footer-ml" id="footer-ml">
+    <strong style="color:var(--cream)">Mentions légales</strong><br>
+    <strong>Éditeur</strong> : site personnel à but non lucratif. Conformément à l’article 6 III 2
+    de la loi n° 2004-575 du 21 juin 2004 (LCEN), l’éditeur non professionnel a choisi de ne pas
+    rendre publique son identité ; celle-ci est détenue par l’hébergeur, tenu au secret professionnel.<br>
+    <strong>Contact</strong> : contact@scalabass.com<br>
+    <strong>Hébergeur</strong> : GitHub, Inc. — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107,
+    États-Unis — <a href="https://github.com" rel="noopener">github.com</a><br>
+    <strong>Données personnelles</strong> : ScalaBass est gratuit, sans compte ni formulaire. Le site
+    utilise <strong>Google Analytics 4</strong> pour mesurer son audience : cet outil dépose des cookies
+    sur votre appareil et transmet des données de navigation à Google LLC. Aucune publicité, aucune
+    revente de données. Un bandeau vous demande votre accord avant tout dépôt, et votre choix reste modifiable
+    à tout moment depuis la <a href="/cookies.html">gestion des cookies</a>. Les préférences d’affichage (notation, langue, main, accordage) sont conservées dans
+    votre navigateur via localStorage et ne quittent jamais votre appareil.<br>
+    <strong>Contenu</strong> : les gammes, accords et arpèges sont des données théoriques musicales,
+    non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
+  </div>
+</footer>
+
+<script src="music-core.js"></script>
+<script src="sb-tools.js"></script>
+<script src="nav-tools.js" defer></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const EN=document.documentElement.lang==='en';
+const T=(fr,en)=>EN?en:fr;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const SETS={
+  iv:[ // id, demi-tons, fr, en, actif par défaut
+    ['m2',1,'Seconde mineure','Minor 2nd',0],['M2',2,'Seconde majeure','Major 2nd',0],
+    ['m3',3,'Tierce mineure','Minor 3rd',1],['M3',4,'Tierce majeure','Major 3rd',1],
+    ['P4',5,'Quarte juste','Perfect 4th',1],['TT',6,'Triton','Tritone',0],
+    ['P5',7,'Quinte juste','Perfect 5th',1],['m6',8,'Sixte mineure','Minor 6th',0],
+    ['M6',9,'Sixte majeure','Major 6th',0],['m7',10,'Septième mineure','Minor 7th',0],
+    ['M7',11,'Septième majeure','Major 7th',0],['P8',12,'Octave','Octave',1]],
+  ch:[
+    ['maj',[0,4,7],'Majeur','Major',1],['min',[0,3,7],'Mineur','Minor',1],
+    ['dim',[0,3,6],'Diminué','Diminished',0],['aug',[0,4,8],'Augmenté','Augmented',0],
+    ['sus4',[0,5,7],'Sus4','Sus4',0],['maj7',[0,4,7,11],'Majeur 7','Major 7',0],
+    ['7',[0,4,7,10],'Dominante 7','Dominant 7',0],['m7',[0,3,7,10],'Mineur 7','Minor 7',0],
+    ['m7b5',[0,3,6,10],'Demi-diminué','Half-diminished',0]],
+  sc:[
+    ['major',[0,2,4,5,7,9,11],'Majeure','Major',1],['minor',[0,2,3,5,7,8,10],'Mineure naturelle','Natural minor',1],
+    ['dorian',[0,2,3,5,7,9,10],'Dorien','Dorian',0],['mixo',[0,2,4,5,7,9,10],'Mixolydien','Mixolydian',0],
+    ['phryg',[0,1,3,5,7,8,10],'Phrygien','Phrygian',0],['lyd',[0,2,4,6,7,9,11],'Lydien','Lydian',0],
+    ['harm',[0,2,3,5,7,8,11],'Mineure harmonique','Harmonic minor',0],
+    ['pmin',[0,3,5,7,10],'Pentatonique mineure','Minor pentatonic',1],['pmaj',[0,2,4,7,9],'Pentatonique majeure','Major pentatonic',0],
+    ['blues',[0,3,5,6,7,10],'Blues','Blues',0]],
+};
+const L_EN=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'], L_FR=['Do','Ré♭','Ré','Mi♭','Mi','Fa','Fa♯','Sol','La♭','La','Si♭','Si'];
+const nn=m=>{let f=false;try{f=(localStorage.getItem('sbnot')||'en')==='fr';}catch(e){}return (f?L_FR:L_EN)[((m%12)+12)%12];};
+let inst='bass', st={mode:'iv',dir:'up',rootm:'rand',on:{}};
+let q=null, ok=0, ko=0, streak=0, miss={};
+const nm=it=>EN?it[3]:it[2];
+const active=()=>SETS[st.mode].filter(it=>st.on[st.mode+':'+it[0]]);
+
+/* ---------- audio ---------- */
+let ac=null;
+function ctx(){const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; if(!ac) ac=new AC(); if(ac.state==='suspended') ac.resume(); return ac;}
+function tone(m,t,dur,vol){
+  const a=ctx(); if(!a) return;
+  const hz=440*Math.pow(2,(m-69)/12), o=a.createOscillator(), o2=a.createOscillator(), g=a.createGain(), f=a.createBiquadFilter(), mx=a.createGain();
+  o.type='triangle'; o2.type='sawtooth'; o.frequency.value=hz; o2.frequency.value=hz; mx.gain.value=0.16;
+  f.type='lowpass'; f.frequency.setValueAtTime(2400,t); f.frequency.exponentialRampToValueAtTime(600,t+dur);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.28,t+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(f); o2.connect(mx); mx.connect(f); f.connect(g); g.connect(a.destination);
+  o.start(t); o2.start(t); o.stop(t+dur+0.05); o2.stop(t+dur+0.05);
+}
+function playQ(){
+  const a=ctx(); if(!a||!q) return; const t=a.currentTime+0.05, r=q.root;
+  if(st.mode==='iv'){
+    const hi=r+q.item[1];
+    if(st.dir==='harm'){ tone(r,t,1.6,0.22); tone(hi,t,1.6,0.22); }
+    else if(st.dir==='down'){ tone(hi,t,0.75); tone(r,t+0.7,1.1); }
+    else{ tone(r,t,0.75); tone(hi,t+0.7,1.1); }
+  }else if(st.mode==='ch'){
+    q.item[1].forEach((i,k)=>tone(r+i,t+k*0.04,1.8,0.2));
+    q.item[1].forEach((i,k)=>tone(r+i,t+2.0+k*0.34,0.6,0.24));   // puis arpégé
+  }else{
+    const seq=q.item[1].concat([12]); seq.forEach((i,k)=>tone(r+i,t+k*0.3,0.42));
+  }
+}
+
+/* ---------- questions ---------- */
+function newQ(){
+  const act=active();
+  if(act.length<2){ $('#msg').className='fb-msg ko'; $('#msg').textContent=T('Active au moins deux choix.','Switch on at least two choices.'); return; }
+  let item; do{ item=act[Math.floor(Math.random()*act.length)]; }while(act.length>2 && q && q.item===item && Math.random()<0.6);
+  const base=inst==='bass'?43:52;                       // registre lisible sur de petits haut-parleurs
+  const root=st.rootm==='fix'?(inst==='bass'?48:60):base+Math.floor(Math.random()*12);
+  q={item,root,done:false};
+  $$('#answers button').forEach(b=>b.classList.remove('ok','ko'));
+  $('#msg').textContent=''; $('#msg').className='fb-msg';
+  $('#prompt').textContent=T('Qu\'entends-tu ?','What do you hear?');
+  $('#again').disabled=false; $('#play').textContent=T('▶ Question suivante','▶ Next question');
+  playQ();
+}
+function explain(){
+  const it=q.item, r=q.root;
+  if(st.mode==='iv') return `${nn(r)} → ${nn(r+it[1])} : ${nm(it)} (${it[1]} ${T(it[1]>1?'demi-tons':'demi-ton',it[1]>1?'semitones':'semitone')})`;
+  return `${nn(r)} ${nm(it)} : ${it[1].map(i=>nn(r+i)).join(' – ')}`;
+}
+function answer(it,btn){
+  if(!q){ return; }
+  if(q.done){ return; }
+  const good=it===q.item; q.done=true;
+  btn.classList.add(good?'ok':'ko');
+  if(good){ ok++; streak++; $('#msg').className='fb-msg ok'; $('#msg').textContent=T('Juste ! ','Correct! ')+explain(); }
+  else{ ko++; streak=0; miss[nm(q.item)]=(miss[nm(q.item)]||0)+1;
+    const idx=SETS[st.mode].indexOf(q.item), rb=$$('#answers button')[idx]; if(rb) rb.classList.add('ok');
+    $('#msg').className='fb-msg ko'; $('#msg').textContent=T('C\'était : ','It was: ')+explain(); playQ(); }
+  const best=store.get('sb_ear_best',0); if(streak>best) store.set('sb_ear_best',streak);
+  stats();
+}
+function stats(){
+  $('#s-ok').textContent=ok; $('#s-ko').textContent=ko; $('#s-streak').textContent=streak;
+  $('#s-best').textContent=store.get('sb_ear_best',0)||'–';
+  const m=Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+  $('#review').textContent=m.length?T('À retravailler : ','Needs work: ')+m.join(', '):'';
+}
+
+/* ---------- interface ---------- */
+function build(){
+  const items=$('#items'), ans=$('#answers'); items.innerHTML=''; ans.innerHTML='';
+  SETS[st.mode].forEach(it=>{
+    const key=st.mode+':'+it[0]; if(st.on[key]===undefined) st.on[key]=!!it[4];
+    const c=document.createElement('button'); c.type='button'; c.textContent=nm(it); c.className=st.on[key]?'on':'';
+    const b=document.createElement('button'); b.type='button'; b.textContent=nm(it); b.className=st.on[key]?'':'off'; b.disabled=!st.on[key];
+    c.onclick=()=>{ st.on[key]=!st.on[key]; c.classList.toggle('on',st.on[key]); b.classList.toggle('off',!st.on[key]); b.disabled=!st.on[key]; save(); };
+    b.onclick=()=>answer(it,b);
+    items.appendChild(c); ans.appendChild(b);
+  });
+  $('#f-dir').style.display=st.mode==='iv'?'':'none';
+  q=null; $('#again').disabled=true; $('#play').textContent=T('▶ Nouvelle question','▶ New question');
+  $('#prompt').textContent=T('Écoute, puis réponds','Listen, then answer'); $('#msg').textContent='';
+}
+function seg(id,key,attr,rebuild){
+  $$('#'+id+' button').forEach(b=>{
+    b.classList.toggle('on',st[key]===b.dataset[attr]);
+    b.onclick=()=>{ st[key]=b.dataset[attr]; $$('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); save(); if(rebuild) build(); };
+  });
+}
+function save(){ store.set('sb_ear_cfg',st); }
+Object.assign(st,store.get('sb_ear_cfg',{})); if(!st.on) st.on={};
+$('#play').addEventListener('click',newQ);
+$('#again').addEventListener('click',playQ);
+document.addEventListener('keydown',e=>{ if(e.code==='Space'&&e.target===document.body){ e.preventDefault(); (q&&!q.done)?playQ():newQ(); } });
+window.onInstChange=i=>{ inst=i; };
+window.onNotation=()=>{};
+seg('mode','mode','m',true); seg('dir','dir','d'); seg('rootm','rootm','k');
+build(); stats();
+if(window.SBT) SBT.init();
+})();
+</script>
+<script src="/consent.js" defer></script>
+</body>
+</html>

@@ -25,9 +25,10 @@
   const EN = {
     'Manche': 'Fretboard', 'Gammes': 'Scales', 'Arpèges': 'Arpeggios', 'Accords': 'Chords', 'Intervalles': 'Intervals',
     'Cadences': 'Cadences', 'Analyse': 'Analyse', 'Tonalités': 'Key Index',
-    'Outils': 'Tools', 'Métronome': 'Metronome', 'Accordeur': 'Tuner', 'Grilles': 'Chord charts',
+    'Outils': 'Tools', 'Métronome': 'Metronome', 'Accordeur': 'Tuner', 'Grilles': 'Chord charts', 'Notes du manche': 'Fretboard trainer', 'Oreille': 'Ear training',
   };
-  const TOOLS = [['metronome.html', 'Métronome', '/en/metronome/', 'metronome'], ['accordeur.html', 'Accordeur', '/en/tuner/', 'accordeur'], ['grilles.html', 'Grilles', '/en/chord-charts/', 'grilles']];
+  const TOOLS = [['metronome.html', 'Métronome', '/en/metronome/', 'metronome'], ['accordeur.html', 'Accordeur', '/en/tuner/', 'accordeur'], ['grilles.html', 'Grilles', '/en/chord-charts/', 'grilles'],
+    ['notes-manche.html', 'Notes du manche', '/en/fretboard-trainer/', 'notes-manche'], ['oreille.html', 'Oreille', '/en/ear-training/', 'oreille']];
   const thref = t => lang() === 'en' ? t[2] : t[0];
   const BRAND = { bass: 'ScalaBass', guitar: 'ScalaSix' };
   const LOGO = { bass: 'img/logobasse.png', guitar: 'img/logoguitare.png' };

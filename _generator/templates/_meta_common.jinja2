@@ -1,0 +1,10 @@
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:site_name" content="ScalaBass">
+  <meta property="og:locale" content="{{ 'fr_FR' if lang == 'fr' else 'en_US' }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ ui_og_title }}">
+  <meta name="twitter:description" content="{{ ui_og_desc }}">
+  <meta name="twitter:image" content="{{ og_image }}">
+  <meta name="theme-color" content="#1a1a20">
+  <link rel="icon" href="/favicon.png">
+  {% if breadcrumb_ld %}<script type="application/ld+json">{{ breadcrumb_ld }}</script>{% endif %}
