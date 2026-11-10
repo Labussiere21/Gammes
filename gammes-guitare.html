@@ -2374,17 +2374,27 @@ function updateScaleText(notes, def, rootPc){
   const minWord = lang==='en' ? 'minor' : 'mineure';
   const noteList = notes.map(pretty).join(', ');
   // Relative majeure/mineure
+  // Relative / gamme mère : calculée sur les intervalles. Ré dorien a les notes de
+  // Do majeur (dont il est le 2e mode), pas celles de Fa majeur.
   let relative = '';
-  if(def.pos==='min'){
-    const relPc = (rootPc+3)%12;
-    const relNote = PC_TO_NOTE_FLAT[relPc];
-    const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
-    relative = ` ${t('lbl_relative_maj')} <strong>${relCap} ${majWord}</strong>.`;
-  } else if(def.pos==='maj'){
-    const relPc = (rootPc+9)%12;
-    const relNote = PC_TO_NOTE_FLAT[relPc];
-    const relCap = relNote[0].toUpperCase()+relNote.slice(1).replace('b','♭');
-    relative = ` ${t('lbl_relative')} <strong>${relCap} ${minWord}</strong>.`;
+  const _nm = pc => { const n=PC_TO_NOTE_FLAT[((pc%12)+12)%12]; return n[0].toUpperCase()+n.slice(1).replace('b','♭'); };
+  const _MAJ=[0,2,4,5,7,9,11];
+  let _mode=-1;
+  if(def.iv.length===7){
+    for(let k=0;k<7;k++){
+      const rot=_MAJ.map(x=>(x-_MAJ[k]+12)%12).sort((x,y)=>x-y);
+      if(rot.every((x,i)=>x===def.iv[i])){ _mode=k; break; }
+    }
+  }
+  if(_mode===0 || ['penta_maj','blues_maj'].includes(def.id)){
+    relative = ` ${t('lbl_relative')} <strong>${_nm(rootPc+9)} ${lang==='en'?'minor':'mineur'}</strong>.`;
+  } else if(_mode===5 || ['harmonic','melodic','penta_min','blues_min'].includes(def.id)){
+    relative = ` ${t('lbl_relative_maj')} <strong>${_nm(rootPc+3)} ${lang==='en'?'major':'majeur'}</strong>.`;
+  } else if(_mode>0){
+    const par=_nm(rootPc-_MAJ[_mode]);
+    relative = lang==='en'
+      ? ` Same notes as <strong>${par} major</strong>: it is mode ${_mode+1} of that scale.`
+      : ` Mêmes notes que <strong>${par} majeur</strong> : c'est le mode ${_mode+1} de cette gamme.`;
   }
   // Armure
   let sharps=0,flats=0;
@@ -2452,6 +2462,20 @@ render();
       <button class="footer-ml-btn" onclick="var m=document.getElementById('footer-ml');m.classList.toggle('open')">Mentions légales</button>
     </div>
   </div>
+  <nav class="footer-links footer-hubs" aria-label="Fiches par tonalité" style="max-width:1180px;margin:10px auto 0;padding:0 clamp(16px,4vw,40px);display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;line-height:1.7">
+    <span style="opacity:.6">Fiches par tonalité :</span>
+    <a href="/fr/gammes/">Gammes de basse</a>
+    <a href="/fr/gammes-guitare/">Gammes de guitare</a>
+    <a href="/fr/arpeges-basse/">Arpèges de basse</a>
+    <a href="/fr/arpeges-guitare/">Arpèges de guitare</a>
+    <a href="/fr/accords-guitare/">Accords de guitare</a>
+    <span style="opacity:.6">English:</span>
+    <a href="/en/scales/" hreflang="en">Bass scales</a>
+    <a href="/en/scales-guitar/" hreflang="en">Guitar scales</a>
+    <a href="/en/arpeggios-bass/" hreflang="en">Bass arpeggios</a>
+    <a href="/en/arpeggios-guitar/" hreflang="en">Guitar arpeggios</a>
+    <a href="/en/chords-guitar/" hreflang="en">Guitar chords</a>
+  </nav>
   <div class="footer-ml" id="footer-ml">
     <strong style="color:var(--cream)">Mentions légales</strong><br>
     <strong>Éditeur</strong> : site personnel à but non lucratif. Conformément à l’article 6 III 2
@@ -2470,5 +2494,6 @@ render();
     non appropriables. Les textes et le code du site sont l’œuvre de l’éditeur.
   </div>
 </footer><script src="/consent.js" defer></script>
+<script src="fiche-link.js" data-kind="scale-guitar" defer></script>
 </body>
 </html>
